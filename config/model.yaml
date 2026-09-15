@@ -1,0 +1,87 @@
+# Modelling configuration: evaluation design, models, resampling and decision bands.
+#
+# Moved out of config/generator.yaml so that generator parameters and
+# modelling parameters cannot be confused for one another. Source tags follow
+# the same convention as generator.yaml: spec (explicitly stated by the
+# supervisor), literature, industry partner, assumption.
+#
+# Nothing in this file is tuned toward a target metric.
+
+# Repeated cross-validation, grouped by agent and ordered by time. In every
+# fold, test agents never appear in training, every test row is on or after the
+# test start date, and every training row's T7 window (generator
+# features.t7_window_days) has closed before the test start. The single
+# holdout split used in Phase 2 is withdrawn: 70 test agents is too few to
+# report from.
+cross_validation:
+  n_folds: 5  # controls: agent groups per repeat; each group is the test set once. source: spec (Phase 2 supervisor review)
+  n_repeats: 3  # controls: how many times the agent grouping is redrawn, so fold-to-fold spread reflects which agents land together, not one lucky partition. source: assumption
+  cv_seed: 7  # controls: agent-to-fold assignment, inner validation assignment and hyperparameter candidates. source: spec (that the seed is fixed); the value 7 itself is arbitrary
+  test_start_fraction: 0.5  # controls: position in the simulated period where the test period starts. Rationale: equal halves give both sides six complete payout cycles, so training sees every cycle phase several times and each fold's test score averages over several cycles rather than one campaign. source: assumption
+  inner_validation_agent_fraction: 0.25  # controls: share of outer-training agents held out as the inner validation fold for hyperparameter search. source: assumption
+  inner_validation_start_fraction: 0.6  # controls: position within the usable outer-training period where the inner validation period starts; inner training rows must have closed their T7 window before it. source: assumption
+
+reporting:
+  precision_targets: [0.90, 0.95]  # controls: precision levels at which recall is reported. Metric definitions only, not decision thresholds. source: spec (Phase 2 supervisor review)
+
+investigations:
+  latency_tail_cut_hours: [1, 2, 3, 6, 12]  # controls: job acceptance latency cut points at which src.eval.investigations reports how much of each class and typology sits in the tail. Reporting only. source: assumption
+  permutation_shuffles: 5  # controls: label shuffles per fold in the permutation control, so its null spread is visible rather than a single draw. Reporting only. source: assumption
+  isolation_forest_trees: 200  # controls: size of the label-free Isolation Forest used to measure how much signal is plain outlyingness. Reporting only. source: assumption (scikit-learn default is 100)
+
+# Hand-written analyst rules. Not fitted: each threshold is a round number
+# written from the typology descriptions in docs/data_dictionary.md section 6,
+# without looking at how any feature is distributed by class. An activation's
+# score is the number of rules it triggers.
+rules_baseline:
+  - name: volume_burst_dead_customer  # source: assumption
+    description: "Agent submitted five or more activations in 24 hours and the customer was active on at most one day of the week."
+    conditions:
+      - {feature: agent_activation_velocity_24h, op: ">=", value: 5}
+      - {feature: customer_active_days_7d, op: "<=", value: 1}
+  - name: shared_device_fresh_sim  # source: assumption
+    description: "Device used by three or more agents in 30 days, activating a SIM registered within the last two days."
+    conditions:
+      - {feature: device_shared_agent_count_30d, op: ">=", value: 3}
+      - {feature: sim_age_at_activation_days, op: "<=", value: 2}
+  - name: keyed_in_no_proof_no_use  # source: assumption
+    description: "Keyed in by hand, no proof attached, and not one customer transaction in the week."
+    conditions:
+      - {feature: activation_method_is_manual_entry, op: "==", value: 1}
+      - {feature: proof_of_activation_missing_flag, op: "==", value: 1}
+      - {feature: transaction_count_7d, op: "==", value: 0}
+  - name: held_job_released_at_cutoff  # source: assumption
+    description: "Job left unaccepted for more than two hours, then submitted within a day of a payout cutoff."
+    conditions:
+      - {feature: job_acceptance_latency_seconds, op: ">=", value: 7200}
+      - {feature: days_to_payout_cutoff, op: "<=", value: 1}
+
+logistic_regression:
+  C: 1.0  # controls: inverse regularisation strength, after standard scaling. source: assumption (scikit-learn default)
+  max_iter: 2000  # controls: solver iteration cap; a convergence limit, not a model choice. source: assumption
+
+xgboost:
+  search_iterations: 12  # controls: random hyperparameter candidates scored on the inner validation fold. source: assumption
+  tree_method: "hist"  # controls: tree construction algorithm. source: assumption
+  n_jobs: -1  # controls: CPU threads per fit (-1 means all). source: assumption
+  search_space:  # controls: ranges the random search draws from; the same candidates are scored for every XGBoost variant within a fold. source: assumption
+    n_estimators: {dist: discrete, values: [200, 400, 700], weights: [1, 1, 1]}
+    max_depth: {dist: discrete, values: [3, 4, 5, 6, 8], weights: [1, 1, 1, 1, 1]}
+    learning_rate: {dist: loguniform, low: 0.02, high: 0.2}
+    min_child_weight: {dist: discrete, values: [1, 3, 5, 10], weights: [1, 1, 1, 1]}
+    subsample: {dist: uniform, low: 0.6, high: 1.0}
+    colsample_bytree: {dist: uniform, low: 0.5, high: 1.0}
+    reg_lambda: {dist: loguniform, low: 0.5, high: 10.0}
+
+# Class imbalance, compared for XGBoost. SMOTE is applied to the training
+# split only, after splitting, and inside the inner search to the inner
+# training rows only. scale_pos_weight has no parameter: it is the
+# negative-to-positive ratio of whichever training split is being fitted.
+resampling:
+  smote_k_neighbors: 5  # controls: number of neighbours used by SMOTE. source: assumption (imbalanced-learn default)
+  target_minority_ratio: 0.30  # controls: minority-to-majority ratio after SMOTE. source: assumption
+
+# Not used this session: no calibration or decision-band work until reviewed.
+decision_bands:
+  auto_release_threshold: 0.20  # controls: predicted fraud probability below which a payout auto-releases. source: assumption
+  reject_threshold: 0.80  # controls: predicted fraud probability above which a payout is rejected; between the two, the activation goes to human review. source: assumption

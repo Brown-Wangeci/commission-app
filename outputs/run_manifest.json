@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-09-15T17:10:19.906178+00:00",
+  "seed": 42,
+  "config_hash": "ffe1e86d5f829a8666bf2ba6fab818b9980a39a55f066767e59559df0ea672d4",
+  "generator_config_hash": "de70efb5659646ab0ee62e26fe5b689ba50215e424bd186f451d7acd6bb12629",
+  "config_files": [
+    "config/generator.yaml",
+    "config/model.yaml"
+  ],
+  "package_versions": {
+    "python": "3.14.3",
+    "numpy": "2.5.3",
+    "pandas": "3.0.5",
+    "pyarrow": "25.0.1"
+  },
+  "t0_features": [
+    "submission_latency_seconds",
+    "job_acceptance_latency_seconds",
+    "acceptance_to_submission_seconds",
+    "distance_from_agent_home_km",
+    "agent_tenure_days",
+    "sim_age_at_activation_days",
+    "agent_activation_velocity_1h",
+    "agent_activation_velocity_24h",
+    "device_activations_7d",
+    "device_shared_agent_count_30d",
+    "distinct_devices_used_30d",
+    "customer_msisdn_prior_activation_count",
+    "days_to_payout_cutoff",
+    "ip_location_mismatch_flag",
+    "activation_method_is_manual_entry",
+    "proof_of_activation_missing_flag",
+    "submission_hour_of_day",
+    "network_type_is_cellular"
+  ],
+  "t7_features": [
+    "customer_active_days_7d",
+    "days_to_first_customer_activity",
+    "transaction_count_7d",
+    "topup_amount_total_7d",
+    "usage_minutes_total_7d",
+    "support_contact_count_7d",
+    "complaint_or_refund_flag_7d",
+    "sim_active_at_day7",
+    "activity_dropoff_flag"
+  ],
+  "summary": {
+    "num_activations": 89695,
+    "num_agents": 350,
+    "num_activity_rows": 717560,
+    "num_customers_used": 87030,
+    "num_devices": 441,
+    "first_submission": "2025-01-06 00:00:00",
+    "last_submission": "2025-07-04 23:58:48",
+    "realised_fraud_rate": 0.07144210937064496,
+    "agent_type_counts": {
+      "honest": 273,
+      "opportunistic": 59,
+      "systematic": 18
+    },
+    "typology_counts": {
+      "none": 83287,
+      "sim_farming": 2597,
+      "ghost": 1738,
+      "payout_gaming": 1101,
+      "collusion": 972
+    },
+    "mode_counts": {
+      "legit_normal": 63516,
+      "legit_dormant": 15995,
+      "legit_trial_lapse": 3776,
+      "fraud_sim_farming": 2597,
+      "fraud_ghost": 1738,
+      "fraud_payout_gaming": 1101,
+      "fraud_collusion": 972
+    },
+    "honesty_type_activation_counts": {
+      "honest": 56461,
+      "opportunistic": 17508,
+      "systematic": 15726
+    },
+    "careful_fraud_count": 1109,
+    "ambiguous_count": 9647,
+    "ambiguous_share": 0.10755337532749874,
+    "num_t0_features": 18,
+    "num_t7_features": 9
+  }
+}

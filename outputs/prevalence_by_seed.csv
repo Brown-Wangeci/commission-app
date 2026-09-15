@@ -1,0 +1,5 @@
+seed,activations,agents_honest,agents_opportunistic,agents_systematic,fraud_records,realised_fraud_rate,fraud_ghost,fraud_sim_farming,fraud_collusion,fraud_payout_gaming,careful_fraud_share,ambiguous_share,test_period_activations,rarest_typology,rarest_typology_share_of_fraud,implied_prevalence_floor,expected_rarest_positives_per_fold
+7,89640,273,59,18,6835,0.0762494,1803,2858,1043,1131,0.173958,0.1249,46318,collusion,0.152597,0.0707415,107.786
+42,89695,273,59,18,6408,0.0714421,1738,2597,972,1101,0.173065,0.107553,44167,collusion,0.151685,0.0746326,95.7251
+101,91613,273,59,18,6415,0.0700228,1730,2590,1011,1084,0.191582,0.116665,46410,collusion,0.157599,0.0683603,102.432
+2024,94896,273,59,18,6740,0.0710251,1575,2939,1043,1183,0.206677,0.124895,46148,collusion,0.154748,0.0700153,101.442

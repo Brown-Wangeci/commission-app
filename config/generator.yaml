@@ -1,0 +1,267 @@
+# Generator configuration for the activation-fraud synthetic dataset.
+#
+# Source tags used throughout this file:
+#   spec              - explicitly stated by the supervisor. In this file that
+#                       is only: 350 agents, 180 simulated days, the 7-day T7
+#                       window, and that the random seed is fixed.
+#   literature        - taken from a cited published source
+#   industry partner  - supplied by the industry partner (none present yet)
+#   assumption        - chosen by the developer, not yet sourced
+#
+# Values tagged "assumption" are not empirical claims about agents, customers,
+# or fraud anywhere. No value in this file is tuned toward any model metric;
+# see the diagnostics section at the end.
+#
+# Distribution specs take the form {dist: <name>, <params>, shift: ..., min: ...,
+# max: ...}. The optional min/max are PHYSICAL bounds only (a distance cannot be
+# negative, an hour of day cannot exceed 24). They are never used to separate
+# legitimate from fraudulent behaviour: every behavioural parameter that differs
+# between the two classes is a distribution with genuine spread whose support
+# overlaps the other class.
+
+seed: 42  # controls: every random draw in the generator. source: spec (that the seed is fixed); the value 42 itself is arbitrary
+
+geo:
+  km_per_degree_latitude: 111.32  # controls: km-to-degree conversion for locations, applied to both axes with a cosine correction for longitude (a spherical approximation). source: literature (WGS84 equatorial radius 6378.137 km, giving 2 * pi * 6378.137 / 360 = 111.32 km per degree at the equator)
+
+simulation:
+  num_agents: 350  # controls: number of agents simulated. source: spec
+  num_days: 180  # controls: length of the simulated period in days. source: spec
+  start_date: "2025-01-06"  # controls: first simulated calendar day (a Monday). source: assumption
+  num_clients: 12  # controls: number of client businesses issuing jobs. source: assumption
+  customer_pool_multiplier: 1.35  # controls: MSISDN pool size as a multiple of expected activations; sized so honest repeat activations stay rare. source: assumption
+
+# Fraud prevalence, chosen without reference to any model score.
+#
+# No empirical prevalence for this setting is available to the project, and
+# none is claimed. Two grounds decide the value instead:
+#
+# 1. Measurement floor. The evaluation (config/model.yaml) reports recall per
+#    fraud typology in each test fold. For that to mean anything, the rarest
+#    typology needs about 100 positives per fold (see the next parameter).
+#    With 5 folds, the test period holding about 45,700 activations and the
+#    rarest typology (collusion) about 15.7% of fraud, averaged over seeds 7,
+#    42, 101 and 2024:
+#        prevalence >= 100 * 5 / (45,700 * 0.157) = about 0.070
+# 2. Conservatism. Without an empirical rate, a higher prevalence would
+#    flatter precision and PR-AUC relative to a real deployment, where fraud
+#    may well be rarer. So the value is set AT the floor, not above it.
+#
+# The floor is recomputed from the realised data on every report
+# (checks.prevalence_floor) so the arithmetic above stays checkable. Note that
+# it lands close to the Phase 2 value of 0.08, which was chosen for the wrong
+# reason; this value would be the same whatever the models score.
+prevalence:
+  target_fraud_rate: 0.070  # DERIVED TARGET, never drawn from: episode_daily_prob for both dishonest types is scaled by one common factor to land near it, preserving their ratio, and the realised rate is reported in the run manifest. source: assumption
+  min_test_positives_per_typology_per_fold: 100  # controls: nothing in generation; the evaluation requirement the prevalence is derived from. Rationale: 100 positives is the smallest count at which a recall estimate has a binomial standard error of at most 0.05 even in the worst case (recall 0.5), so a per-typology recall reported per fold means something. source: assumption
+
+population:
+  agent_mix:  # Stratified, not sampled: agent counts are these shares of num_agents rounded by largest remainder (a tie goes to the smaller type), so they are identical for every seed; only which agent gets which type is random.
+    honest: 0.78  # controls: share of agents who never commit fraud. source: assumption
+    opportunistic: 0.17  # controls: share of agents who defraud occasionally, more often near payout cutoffs. source: assumption
+    systematic: 0.05  # controls: share of high-volume organised agents, often ring members. source: assumption
+  tenure_days:  # controls: agent tenure at simulation start; organised agents skew newer but the distributions overlap heavily. source: assumption
+    honest: {dist: gamma, shape: 1.9, scale: 210.0, min: 1.0}
+    opportunistic: {dist: gamma, shape: 1.5, scale: 150.0, min: 1.0}
+    systematic: {dist: gamma, shape: 1.2, scale: 110.0, min: 1.0}
+  home_spread_km: {dist: gamma, shape: 2.2, scale: 5.5, min: 0.2}  # controls: how far agent home locations scatter from an urban center. source: assumption
+  urban_centers:  # controls: notional urban centers agents cluster around. source: assumption
+    - {lat: -1.2921, lon: 36.8219, region: "region_a"}
+    - {lat: -0.1022, lon: 34.7617, region: "region_b"}
+    - {lat: -4.0435, lon: 39.6682, region: "region_c"}
+    - {lat: 0.5143, lon: 35.2698, region: "region_d"}
+  devices_per_agent: {dist: discrete, values: [1, 2, 3], weights: [0.80, 0.17, 0.03]}  # controls: size of an agent's personal device pool. source: assumption
+  jobs_mean_heterogeneity: {dist: gamma, shape: 4.0, scale: 0.25}  # controls: per-agent multiplier on the type's mean daily job count, so agents differ in productivity. source: assumption
+  agent_caution: {dist: beta, a: 2.0, b: 2.0}  # controls: per-agent tendency to disguise fraud, relative to the population mean; scales fraud_behaviour.careful_share for that agent. source: assumption
+  payout_sensitivity:
+    honest: {dist: beta, a: 1.6, b: 4.5}  # controls: how strongly an honest agent pushes volume before a payout cutoff. source: assumption
+    opportunistic: {dist: beta, a: 3.0, b: 2.4}  # controls: how strongly an opportunistic agent reacts to a payout cutoff. source: assumption
+    systematic: {dist: beta, a: 3.4, b: 2.0}  # controls: how strongly a systematic agent reacts to a payout cutoff. source: assumption
+
+calendar:
+  payout_cycle_length_days: 14  # controls: days between escrow payout cutoffs. source: assumption
+  payout_cutoff_hour: 18.0  # controls: hour of day at which a payout cycle closes. source: assumption
+  campaign_days_per_cycle: 2  # controls: number of client campaign days per payout cycle. source: assumption
+  campaign_volume_multiplier: {dist: lognormal, mu: 0.15, sigma: 0.45, shift: 1.0}  # controls: volume uplift for every agent on a campaign day. source: assumption
+  market_weekdays: [2, 5]  # controls: weekdays (0=Monday) that behave as local market days. source: assumption
+  market_volume_multiplier: {dist: lognormal, mu: -0.55, sigma: 0.40, shift: 1.0}  # controls: volume uplift for every agent on a market day. source: assumption
+  weekend_volume_multiplier: 0.62  # controls: volume damping on Sundays. source: assumption
+
+workload:
+  jobs_per_day_mean:
+    honest: 0.92  # controls: mean daily jobs assigned to an honest agent. source: assumption
+    opportunistic: 1.20  # controls: mean daily jobs assigned to an opportunistic agent. source: assumption
+    systematic: 2.40  # controls: mean daily jobs assigned to a systematic agent. source: assumption
+  job_acceptance_rate: 0.93  # controls: probability an assigned job is accepted rather than expiring. source: assumption
+  escrow_amount: {dist: lognormal, mu: 6.6, sigma: 0.45, min: 50.0}  # controls: escrow value locked per job. source: assumption
+  commission_rate: 0.10  # controls: agent commission rate applied to escrow. source: assumption
+  device_os_mix: {dist: discrete, values: ["android", "ios", "kaios"], weights: [0.86, 0.10, 0.04]}  # controls: device operating system mix. source: assumption
+  app_version_mix: {dist: discrete, values: ["3.1.0", "3.2.0", "3.3.1", "3.4.0"], weights: [0.12, 0.23, 0.38, 0.27]}  # controls: app version mix. source: assumption
+  activation_client_choice: {dist: discrete, values: [0, 1, 2], weights: [0.5, 0.3, 0.2]}  # controls: index into an agent's preferred client list, so clients are not uniform. source: assumption
+
+legit_behaviour:
+  mode_mix:
+    normal: 0.765  # controls: share of legitimate activations with an engaged customer. source: assumption
+    dormant: 0.19  # controls: share of legitimate activations whose customer is genuine but never meaningfully uses the service. This is the most important lookalike in the file: without it, near-zero downstream activity would identify fraud on its own. source: assumption
+    trial_lapse: 0.045  # controls: share of legitimate activations whose customer tries the service then lapses. source: assumption
+  engagement:
+    normal: {dist: beta, a: 4.5, b: 1.9}  # controls: latent 7-day engagement of an ordinary genuine customer. source: assumption
+    dormant: {dist: beta, a: 0.45, b: 7.5}  # controls: latent engagement of a genuine but dormant customer; overlaps the ghost profile deliberately. source: assumption
+    trial_lapse: {dist: beta, a: 1.7, b: 3.6}  # controls: latent engagement of a genuine trial-then-lapse customer; overlaps the collusion profile. source: assumption
+  engagement_decay:
+    normal: {dist: beta, a: 11.0, b: 1.3}  # controls: day-on-day retention for an ordinary customer, near but never exactly 1. source: assumption
+    dormant: {dist: beta, a: 3.0, b: 2.0}  # controls: day-on-day retention for a dormant customer. source: assumption
+    trial_lapse: {dist: beta, a: 1.4, b: 3.4}  # controls: day-on-day retention for a trial-then-lapse customer. source: assumption
+  sim_deactivation_hazard: {dist: beta, a: 1.1, b: 9.0}  # controls: baseline daily hazard that a genuine account goes inactive. source: assumption
+  sim_hazard_engagement_shield: 0.88  # controls: how strongly engagement suppresses the deactivation hazard. source: assumption
+  complaint_daily_prob: {dist: beta, a: 0.6, b: 140.0}  # controls: daily probability a genuine customer files a complaint or refund request. source: assumption
+  support_contact_daily_prob: {dist: beta, a: 1.0, b: 48.0}  # controls: daily probability a genuine customer contacts support. source: assumption
+  sim_age_days: {dist: lognormal, mu: 4.3, sigma: 1.35, min: 0.0}  # controls: age of the SIM being activated for an ordinary genuine customer. source: assumption
+  distance_km: {dist: lognormal, mu: 1.0, sigma: 0.95, min: 0.05}  # controls: distance from agent home at submission for a mobile honest agent. source: assumption
+  acceptance_latency_minutes: {dist: lognormal, mu: 2.6, sigma: 1.15, min: 0.5}  # controls: delay between job assignment and acceptance. source: assumption
+  submission_latency_minutes: {dist: lognormal, mu: 3.5, sigma: 0.95, min: 1.0}  # controls: delay between job acceptance and activation submission. source: assumption
+  submission_hour: {dist: mixture_normal, means: [9.8, 15.4, 21.0], sigmas: [1.9, 2.1, 1.4], weights: [0.40, 0.49, 0.11], min: 0.0, max: 23.98}  # controls: time-of-day profile of honest submissions, including a genuine late-evening component. source: assumption
+  manual_entry_rate: 0.22  # controls: share of honest submissions keyed in by hand rather than scanned. source: assumption
+  proof_missing_rate: 0.09  # controls: share of honest submissions with no proof artifact attached. source: assumption
+  ip_mismatch_rate: 0.06  # controls: share of honest submissions whose IP region disagrees with GPS, for example roaming or a VPN. source: assumption
+  cellular_rate: 0.78  # controls: share of honest submissions made over cellular rather than wifi. source: assumption
+  repeat_msisdn_rate: 0.022  # controls: share of honest activations reusing an MSISDN already seen on the platform, for example a genuine reactivation. source: assumption
+  intra_day_spread_hours: {dist: gamma, shape: 3.0, scale: 1.1, min: 0.25}  # controls: how widely an honest agent spreads submissions across a normal day. source: assumption
+
+# Downstream usage channels, shared by every customer whatever the class.
+# Latent engagement decides WHICH days a customer is active. How much they
+# transact, top up and use on an active day is decided per channel: each
+# channel has its own per-customer propensity and its own day-to-day noise,
+# and depends on engagement only partially (engagement ** elasticity). The
+# propensities share one common component, so the channels stay positively
+# correlated (a customer with more money tends to do more of everything)
+# without being collinear: a heavy spender can transact rarely, and a daily
+# user can spend little. No parameter here differs between the classes.
+downstream_channels:
+  propensity_log_correlation: 0.30  # controls: correlation between any two channels' log propensities, via one shared component. Positive because spending power and habit genuinely link the channels; well below 1 so each channel still carries its own information. source: assumption
+  transactions:
+    per_active_day: 3.2  # controls: mean transactions on an active day for a customer of average propensity and full engagement. source: assumption
+    engagement_elasticity: 0.5  # controls: how strongly transaction volume follows engagement beyond the active-day count. source: assumption
+    propensity_log_sigma: 0.8  # controls: spread of the per-customer transaction propensity (lognormal, mean 1). source: assumption
+    daily_dispersion: 1.5  # controls: gamma shape of day-to-day variation in the transaction rate; smaller means lumpier days. source: assumption
+  topup:
+    per_active_day: {dist: lognormal, mu: 4.2, sigma: 0.75, min: 0.0}  # controls: day-level topup value on a topup day, before propensity and engagement. source: assumption
+    engagement_elasticity: 0.3  # controls: how strongly topup value follows engagement; weakest of the three, since topping up depends on money more than on use. source: assumption
+    propensity_log_sigma: 0.9  # controls: spread of the per-customer spending propensity (lognormal, mean 1); widest of the three, since spending power varies most between customers. source: assumption
+    topup_day_prob: {dist: beta, a: 2.0, b: 2.0}  # controls: per-customer probability of topping up on a given active day, so topups are lumpy rather than daily. source: assumption
+  usage_minutes:
+    per_active_day: {dist: lognormal, mu: 2.6, sigma: 0.85, min: 0.0}  # controls: day-level usage minutes on an active day, before propensity and engagement. source: assumption
+    engagement_elasticity: 0.7  # controls: how strongly usage minutes follow engagement; strongest of the three, since minutes of use are close to what engagement means. source: assumption
+    propensity_log_sigma: 0.7  # controls: spread of the per-customer usage propensity (lognormal, mean 1). source: assumption
+
+# A3: legitimate lookalikes. Every fraud signature below has an honest
+# counterpart here, so no observable pattern belongs exclusively to fraud.
+legitimate_lookalikes:
+  target_ambiguous_share: 0.10  # controls: intended share of all records sitting in genuinely ambiguous territory. source: assumption
+  min_flags_for_ambiguous: 3  # controls: how many fraud-like situational flags a legitimate record needs before it counts as ambiguous. source: assumption
+  fixed_site_agent_share: 0.15  # controls: share of honest agents who work one fixed location such as a campus or hostel drive. source: assumption
+  fixed_site_distance_km: {dist: lognormal, mu: -0.5, sigma: 0.70, min: 0.02}  # controls: submission distance from home for a fixed-site honest agent, overlapping the ghost and farm profiles. source: assumption
+  device_sharing_team_share: 0.085  # controls: share of honest agents who work in a team sharing one enrolment device. source: assumption
+  team_size: {dist: discrete, values: [2, 3, 4, 5], weights: [0.38, 0.30, 0.20, 0.12]}  # controls: number of honest agents sharing a team device. source: assumption
+  team_device_use_prob: 0.72  # controls: probability a team member uses the shared device rather than their own on a given activation. source: assumption
+  burst_intra_day_spread_hours: {dist: gamma, shape: 1.6, scale: 0.45, min: 0.1}  # controls: how tightly an honest agent's submissions cluster on a campaign or market day, overlapping farm bursts. source: assumption
+  fast_submission_latency_minutes: {dist: lognormal, mu: 2.35, sigma: 0.95, min: 0.5}  # controls: submission delay for an honest agent signing up a queue of walk-ups at a drive, overlapping the fabricated-activation profile. source: assumption
+  same_day_sim_share: 0.18  # controls: share of legitimate activations where the customer buys and registers the SIM at signup. source: assumption
+  same_day_sim_age_days: {dist: exponential, scale: 0.55, min: 0.0}  # controls: SIM age for a legitimate same-day registration, overlapping the farm profile. source: assumption
+  end_cycle_push_window_days: 2  # controls: how many days before a payout cutoff honest agents start rushing. source: assumption
+  end_cycle_push_multiplier: {dist: lognormal, mu: -0.25, sigma: 0.55, shift: 1.0}  # controls: honest volume uplift immediately before a payout cutoff, scaled by the agent's payout sensitivity. source: assumption
+
+# A4: fraud follows from agent honesty type and situation, never from an
+# independent per-row coin flip. An agent enters a fraud episode on a given
+# day; activations inside that episode are the fraudulent ones.
+fraud_behaviour:
+  episode_daily_prob:
+    honest: 0.0  # controls: daily probability an honest agent enters a fraud episode. Exact zero is intentional: it is the definition of the honest type, not a behavioural separator. The CLAUDE.md ban on exact 0.0 targets parameters that shape observable behaviour differently by class; honesty type is a hidden generator variable that no feature can read, so the zero cannot separate anything the model sees. Honest agents' activations still overlap fraud on every observable dimension through the legitimate lookalikes. source: assumption
+    opportunistic: 0.062  # controls: daily probability an opportunistic agent enters a fraud episode away from a cutoff. Scaled with the systematic value by one common factor to land near prevalence.target_fraud_rate; the ratio between the two types is the behavioural assumption. source: assumption
+    systematic: 0.283  # controls: daily probability a systematic agent enters a fraud episode, about 4.6 times the opportunistic rate. source: assumption
+  payout_proximity_window_days: 2  # controls: how close to a cutoff the elevated-risk window starts. source: assumption
+  payout_proximity_multiplier:
+    opportunistic: {dist: lognormal, mu: 0.75, sigma: 0.45, shift: 1.0}  # controls: uplift in episode probability near a cutoff for opportunistic agents. source: assumption
+    systematic: {dist: lognormal, mu: 0.30, sigma: 0.40, shift: 1.0}  # controls: uplift in episode probability near a cutoff for systematic agents. source: assumption
+  fraud_share_within_episode: {dist: beta, a: 2.6, b: 1.9}  # controls: share of an episode day's activations that are actually fraudulent, so episodes mix real and fake work. source: assumption
+  episode_volume_multiplier: {dist: lognormal, mu: -0.35, sigma: 0.45, shift: 1.0}  # controls: volume uplift on an episode day. source: assumption
+  # careful_share is the population-average probability that a fraudulent
+  # activation of each typology is disguised. Each agent's own probability is
+  # careful_share * caution / mean(caution), so the average over agents equals
+  # the value written here. Values are set on behavioural grounds only: how
+  # cheaply a typology's tells can be hidden, against what hiding them costs
+  # the agent. Their effect on any metric was not considered.
+  careful_share:
+    ghost: 0.20  # controls: probability a ghost activation is disguised. Rationale: no customer exists, so hiding the downstream tells means the agent spending their own time and airtime using the fabricated account, which eats the commission that motivates the fraud. The submission-side tells (scan, proof, time taken) are cheap to fake, so some disguise is common, but full disguise is not. source: assumption
+    sim_farming: 0.10  # controls: probability a farm activation is disguised. Rationale: farming pays through throughput. Every disguise (spreading a burst out, avoiding the shared device, generating usage on each SIM) costs time on every one of many SIMs, so it cuts directly into the volume that is the point of the scheme. Lowest of the four. source: assumption
+    collusion: 0.35  # controls: probability a collusive activation is disguised. Rationale: the customer is real and the meeting really happens, so the submission already looks ordinary. The remaining tell is the week of downstream activity, and asking a paid, willing customer to keep using the SIM for a few days is a cheap addition to the arrangement. Highest of the four. source: assumption
+    payout_gaming: 0.30  # controls: probability a payout-gaming activation is disguised. Rationale: the underlying work is largely genuine. Hiding the hold mostly means accepting jobs promptly and delaying the work instead, which costs planning rather than money and still clears the payout in the current cycle. source: assumption
+  careful_blend: {dist: beta, a: 2.8, b: 1.6}  # controls: for a careful fraud activation, the per-dimension probability that its behaviour is drawn from the ordinary legitimate profile instead of the fraud profile. source: assumption
+  ring_membership_share: 0.60  # controls: share of systematic agents who belong to a ring. source: assumption
+  ring_size: {dist: discrete, values: [2, 3, 4, 5], weights: [0.35, 0.30, 0.20, 0.15]}  # controls: number of agents in a ring. source: assumption
+  ring_device_count: {dist: discrete, values: [1, 2, 3, 4], weights: [0.28, 0.34, 0.24, 0.14]}  # controls: number of devices shared across a ring; fewer devices per ring means each device is touched by more agents. source: assumption
+  typology_weights:
+    opportunistic: {ghost: 0.40, sim_farming: 0.08, collusion: 0.30, payout_gaming: 0.22}  # controls: typology mix for opportunistic agents. source: assumption
+    systematic: {ghost: 0.20, sim_farming: 0.54, collusion: 0.10, payout_gaming: 0.16}  # controls: typology mix for systematic agents. source: assumption
+
+typologies:
+  ghost:
+    engagement: {dist: beta, a: 0.38, b: 8.0}  # controls: latent engagement of a fabricated customer; overlaps the dormant legitimate profile. source: assumption
+    engagement_decay: {dist: beta, a: 2.6, b: 2.2}  # controls: day-on-day retention for a fabricated customer. source: assumption
+    sim_deactivation_hazard: {dist: beta, a: 1.9, b: 8.0}  # controls: daily hazard a fabricated account is deactivated. source: assumption
+    distance_km: {dist: lognormal, mu: 0.25, sigma: 0.85, min: 0.05}  # controls: submission distance from home when fabricating; overlaps fixed-site honest work. source: assumption
+    complaint_daily_prob: {dist: beta, a: 1.0, b: 95.0}  # controls: daily probability the named person discovers the account and complains. source: assumption
+    manual_entry_rate: 0.66  # controls: share of ghost submissions keyed in by hand, since there is no customer present to scan. source: assumption
+    proof_missing_rate: 0.46  # controls: share of ghost submissions with no proof artifact. source: assumption
+    ip_mismatch_rate: 0.22  # controls: share of ghost submissions whose IP region disagrees with GPS. source: assumption
+    cellular_rate: 0.56  # controls: share of ghost submissions over cellular. source: assumption
+    submission_latency_minutes: {dist: lognormal, mu: 2.05, sigma: 1.05, min: 0.5}  # controls: submission delay when no real customer interaction takes place, overlapping the honest fast-drive profile. source: assumption
+    submission_hour: {dist: mixture_normal, means: [9.6, 15.2, 21.6], sigmas: [2.0, 2.2, 1.7], weights: [0.28, 0.40, 0.32], min: 0.0, max: 23.98}  # controls: time-of-day profile for ghost submissions. source: assumption
+  sim_farming:
+    engagement: {dist: beta, a: 0.60, b: 6.8}  # controls: latent engagement of a farmed account, slightly above ghost because farms sometimes fake usage. source: assumption
+    engagement_decay: {dist: beta, a: 2.2, b: 2.4}  # controls: day-on-day retention for a farmed account. source: assumption
+    sim_age_days: {dist: exponential, scale: 1.7, min: 0.0}  # controls: age of a freshly issued farmed SIM; a genuine distribution with a tail, not a cap. source: assumption
+    burst_size: {dist: negative_binomial, mean: 4.5, dispersion: 2.0, min: 1.0}  # controls: number of activations in one farm burst. source: assumption
+    burst_window_hours: {dist: gamma, shape: 1.8, scale: 0.55, min: 0.1}  # controls: width of a farm burst, overlapping honest campaign-day clustering. source: assumption
+    distance_km: {dist: lognormal, mu: -0.15, sigma: 0.80, min: 0.02}  # controls: submission distance for farm work, overlapping fixed-site honest work. source: assumption
+    repeat_msisdn_rate: 0.30  # controls: share of farm activations reusing an MSISDN already seen. source: assumption
+    ring_device_use_prob: 0.90  # controls: probability a ring member uses a shared ring device rather than their own. source: assumption
+    ip_mismatch_rate: 0.46  # controls: share of farm submissions whose IP region disagrees with GPS. source: assumption
+    cellular_rate: 0.28  # controls: share of farm submissions over cellular; farms work from a fixed base on wifi more often than mobile agents do. source: assumption
+    manual_entry_rate: 0.58  # controls: share of farm submissions keyed in by hand during bulk enrolment. source: assumption
+    proof_missing_rate: 0.38  # controls: share of farm submissions with no proof artifact. source: assumption
+    submission_latency_minutes: {dist: lognormal, mu: 1.75, sigma: 1.0, min: 0.5}  # controls: submission delay when enrolling prepared SIMs in bulk. source: assumption
+    submission_hour: {dist: mixture_normal, means: [9.4, 15.0, 21.8], sigmas: [2.1, 2.3, 1.7], weights: [0.26, 0.40, 0.34], min: 0.0, max: 23.98}  # controls: time-of-day profile for farm submissions. source: assumption
+  collusion:
+    engagement: {dist: beta, a: 1.9, b: 3.3}  # controls: latent engagement of a colluding customer; overlaps the trial-lapse legitimate profile. source: assumption
+    engagement_decay: {dist: beta, a: 1.0, b: 4.6}  # controls: day-on-day retention for a colluding customer, front-loaded then dropping away sharply. source: assumption
+    complaint_daily_prob: {dist: beta, a: 0.35, b: 220.0}  # controls: daily probability a colluding customer complains; small but genuinely non-zero, since collusions sour. source: assumption
+    same_day_sim_share: 0.26  # controls: share of collusive activations on a SIM registered the same day. source: assumption
+    distance_km: {dist: lognormal, mu: 0.85, sigma: 0.95, min: 0.05}  # controls: submission distance for collusive work, close to ordinary honest travel. source: assumption
+  payout_gaming:
+    engagement: {dist: beta, a: 2.5, b: 2.7}  # controls: latent engagement for payout-gamed activations, which are often part-real. source: assumption
+    engagement_decay: {dist: beta, a: 2.4, b: 2.2}  # controls: day-on-day retention for payout-gamed activations. source: assumption
+    cutoff_window_hours: {dist: gamma, shape: 1.8, scale: 1.7, min: 0.3}  # controls: how tightly gamed submissions cluster before a cutoff, overlapping the honest end-cycle push. source: assumption
+    acceptance_latency_minutes: {dist: lognormal, mu: 6.6, sigma: 1.05, min: 1.0}  # controls: acceptance delay when jobs are deliberately held back for later release. source: assumption
+    held_release_share: {dist: beta, a: 3.6, b: 1.4}  # controls: share of an agent's gamed jobs that are held and released together. source: assumption
+
+features:
+  t7_window_days: 7  # controls: number of days after activation covered by T7 features. source: spec
+  velocity_window_hours: 1  # controls: lookback window for the hourly submission velocity feature. source: assumption
+  velocity_window_hours_long: 24  # controls: lookback window for the daily submission velocity feature. source: assumption
+  device_window_days_short: 7  # controls: lookback window for device activation counts. source: assumption
+  device_window_days_long: 30  # controls: lookback window for device sharing and distinct-device counts. source: assumption
+  msisdn_history_days: 90  # controls: lookback window for prior activations on the same MSISDN. source: assumption
+  dropoff_early_days: 2  # controls: how many opening days count as the "early" period when detecting an activity dropoff. source: assumption
+
+# Diagnostics, not targets. These three checks are reported on every run and
+# gate nothing: no dataset is accepted or rejected on them, and no parameter
+# in this file or in config/model.yaml may ever be tuned to move them. They
+# were previously used as an acceptance gate; that use was withdrawn in the
+# Phase 2 supervisor review because it made the dataset's difficulty a
+# function of the desired result.
+diagnostics:
+  single_feature_auc_reference: 0.85  # controls: reference level printed next to the highest single-feature AUC. Reporting only. source: assumption
+  abs_label_correlation_reference: 0.90  # controls: reference level printed next to the strongest feature-label correlation. Reporting only. source: assumption
+  logreg_pr_auc_reference_band: [0.65, 0.80]  # controls: reference band printed next to the cross-validated logistic regression PR-AUC. Reporting only. source: assumption
+  robustness_seeds: [7, 42, 101, 2024]  # controls: seeds over which realised prevalence and agent counts are reported (src.eval.seeds). Reporting only. source: spec (Phase 2 supervisor review)
