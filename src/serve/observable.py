@@ -38,6 +38,24 @@ ACTIVITY_COLUMNS = (
     "complaint_or_refund_flag", "sim_active_flag",
 )
 
+# dtypes for the empty case (mode="t0", no downstream_activity yet). An empty
+# frame built with the default `object` dtype breaks _t7_features downstream:
+# `log[log["customer_active_flag"]]` on an all-object, all-empty boolean
+# column drops every column instead of returning an empty-but-typed frame.
+# Real, non-empty activity rows are unaffected by this and keep their own
+# inferred dtypes.
+ACTIVITY_DTYPES = {
+    "activation_id": "object",
+    "event_day": "int64",
+    "customer_active_flag": "bool",
+    "transaction_count": "int64",
+    "topup_amount": "float64",
+    "usage_minutes": "float64",
+    "support_contact_flag": "bool",
+    "complaint_or_refund_flag": "bool",
+    "sim_active_flag": "bool",
+}
+
 
 def _frame(records: List[Dict[str, Any]], datetime_columns: tuple) -> pd.DataFrame:
     frame = pd.DataFrame.from_records(records)
@@ -73,7 +91,7 @@ def build_observable_log(
     ]
     activity_frame = (
         pd.DataFrame.from_records(activity_rows) if activity_rows
-        else pd.DataFrame(columns=ACTIVITY_COLUMNS)
+        else pd.DataFrame({name: pd.Series(dtype=dtype) for name, dtype in ACTIVITY_DTYPES.items()})
     )
 
     return ObservableLog(

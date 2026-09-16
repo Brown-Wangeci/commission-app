@@ -93,15 +93,23 @@ class DownstreamActivityDay(BaseModel):
 
 
 class ScoreRequest(BaseModel):
-    """The full context needed to reconstruct an ObservableLog for one activation."""
+    """The full context needed to reconstruct an ObservableLog for one activation.
+
+    `mode` is required, with no default, so a caller cannot get the wrong
+    model by omission: "t0" scores at submission time from only the
+    submission event, agents, recent_activations and payout_calendar, and
+    must not include downstream_activity, since that data cannot exist yet
+    at that decision point; "t7" scores at hold-close and requires it.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
+    mode: Literal["t0", "t7"]
     activation: ActivationEvent
     agents: list[AgentRecord] = Field(min_length=1)
     recent_activations: list[ActivationEvent] = Field(default_factory=list)
     payout_calendar: list[PayoutCycle] = Field(min_length=1)
-    downstream_activity: list[DownstreamActivityDay] = Field(min_length=1)
+    downstream_activity: list[DownstreamActivityDay] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _internally_consistent(self) -> "ScoreRequest":
@@ -116,6 +124,13 @@ class ScoreRequest(BaseModel):
                 raise ValueError(
                     "recent_activations must not be submitted after the scored activation"
                 )
+        if self.mode == "t7" and not self.downstream_activity:
+            raise ValueError("mode 't7' requires a non-empty downstream_activity")
+        if self.mode == "t0" and self.downstream_activity:
+            raise ValueError(
+                "mode 't0' scores at submission time and must not include "
+                "downstream_activity, which cannot exist yet at that decision point"
+            )
         return self
 
 
@@ -129,6 +144,8 @@ class ReasonContribution(BaseModel):
 
 class ScoreResponse(BaseModel):
     activation_id: str
+    mode: Literal["t0", "t7"]
+    feature_set: str
     model_version: str
     raw_score: float
     calibrated_probability: float
@@ -142,12 +159,14 @@ class ScoreResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: Literal["ok", "unavailable"]
     model_version: str | None
+    t0_model_version: str | None
     loaded: bool
 
 
-class ExplainResponse(BaseModel):
-    activation_id: str
+class ExplainRecord(BaseModel):
     scored_at: str
+    mode: str
+    feature_set: str
     model_version: str
     config_hash: str
     feature_vector: dict[str, float]
@@ -157,3 +176,15 @@ class ExplainResponse(BaseModel):
     release_threshold: float
     reject_threshold: float
     top_reasons: list[ReasonContribution]
+
+
+class ExplainResponse(BaseModel):
+    """Every stored record for this activation, oldest first.
+
+    An activation can be scored more than once -- typically "t0" at
+    submission and "t7" once the hold window closes -- and the dispute flow
+    needs to see the decision being revised, not just the latest one.
+    """
+
+    activation_id: str
+    records: list[ExplainRecord]

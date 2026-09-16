@@ -7,6 +7,9 @@ written to port cleanly to PostgreSQL --
   - `id` is a TEXT uuid, not an autoincrementing rowid, so it needs no
     dialect-specific SERIAL/IDENTITY syntax;
   - every other column is a portable type (TEXT, REAL, INTEGER);
+  - `mode` ("t0" or "t7") and `feature_set` record which model and which
+    feature set decided, alongside the thresholds that were in force for
+    that model at the time (Part B4);
   - `feature_vector` and `top_reasons` are JSON stored as TEXT; in Postgres
     the column type becomes JSONB with no change to the data or the
     application code that reads it;
@@ -22,7 +25,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, List
 from uuid import uuid4
 
 if TYPE_CHECKING:
@@ -33,6 +36,8 @@ CREATE TABLE IF NOT EXISTS predictions (
     id TEXT PRIMARY KEY,
     activation_id TEXT NOT NULL,
     scored_at TEXT NOT NULL,
+    mode TEXT NOT NULL,
+    feature_set TEXT NOT NULL,
     model_version TEXT NOT NULL,
     config_hash TEXT NOT NULL,
     feature_vector TEXT NOT NULL,
@@ -49,9 +54,9 @@ CREATE INDEX IF NOT EXISTS idx_predictions_scored_at ON predictions (scored_at);
 
 _INSERT = """
 INSERT INTO predictions (
-    id, activation_id, scored_at, model_version, config_hash, feature_vector,
+    id, activation_id, scored_at, mode, feature_set, model_version, config_hash, feature_vector,
     raw_score, calibrated_probability, band, release_threshold, reject_threshold, top_reasons
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 """
 
 
@@ -73,6 +78,8 @@ class Storage:
                 record_id,
                 scored.activation_id,
                 scored.scored_at.isoformat(),
+                scored.mode,
+                scored.feature_set,
                 scored.model_version,
                 config_hash,
                 json.dumps(scored.feature_vector),
@@ -87,25 +94,27 @@ class Storage:
         self._connection.commit()
         return record_id
 
-    def latest_for_activation(self, activation_id: str) -> Optional[Dict[str, Any]]:
-        """The most recently scored record for this activation_id, or None.
+    def history_for_activation(self, activation_id: str) -> List[Dict[str, Any]]:
+        """Every stored record for this activation_id, oldest first.
 
-        Multiple records can exist if an activation was scored more than
-        once (e.g. rescored after a data correction); the dispute flow gets
-        the most recent decision.
+        An activation is typically scored twice -- "t0" at submission, "t7"
+        once the hold window closes -- and the dispute flow needs to see a
+        decision being revised, not just the latest one, so this returns
+        the whole history rather than picking one record.
         """
         cursor = self._connection.execute(
-            "SELECT * FROM predictions WHERE activation_id = ? ORDER BY scored_at DESC LIMIT 1",
+            "SELECT * FROM predictions WHERE activation_id = ? ORDER BY scored_at ASC",
             (activation_id,),
         )
-        row = cursor.fetchone()
-        if row is None:
-            return None
+        rows = cursor.fetchall()
         columns = [description[0] for description in cursor.description]
-        record = dict(zip(columns, row))
-        record["feature_vector"] = json.loads(record["feature_vector"])
-        record["top_reasons"] = json.loads(record["top_reasons"])
-        return record
+        records = []
+        for row in rows:
+            record = dict(zip(columns, row))
+            record["feature_vector"] = json.loads(record["feature_vector"])
+            record["top_reasons"] = json.loads(record["top_reasons"])
+            records.append(record)
+        return records
 
     def close(self) -> None:
         self._connection.close()

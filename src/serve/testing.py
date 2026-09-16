@@ -68,13 +68,17 @@ def load_frames() -> Dict[str, pd.DataFrame]:
 
 
 def build_request_payload(
-    activation_id: str, frames: Dict[str, pd.DataFrame], history_days: int
+    activation_id: str, frames: Dict[str, pd.DataFrame], history_days: int, mode: str = "t7"
 ) -> Dict[str, Any]:
     """A full ScoreRequest payload for one activation, built from data on disk.
 
     `history_days` should cover the largest trailing window configured in
     config/generator.yaml (features.msisdn_history_days), so every T0
     trailing-window feature reproduces exactly what training computed.
+
+    `mode="t0"` omits downstream_activity, matching what is actually known
+    at submission time; `mode="t7"` (default) includes the full log, as at
+    hold-close.
     """
     activations = frames["activations"]
     target = activations.loc[activations["activation_id"] == activation_id].iloc[0]
@@ -83,14 +87,21 @@ def build_request_payload(
         (activations["timestamp_submitted"] >= cutoff)
         & (activations["timestamp_submitted"] < target["timestamp_submitted"])
     ]
-    downstream = frames["activity"].loc[frames["activity"]["activation_id"] == activation_id]
+    downstream = (
+        _records(
+            frames["activity"].loc[frames["activity"]["activation_id"] == activation_id],
+            ACTIVITY_COLUMNS,
+        )
+        if mode == "t7" else []
+    )
 
     return {
+        "mode": mode,
         "activation": {column: _jsonable(target[column]) for column in ACTIVATION_COLUMNS},
         "agents": _records(frames["agents"], AGENT_COLUMNS),
         "recent_activations": _records(history, ACTIVATION_COLUMNS),
         "payout_calendar": _records(frames["payout_calendar"], PAYOUT_COLUMNS),
-        "downstream_activity": _records(downstream, ACTIVITY_COLUMNS),
+        "downstream_activity": downstream,
     }
 
 
@@ -126,7 +137,7 @@ def select_smoke_test_ids(
     """`count` held-out activation ids, spanning all three bands where possible."""
     held_matrix = dataset.features[list(artifact.features)].iloc[calibration_index]
     raw = artifact.booster.predict_proba(held_matrix)[:, 1]
-    probability = artifact.calibrator.predict(raw)
+    probability = artifact.calibrate(raw)
     bands = np.where(
         probability <= artifact.release_threshold, "auto_release",
         np.where(probability <= artifact.reject_threshold, "review", "reject"),

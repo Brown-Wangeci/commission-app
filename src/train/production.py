@@ -66,14 +66,20 @@ def _agent_split(
 
 
 def train_production_model(
-    gen_cfg: Dict[str, Any], model_cfg: Dict[str, Any]
+    gen_cfg: Dict[str, Any], model_cfg: Dict[str, Any], model_name: str | None = None
 ) -> ProductionModel:
-    """Fit and calibrate the chosen model on the full dataset on disk."""
+    """Fit and calibrate one already-specified model on the full dataset on disk.
+
+    `model_name` selects which entry of `multi_seed.models` to build; left as
+    None it builds the chosen (T7) model, as before. Passing "t0_none" builds
+    the T0 model that was already evaluated in Phase 4/5 -- nothing new is
+    specified, this only fits the model matching an existing config entry.
+    """
     dataset_manifest = data_module.check_provenance()
     dataset = data_module.load_dataset()
 
-    chosen_name = str(model_cfg["multi_seed"]["chosen_model"])
-    spec = next(s for s in model_cfg["multi_seed"]["models"] if s["name"] == chosen_name)
+    resolved_name = model_name or str(model_cfg["multi_seed"]["chosen_model"])
+    spec = next(s for s in model_cfg["multi_seed"]["models"] if s["name"] == resolved_name)
     feature_set, method = str(spec["feature_set"]), str(spec["method"])
     matrix = dataset.matrix(feature_set)
     labels = dataset.labels

@@ -4,9 +4,19 @@
 # no number is hardcoded in a module, and every parameter states its source.
 
 artifact_dir: "artifacts"  # controls: where src.serve.artifact writes and src.serve.app reads the serialised model. source: assumption
-model_version: "t7_none-isotonic-v1"  # controls: the version string bumped by hand on a deliberate retrain, recorded in every prediction. source: assumption
+model_version: "t7_none-isotonic-v1"  # controls: version of the T7 (hold-close) artifact, bumped by hand on a deliberate retrain, recorded in every prediction. source: assumption
+t0_model_version: "t0_none-isotonic-v1"  # controls: version of the T0 (submission-time) artifact used for mode="t0" scoring. source: assumption (Phase 8 supervisor review: serve the T0 model alongside T7)
 
 db_path: "outputs/predictions.db"  # controls: SQLite database file for persisted prediction records (Part C). source: assumption
+
+# Isotonic regression saturates at the endpoints, so an uncalibrated-looking
+# 0.000 or 1.000 can reach a caller. A system that refuses an agent's payout
+# cannot claim certainty, so every calibrated probability is clipped to this
+# range before it leaves the calibration wrapper (src/serve/artifact.py
+# LoadedArtifact.calibrate) -- the one place both the service and the offline
+# comparison in tests apply calibration, so they clip identically.
+probability_clip_low: 0.001  # controls: lower bound on a calibrated probability. source: spec (Phase 8 supervisor review)
+probability_clip_high: 0.999  # controls: upper bound, symmetric with probability_clip_low. source: spec (Phase 8 supervisor review)
 
 reason_phrases_path: "config/reason_phrases.yaml"  # controls: the plain-language mapping used to build reason strings (Part D). source: spec (Phase 7 supervisor review: write the mapping as config, not code)
 top_reason_count: 3  # controls: how many SHAP contributors are returned per prediction. source: spec (Phase 7 supervisor review: "top three SHAP contributors")

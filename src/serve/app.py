@@ -5,9 +5,14 @@ Run with:
 (host and port default to config/serving.yaml if run via `python -m src.serve.app`)
 
 Endpoints:
-    POST /score                     score one activation, persist the record
-    GET  /health                    model version and load status
-    GET  /explain/{activation_id}   the stored record for a scored activation
+    POST /score                     score one activation in one mode, persist the record
+    GET  /health                    model versions and load status
+    GET  /explain/{activation_id}   every stored record for an activation, oldest first
+
+`mode` on /score is required, with no default: "t0" scores at submission
+time from only the submission event, agents, recent_activations and payout
+calendar; "t7" scores at hold-close and additionally requires the seven-day
+downstream activity log. A caller cannot get the wrong model by omission.
 """
 
 from __future__ import annotations
@@ -49,8 +54,15 @@ def _service() -> ScoringService:
 def health() -> schemas.HealthResponse:
     service = _state.get("service")
     if service is None:
-        return schemas.HealthResponse(status="unavailable", model_version=None, loaded=False)
-    return schemas.HealthResponse(status="ok", model_version=service.artifact.version, loaded=True)
+        return schemas.HealthResponse(
+            status="unavailable", model_version=None, t0_model_version=None, loaded=False
+        )
+    return schemas.HealthResponse(
+        status="ok",
+        model_version=service.artifacts["t7"].version,
+        t0_model_version=service.artifacts["t0"].version,
+        loaded=True,
+    )
 
 
 @app.post("/score", response_model=schemas.ScoreResponse)
@@ -58,6 +70,7 @@ def score(request: schemas.ScoreRequest) -> schemas.ScoreResponse:
     service = _service()
     try:
         scored = service.score(
+            mode=request.mode,
             activation=request.activation.model_dump(mode="python"),
             agents=[a.model_dump(mode="python") for a in request.agents],
             recent_activations=[a.model_dump(mode="python") for a in request.recent_activations],
@@ -69,6 +82,8 @@ def score(request: schemas.ScoreRequest) -> schemas.ScoreResponse:
 
     return schemas.ScoreResponse(
         activation_id=scored.activation_id,
+        mode=scored.mode,
+        feature_set=scored.feature_set,
         model_version=scored.model_version,
         raw_score=scored.raw_score,
         calibrated_probability=scored.calibrated_probability,
@@ -89,23 +104,30 @@ def score(request: schemas.ScoreRequest) -> schemas.ScoreResponse:
 @app.get("/explain/{activation_id}", response_model=schemas.ExplainResponse)
 def explain(activation_id: str) -> schemas.ExplainResponse:
     service = _service()
-    record = service.db.latest_for_activation(activation_id)
-    if record is None:
+    records = service.db.history_for_activation(activation_id)
+    if not records:
         raise HTTPException(
             status_code=404, detail=f"no stored prediction for activation_id {activation_id!r}"
         )
     return schemas.ExplainResponse(
-        activation_id=record["activation_id"],
-        scored_at=record["scored_at"],
-        model_version=record["model_version"],
-        config_hash=record["config_hash"],
-        feature_vector=record["feature_vector"],
-        raw_score=record["raw_score"],
-        calibrated_probability=record["calibrated_probability"],
-        band=record["band"],
-        release_threshold=record["release_threshold"],
-        reject_threshold=record["reject_threshold"],
-        top_reasons=[schemas.ReasonContribution(**r) for r in record["top_reasons"]],
+        activation_id=activation_id,
+        records=[
+            schemas.ExplainRecord(
+                scored_at=record["scored_at"],
+                mode=record["mode"],
+                feature_set=record["feature_set"],
+                model_version=record["model_version"],
+                config_hash=record["config_hash"],
+                feature_vector=record["feature_vector"],
+                raw_score=record["raw_score"],
+                calibrated_probability=record["calibrated_probability"],
+                band=record["band"],
+                release_threshold=record["release_threshold"],
+                reject_threshold=record["reject_threshold"],
+                top_reasons=[schemas.ReasonContribution(**r) for r in record["top_reasons"]],
+            )
+            for record in records
+        ],
     )
 
 

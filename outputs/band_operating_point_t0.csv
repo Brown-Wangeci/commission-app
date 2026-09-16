@@ -1,0 +1,3 @@
+model,variant,release_threshold,reject_threshold,expected_cost_per_activation,expected_cost_sd_across_seeds,released_share,review_share,reject_share,reject_precision,reject_recall,released_fraud_share_of_all_fraud,capacity_share,reviewers,constraint_cost
+t0_none,chosen (capacity constrained),0.301471,0.729167,0.121581,0.00669282,0.949791,0.0250477,0.0251618,0.918559,0.315751,0.516111,0.0785861,1,0
+t0_none,unconstrained,0.301471,0.729167,0.121581,0.00669282,0.949791,0.0250477,0.0251618,0.918559,0.315751,0.516111,0.0785861,1,0
