@@ -15,6 +15,16 @@ project. These apply to every future session in this repository.
   physical limits (a distance cannot be negative).
 - Every fraud signature must have a legitimate counterpart that overlaps
   it. No feature may separate the classes cleanly on its own.
+- A missing counterpart counts as real only if it is stable across
+  realisations. The lookalike audit runs on every seed in
+  `diagnostics.robustness_seeds`, and a signature is a defect only when it is
+  flagged at every seed. A flag that appears at one seed and not others is
+  noise and must not be fixed.
+- Every reported number is a mean across those seeds, with the seed-level
+  spread. Fold-level variation is secondary and understates uncertainty:
+  `StratifiedGroupKFold` orders groups by size, so fold 0 always carries the
+  heaviest agents and the folds are not exchangeable. Say so wherever a fold
+  standard deviation appears.
 - Never invent a statistic, empirical rate, or citation. If a value is
   needed and unknown, add it to config as an assumption and tell me.
 - No feature may be computed from the label or from any hidden generator

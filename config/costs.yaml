@@ -1,0 +1,61 @@
+# Cost matrix for escrow decision bands.
+#
+# Every cost is in units of ONE AGENT COMMISSION, so the optimisation holds
+# whatever a commission is worth in shillings. Only `commission_value_kes`
+# converts back to money, and it is the least-sourced number in this file.
+#
+# Source tags follow the project convention: spec (stated by the supervisor),
+# literature (a cited published source), industry partner, assumption.
+#
+# Nothing here is tuned toward a model metric. The ranges are swept in the
+# Part D sensitivity analysis so that the conclusions can be checked against
+# every value the supervisor considered plausible.
+
+commission: 1.0  # controls: the unit. One correctly released genuine activation pays the agent one commission and costs the platform nothing beyond it. source: spec
+
+# Cost of releasing a fraudulent activation: the commission is paid out on work
+# that does not exist, the onboarding spend behind it is unrecoverable, and an
+# investigation follows. Anchored to the Central Bank of Kenya Financial Sector
+# Stability Report 2025: of KSh 1.9bn exposed to fraud in 2024, KSh 1.5bn was
+# lost and only KSh 368.8m recovered, so roughly four fifths of exposed value is
+# unrecoverable even in a regulated sector with recovery machinery. One
+# commission is paid, most of it never comes back, and the rest is the
+# onboarding and investigation the platform spends anyway.
+false_negative: 2.5  # controls: cost of auto-releasing a fraudulent activation. source: literature (CBK Financial Sector Stability Report 2025) for the unrecoverable share; the multiple itself is an assumption built on it
+false_negative_range: [1.5, 4.0]  # controls: sensitivity sweep bounds. source: spec
+
+# Cost of rejecting a genuine activation: the review that produced the decision,
+# plus the chance the agent leaves after an unjust delay and has to be replaced.
+# Anchored to Kenyan gig economy evidence that payment delays and opaque account
+# suspensions are a principal driver of platform grievance and exit.
+false_positive: 1.0  # controls: cost of rejecting a genuine activation. source: literature (Kenyan gig economy payment-delay and suspension grievance evidence) for the churn mechanism; the magnitude is an assumption
+false_positive_range: [0.4, 2.5]  # controls: sensitivity sweep bounds. source: spec
+
+true_negative: 0.0  # controls: cost of auto-releasing a genuine activation. The commission is the business, not a cost. source: spec
+
+# Review cost is COMPUTED, not assumed:
+#   review = review_minutes * loaded_hourly_rate_kes / 60 / commission_value_kes
+# The components are below. src.eval.costs.load_costs does the arithmetic and
+# records the result, so the number in a report is never hand-copied.
+review_minutes: 9  # controls: analyst time to review one activation. source: spec
+reviewer_monthly_cost_kes: 55000  # controls: fully loaded monthly cost of one reviewer. Derived from the Kenya Regulation of Wages Order 2026 general labourer rate of KSh 16,114 per month in Group A towns, at a skilled multiple, loaded for employer costs. source: literature (Regulation of Wages Order 2026) for the floor; the skilled multiple and loading are an assumption
+working_hours_per_month: 176  # controls: paid hours per reviewer month (about 22 days at 8 hours). source: assumption
+reviewer_productive_hours_per_day: 6  # controls: hours per day actually spent reviewing, after everything else a working day contains. source: assumption
+commission_value_kes: 81.34  # controls: the shilling value of one commission, used only to convert the reviewer wage into commission units. Derived from the generator: mean escrow exp(6.6 + 0.45^2 / 2) = 813.4 KSh times commission_rate 0.10. LEAST-SOURCED INPUT IN THIS FILE: it comes from an assumed escrow distribution, not from an industry partner, and the review cost scales inversely with it. source: assumption
+review_range: [0.25, 0.70]  # controls: sensitivity sweep bounds for the computed review cost. source: spec
+
+# Review capacity is COMPUTED too:
+#   reviews_per_reviewer_day = reviewer_productive_hours_per_day * 60 / review_minutes
+#   review_capacity_daily_share = reviewers * reviews_per_reviewer_day / mean_daily_activations
+# One reviewer at 9 minutes over 6 productive hours is 40 reviews a day, against
+# roughly 500 activations a day in the simulated period, so about 0.08.
+reviewers: 1  # controls: reviewers employed. source: assumption
+reviewers_sweep: [1, 2, 3]  # controls: staffing levels re-optimised in Part D6. source: spec
+review_capacity_range: [0.04, 0.16]  # controls: sensitivity sweep bounds for the capacity share. source: spec
+
+# Queue model for the payout delay a genuine activation suffers when it lands in
+# the review band. Arrivals are treated as Poisson and review time as fixed
+# (M/D/1), which is a standard approximation, not a measurement.
+queue:
+  same_day_mean_wait_days: 0.0  # controls: floor on waiting time when the queue is empty; reviews are worked the same day. source: assumption
+  max_reportable_wait_days: 30.0  # controls: cap on the reported wait, above which the queue is described as growing without bound rather than given a number. source: assumption

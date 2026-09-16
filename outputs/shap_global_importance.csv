@@ -1,0 +1,28 @@
+feature,mean_abs_shap,sd_across_seeds,group,share_of_total
+customer_active_days_7d,0.731109,0.0948765,activation or customer,0.145112
+agent_tenure_days,0.674116,0.250029,agent history,0.1338
+agent_activation_velocity_24h,0.402723,0.0398571,agent history,0.0799335
+device_activations_7d,0.391008,0.0906138,agent history,0.0776081
+days_to_payout_cutoff,0.356521,0.0524852,activation or customer,0.0707631
+usage_minutes_total_7d,0.22204,0.0171421,activation or customer,0.0440711
+activation_method_is_manual_entry,0.213524,0.025008,activation or customer,0.0423807
+submission_hour_of_day,0.204314,0.0177835,activation or customer,0.0405528
+distinct_devices_used_30d,0.187991,0.083763,agent history,0.0373128
+distance_from_agent_home_km,0.175466,0.0266222,activation or customer,0.0348268
+job_acceptance_latency_seconds,0.164558,0.0279359,activation or customer,0.0326618
+network_type_is_cellular,0.162889,0.0132024,activation or customer,0.0323305
+sim_age_at_activation_days,0.157937,0.0213492,activation or customer,0.0313477
+proof_of_activation_missing_flag,0.15357,0.0143005,activation or customer,0.030481
+acceptance_to_submission_seconds,0.129502,0.0293786,activation or customer,0.0257039
+ip_location_mismatch_flag,0.119967,0.0156224,activation or customer,0.0238113
+activity_dropoff_flag,0.0956445,0.0185791,activation or customer,0.0189837
+agent_activation_velocity_1h,0.0726847,0.0398641,agent history,0.0144266
+sim_active_at_day7,0.066765,0.0167719,activation or customer,0.0132517
+device_shared_agent_count_30d,0.0637716,0.0240999,agent history,0.0126575
+days_to_first_customer_activity,0.0629392,0.0202756,activation or customer,0.0124923
+transaction_count_7d,0.0597804,0.0212565,activation or customer,0.0118654
+topup_amount_total_7d,0.0555394,0.0288731,activation or customer,0.0110236
+customer_msisdn_prior_activation_count,0.0541415,0.00528895,activation or customer,0.0107461
+submission_latency_seconds,0.0511636,0.0167823,activation or customer,0.0101551
+complaint_or_refund_flag_7d,0.00494265,0.0040429,activation or customer,0.000981028
+support_contact_count_7d,0.00362533,0.00258308,activation or customer,0.000719565

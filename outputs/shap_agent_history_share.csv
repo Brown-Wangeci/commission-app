@@ -1,0 +1,6 @@
+scope,agent_history_share_of_explanation,top_feature,top_feature_is_agent_history
+all sampled rows,0.355739,customer_active_days_7d,False
+fraud: collusion,0.32898,customer_active_days_7d,False
+fraud: ghost,0.278542,customer_active_days_7d,False
+fraud: payout_gaming,0.331847,customer_active_days_7d,False
+fraud: sim_farming,0.291547,customer_active_days_7d,False

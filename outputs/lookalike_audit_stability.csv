@@ -1,0 +1,109 @@
+typology,feature,seeds_flagged,legitimate_share_min,legitimate_share_mean,legitimate_share_max,fraud_purity_mean,legitimate_counterpart,seeds_audited,verdict
+sim_farming,device_shared_agent_count_30d,1,0.00997866,0.0278716,0.0419587,0.317895,device_sharing_team_share (honest team sharing one enrolment device),4,noise: flagged at some seeds only
+sim_farming,agent_activation_velocity_24h,0,0.0205773,0.0254973,0.0290528,0.400087,campaign and market day volume multipliers,4,no counterpart problem
+payout_gaming,job_acceptance_latency_seconds,0,0.0223417,0.0266628,0.0329253,0.159168,batch_acceptance (honest agents who accept jobs and work them later),4,no counterpart problem
+ghost,complaint_or_refund_flag_7d,0,0.0323442,0.0328926,0.0331301,0.0860202,legit_behaviour.complaint_daily_prob,4,no counterpart problem
+payout_gaming,submission_latency_seconds,0,0.0295306,0.0340583,0.0412078,0.129525,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+payout_gaming,agent_activation_velocity_24h,0,0.0341664,0.0370841,0.0420952,0.368002,campaign and market day volume multipliers,4,no counterpart problem
+payout_gaming,device_activations_7d,0,0.0295569,0.039945,0.0456849,0.271985,device_sharing_team_share (honest team sharing one enrolment device),4,no counterpart problem
+sim_farming,agent_activation_velocity_1h,0,0.0310328,0.0431294,0.0585394,0.28125,burst_intra_day_spread_hours (campaign and market day clustering),4,no counterpart problem
+collusion,agent_activation_velocity_24h,0,0.0283877,0.0452156,0.0534862,0.349963,campaign and market day volume multipliers,4,no counterpart problem
+ghost,agent_activation_velocity_24h,0,0.0428171,0.0489711,0.0540788,0.340048,campaign and market day volume multipliers,4,no counterpart problem
+collusion,device_activations_7d,0,0.0476162,0.0544945,0.0678302,0.257722,device_sharing_team_share (honest team sharing one enrolment device),4,no counterpart problem
+sim_farming,acceptance_to_submission_seconds,0,0.052586,0.0564222,0.0597885,0.182161,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+ghost,ip_location_mismatch_flag,0,0.0584175,0.059875,0.0610132,0.246089,legit_behaviour.ip_mismatch_rate (roaming or VPN),4,no counterpart problem
+payout_gaming,ip_location_mismatch_flag,0,0.0584175,0.059875,0.0610132,0.246089,legit_behaviour.ip_mismatch_rate (roaming or VPN),4,no counterpart problem
+sim_farming,ip_location_mismatch_flag,0,0.0584175,0.059875,0.0610132,0.246089,legit_behaviour.ip_mismatch_rate (roaming or VPN),4,no counterpart problem
+ghost,device_activations_7d,0,0.0535331,0.0615217,0.0766246,0.255766,device_sharing_team_share (honest team sharing one enrolment device),4,no counterpart problem
+sim_farming,distinct_devices_used_30d,0,0.0377719,0.0622268,0.108848,0.259523,devices_per_agent (honest agents with more than one handset),4,no counterpart problem
+sim_farming,device_activations_7d,0,0.0331549,0.0697111,0.0885301,0.25069,device_sharing_team_share (honest team sharing one enrolment device),4,no counterpart problem
+collusion,activity_dropoff_flag,0,0.0711978,0.0721886,0.0729026,0.144977,mode_mix.trial_lapse (genuine try-then-lapse customers),4,no counterpart problem
+payout_gaming,activity_dropoff_flag,0,0.0711978,0.0721886,0.0729026,0.144977,mode_mix.trial_lapse (genuine try-then-lapse customers),4,no counterpart problem
+sim_farming,activity_dropoff_flag,0,0.0711978,0.0721886,0.0729026,0.144977,mode_mix.trial_lapse (genuine try-then-lapse customers),4,no counterpart problem
+sim_farming,distance_from_agent_home_km,0,0.0749651,0.0798431,0.0839594,0.128993,fixed_site_agent_share (honest agents working one fixed site),4,no counterpart problem
+ghost,proof_of_activation_missing_flag,0,0.0892336,0.0898498,0.0911551,0.198778,legit_behaviour.proof_missing_rate,4,no counterpart problem
+sim_farming,proof_of_activation_missing_flag,0,0.0892336,0.0898498,0.0911551,0.198778,legit_behaviour.proof_missing_rate,4,no counterpart problem
+ghost,agent_activation_velocity_1h,0,0.079842,0.0913252,0.101802,0.211453,burst_intra_day_spread_hours (campaign and market day clustering),4,no counterpart problem
+payout_gaming,days_to_payout_cutoff,0,0.0865018,0.0962911,0.10936,0.14424,end_cycle_push (honest agents rushing the same deadline),4,no counterpart problem
+ghost,acceptance_to_submission_seconds,0,0.0925516,0.0975957,0.100733,0.158212,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+sim_farming,sim_age_at_activation_days,0,0.104991,0.106218,0.108502,0.107591,same_day_sim_share (customer buys and registers the SIM at signup),4,no counterpart problem
+collusion,days_to_payout_cutoff,0,0.0851392,0.107354,0.130702,0.141659,end_cycle_push (honest agents rushing the same deadline),4,no counterpart problem
+collusion,agent_activation_velocity_1h,0,0.079842,0.110843,0.174305,0.20199,burst_intra_day_spread_hours (campaign and market day clustering),4,no counterpart problem
+sim_farming,submission_latency_seconds,0,0.0978643,0.115308,0.137196,0.109696,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+sim_farming,agent_tenure_days,0,0.0696775,0.11964,0.164235,0.141705,population.tenure_days (overlapping tenure distributions),4,no counterpart problem
+ghost,days_to_payout_cutoff,0,0.103115,0.120875,0.153579,0.140617,end_cycle_push (honest agents rushing the same deadline),4,no counterpart problem
+ghost,agent_tenure_days,0,0.0958166,0.125674,0.15127,0.139633,population.tenure_days (overlapping tenure distributions),4,no counterpart problem
+collusion,agent_tenure_days,0,0.120352,0.128495,0.133427,0.139272,population.tenure_days (overlapping tenure distributions),4,no counterpart problem
+sim_farming,submission_hour_of_day,0,0.110584,0.132029,0.157525,0.10305,legit_behaviour.submission_hour (honest late-evening component),4,no counterpart problem
+payout_gaming,agent_tenure_days,0,0.103912,0.132142,0.18074,0.139784,population.tenure_days (overlapping tenure distributions),4,no counterpart problem
+sim_farming,days_to_payout_cutoff,0,0.124033,0.137689,0.163741,0.137778,end_cycle_push (honest agents rushing the same deadline),4,no counterpart problem
+ghost,submission_latency_seconds,0,0.128901,0.139339,0.153977,0.104852,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+ghost,submission_hour_of_day,0,0.109699,0.14021,0.175161,0.10146,legit_behaviour.submission_hour (honest late-evening component),4,no counterpart problem
+ghost,distance_from_agent_home_km,0,0.139499,0.148019,0.157106,0.125361,fixed_site_agent_share (honest agents working one fixed site),4,no counterpart problem
+payout_gaming,distinct_devices_used_30d,0,0.0767043,0.185718,0.307341,0.174673,devices_per_agent (honest agents with more than one handset),4,no counterpart problem
+sim_farming,job_acceptance_latency_seconds,0,0.140598,0.191475,0.249443,0.102086,batch_acceptance (honest agents who accept jobs and work them later),4,no counterpart problem
+collusion,customer_active_days_7d,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+collusion,days_to_first_customer_activity,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+collusion,usage_minutes_total_7d,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+ghost,customer_active_days_7d,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+ghost,days_to_first_customer_activity,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+ghost,usage_minutes_total_7d,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+sim_farming,customer_active_days_7d,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+sim_farming,days_to_first_customer_activity,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+sim_farming,usage_minutes_total_7d,0,0.205174,0.206611,0.208106,0.196762,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+payout_gaming,usage_minutes_total_7d,0,0.205916,0.207798,0.209919,0.19658,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+payout_gaming,days_to_first_customer_activity,0,0.205916,0.208597,0.213116,0.195654,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+payout_gaming,agent_activation_velocity_1h,0,0.156578,0.216681,0.353557,0.152448,burst_intra_day_spread_hours (campaign and market day clustering),4,no counterpart problem
+collusion,acceptance_to_submission_seconds,0,0.203281,0.217504,0.236372,0.0397025,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+collusion,activation_method_is_manual_entry,0,0.218386,0.220116,0.221717,0.139944,legit_behaviour.manual_entry_rate,4,no counterpart problem
+ghost,activation_method_is_manual_entry,0,0.218386,0.220116,0.221717,0.139944,legit_behaviour.manual_entry_rate,4,no counterpart problem
+sim_farming,activation_method_is_manual_entry,0,0.218386,0.220116,0.221717,0.139944,legit_behaviour.manual_entry_rate,4,no counterpart problem
+collusion,sim_age_at_activation_days,0,0.213323,0.220299,0.235506,0.154184,same_day_sim_share (customer buys and registers the SIM at signup),4,no counterpart problem
+ghost,network_type_is_cellular,0,0.218795,0.220399,0.222222,0.140297,legit_behaviour.cellular_rate (honest wifi submissions),4,no counterpart problem
+sim_farming,network_type_is_cellular,0,0.218795,0.220399,0.222222,0.140297,legit_behaviour.cellular_rate (honest wifi submissions),4,no counterpart problem
+collusion,submission_hour_of_day,0,0.215047,0.222751,0.239586,0.084754,legit_behaviour.submission_hour (honest late-evening component),4,no counterpart problem
+payout_gaming,distance_from_agent_home_km,0,0.195484,0.223803,0.241399,0.0370209,fixed_site_agent_share (honest agents working one fixed site),4,no counterpart problem
+ghost,job_acceptance_latency_seconds,0,0.217368,0.226452,0.237235,0.0903478,batch_acceptance (honest agents who accept jobs and work them later),4,no counterpart problem
+payout_gaming,customer_active_days_7d,0,0.205916,0.228322,0.292016,0.192449,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+payout_gaming,acceptance_to_submission_seconds,0,0.213045,0.231079,0.24628,0.0401783,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+collusion,job_acceptance_latency_seconds,0,0.227006,0.232197,0.234686,0.0886399,batch_acceptance (honest agents who accept jobs and work them later),4,no counterpart problem
+ghost,distinct_devices_used_30d,0,0.108848,0.242851,0.307341,0.141574,devices_per_agent (honest agents with more than one handset),4,no counterpart problem
+ghost,sim_age_at_activation_days,0,0.236866,0.244098,0.24837,0.0450356,same_day_sim_share (customer buys and registers the SIM at signup),4,no counterpart problem
+collusion,submission_latency_seconds,0,0.218167,0.244376,0.271345,0.0889042,fast_submission_latency_minutes (honest queue at a drive),4,no counterpart problem
+payout_gaming,sim_age_at_activation_days,0,0.232047,0.252298,0.261425,0.0684712,same_day_sim_share (customer buys and registers the SIM at signup),4,no counterpart problem
+collusion,distance_from_agent_home_km,0,0.245184,0.255281,0.267316,0.0561877,fixed_site_agent_share (honest agents working one fixed site),4,no counterpart problem
+sim_farming,customer_msisdn_prior_activation_count,0,0.0178961,0.263984,1,0.260472,repeat_msisdn_rate (genuine reactivation),4,no counterpart problem
+payout_gaming,submission_hour_of_day,0,0.267288,0.272305,0.285745,0.089639,legit_behaviour.submission_hour (honest late-evening component),4,no counterpart problem
+collusion,transaction_count_7d,0,0.27305,0.27556,0.277784,0.172525,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+ghost,transaction_count_7d,0,0.27305,0.27556,0.277784,0.172525,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+payout_gaming,transaction_count_7d,0,0.27305,0.27556,0.277784,0.172525,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+sim_farming,transaction_count_7d,0,0.27305,0.27556,0.277784,0.172525,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+collusion,distinct_devices_used_30d,0,0.249979,0.29595,0.321246,0.11996,devices_per_agent (honest agents with more than one handset),4,no counterpart problem
+collusion,sim_active_at_day7,0,0.304524,0.30659,0.308313,0.107786,sim_deactivation_hazard (genuine accounts going inactive),4,no counterpart problem
+ghost,sim_active_at_day7,0,0.304524,0.30659,0.308313,0.107786,sim_deactivation_hazard (genuine accounts going inactive),4,no counterpart problem
+payout_gaming,sim_active_at_day7,0,0.304524,0.30659,0.308313,0.107786,sim_deactivation_hazard (genuine accounts going inactive),4,no counterpart problem
+sim_farming,sim_active_at_day7,0,0.304524,0.30659,0.308313,0.107786,sim_deactivation_hazard (genuine accounts going inactive),4,no counterpart problem
+collusion,topup_amount_total_7d,0,0.355659,0.357767,0.36003,0.143583,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+ghost,topup_amount_total_7d,0,0.355659,0.357767,0.36003,0.143583,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+payout_gaming,topup_amount_total_7d,0,0.355659,0.357767,0.36003,0.143583,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+sim_farming,topup_amount_total_7d,0,0.355659,0.357767,0.36003,0.143583,mode_mix.dormant (genuine but dormant customers),4,no counterpart problem
+payout_gaming,proof_of_activation_missing_flag,0,0.0893328,0.499655,0.910766,0.127639,legit_behaviour.proof_missing_rate,4,no counterpart problem
+payout_gaming,complaint_or_refund_flag_7d,0,0.0323442,0.499779,0.966902,0.0785707,legit_behaviour.complaint_daily_prob,4,no counterpart problem
+collusion,proof_of_activation_missing_flag,0,0.0893328,0.500394,0.910766,0.129053,legit_behaviour.proof_missing_rate,4,no counterpart problem
+payout_gaming,network_type_is_cellular,0,0.219864,0.639533,0.781205,0.0746036,legit_behaviour.cellular_rate (honest wifi submissions),4,no counterpart problem
+payout_gaming,activation_method_is_manual_entry,0,0.220131,0.63995,0.781614,0.0725848,legit_behaviour.manual_entry_rate,4,no counterpart problem
+collusion,ip_location_mismatch_flag,0,0.0595135,0.719882,0.941583,0.103757,legit_behaviour.ip_mismatch_rate (roaming or VPN),4,no counterpart problem
+sim_farming,complaint_or_refund_flag_7d,0,0.0331301,0.733672,0.967656,0.0748218,legit_behaviour.complaint_daily_prob,4,no counterpart problem
+collusion,network_type_is_cellular,0,0.777778,0.779601,0.781205,0.0505186,legit_behaviour.cellular_rate (honest wifi submissions),4,no counterpart problem
+ghost,activity_dropoff_flag,0,0.927097,0.927811,0.928802,0.0656661,mode_mix.trial_lapse (genuine try-then-lapse customers),4,no counterpart problem
+collusion,complaint_or_refund_flag_7d,0,0.96687,0.967107,0.967656,0.0713942,legit_behaviour.complaint_daily_prob,4,no counterpart problem
+collusion,customer_msisdn_prior_activation_count,0,1,1,1,0.0718827,repeat_msisdn_rate (genuine reactivation),4,no counterpart problem
+collusion,device_shared_agent_count_30d,0,1,1,1,0.0718827,device_sharing_team_share (honest team sharing one enrolment device),4,no counterpart problem
+collusion,support_contact_count_7d,0,1,1,1,0.0718827,legit_behaviour.support_contact_daily_prob,4,no counterpart problem
+ghost,customer_msisdn_prior_activation_count,0,1,1,1,0.0718827,repeat_msisdn_rate (genuine reactivation),4,no counterpart problem
+ghost,device_shared_agent_count_30d,0,1,1,1,0.0718827,device_sharing_team_share (honest team sharing one enrolment device),4,no counterpart problem
+ghost,support_contact_count_7d,0,1,1,1,0.0718827,legit_behaviour.support_contact_daily_prob,4,no counterpart problem
+payout_gaming,customer_msisdn_prior_activation_count,0,1,1,1,0.0718827,repeat_msisdn_rate (genuine reactivation),4,no counterpart problem
+payout_gaming,device_shared_agent_count_30d,0,1,1,1,0.0718827,device_sharing_team_share (honest team sharing one enrolment device),4,no counterpart problem
+payout_gaming,support_contact_count_7d,0,1,1,1,0.0718827,legit_behaviour.support_contact_daily_prob,4,no counterpart problem
+sim_farming,support_contact_count_7d,0,1,1,1,0.0718827,legit_behaviour.support_contact_daily_prob,4,no counterpart problem

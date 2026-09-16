@@ -127,20 +127,75 @@ def audit(dataset: data_module.Dataset, model_cfg: Dict[str, Any]) -> pd.DataFra
     return table.sort_values(["legitimate_share_in_region", "typology"]).reset_index(drop=True)
 
 
+def audit_across_seeds(gen_cfg: Dict[str, Any], model_cfg: Dict[str, Any]) -> pd.DataFrame:
+    """Run the audit on every robustness seed.
+
+    A missing counterpart is only real if it is stable across realisations: with
+    18 systematic agents, a ring-level signature can look near-separating in one
+    dataset and ordinary in the next. Phase 4 found exactly that, so the rule is
+    now in CLAUDE.md and enforced here.
+    """
+    import copy
+
+    from ..generator.run import generate
+
+    frames = []
+    for seed in [int(s) for s in gen_cfg["diagnostics"]["robustness_seeds"]]:
+        seeded = copy.deepcopy(gen_cfg)
+        seeded["seed"] = seed
+        _, internal, features, _ = generate(write=False, cfg=seeded)
+        aligned = internal.labels.set_index("activation_id").reindex(features.keys["activation_id"])
+        dataset = data_module.Dataset(
+            keys=features.keys,
+            features=pd.concat([features.t0, features.t7], axis=1),
+            labels=aligned["is_fraudulent"].to_numpy().astype(int),
+            typology=aligned["fraud_typology"].to_numpy().astype(str),
+            honesty_type=aligned["honesty_type"].to_numpy().astype(str),
+        )
+        frames.append(audit(dataset, model_cfg).assign(seed=seed))
+        print(f"seed {seed} audited")
+    return pd.concat(frames, ignore_index=True)
+
+
+def stability(table: pd.DataFrame, seeds: int) -> pd.DataFrame:
+    """A defect is flagged at every seed; anything less is realisation noise."""
+    grouped = table.groupby(["typology", "feature"])
+    summary = grouped.agg(
+        seeds_flagged=("flagged_no_counterpart", "sum"),
+        legitimate_share_min=("legitimate_share_in_region", "min"),
+        legitimate_share_mean=("legitimate_share_in_region", "mean"),
+        legitimate_share_max=("legitimate_share_in_region", "max"),
+        fraud_purity_mean=("fraud_purity_of_region", "mean"),
+        legitimate_counterpart=("legitimate_counterpart", "first"),
+    ).reset_index()
+    summary["seeds_audited"] = seeds
+    summary["verdict"] = np.where(
+        summary["seeds_flagged"] == seeds, "defect: flagged at every seed",
+        np.where(summary["seeds_flagged"] > 0, "noise: flagged at some seeds only", "no counterpart problem"),
+    )
+    return summary.sort_values(["seeds_flagged", "legitimate_share_mean"], ascending=[False, True]).reset_index(drop=True)
+
+
 def main() -> None:
+    gen_cfg = config_module.load_config(config_module.GENERATOR_CONFIG)
     model_cfg = config_module.load_config(config_module.MODEL_CONFIG)
-    dataset = data_module.load_dataset()
-    table = audit(dataset, model_cfg)
-    table.to_csv(OUTPUT_DIR / "lookalike_audit.csv", index=False, float_format="%.6g")
+    seeds = [int(s) for s in gen_cfg["diagnostics"]["robustness_seeds"]]
+    table = audit_across_seeds(gen_cfg, model_cfg)
+    summary = stability(table, len(seeds))
+
+    table.to_csv(OUTPUT_DIR / "lookalike_audit_by_seed.csv", index=False, float_format="%.6g")
+    summary.to_csv(OUTPUT_DIR / "lookalike_audit_stability.csv", index=False, float_format="%.6g")
+
     pd.set_option("display.width", 250)
     pd.set_option("display.max_columns", 30)
-    flagged = table[table["flagged_no_counterpart"]]
-    print(f"flagged signatures (legitimate share below {model_cfg['investigations']['lookalike_audit_flag_share']}):")
-    print(flagged.drop(columns=["flagged_no_counterpart"]).to_string(index=False))
+    defects = summary[summary["verdict"].str.startswith("defect")]
+    print(f"seeds audited: {seeds}")
+    print(f"defects (flagged at all {len(seeds)} seeds): {len(defects)}")
+    if len(defects):
+        print(defects.to_string(index=False))
     print()
-    print("ten thinnest counterparts overall:")
-    print(table.head(10)[["typology", "feature", "direction", "typology_share_in_region",
-                          "legitimate_share_in_region", "fraud_purity_of_region"]].round(5).to_string(index=False))
+    print("signatures flagged at one or more seeds:")
+    print(summary[summary["seeds_flagged"] > 0].round(5).to_string(index=False))
 
 
 if __name__ == "__main__":

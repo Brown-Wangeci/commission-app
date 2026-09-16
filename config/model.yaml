@@ -20,9 +20,46 @@ cross_validation:
   test_start_fraction: 0.5  # controls: position in the simulated period where the test period starts. Rationale: equal halves give both sides six complete payout cycles, so training sees every cycle phase several times and each fold's test score averages over several cycles rather than one campaign. source: assumption
   inner_validation_agent_fraction: 0.25  # controls: share of outer-training agents held out as the inner validation fold for hyperparameter search. source: assumption
   inner_validation_start_fraction: 0.6  # controls: position within the usable outer-training period where the inner validation period starts; inner training rows must have closed their T7 window before it. source: assumption
+  calibration_agent_fraction: 0.25  # controls: share of each fold's training agents held out of the model fit so a calibrator can be fitted on scores the model has not seen. The model therefore trains on fewer rows than in Phase 4, which is the price of honest calibration. source: assumption
 
 reporting:
   precision_targets: [0.90, 0.95]  # controls: precision levels at which recall is reported. Metric definitions only, not decision thresholds. source: spec (Phase 2 supervisor review)
+
+# From Phase 5, seed 42 is no longer the headline. Every reported number is a
+# mean across these seeds with the seed-level spread; fold-level variation is
+# secondary and understates uncertainty, because StratifiedGroupKFold orders
+# groups by size so fold 0 always carries the heaviest agents.
+multi_seed:
+  seeds: [7, 42, 101, 2024]  # controls: the seeds every headline number averages over. source: spec (Phase 4 supervisor review)
+  n_repeats: 1  # controls: agent groupings per seed. One, because seed-level spread is now the primary uncertainty and four seeds at five folds costs what one seed at fifteen folds did. source: assumption
+  models:  # controls: the models trained per seed and fold. source: assumption
+    - {name: "t7_none", feature_set: "t7", method: "none"}  # the chosen model from Phase 5: no resampling, no weighting
+    - {name: "t0_none", feature_set: "t0", method: "none"}  # same treatment at T0, for the auto-release comparison
+    - {name: "t7_smote", feature_set: "t7", method: "smote"}  # the pre-registered Phase 3 choice, kept so the deviation is visible
+  chosen_model: "t7_none"  # controls: which model the calibration, band, SHAP and fairness work uses. Chosen because the matched-strength sweep put every method within 0.004 PR-AUC of every other against a fold sd of 0.037, with no handling highest. source: spec (Phase 4 supervisor review)
+  t0_model: "t0_none"  # controls: the T0 counterpart used in the auto-release comparison. source: assumption
+  preregistered_model: "t7_smote"  # controls: the model reported alongside the chosen one so the deviation from the pre-registered choice is explicit. source: spec (Phase 4 supervisor review)
+
+# Probability calibration. The chosen model's raw scores are not probabilities
+# and the decision bands are probability cutoffs, so the bands are set on
+# calibrated output. The calibrator is fitted on agents held out of the model
+# fit, inside the training window, and never on test data.
+calibration:
+  methods: ["isotonic", "sigmoid"]  # controls: calibration methods compared. "sigmoid" is Platt scaling. source: spec (Phase 4 supervisor review)
+  ece_bins: 15  # controls: equal-count bins used for expected calibration error. source: assumption
+  reliability_bins: 12  # controls: equal-count bins used for the reliability curves. source: assumption
+
+# Two-dimensional band sweep. Candidate thresholds are quantiles of the pooled
+# calibrated scores rather than a uniform grid, because calibrated fraud
+# probabilities pile up near zero and a uniform grid would spend its resolution
+# where no activations sit.
+explanations:
+  shap_rows_per_fold: 1500  # controls: test rows sampled per fold for SHAP. Enough for stable mean absolute values without storing every row of every fold. source: assumption
+  worked_case_features: 4  # controls: how many features appear in an admin-facing reason string. source: assumption
+
+bands:
+  sweep_quantiles: 240 # controls: candidate thresholds per axis, taken as quantiles of the calibrated score. source: assumption
+  min_band_probability: 0.0005  # controls: floor on candidate thresholds, so the sweep does not chase single rows in the far tail. source: assumption
 
 investigations:
   latency_tail_cut_hours: [1, 2, 3, 6, 12]  # controls: job acceptance latency cut points at which src.eval.investigations reports how much of each class and typology sits in the tail. Reporting only. source: assumption
@@ -94,7 +131,18 @@ resampling:
     methods: ["smote", "smotenc", "scale_pos_weight", "none"]  # controls: SMOTE interpolates binary flags to fractions; SMOTE-NC copies them from the neighbourhood majority instead; scale_pos_weight reweights without generating rows; "none" leaves the training split untouched at its natural ratio, as the floor of the strength axis. source: assumption
     minority_ratios: [0.10, 0.20, 0.30, 0.50, 1.00]  # controls: effective minority-to-majority ratios swept. 0.30 is the Phase 3 SMOTE setting and 1.00 is the Phase 3 scale_pos_weight setting (full balance), so both earlier configurations appear in the sweep. source: assumption
 
-# Not used this session: no calibration or decision-band work until reviewed.
+# Superseded in Phase 5: the bands are no longer assumed. They are optimised
+# against config/costs.yaml on calibrated probabilities, under the review
+# capacity constraint, by src.eval.bands. The chosen operating point is written
+# to outputs/band_operating_point.csv rather than being fixed here, so that it
+# cannot be quietly detached from the cost matrix that produced it. The two
+# values below are kept only as the Phase 2 starting point for comparison.
 decision_bands:
-  auto_release_threshold: 0.20  # controls: predicted fraud probability below which a payout auto-releases. source: assumption
-  reject_threshold: 0.80  # controls: predicted fraud probability above which a payout is rejected; between the two, the activation goes to human review. source: assumption
+  auto_release_threshold: 0.20  # controls: nothing now. The Phase 2 assumed cutoff, retained for comparison against the optimised point. source: assumption
+  reject_threshold: 0.80  # controls: nothing now. The Phase 2 assumed cutoff, retained for comparison. source: assumption
+
+# Auto-release measurement (Part C). Auto-release lives in the high-purity
+# region, so it is measured by the purity of the released set, not by an
+# average over all thresholds.
+auto_release:
+  released_precision_targets: [0.95, 0.99]  # controls: required share of the auto-released set that is genuinely legitimate. source: spec (Phase 4 supervisor review)

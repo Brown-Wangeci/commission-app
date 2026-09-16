@@ -1,0 +1,2 @@
+chosen_method,rule,ece,ece_uncalibrated,brier,brier_uncalibrated,pr_auc,pr_auc_uncalibrated,pr_auc_change,pr_auc_sd_across_seeds,pr_auc_sd_across_folds,pr_auc_change_within_fold_sd,candidates_considered
+isotonic,lowest ECE; Brier breaks ties within one seed-level sd of the best ECE,0.0067071,0.0104451,0.0351303,0.0351357,0.711992,0.718318,-0.00632538,0.0321311,0.0512861,True,"isotonic, sigmoid"

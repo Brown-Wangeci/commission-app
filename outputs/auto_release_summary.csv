@@ -1,0 +1,5 @@
+model,released_precision_target,auto_released_share_mean,review_queue_share_mean,released_purity_mean,fraud_released_share_of_all_fraud_mean,fraud_value_released_share_mean,fraud_value_released_per_1000_activations_mean,threshold_mean,auto_released_share_sd_across_seeds,review_queue_share_sd_across_seeds,released_purity_sd_across_seeds,fraud_released_share_of_all_fraud_sd_across_seeds,fraud_value_released_share_sd_across_seeds,fraud_value_released_per_1000_activations_sd_across_seeds,threshold_sd_across_seeds
+t0_none,0.95,0.9739,0.0261001,0.949513,0.676657,0.676424,49.4421,0.671232,0.00499908,0.00499908,0.000626974,0.0420393,0.0404214,0.727877,0.114076
+t0_none,0.99,0.573917,0.426083,0.989527,0.0824376,0.0824806,6.0393,0.0214537,0.0582961,0.0582961,0.000382846,0.00650015,0.00735781,0.594008,0.00661546
+t7_none,0.95,0.97502,0.0249803,0.949941,0.671461,0.671952,49.1333,0.824425,0.00373621,0.00373621,5.35773e-05,0.0350197,0.0325583,0.231773,0.0432
+t7_none,0.99,0.732857,0.267143,0.989878,0.101983,0.101834,7.44453,0.0349067,0.0400051,0.0400051,0.000151117,0.00663567,0.00786501,0.399638,0.0123473

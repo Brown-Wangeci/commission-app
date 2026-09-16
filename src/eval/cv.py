@@ -29,6 +29,13 @@ class Fold:
     test_index: np.ndarray
     inner_train_index: np.ndarray
     inner_val_index: np.ndarray
+    fit_index: np.ndarray = None  # training rows the final model is fitted on
+    calibration_index: np.ndarray = None  # training rows reserved for the calibrator
+
+    def model_fit_rows(self) -> np.ndarray:
+        """Rows the final model may be fitted on: the whole training split when
+        no calibration set is carved out, otherwise the fit part only."""
+        return self.train_index if self.fit_index is None else self.fit_index
 
 
 @dataclass(frozen=True)
@@ -94,13 +101,45 @@ def _inner_split(
     return inner_train, inner_val
 
 
+def _calibration_split(
+    keys: pd.DataFrame,
+    labels: np.ndarray,
+    train_index: np.ndarray,
+    cv_cfg: Dict[str, Any],
+    seed: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Hold whole agents out of the model fit so their scores can calibrate it.
+
+    Grouping by agent is what makes the calibration set out-of-sample: the model
+    never sees these agents, so their predicted probabilities are as
+    out-of-sample as the test fold's, and the mapping learned from them
+    transfers. Both parts sit inside the training window, so no calibration row
+    is later than the test period.
+    """
+    fraction = float(cv_cfg["calibration_agent_fraction"])
+    if fraction <= 0.0:
+        return train_index, np.array([], dtype=int)
+    agents = keys["agent_id"].to_numpy()[train_index]
+    splits = int(round(1.0 / fraction))
+    calibration_agents = _agent_groups(agents, labels[train_index], splits, seed)[0]
+    is_calibration = np.isin(agents, calibration_agents)
+    return train_index[~is_calibration], train_index[is_calibration]
+
+
 def build_folds(
     keys: pd.DataFrame,
     labels: np.ndarray,
     gen_cfg: Dict[str, Any],
     model_cfg: Dict[str, Any],
+    with_calibration: bool = False,
 ) -> List[Fold]:
-    """Every (repeat, fold) pair with its outer and inner indices."""
+    """Every (repeat, fold) pair with its outer and inner indices.
+
+    With `with_calibration`, part of each training split is reserved for fitting
+    a probability calibrator and the hyperparameter search moves inside the
+    remaining fit rows. Left off, the folds are exactly those of Phase 4, so the
+    committed single-seed results stay reproducible.
+    """
     cv_cfg = model_cfg["cross_validation"]
     n_folds = int(cv_cfg["n_folds"])
     base_seed = int(cv_cfg["cv_seed"])
@@ -119,10 +158,22 @@ def build_folds(
             is_test_agent = np.isin(agents, test_agents)
             train_index = np.where(~is_test_agent & in_train_period)[0]
             test_index = np.where(is_test_agent & in_test_period)[0]
+            fit_index, calibration_index = (
+                _calibration_split(
+                    keys, labels, train_index, cv_cfg, derived_seed(base_seed, repeat, fold, 3)
+                )
+                if with_calibration
+                else (None, None)
+            )
+            # With calibration on, the search runs inside the fit rows, so the
+            # calibration agents are unseen by both the fit and the choice of
+            # hyperparameters.
+            searchable = train_index if fit_index is None else fit_index
             inner_train, inner_val = _inner_split(
-                keys, labels, train_index, bounds, cv_cfg, derived_seed(base_seed, repeat, fold)
+                keys, labels, searchable, bounds, cv_cfg, derived_seed(base_seed, repeat, fold)
             )
             folds.append(
-                Fold(repeat, fold, train_index, test_index, inner_train, inner_val)
+                Fold(repeat, fold, train_index, test_index, inner_train, inner_val,
+                     fit_index, calibration_index)
             )
     return folds

@@ -1,0 +1,3 @@
+released_precision_target,t7_auto_released_share,t0_auto_released_share,difference,relative_gain,t7_review_queue_share,t0_review_queue_share,t7_fraud_value_released_share,t0_fraud_value_released_share
+0.95,0.97502,0.9739,0.00111978,0.00114979,0.0249803,0.0261001,0.671952,0.676424
+0.99,0.732857,0.573917,0.158941,0.27694,0.267143,0.426083,0.101834,0.0824806

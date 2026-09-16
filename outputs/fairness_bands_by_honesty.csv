@@ -1,0 +1,10 @@
+honesty_type,band,share_mean,share_sd_across_seeds,genuine_rows_all_seeds
+honest,auto-released,0.985925,0.00625985,115548
+honest,reject,0.00491844,0.00272541,115548
+honest,review,0.00915608,0.003639,115548
+opportunistic,auto-released,0.97796,0.00418959,33110
+opportunistic,reject,0.00774164,0.00306597,33110
+opportunistic,review,0.0142983,0.00303574,33110
+systematic,auto-released,0.872865,0.013218,21223
+systematic,reject,0.0571243,0.0097687,21223
+systematic,review,0.0700102,0.0142682,21223

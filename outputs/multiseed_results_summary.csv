@@ -1,0 +1,4 @@
+model,prevalence_mean,prevalence_sd_across_seeds,pr_auc_mean,pr_auc_sd_across_seeds,roc_auc_mean,roc_auc_sd_across_seeds,recall_at_p90_mean,recall_at_p90_sd_across_seeds,recall_at_p95_mean,recall_at_p95_sd_across_seeds,prevalence_sd_across_folds,pr_auc_sd_across_folds,roc_auc_sd_across_folds,recall_at_p90_sd_across_folds,recall_at_p95_sd_across_folds
+t0_none,0.0728266,0.00349437,0.627586,0.0416377,0.897611,0.0140879,0.327855,0.0575025,0.274381,0.0555961,0.00665071,0.0626841,0.0257626,0.0790974,0.0767682
+t7_none,0.0728266,0.00349437,0.711992,0.0338731,0.929654,0.0108391,0.42434,0.0553415,0.350552,0.0597254,0.00665071,0.053344,0.0170157,0.0801317,0.0870224
+t7_smote,0.0728266,0.00349437,0.703405,0.0381241,0.927381,0.0120912,0.40045,0.0559055,0.327469,0.0694424,0.00665071,0.0566367,0.0201735,0.0808252,0.129916
