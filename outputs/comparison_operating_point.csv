@@ -1,0 +1,10 @@
+quantity,phase5,phase6,change
+release_threshold,0.205882,0.266667,0.060785
+reject_threshold,0.397959,0.666667,0.268708
+released_share,0.924701,0.937244,0.012543
+review_share,0.0250589,0.0296008,0.0045419
+reject_share,0.0502397,0.0331555,-0.0170842
+reject_precision,0.785579,0.910377,0.124798
+reject_recall,0.541315,0.413438,-0.127877
+released_fraud_share_of_all_fraud,0.344614,0.396599,0.051985
+expected_cost_per_activation,0.0879673,0.106358,0.0183907

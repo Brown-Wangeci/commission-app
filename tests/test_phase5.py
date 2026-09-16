@@ -41,6 +41,66 @@ def test_cost_overrides_only_touch_named_entries() -> None:
     assert costs.review == load_costs(DAILY_ACTIVATIONS).review
 
 
+def test_the_two_false_positive_costs_cannot_be_collapsed_into_one() -> None:
+    """Delaying a genuine activation and refusing it are different acts.
+
+    A single false-positive parameter cannot express both: moving the delay cost
+    must change the cost of the review band while leaving the reject band alone,
+    and moving the rejection cost must do the opposite. If one value drove both,
+    these four surfaces could not differ in the way asserted here.
+    """
+    labels = np.array([0, 0, 1, 1, 0, 1])
+    probabilities = np.array([0.05, 0.2, 0.3, 0.6, 0.7, 0.95])
+    grid = np.array([0.1, 0.5, 0.9])
+
+    base = load_costs(DAILY_ACTIVATIONS)
+    dearer_delay = load_costs(DAILY_ACTIVATIONS, overrides={"false_positive_review": base.false_positive_review + 0.5})
+    dearer_refusal = load_costs(DAILY_ACTIVATIONS, overrides={"false_positive_reject": base.false_positive_reject + 0.5})
+
+    surfaces = {
+        name: cost_surface(labels, probabilities, grid, costs).set_index(["release_threshold", "reject_threshold"])
+        for name, costs in (("base", base), ("delay", dearer_delay), ("refusal", dearer_refusal))
+    }
+    review_only = (0.1, 0.9)   # wide middle band, nothing refused
+    reject_only = (0.1, 0.1)   # no middle band, everything above 0.1 refused
+
+    assert surfaces["delay"].loc[review_only, "expected_cost"] > surfaces["base"].loc[review_only, "expected_cost"]
+    assert surfaces["delay"].loc[reject_only, "expected_cost"] == pytest.approx(
+        surfaces["base"].loc[reject_only, "expected_cost"]
+    )
+    assert surfaces["refusal"].loc[reject_only, "expected_cost"] > surfaces["base"].loc[reject_only, "expected_cost"]
+    # The refusal cost still touches the review band, but only through the
+    # reviews that get it wrong, so it moves by (1 - specificity) times as much.
+    review_gap = surfaces["refusal"].loc[review_only, "expected_cost"] - surfaces["base"].loc[review_only, "expected_cost"]
+    reject_gap = surfaces["refusal"].loc[reject_only, "expected_cost"] - surfaces["base"].loc[reject_only, "expected_cost"]
+    assert review_gap < reject_gap
+
+
+def test_an_imperfect_review_costs_more_than_a_perfect_one() -> None:
+    labels = np.array([0, 0, 1, 1, 0, 1])
+    probabilities = np.array([0.05, 0.2, 0.3, 0.6, 0.7, 0.95])
+    grid = np.array([0.1, 0.9])
+    perfect = load_costs(DAILY_ACTIVATIONS, overrides={"review_sensitivity": 1.0, "review_specificity": 1.0})
+    realistic = load_costs(DAILY_ACTIVATIONS)
+    wide_review = (0.1, 0.9)
+    perfect_cost = cost_surface(labels, probabilities, grid, perfect).set_index(
+        ["release_threshold", "reject_threshold"]).loc[wide_review, "expected_cost"]
+    realistic_cost = cost_surface(labels, probabilities, grid, realistic).set_index(
+        ["release_threshold", "reject_threshold"]).loc[wide_review, "expected_cost"]
+    assert realistic_cost > perfect_cost
+
+
+def test_reviewed_costs_use_the_accuracy_parameters() -> None:
+    costs = load_costs(DAILY_ACTIVATIONS)
+    assert costs.reviewed_fraud_cost() == pytest.approx(
+        costs.review + (1 - costs.review_sensitivity) * costs.false_negative
+    )
+    assert costs.reviewed_genuine_cost() == pytest.approx(
+        costs.review + costs.false_positive_review
+        + (1 - costs.review_specificity) * costs.false_positive_reject
+    )
+
+
 def test_calibration_split_is_held_out_of_the_model_fit(generated, cfg, model_config) -> None:
     _, _, internal, features = generated
     labels = (
@@ -149,15 +209,23 @@ def test_cost_surface_matches_a_hand_computed_case() -> None:
     labels = np.array([0, 0, 1, 1])
     probabilities = np.array([0.1, 0.4, 0.6, 0.9])
     grid = np.array([0.2, 0.8])
-    costs = load_costs(DAILY_ACTIVATIONS, overrides={"false_negative": 2.0, "false_positive": 1.0})
+    costs = load_costs(
+        DAILY_ACTIVATIONS,
+        overrides={"false_negative": 2.0, "false_positive_reject": 3.0,
+                   "false_positive_review": 0.05, "review_sensitivity": 0.85,
+                   "review_specificity": 0.95},
+    )
     surface = cost_surface(labels, probabilities, grid, costs)
     point = surface[(surface["release_threshold"] == 0.2) & (surface["reject_threshold"] == 0.8)].iloc[0]
-    # released: p<=0.2 is one genuine row. reviewed: 0.2<p<=0.8 is two rows.
-    # rejected: p>0.8 is one fraudulent row, so no false positive cost.
+    # released: p <= 0.2 is one genuine row, costing nothing.
+    # reviewed: 0.2 < p <= 0.8 is one genuine row and one fraudulent row.
+    # rejected: p > 0.8 is one fraudulent row, correctly refused, costing nothing.
+    reviewed_genuine = costs.review + 0.05 + 0.05 * 3.0
+    reviewed_fraud = costs.review + 0.15 * 2.0
     assert point["released_share"] == pytest.approx(0.25)
     assert point["review_share"] == pytest.approx(0.5)
     assert point["reject_share"] == pytest.approx(0.25)
-    assert point["expected_cost"] == pytest.approx(2 * costs.review / 4)
+    assert point["expected_cost"] == pytest.approx((reviewed_genuine + reviewed_fraud) / 4)
     assert point["reject_precision"] == pytest.approx(1.0)
     assert point["reject_recall"] == pytest.approx(0.5)
 

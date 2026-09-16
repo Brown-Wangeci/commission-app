@@ -1,4 +1,4 @@
 honesty_type,auto-released,reject,review,expected_extra_delay_days,share_withheld_pending_appeal,note
-honest,0.985925,0.00491844,0.00915608,5.35805e-05,0.00491844,"review adds 0.01 days on average; a rejected genuine activation is withheld rather than delayed, so it is reported as a share, not in days (cap 30 days)"
-opportunistic,0.97796,0.00774164,0.0142983,8.3672e-05,0.00774164,"review adds 0.01 days on average; a rejected genuine activation is withheld rather than delayed, so it is reported as a share, not in days (cap 30 days)"
-systematic,0.872865,0.0571243,0.0700102,0.000409693,0.0571243,"review adds 0.01 days on average; a rejected genuine activation is withheld rather than delayed, so it is reported as a share, not in days (cap 30 days)"
+honest,0.991417,0.00127134,0.00731162,5.52282e-05,0.00127134,"review adds 0.01 days on average; a rejected genuine activation is withheld rather than delayed, so it is reported as a share, not in days (cap 30 days)"
+opportunistic,0.985109,0.00226932,0.0126216,9.53372e-05,0.00226932,"review adds 0.01 days on average; a rejected genuine activation is withheld rather than delayed, so it is reported as a share, not in days (cap 30 days)"
+systematic,0.908477,0.0146857,0.0768373,0.000580389,0.0146857,"review adds 0.01 days on average; a rejected genuine activation is withheld rather than delayed, so it is reported as a share, not in days (cap 30 days)"

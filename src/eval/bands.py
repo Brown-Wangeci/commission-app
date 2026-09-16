@@ -3,17 +3,26 @@
 Usage: python -m src.eval.bands
 
 Three bands: below the release threshold a payout clears automatically, above
-the reject threshold it is refused, and in between a human looks at it. The
-expected cost per activation under config/costs.yaml is
+the reject threshold it is refused, and in between a human looks at it.
+
+The expected cost per activation under config/costs.yaml is
 
     P(released and fraudulent) * false_negative
-  + P(sent to review)          * review
-  + P(rejected and genuine)    * false_positive
+  + P(reviewed and fraudulent) * [review + (1 - sensitivity) * false_negative]
+  + P(reviewed and genuine)    * [review + false_positive_review
+                                  + (1 - specificity) * false_positive_reject]
+  + P(rejected and genuine)    * false_positive_reject
 
-with a correctly released genuine activation costing nothing. Reviews are
-assumed to reach the right answer, so a reviewed activation carries the review
-cost and no error cost; that assumption flatters review and is stated wherever
-the results are used.
+with a correctly released genuine activation and a correctly refused fraudulent
+one both costing nothing.
+
+Two corrections from Phase 5, both from the supervisor. The false positive is
+split by band, because delaying a genuine activation for nine minutes and
+refusing its payout outright are not the same act and pricing them identically
+pushed honest work toward the more harmful band. And reviews are no longer
+assumed correct: a review that misses fraud pays the false negative, and one
+that wrongly refuses honest work pays the rejection cost. A reviewed genuine
+activation pays the delay whatever the reviewer decides.
 
 The surface is computed per seed and averaged, so the operating point is the one
 that is best across four datasets rather than best on one.
@@ -74,11 +83,13 @@ def cost_surface(
     reject_rows = total - rows_under[reject_index]
     reject_fraud = total_fraud - frauds_under[reject_index]
     review_rows = rows_under[reject_index] - released_rows
+    review_fraud = frauds_under[reject_index] - released_fraud
 
     cost = (
         released_fraud * costs.false_negative
-        + review_rows * costs.review
-        + (reject_rows - reject_fraud) * costs.false_positive
+        + review_fraud * costs.reviewed_fraud_cost()
+        + (review_rows - review_fraud) * costs.reviewed_genuine_cost()
+        + (reject_rows - reject_fraud) * costs.false_positive_reject
     ) / total
 
     frame = pd.DataFrame({
@@ -128,8 +139,11 @@ def baselines(labels: np.ndarray, costs: Costs) -> pd.DataFrame:
     return pd.DataFrame([
         {"policy": "release everything", "expected_cost": prevalence * costs.false_negative,
          "review_share": 0.0},
-        {"policy": "review everything", "expected_cost": costs.review, "review_share": 1.0},
-        {"policy": "reject everything", "expected_cost": (1 - prevalence) * costs.false_positive,
+        {"policy": "review everything",
+         "expected_cost": prevalence * costs.reviewed_fraud_cost()
+         + (1 - prevalence) * costs.reviewed_genuine_cost(),
+         "review_share": 1.0},
+        {"policy": "reject everything", "expected_cost": (1 - prevalence) * costs.false_positive_reject,
          "review_share": 0.0},
     ])
 
@@ -143,8 +157,11 @@ def sensitivity(
     scenarios: List[Tuple[str, Dict[str, float], int]] = [("baseline", {}, base.reviewers)]
     ranges = {
         "false_negative": raw["false_negative_range"],
-        "false_positive": raw["false_positive_range"],
+        "false_positive_review": raw["false_positive_review_range"],
+        "false_positive_reject": raw["false_positive_reject_range"],
         "review": raw["review_range"],
+        "review_sensitivity": raw["review_sensitivity_range"],
+        "review_specificity": raw["review_specificity_range"],
     }
     for name, (low, high) in ranges.items():
         scenarios.append((f"{name} low ({low})", {name: float(low)}, base.reviewers))
@@ -152,10 +169,18 @@ def sensitivity(
     capacity_low, capacity_high = raw["review_capacity_range"]
     scenarios.append((f"capacity low ({capacity_low})", {"review_capacity_daily_share": float(capacity_low)}, base.reviewers))
     scenarios.append((f"capacity high ({capacity_high})", {"review_capacity_daily_share": float(capacity_high)}, base.reviewers))
-    all_low = {name: float(bounds[0]) for name, bounds in ranges.items()}
-    all_high = {name: float(bounds[1]) for name, bounds in ranges.items()}
-    scenarios.append(("all costs low", all_low, base.reviewers))
-    scenarios.append(("all costs high", all_high, base.reviewers))
+    # All-low and all-high are read as best case and worst case, not as
+    # "every number at its lower bound": for the two accuracy parameters the
+    # optimistic end is the HIGH one, because a better review is cheaper.
+    accuracy = {"review_sensitivity", "review_specificity"}
+    optimistic = {
+        name: float(bounds[1] if name in accuracy else bounds[0]) for name, bounds in ranges.items()
+    }
+    pessimistic = {
+        name: float(bounds[0] if name in accuracy else bounds[1]) for name, bounds in ranges.items()
+    }
+    scenarios.append(("all-low costs, best reviews (optimistic)", optimistic, base.reviewers))
+    scenarios.append(("all-high costs, worst reviews (pessimistic)", pessimistic, base.reviewers))
 
     rows = []
     for label, overrides, reviewers in scenarios:
@@ -164,8 +189,13 @@ def sensitivity(
         point = optimum(surface, costs.review_capacity_daily_share)
         rows.append({
             "scenario": label,
-            "false_negative": costs.false_negative, "false_positive": costs.false_positive,
-            "review": costs.review, "capacity": costs.review_capacity_daily_share,
+            "false_negative": costs.false_negative,
+            "false_positive_review": costs.false_positive_review,
+            "false_positive_reject": costs.false_positive_reject,
+            "review": costs.review,
+            "review_sensitivity": costs.review_sensitivity,
+            "review_specificity": costs.review_specificity,
+            "capacity": costs.review_capacity_daily_share,
             "release_threshold": point["release_threshold"], "reject_threshold": point["reject_threshold"],
             "expected_cost": point["expected_cost"], "review_share": point["review_share"],
             "reject_share": point["reject_share"], "released_share": point["released_share"],

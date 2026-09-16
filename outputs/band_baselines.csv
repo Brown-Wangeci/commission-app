@@ -1,4 +1,4 @@
 policy,expected_cost,review_share
 release everything,0.182008,0
-review everything,0.576285,1
-reject everything,0.927197,0
+review everything,0.789025,1
+reject everything,2.78159,0

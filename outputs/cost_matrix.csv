@@ -1,10 +1,15 @@
-quantity,value,unit,derivation,stated_in_brief
-commission,1,commission,the unit of account,
-false_negative,2.5,commissions,"commission paid on non-existent work, unrecoverable onboarding and investigation; CBK 2025 reports about four fifths of fraud-exposed value unrecovered",2.5
-false_positive,1,commissions,review cost plus P(churn after an unjust delay) times replacement cost,
-loaded_hourly_rate_kes,312.5,KSh per hour,55000 KSh per month / 176 hours,
-commission_value_kes,81.34,KSh,generator mean escrow times commission_rate; least-sourced input in the file,
-review,0.576285,commissions,9 min / 60 * 312.50 KSh per hour / 81.34 KSh per commission,
-reviews_per_reviewer_day,40,reviews,6 productive hours * 60 / 9 min,
-mean_daily_activations,508.996,activations,mean across the seeds of activations divided by simulated days,
-review_capacity_daily_share,0.0785861,share of volume,1 reviewer(s) * 40 reviews / 509 activations per day,
+quantity,value,unit,derivation
+commission,1,commission,the unit of account
+false_negative,2.5,commissions,"commission paid on non-existent work, unrecoverable onboarding and investigation; CBK 2025 reports about four fifths of fraud-exposed value unrecovered"
+false_positive_review,0.05,commissions,residual harm of the delay itself; Phase 5 measured a mean review wait of 0.006 days
+false_positive_reject,3,commissions,"refusing honest earnings: lost commission, dispute handling and churn risk. Set above false_negative as a stated value judgement, not a measurement"
+review_sensitivity,0.85,probability,P(a review catches fraud); a miss costs false_negative
+review_specificity,0.95,probability,P(a review clears honest work); a wrong refusal costs false_positive_reject
+cost of a reviewed fraudulent activation,0.951285,commissions,review 0.576 + (1 - 0.85) x 2.5
+cost of a reviewed genuine activation,0.776285,commissions,review 0.576 + delay 0.05 + (1 - 0.95) x 3.0
+loaded_hourly_rate_kes,312.5,KSh per hour,55000 KSh per month / 176 hours
+commission_value_kes,81.34,KSh,generator mean escrow times commission_rate; least-sourced input in the file
+review,0.576285,commissions,9 min / 60 * 312.50 KSh per hour / 81.34 KSh per commission
+reviews_per_reviewer_day,40,reviews,6 productive hours * 60 / 9 min
+mean_daily_activations,508.996,activations,mean across the seeds of activations divided by simulated days
+review_capacity_daily_share,0.0785861,share of volume,1 reviewer(s) * 40 reviews / 509 activations per day

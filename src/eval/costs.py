@@ -24,12 +24,20 @@ MINUTES_PER_HOUR = 60.0
 
 @dataclass(frozen=True)
 class Costs:
-    """All costs in units of one agent commission."""
+    """All costs in units of one agent commission.
+
+    The false positive is split by band: delaying a genuine activation in the
+    review queue and refusing it outright are different acts with very different
+    costs, and a single parameter cannot express that.
+    """
 
     false_negative: float
-    false_positive: float
+    false_positive_review: float
+    false_positive_reject: float
     review: float
     true_negative: float
+    review_sensitivity: float
+    review_specificity: float
     review_capacity_daily_share: float
     reviewers: int
     reviews_per_reviewer_day: float
@@ -39,8 +47,27 @@ class Costs:
     raw: Dict[str, Any]
 
     def band_costs(self) -> Dict[str, float]:
-        return {"false_negative": self.false_negative, "false_positive": self.false_positive,
-                "review": self.review, "true_negative": self.true_negative}
+        return {
+            "false_negative": self.false_negative,
+            "false_positive_review": self.false_positive_review,
+            "false_positive_reject": self.false_positive_reject,
+            "review": self.review, "true_negative": self.true_negative,
+            "review_sensitivity": self.review_sensitivity,
+            "review_specificity": self.review_specificity,
+        }
+
+    def reviewed_fraud_cost(self) -> float:
+        """A reviewed fraudulent activation: the review, plus the fraud the review misses."""
+        return self.review + (1.0 - self.review_sensitivity) * self.false_negative
+
+    def reviewed_genuine_cost(self) -> float:
+        """A reviewed genuine activation: the review, the delay it always suffers,
+        and the chance the reviewer refuses it anyway."""
+        return (
+            self.review
+            + self.false_positive_review
+            + (1.0 - self.review_specificity) * self.false_positive_reject
+        )
 
 
 def reviews_per_day(raw: Dict[str, Any], reviewers: int) -> float:
@@ -70,9 +97,12 @@ def load_costs(
 
     values = {
         "false_negative": float(raw["false_negative"]),
-        "false_positive": float(raw["false_positive"]),
+        "false_positive_review": float(raw["false_positive_review"]),
+        "false_positive_reject": float(raw["false_positive_reject"]),
         "review": review,
         "true_negative": float(raw["true_negative"]),
+        "review_sensitivity": float(raw["review_sensitivity"]),
+        "review_specificity": float(raw["review_specificity"]),
         "review_capacity_daily_share": capacity,
     }
     values.update({key: float(value) for key, value in overrides.items() if key in values})
@@ -96,8 +126,22 @@ def derivation_table(costs: Costs) -> pd.DataFrame:
         {"quantity": "false_negative", "value": costs.false_negative, "unit": "commissions",
          "derivation": "commission paid on non-existent work, unrecoverable onboarding and investigation; "
                        "CBK 2025 reports about four fifths of fraud-exposed value unrecovered"},
-        {"quantity": "false_positive", "value": costs.false_positive, "unit": "commissions",
-         "derivation": "review cost plus P(churn after an unjust delay) times replacement cost"},
+        {"quantity": "false_positive_review", "value": costs.false_positive_review, "unit": "commissions",
+         "derivation": "residual harm of the delay itself; Phase 5 measured a mean review wait of 0.006 days"},
+        {"quantity": "false_positive_reject", "value": costs.false_positive_reject, "unit": "commissions",
+         "derivation": "refusing honest earnings: lost commission, dispute handling and churn risk. "
+                       "Set above false_negative as a stated value judgement, not a measurement"},
+        {"quantity": "review_sensitivity", "value": costs.review_sensitivity, "unit": "probability",
+         "derivation": "P(a review catches fraud); a miss costs false_negative"},
+        {"quantity": "review_specificity", "value": costs.review_specificity, "unit": "probability",
+         "derivation": "P(a review clears honest work); a wrong refusal costs false_positive_reject"},
+        {"quantity": "cost of a reviewed fraudulent activation", "value": costs.reviewed_fraud_cost(),
+         "unit": "commissions",
+         "derivation": f"review {costs.review:.3f} + (1 - {costs.review_sensitivity}) x {costs.false_negative}"},
+        {"quantity": "cost of a reviewed genuine activation", "value": costs.reviewed_genuine_cost(),
+         "unit": "commissions",
+         "derivation": f"review {costs.review:.3f} + delay {costs.false_positive_review} "
+                       f"+ (1 - {costs.review_specificity}) x {costs.false_positive_reject}"},
         {"quantity": "loaded_hourly_rate_kes", "value": costs.loaded_hourly_rate_kes, "unit": "KSh per hour",
          "derivation": f"{raw['reviewer_monthly_cost_kes']} KSh per month / {raw['working_hours_per_month']} hours"},
         {"quantity": "commission_value_kes", "value": costs.commission_value_kes, "unit": "KSh",
@@ -113,10 +157,7 @@ def derivation_table(costs: Costs) -> pd.DataFrame:
          "derivation": f"{costs.reviewers} reviewer(s) * {costs.reviews_per_reviewer_day:.0f} reviews "
                        f"/ {costs.mean_daily_activations:.0f} activations per day"},
     ]
-    table = pd.DataFrame(rows)
-    stated = {"review": raw.get("review"), "false_negative": raw.get("false_negative")}
-    table["stated_in_brief"] = table["quantity"].map(stated)
-    return table
+    return pd.DataFrame(rows)
 
 
 def mean_daily_activations_from_summary() -> float:

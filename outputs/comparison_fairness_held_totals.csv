@@ -1,0 +1,23 @@
+population,situation,share_mean_phase5,share_mean_phase6,change
+all genuine activations,dormant,0.0908442,0.0635034,-0.0273408
+all genuine activations,batch_acceptance,0.0750933,0.0488212,-0.0262721
+all genuine activations,end_cycle_push,0.0581084,0.0414065,-0.0167019
+all genuine activations,repeat_msisdn,0.0503664,0.0347139,-0.0156525
+all genuine activations,shared_device,0.0478173,0.0303929,-0.0174244
+honest agents only,shared_device,0.0478173,0.0303929,-0.0174244
+all genuine activations,same_day_sim,0.041991,0.0295234,-0.0124676
+honest agents only,dormant,0.0454965,0.0287432,-0.0167533
+honest agents only,batch_acceptance,0.0473262,0.0274254,-0.0199008
+all genuine activations,any_situation,0.0345265,0.0235364,-0.0109901
+all genuine activations,burst_day,0.0340804,0.0232707,-0.0108097
+honest agents only,end_cycle_push,0.0298437,0.0190461,-0.0107976
+honest agents only,repeat_msisdn,0.0245882,0.016184,-0.00840418
+honest agents only,same_day_sim,0.0242396,0.0151284,-0.00911121
+all genuine activations,fixed_site,0.0236234,0.014371,-0.00925237
+honest agents only,fixed_site,0.0236234,0.014371,-0.00925237
+all genuine activations,event_backlog,0.0191041,0.0120365,-0.00706758
+honest agents only,burst_day,0.0173925,0.0107937,-0.00659876
+honest agents only,any_situation,0.016502,0.0100507,-0.0064513
+all genuine activations,no_situation,0.005567,0.00326889,-0.00229811
+honest agents only,event_backlog,0.00474249,0.00324413,-0.00149836
+honest agents only,no_situation,0.00107316,0.000727926,-0.000345238

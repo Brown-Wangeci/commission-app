@@ -1,0 +1,10 @@
+quantity,value,unit,derivation,stated_in_brief
+commission,1,commission,the unit of account,
+false_negative,2.5,commissions,"commission paid on non-existent work, unrecoverable onboarding and investigation; CBK 2025 reports about four fifths of fraud-exposed value unrecovered",2.5
+false_positive,1,commissions,review cost plus P(churn after an unjust delay) times replacement cost,
+loaded_hourly_rate_kes,312.5,KSh per hour,55000 KSh per month / 176 hours,
+commission_value_kes,81.34,KSh,generator mean escrow times commission_rate; least-sourced input in the file,
+review,0.576285,commissions,9 min / 60 * 312.50 KSh per hour / 81.34 KSh per commission,
+reviews_per_reviewer_day,40,reviews,6 productive hours * 60 / 9 min,
+mean_daily_activations,508.996,activations,mean across the seeds of activations divided by simulated days,
+review_capacity_daily_share,0.0785861,share of volume,1 reviewer(s) * 40 reviews / 509 activations per day,

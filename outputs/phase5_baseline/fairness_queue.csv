@@ -1,0 +1,2 @@
+review_share_of_volume,daily_activations,daily_review_arrivals,daily_review_capacity,utilisation,mean_wait_days_for_a_reviewed_activation,model
+0.0250589,508.996,12.7549,40,0.318872,0.00585191,"M/D/1, Poisson arrivals and fixed review time"

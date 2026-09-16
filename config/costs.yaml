@@ -24,14 +24,28 @@ commission: 1.0  # controls: the unit. One correctly released genuine activation
 false_negative: 2.5  # controls: cost of auto-releasing a fraudulent activation. source: literature (CBK Financial Sector Stability Report 2025) for the unrecoverable share; the multiple itself is an assumption built on it
 false_negative_range: [1.5, 4.0]  # controls: sensitivity sweep bounds. source: spec
 
-# Cost of rejecting a genuine activation: the review that produced the decision,
-# plus the chance the agent leaves after an unjust delay and has to be replaced.
-# Anchored to Kenyan gig economy evidence that payment delays and opaque account
-# suspensions are a principal driver of platform grievance and exit.
-false_positive: 1.0  # controls: cost of rejecting a genuine activation. source: literature (Kenyan gig economy payment-delay and suspension grievance evidence) for the churn mechanism; the magnitude is an assumption
-false_positive_range: [0.4, 2.5]  # controls: sensitivity sweep bounds. source: spec
+# The harm of getting a genuine activation wrong is split by band, because the
+# two bands do very different things to an agent. Phase 5 measured a mean review
+# wait of 0.006 days, about nine minutes, while a rejection refuses the payout
+# outright. Pricing them identically, as Phase 5 did, told the optimiser that
+# delaying an honest agent and refusing them were the same act, which pushed
+# honest work toward the more harmful band.
+false_positive_review: 0.05  # controls: residual harm of delaying a genuine activation in the review queue. The reviewer's time is charged separately as `review`; this is the delay itself, which Phase 5 measured at a mean wait of 0.006 days. source: assumption
+false_positive_review_range: [0.0, 0.30]  # controls: sensitivity sweep bounds. source: spec
+false_positive_reject: 3.0  # controls: harm of refusing a genuine activation outright: lost commission, dispute handling, and the risk the agent leaves. Set ABOVE false_negative (2.5) as a deliberate normative choice, not a measurement: wrongly refusing honest earnings damages the platform more than paying out on one fraudulent activation, given Kenyan evidence that workers move to whichever platform pays fastest. source: spec (stated value judgement by the supervisor); the magnitude is a normative assumption, not a measured quantity
+false_positive_reject_range: [1.5, 6.0]  # controls: sensitivity sweep bounds. source: spec
 
 true_negative: 0.0  # controls: cost of auto-releasing a genuine activation. The commission is the business, not a cost. source: spec
+
+# Reviews are not infallible. Phase 5 assumed every reviewed activation was
+# resolved correctly, which flattered the review band; these two parameters
+# withdraw that assumption. A review that gets it wrong incurs the cost of the
+# mistake it makes: a missed fraud costs false_negative, and a wrongly refused
+# genuine activation costs false_positive_reject.
+review_sensitivity: 0.85  # controls: probability a review catches a fraudulent activation. source: assumption
+review_sensitivity_range: [0.60, 0.98]  # controls: sensitivity sweep bounds. source: spec
+review_specificity: 0.95  # controls: probability a review clears a genuine activation. source: assumption
+review_specificity_range: [0.85, 0.995]  # controls: sensitivity sweep bounds. source: spec
 
 # Review cost is COMPUTED, not assumed:
 #   review = review_minutes * loaded_hourly_rate_kes / 60 / commission_value_kes
@@ -43,6 +57,8 @@ working_hours_per_month: 176  # controls: paid hours per reviewer month (about 2
 reviewer_productive_hours_per_day: 6  # controls: hours per day actually spent reviewing, after everything else a working day contains. source: assumption
 commission_value_kes: 81.34  # controls: the shilling value of one commission, used only to convert the reviewer wage into commission units. Derived from the generator: mean escrow exp(6.6 + 0.45^2 / 2) = 813.4 KSh times commission_rate 0.10. LEAST-SOURCED INPUT IN THIS FILE: it comes from an assumed escrow distribution, not from an industry partner, and the review cost scales inversely with it. source: assumption
 review_range: [0.25, 0.70]  # controls: sensitivity sweep bounds for the computed review cost. source: spec
+commission_value_sweep_kes: [50, 100, 200, 350, 500]  # controls: commission values re-optimised in the Part D sweep, since the whole band structure scales inversely with this unsourced number. source: spec (Phase 5 supervisor review)
+commission_collapse_scan_kes: {low: 30, high: 600, points: 58}  # controls: the finer scan used to locate the commission value at which the review band collapses to zero. source: assumption
 
 # Review capacity is COMPUTED too:
 #   reviews_per_reviewer_day = reviewer_productive_hours_per_day * 60 / review_minutes
