@@ -1,0 +1,4 @@
+check,value,sd_across_folds,detail,reference,inside_reference,gates_anything
+max single-feature AUC,0.794438,,customer_active_days_7d,<= 0.85,True,False
+max absolute label correlation,0.315093,,agent_activation_velocity_24h,<= 0.9,True,False
+"logistic regression PR-AUC (T0+T7 features, cross-validated)",0.708433,0.0303715,dataset prevalence 0.0714,"[0.65, 0.8]",True,False

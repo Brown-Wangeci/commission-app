@@ -115,6 +115,66 @@ def false_positive_sources(dataset: data_module.Dataset, model: str, targets: Li
     )
 
 
+def false_positive_rate_by_lookalike(
+    dataset: data_module.Dataset, model: str, targets: List[float]
+) -> pd.DataFrame:
+    """Which honest working patterns get an honest agent's payout held?
+
+    Restricted to legitimate activations by agents who never defraud, so this is
+    the cost carried by people who have done nothing wrong. The situations are
+    the configured legitimate lookalikes: the honest behaviours that resemble
+    fraud by construction.
+    """
+    internal = pd.read_parquet(data_module.DATA_DIR / "internal_labels.parquet")
+    internal = internal.set_index("activation_id").reindex(dataset.keys["activation_id"])
+    flags = [column for column in internal.columns if column.startswith("flag_")]
+    all_predictions = load_predictions(dataset)
+    all_predictions = all_predictions[all_predictions["model"] == model]
+    honest_legit = pd.Series(
+        (dataset.honesty_type == "honest") & (dataset.labels == 0), index=dataset.keys["activation_id"]
+    )
+    predictions = all_predictions[all_predictions["activation_id"].map(honest_legit).to_numpy()]
+    flag_lookup = internal[flags].set_index(dataset.keys["activation_id"])
+
+    rows = []
+    for (repeat, fold), group in predictions.groupby(["repeat", "fold"]):
+        every = all_predictions[
+            (all_predictions["repeat"] == repeat) & (all_predictions["fold"] == fold)
+        ]
+        for target in targets:
+            threshold = threshold_at_precision(
+                every["label"].to_numpy(), every["score"].to_numpy(dtype=float), target
+            )
+            if threshold is None:
+                continue
+            flagged = group["score"].to_numpy(dtype=float) >= threshold
+            member_flags = flag_lookup.reindex(group["activation_id"])
+            for flag in flags + ["any_situation", "no_situation"]:
+                if flag == "any_situation":
+                    members = member_flags.any(axis=1).to_numpy()
+                elif flag == "no_situation":
+                    members = ~member_flags.any(axis=1).to_numpy()
+                else:
+                    members = member_flags[flag].to_numpy().astype(bool)
+                if members.sum() == 0:
+                    continue
+                rows.append({
+                    "model": model, "repeat": repeat, "fold": fold, "precision_target": target,
+                    "situation": flag.replace("flag_", ""),
+                    "honest_legitimate_rows": int(members.sum()),
+                    "false_positive_rate": float(flagged[members].mean()),
+                })
+    per_fold = pd.DataFrame(rows)
+    return (
+        per_fold.groupby(["model", "precision_target", "situation"])
+        .agg(false_positive_rate_mean=("false_positive_rate", "mean"),
+             false_positive_rate_sd=("false_positive_rate", lambda s: s.std(ddof=1)),
+             honest_legitimate_rows_mean=("honest_legitimate_rows", "mean"))
+        .reset_index()
+        .sort_values(["precision_target", "false_positive_rate_mean"], ascending=[True, False])
+    )
+
+
 def main() -> None:
     gen_cfg = config_module.load_config(config_module.GENERATOR_CONFIG)
     model_cfg = config_module.load_config(config_module.MODEL_CONFIG)
@@ -128,6 +188,9 @@ def main() -> None:
         "investigation_false_positive_sources": pd.concat(
             [false_positive_sources(dataset, model, targets) for model in ("xgb_t7_smote", "xgb_t0_smote")],
             ignore_index=True,
+        ),
+        "investigation_false_positives_on_honest_agents": false_positive_rate_by_lookalike(
+            dataset, f"xgb_t7_{model_cfg['investigations']['chosen_imbalance_method']}", targets
         ),
     }
     pd.set_option("display.width", 250)

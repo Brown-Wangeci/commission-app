@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-09-15T17:10:19.906178+00:00",
+  "generated_at": "2026-09-16T03:15:17.591683+00:00",
   "seed": 42,
-  "config_hash": "ffe1e86d5f829a8666bf2ba6fab818b9980a39a55f066767e59559df0ea672d4",
-  "generator_config_hash": "de70efb5659646ab0ee62e26fe5b689ba50215e424bd186f451d7acd6bb12629",
+  "config_hash": "a484580eb4dc930f279b677adbc756ba9f597829c9f6d72f5803af9990f67a7a",
+  "generator_config_hash": "e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251",
   "config_files": [
     "config/generator.yaml",
     "config/model.yaml"
@@ -45,43 +45,43 @@
     "activity_dropoff_flag"
   ],
   "summary": {
-    "num_activations": 89695,
+    "num_activations": 90533,
     "num_agents": 350,
-    "num_activity_rows": 717560,
-    "num_customers_used": 87030,
-    "num_devices": 441,
+    "num_activity_rows": 724264,
+    "num_customers_used": 87715,
+    "num_devices": 439,
     "first_submission": "2025-01-06 00:00:00",
     "last_submission": "2025-07-04 23:58:48",
-    "realised_fraud_rate": 0.07144210937064496,
+    "realised_fraud_rate": 0.07349806148034418,
     "agent_type_counts": {
       "honest": 273,
       "opportunistic": 59,
       "systematic": 18
     },
     "typology_counts": {
-      "none": 83287,
-      "sim_farming": 2597,
-      "ghost": 1738,
-      "payout_gaming": 1101,
-      "collusion": 972
+      "none": 83879,
+      "sim_farming": 3047,
+      "ghost": 1396,
+      "payout_gaming": 1151,
+      "collusion": 1060
     },
     "mode_counts": {
-      "legit_normal": 63516,
-      "legit_dormant": 15995,
-      "legit_trial_lapse": 3776,
-      "fraud_sim_farming": 2597,
-      "fraud_ghost": 1738,
-      "fraud_payout_gaming": 1101,
-      "fraud_collusion": 972
+      "legit_normal": 64160,
+      "legit_dormant": 15986,
+      "legit_trial_lapse": 3733,
+      "fraud_sim_farming": 3047,
+      "fraud_ghost": 1396,
+      "fraud_payout_gaming": 1151,
+      "fraud_collusion": 1060
     },
     "honesty_type_activation_counts": {
-      "honest": 56461,
-      "opportunistic": 17508,
-      "systematic": 15726
+      "honest": 56845,
+      "opportunistic": 17641,
+      "systematic": 16047
     },
-    "careful_fraud_count": 1109,
-    "ambiguous_count": 9647,
-    "ambiguous_share": 0.10755337532749874,
+    "careful_fraud_count": 1146,
+    "ambiguous_count": 12431,
+    "ambiguous_share": 0.13730904752963008,
     "num_t0_features": 18,
     "num_t7_features": 9
   }

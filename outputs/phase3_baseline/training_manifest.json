@@ -1,0 +1,116 @@
+{
+  "generated_at": "2026-09-15T18:31:44.560748+00:00",
+  "cv_seed": 7,
+  "config_hash": "c6c8951f4e549e85e5ece358cdf8869d005051ac1ee0eb447cf1bedcf0930a22",
+  "generator_config_hash": "de70efb5659646ab0ee62e26fe5b689ba50215e424bd186f451d7acd6bb12629",
+  "model_config_hash": "5f56dcacfb842306bcca699d45c72109c6aee9862d3f38f952a77ffadc6192dd",
+  "data_manifest": {
+    "generated_at": "2026-09-15T17:10:19.906178+00:00",
+    "seed": 42,
+    "generator_config_hash": "de70efb5659646ab0ee62e26fe5b689ba50215e424bd186f451d7acd6bb12629",
+    "realised_fraud_rate": 0.07144210937064496
+  },
+  "package_versions": {
+    "python": "3.14.3",
+    "numpy": "2.5.3",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1",
+    "imbalanced-learn": "0.14.2"
+  },
+  "time_boundaries": {
+    "test_start": "2025-04-06 00:00:00",
+    "inner_val_start": "2025-02-24 00:00:00",
+    "embargo_days": 8
+  },
+  "models": [
+    {
+      "name": "rules_t7",
+      "family": "rules",
+      "feature_set": "t7",
+      "method": null
+    },
+    {
+      "name": "logreg_t7",
+      "family": "logreg",
+      "feature_set": "t7",
+      "method": null
+    },
+    {
+      "name": "xgb_t7_smote",
+      "family": "xgboost",
+      "feature_set": "t7",
+      "method": "smote"
+    },
+    {
+      "name": "xgb_t7_spw",
+      "family": "xgboost",
+      "feature_set": "t7",
+      "method": "scale_pos_weight"
+    },
+    {
+      "name": "xgb_t0_smote",
+      "family": "xgboost",
+      "feature_set": "t0",
+      "method": "smote"
+    },
+    {
+      "name": "xgb_t0_spw",
+      "family": "xgboost",
+      "feature_set": "t0",
+      "method": "scale_pos_weight"
+    }
+  ],
+  "feature_sets": {
+    "t0": [
+      "submission_latency_seconds",
+      "job_acceptance_latency_seconds",
+      "acceptance_to_submission_seconds",
+      "distance_from_agent_home_km",
+      "agent_tenure_days",
+      "sim_age_at_activation_days",
+      "agent_activation_velocity_1h",
+      "agent_activation_velocity_24h",
+      "device_activations_7d",
+      "device_shared_agent_count_30d",
+      "distinct_devices_used_30d",
+      "customer_msisdn_prior_activation_count",
+      "days_to_payout_cutoff",
+      "ip_location_mismatch_flag",
+      "activation_method_is_manual_entry",
+      "proof_of_activation_missing_flag",
+      "submission_hour_of_day",
+      "network_type_is_cellular"
+    ],
+    "t7": [
+      "submission_latency_seconds",
+      "job_acceptance_latency_seconds",
+      "acceptance_to_submission_seconds",
+      "distance_from_agent_home_km",
+      "agent_tenure_days",
+      "sim_age_at_activation_days",
+      "agent_activation_velocity_1h",
+      "agent_activation_velocity_24h",
+      "device_activations_7d",
+      "device_shared_agent_count_30d",
+      "distinct_devices_used_30d",
+      "customer_msisdn_prior_activation_count",
+      "days_to_payout_cutoff",
+      "ip_location_mismatch_flag",
+      "activation_method_is_manual_entry",
+      "proof_of_activation_missing_flag",
+      "submission_hour_of_day",
+      "network_type_is_cellular",
+      "customer_active_days_7d",
+      "days_to_first_customer_activity",
+      "transaction_count_7d",
+      "topup_amount_total_7d",
+      "usage_minutes_total_7d",
+      "support_contact_count_7d",
+      "complaint_or_refund_flag_7d",
+      "sim_active_at_day7",
+      "activity_dropoff_flag"
+    ]
+  },
+  "runtime_seconds": 1663.1
+}

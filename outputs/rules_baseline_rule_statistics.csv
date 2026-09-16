@@ -1,5 +1,5 @@
 rule,description,fired_share,precision,recall
-volume_burst_dead_customer,Agent submitted five or more activations in 24 hours and the customer was active on at most one day of the week.,0.0932597,0.430444,0.523627
-shared_device_fresh_sim,"Device used by three or more agents in 30 days, activating a SIM registered within the last two days.",0.0131999,0.596913,0.102776
-keyed_in_no_proof_no_use,"Keyed in by hand, no proof attached, and not one customer transaction in the week.",0.0161886,0.672727,0.142056
-held_job_released_at_cutoff,"Job left unaccepted for more than two hours, then submitted within a day of a payout cutoff.",0.00289809,0.460938,0.0174247
+volume_burst_dead_customer,Agent submitted five or more activations in 24 hours and the customer was active on at most one day of the week.,0.101185,0.435722,0.57209
+shared_device_fresh_sim,"Device used by three or more agents in 30 days, activating a SIM registered within the last two days.",0.0123385,0.705244,0.112913
+keyed_in_no_proof_no_use,"Keyed in by hand, no proof attached, and not one customer transaction in the week.",0.0174033,0.687179,0.155182
+held_job_released_at_cutoff,"Job left unaccepted for more than two hours, then submitted within a day of a payout cutoff.",0.00767532,0.142442,0.0141865

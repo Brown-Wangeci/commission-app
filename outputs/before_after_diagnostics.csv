@@ -1,0 +1,4 @@
+check,value_before,value_after,value_change,sd_across_folds_before,sd_across_folds_after,sd_across_folds_change
+"logistic regression PR-AUC (T0+T7 features, cross-validated)",0.708433,0.703464,-0.004969,0.0303715,0.0339396,0.0035681
+max absolute label correlation,0.315093,0.355916,0.040823,,,
+max single-feature AUC,0.794438,0.797399,0.002961,,,

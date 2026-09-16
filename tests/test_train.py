@@ -67,9 +67,9 @@ def test_smote_only_ever_sees_training_rows(small_dataset, cfg, fast_model_confi
     seen: list[np.ndarray] = []
     original = models_module.smote_resample
 
-    def recording(features, labels, model_cfg, seed):
+    def recording(features, labels, model_cfg, seed, *args, **kwargs):
         seen.append(features.index.to_numpy())
-        return original(features, labels, model_cfg, seed)
+        return original(features, labels, model_cfg, seed, *args, **kwargs)
 
     monkeypatch.setattr(models_module, "smote_resample", recording)
     records = run_module.RunRecords(predictions=[], folds=[], params=[], importance=[])

@@ -168,6 +168,23 @@ legitimate_lookalikes:
   fast_submission_latency_minutes: {dist: lognormal, mu: 2.35, sigma: 0.95, min: 0.5}  # controls: submission delay for an honest agent signing up a queue of walk-ups at a drive, overlapping the fabricated-activation profile. source: assumption
   same_day_sim_share: 0.18  # controls: share of legitimate activations where the customer buys and registers the SIM at signup. source: assumption
   same_day_sim_age_days: {dist: exponential, scale: 0.55, min: 0.0}  # controls: SIM age for a legitimate same-day registration, overlapping the farm profile. source: assumption
+  # Honest counterpart to the held payout-gaming job (Phase 4, defect 1). Two
+  # separate working patterns, because the platform records two separate gaps:
+  #   - batch acceptance: the agent does not open the app when the job arrives,
+  #     so the delay sits between assignment and acceptance, which is exactly
+  #     where the held gaming profile sits;
+  #   - event backlog: the agent accepts a batch at the start of a multi-day
+  #     event and works through it, so the delay sits between acceptance and
+  #     submission.
+  # Shares are chosen on behavioural grounds only; their effect on any metric
+  # was not examined. Unlike fixed_site, these apply to agents of every honesty
+  # type, since the pattern describes when someone works, not whether they are
+  # honest.
+  batch_acceptance_agent_share: 0.12  # controls: share of agents who accept jobs as they arrive and do the work hours later. Rationale: activation work is piecework fitted around other commitments, and an agent holding another job accepts what arrives during the day and makes the visits in the evening. A visible minority of a gig workforce, not a majority. source: assumption
+  batch_acceptance_activation_prob: 0.65  # controls: for such an agent, the share of activations accepted well ahead of the work. Rationale: most jobs arrive while they are unavailable, but some arrive while they are already out working. source: assumption
+  batch_acceptance_latency_minutes: {dist: lognormal, mu: 6.3, sigma: 1.2, min: 1.0}  # controls: assignment-to-acceptance delay for that pattern; median about 9 hours (a job arriving mid-morning accepted that evening), with genuine spread from under an hour to several days. source: assumption
+  event_backlog_share: 0.04  # controls: share of all other activations accepted as part of a batch at a multi-day event (a campus drive, a market week) and worked on a later day. Rationale: such events are occasional rather than routine. source: assumption
+  event_backlog_submission_latency_minutes: {dist: lognormal, mu: 6.0, sigma: 1.1, min: 1.0}  # controls: acceptance-to-submission delay when working through an accepted batch; median about 7 hours, spreading over the following days. source: assumption
   end_cycle_push_window_days: 2  # controls: how many days before a payout cutoff honest agents start rushing. source: assumption
   end_cycle_push_multiplier: {dist: lognormal, mu: -0.25, sigma: 0.55, shift: 1.0}  # controls: honest volume uplift immediately before a payout cutoff, scaled by the agent's payout sensitivity. source: assumption
 

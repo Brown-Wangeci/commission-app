@@ -29,6 +29,12 @@ investigations:
   permutation_shuffles: 5  # controls: label shuffles per fold in the permutation control, so its null spread is visible rather than a single draw. Reporting only. source: assumption
   isolation_forest_trees: 200  # controls: size of the label-free Isolation Forest used to measure how much signal is plain outlyingness. Reporting only. source: assumption (scikit-learn default is 100)
   lookalike_audit_tail_mass: 0.25  # controls: share of a typology's rows defining the tail region the lookalike audit examines; a quarter is large enough that the region is the typology's characteristic behaviour rather than its extreme outliers. Reporting only. source: assumption
+  chosen_imbalance_method: "smote"  # controls: which XGBoost variant the Phase 4 analyses treat as the chosen model. Set from the Phase 3 paired comparison and revisited by the matched-ratio sweep. source: assumption
+  ablation_feature_sets: ["t7", "t7_no_agent_history"]  # controls: feature sets compared in the agent-versus-activation ablation. The ablation drops tenure, both velocity windows, device counts and distinct devices from the chosen model's feature set. The full t7 set is rerun here rather than reused so the two rows come from one identical procedure; because the seeds match, it also reproduces the main run's t7 numbers as a consistency check. source: spec (Phase 3 supervisor review listed the features to remove)
+  realisation_control:  # controls: the matched control that separates the effect of a generator fix from the effect of getting a different random dataset. The same fixed model runs over the first repeat's folds for each seed, under the pre-fix and post-fix generators. source: assumption
+    label: "postfix"  # controls: name of the generator version in the output file; set to "prefix" when running against the Phase 3 snapshot. source: assumption
+    seeds: [42, 7, 101]  # controls: seeds whose spread estimates realisation noise. source: assumption
+    candidate: {n_estimators: 400, max_depth: 5, learning_rate: 0.05, min_child_weight: 5, subsample: 0.8, colsample_bytree: 0.8, reg_lambda: 1.0}  # controls: one fixed hyperparameter set, mid-range in the search space, so no search variance enters the control. source: assumption
   collusion_probe: {n_estimators: 200, max_depth: 3, learning_rate: 0.05}  # controls: the small fixed model used only to ask whether collusion is separable from legitimate trial-lapse rows at all. Not a reported model, not searched. Reporting only. source: assumption
   overlap_histogram_bins: 40 # controls: bins used for the histogram-intersection overlap coefficient in the collusion check. Reporting only. source: assumption
   lookalike_audit_flag_share: 0.01 # controls: a signature is flagged when under this share of legitimate rows falls in that region. Reporting only. source: spec (Phase 3 supervisor review: "a counterpart under 1% of legitimate rows")
@@ -84,6 +90,9 @@ xgboost:
 resampling:
   smote_k_neighbors: 5  # controls: number of neighbours used by SMOTE. source: assumption (imbalanced-learn default)
   target_minority_ratio: 0.30  # controls: minority-to-majority ratio after SMOTE. source: assumption
+  sweep:  # controls: the matched-strength comparison (src.train.resampling_sweep). Every method is run at every ratio, so method and strength are separated. source: spec (Phase 3 supervisor review asked for at least three ratios for both methods)
+    methods: ["smote", "smotenc", "scale_pos_weight", "none"]  # controls: SMOTE interpolates binary flags to fractions; SMOTE-NC copies them from the neighbourhood majority instead; scale_pos_weight reweights without generating rows; "none" leaves the training split untouched at its natural ratio, as the floor of the strength axis. source: assumption
+    minority_ratios: [0.10, 0.20, 0.30, 0.50, 1.00]  # controls: effective minority-to-majority ratios swept. 0.30 is the Phase 3 SMOTE setting and 1.00 is the Phase 3 scale_pos_weight setting (full balance), so both earlier configurations appear in the sweep. source: assumption
 
 # Not used this session: no calibration or decision-band work until reviewed.
 decision_bands:

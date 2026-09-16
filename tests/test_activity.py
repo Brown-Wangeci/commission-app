@@ -71,6 +71,29 @@ def test_sim_registration_never_postdates_submission(generated) -> None:
     assert (activations["sim_registration_date"] <= activations["timestamp_submitted"]).all()
 
 
+def test_held_jobs_have_honest_company_in_the_long_latency_tail(generated, cfg) -> None:
+    """Defect 1 regression: the acceptance-latency tail must not be fraud-only."""
+    _, _, internal, features = generated
+    labels = internal.labels.set_index("activation_id").reindex(features.keys["activation_id"])
+    latency = features.t0["job_acceptance_latency_seconds"].to_numpy()
+    gaming = (labels["fraud_typology"] == "payout_gaming").to_numpy()
+    legitimate = ~labels["is_fraudulent"].to_numpy()
+    threshold = float(pd.Series(latency[gaming]).quantile(0.75))
+    legitimate_share = float((latency[legitimate] > threshold).mean())
+    assert legitimate_share > 0.01, "no honest counterpart to the held payout-gaming job"
+
+
+def test_careful_payout_gaming_can_disguise_its_timing(generated, cfg) -> None:
+    """Defect 2 regression: the before-cutoff hour must not be forced on careful rows."""
+    _, observable, internal, _ = generated
+    labels = internal.labels.set_index("activation_id")
+    submitted = observable.activations.set_index("activation_id")["timestamp_submitted"]
+    careful_gaming = labels[(labels["fraud_typology"] == "payout_gaming") & labels["careful"]].index
+    hours = submitted.loc[careful_gaming].dt.hour + submitted.loc[careful_gaming].dt.minute / 60.0
+    cutoff_hour = float(cfg["calendar"]["payout_cutoff_hour"])
+    assert (hours > cutoff_hour).any(), "every careful gaming row still sits before the cutoff hour"
+
+
 def test_simulation_is_reproducible(cfg) -> None:
     _, first, first_internal, _ = build_everything(cfg)
     _, second, second_internal, _ = build_everything(cfg)

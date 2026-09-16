@@ -51,13 +51,18 @@ def _submission_hours(
     anchor = base_hour[first_index[codes]]
     hours = anchor + rng.normal(0.0, spread)
 
+    # A careful payout-gaming activation disguises its timing like any other
+    # careful row: the before-cutoff hour is imposed only where this row is not
+    # mimicking on the timing dimension.
     gaming = modes == "fraud_payout_gaming"
-    if gaming.any():
+    disguised = typ.mimic_mask(plan["careful"].to_numpy(), careful_blend, rng)
+    timed_to_cutoff = gaming & ~disguised
+    if timed_to_cutoff.any():
         cutoff_hour = float(cfg["calendar"]["payout_cutoff_hour"])
         offset = dist.draw(
-            cfg["typologies"]["payout_gaming"]["cutoff_window_hours"], rng, int(gaming.sum())
+            cfg["typologies"]["payout_gaming"]["cutoff_window_hours"], rng, int(timed_to_cutoff.sum())
         )
-        hours[gaming] = cutoff_hour - offset
+        hours[timed_to_cutoff] = cutoff_hour - offset
     return np.clip(hours, 0.0, HOURS_PER_DAY - 0.02)
 
 
@@ -333,8 +338,11 @@ def simulate(
             cfg["typologies"]["payout_gaming"]["held_release_share"], rng, count
         )
     )
+    batch = plan["flag_batch_acceptance"].to_numpy()
     acceptance_profile = typ.apply_mimicry(
-        np.where(held, "held", "standard"), typ.mimic_mask(careful, careful_blend, rng), "standard"
+        np.where(held, "held", np.where(batch, "batch", "standard")),
+        typ.mimic_mask(careful, careful_blend, rng),
+        "standard",
     )
     acceptance_latency = dist.draw_by_profile(
         typ.acceptance_latency_specs(cfg), acceptance_profile, rng
@@ -342,7 +350,11 @@ def simulate(
     submission_profile = np.where(
         np.isin(modes, ("fraud_ghost", "fraud_sim_farming")),
         modes,
-        np.where(plan["flag_burst_day"].to_numpy(), "fast_honest", "standard"),
+        np.where(
+            plan["flag_event_backlog"].to_numpy(),
+            "event_backlog",
+            np.where(plan["flag_burst_day"].to_numpy(), "fast_honest", "standard"),
+        ),
     )
     submission_profile = typ.apply_mimicry(
         submission_profile, typ.mimic_mask(careful, careful_blend, rng), "standard"

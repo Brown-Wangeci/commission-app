@@ -252,7 +252,11 @@ cycle. Expected signature: submissions clustered in the hours before a payout
 cutoff, long delays between a job being assigned and accepted followed by a
 burst of submissions, and activity concentrated in the days immediately
 before a cutoff. Downstream customer behaviour is often partly genuine, which
-makes this the typology least visible in the T7 features.
+makes this the typology least visible in the T7 features. Both timing tells
+have honest counterparts (section 7): a careful gaming activation submits on
+the ordinary time-of-day profile instead of before the cutoff, and long
+acceptance delays also arise from agents who work in the evenings or through a
+multi-day event backlog.
 
 ## 7. Legitimate lookalikes
 
@@ -269,6 +273,8 @@ the classes cleanly and the model would learn an artefact of the generator.
 | Submissions from a single location (ghost, SIM farming) | Honest agents who work one fixed site rather than travelling. |
 | Very short time from acceptance to submission (ghost, SIM farming) | Honest agents working through a queue at a drive, where each signup genuinely takes minutes. |
 | Clustering before a payout cutoff (payout gaming) | Honest agents rushing to finish work before the same deadline. |
+| Long delay between a job being assigned and accepted (payout gaming) | Agents who do not open the app when the job arrives and accept it hours later, for example someone working activations around another job in the evenings. |
+| Long delay between accepting a job and submitting it (payout gaming) | Agents who accept a batch of jobs at the start of a multi-day event and work through them on following days. |
 | Early activity that stops (collusion) | Genuine customers who try the service once and lapse. |
 | Repeat activation on a known MSISDN (SIM farming) | Genuine reactivations of a number already seen on the platform. |
 

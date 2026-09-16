@@ -1,0 +1,13 @@
+model,precision_target,honesty_type,share_of_false_positives_mean,share_of_false_positives_sd,share_of_legitimate_test_rows_mean,false_positives_mean
+xgb_t7_smote,0.9,honest,0.161806,0.0739637,0.675823,37.4667
+xgb_t7_smote,0.9,opportunistic,0.165053,0.185712,0.193496,37.4667
+xgb_t7_smote,0.9,systematic,0.673141,0.149993,0.130681,37.4667
+xgb_t7_smote,0.95,honest,0.15434,0.0870462,0.675823,14.8
+xgb_t7_smote,0.95,opportunistic,0.142487,0.194573,0.193496,14.8
+xgb_t7_smote,0.95,systematic,0.703174,0.156796,0.130681,14.8
+xgb_t0_smote,0.9,honest,0.168154,0.117119,0.675823,29.7333
+xgb_t0_smote,0.9,opportunistic,0.117761,0.19341,0.193496,29.7333
+xgb_t0_smote,0.9,systematic,0.714085,0.211319,0.130681,29.7333
+xgb_t0_smote,0.95,honest,0.163801,0.139312,0.675823,11
+xgb_t0_smote,0.95,opportunistic,0.12324,0.226684,0.193496,11
+xgb_t0_smote,0.95,systematic,0.712959,0.249079,0.130681,11

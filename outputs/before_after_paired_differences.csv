@@ -1,0 +1,5 @@
+comparison,pr_auc_diff_mean_before,pr_auc_diff_mean_after,pr_auc_diff_mean_change,pr_auc_diff_sd_before,pr_auc_diff_sd_after,pr_auc_diff_sd_change,recall_at_p90_diff_mean_before,recall_at_p90_diff_mean_after,recall_at_p90_diff_mean_change,pr_auc_folds_first_better_before,pr_auc_folds_first_better_after,pr_auc_folds_first_better_change
+SMOTE: T7 minus T0,0.0813357,0.069748,-0.0115877,0.0140429,0.0210118,0.0069689,0.103043,0.0823064,-0.0207366,15,15,0
+T0: scale_pos_weight minus SMOTE,-0.0225037,-0.0216877,0.000816,0.0244657,0.0199892,-0.0044765,-0.0622198,-0.034261,0.0279588,3,3,0
+T7: scale_pos_weight minus SMOTE,-0.0195533,-0.0148899,0.0046634,0.0183672,0.00959495,-0.00877225,-0.0442576,-0.0206825,0.0235751,1,1,0
+scale_pos_weight: T7 minus T0,0.0842862,0.0765459,-0.0077403,0.0139929,0.0241532,0.0101603,0.121005,0.095885,-0.02512,15,15,0

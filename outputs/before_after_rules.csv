@@ -1,0 +1,5 @@
+rule,fired_share_before,fired_share_after,fired_share_change,precision_before,precision_after,precision_change,recall_before,recall_after,recall_change
+held_job_released_at_cutoff,0.00289809,0.00767532,0.00477723,0.460938,0.142442,-0.318496,0.0174247,0.0141865,-0.0032382
+keyed_in_no_proof_no_use,0.0161886,0.0174033,0.0012147,0.672727,0.687179,0.014452,0.142056,0.155182,0.013126
+shared_device_fresh_sim,0.0131999,0.0123385,-0.0008614,0.596913,0.705244,0.108331,0.102776,0.112913,0.010137
+volume_burst_dead_customer,0.0932597,0.101185,0.0079253,0.430444,0.435722,0.005278,0.523627,0.57209,0.048463

@@ -1,0 +1,15 @@
+quantity,before,after,change
+num_activations,89695,90533,838
+realised_fraud_rate,0.0714421,0.0734981,0.00205595
+careful_fraud_count,1109,1146,37
+ambiguous_share,0.107553,0.137309,0.0297557
+num_customers_used,87030,87715,685
+num_devices,441,439,-2
+typology_count_none,83287,83879,592
+typology_count_sim_farming,2597,3047,450
+typology_count_ghost,1738,1396,-342
+typology_count_payout_gaming,1101,1151,50
+typology_count_collusion,972,1060,88
+agents_honest,273,273,0
+agents_opportunistic,59,59,0
+agents_systematic,18,18,0

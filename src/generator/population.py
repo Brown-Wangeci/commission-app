@@ -221,12 +221,20 @@ def build_agents(
         }
     )
 
-    fixed_share = float(cfg["legitimate_lookalikes"]["fixed_site_agent_share"])
+    lookalike = cfg["legitimate_lookalikes"]
+    fixed_share = float(lookalike["fixed_site_agent_share"])
     honest_mask = private["honesty_type"] == "honest"
     private["fixed_site"] = False
     honest_index = private.index[honest_mask].to_numpy()
     fixed_count = int(round(len(honest_index) * fixed_share))
     private.loc[rng.permutation(honest_index)[:fixed_count], "fixed_site"] = True
+
+    # Batch acceptance is a working pattern, not an honesty trait, so it is
+    # drawn across all agents rather than honest agents only.
+    batch_share = float(lookalike["batch_acceptance_agent_share"])
+    private["batch_acceptor"] = False
+    batch_count = int(round(count * batch_share))
+    private.loc[rng.permutation(private.index.to_numpy())[:batch_count], "batch_acceptor"] = True
 
     private = _assign_device_pools(cfg, private, rng)
     return public, private

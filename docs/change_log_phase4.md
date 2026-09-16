@@ -264,3 +264,150 @@ Two qualifications, both reported rather than fixed:
    **Neither is being added**, because adding a signature after seeing that
    collusion recall is low is exactly the move this procedure exists to prevent.
    They are recorded for your decision.
+
+## 7. Predictions against outcomes
+
+Scored against section 3. "Correct" means the outcome fell inside the range I
+committed to before making the change.
+
+### 7a. Score: 6 of 16 numeric predictions correct
+
+| Quantity | Predicted (range) | Actual | Verdict |
+|---|---|---|---|
+| Fraud share above 12 h latency | 0.10 (0.04-0.25) | 0.136 | correct |
+| Legitimate share above 12 h latency | 0.045 (0.02-0.08) | 0.030 | correct |
+| Payout gaming recall @90%, T7 | 0.250 (0.150-0.320) | 0.285 | correct |
+| Payout gaming recall @90%, T0 | 0.200 (0.110-0.280) | 0.260 | correct |
+| Ghost recall @90%, T7 | 0.390 (0.355-0.425) | 0.368 | correct |
+| Rule `held_job_released_at_cutoff` precision | 0.150 (0.060-0.280) | 0.142 | correct |
+| **XGB T7 SMOTE PR-AUC** | 0.725 (0.695-0.750) | **0.781** | **wrong, and the wrong way** |
+| **XGB T0 SMOTE PR-AUC** | 0.640 (0.605-0.665) | **0.711** | **wrong, and the wrong way** |
+| **T7 minus T0 gap** | 0.090 (0.075-0.110), widening | **0.070**, narrowed | **wrong, and the wrong way** |
+| **XGB T7 SMOTE recall @90%** | 0.425 (0.380-0.465) | **0.535** | **wrong, and the wrong way** |
+| Logistic regression PR-AUC | 0.680 (0.655-0.700) | 0.704 | wrong (just outside, by 0.004) |
+| Rules baseline PR-AUC | 0.355 (0.335-0.370) | 0.388 | wrong |
+| Sim farming recall @90%, T7 | 0.775 (0.735-0.810) | 0.832 | wrong |
+| Collusion recall @90%, T7 | 0.075 (0.045-0.110) | 0.123 | wrong |
+| **Honest share of false positives @90%** | 0.210 (0.170-0.280), rising | **0.151**, fell | **wrong, and the wrong way** |
+| **Systematic share of false positives @90%** | 0.620 (0.550-0.690), falling | **0.716**, rose | **wrong, and the wrong way** |
+
+Direction calls: payout gaming recall down sharply and the largest single move
+(correct, -0.147); ghost, sim farming and collusion each moving by less than
+0.05 (correct for all three, though I said they would drift down and two rose);
+prevalence unchanged within seed noise (correct, 0.0714 to 0.0735). Overall
+PR-AUC down for every model (wrong, up for five of six); gap widening (wrong);
+honest false-positive share up (wrong).
+
+### 7b. What I got wrong, and why
+
+**The mechanism predictions were right. The aggregate predictions were wrong,
+because I treated the realisation shift as noise around them rather than as a
+first-order effect.**
+
+I recorded the confound in section 4 and then failed to apply it. The post-fix
+dataset has a materially different fraud mix: sim farming +450 rows, ghost -342.
+Sim farming is by far the most detectable typology (recall 0.83) and ghost among
+the least (0.37), so the mix alone lifts every aggregate.
+
+Two analyses separate the causes, both pre-registered in section 4:
+
+1. **Mix decomposition** (`outputs/before_after_mix_decomposition.csv`). Overall recall at a precision target is the positives-weighted mean of per-typology recalls. For the chosen model at 90% precision, the +0.027 total change is **+0.044 from the typology mix** and **-0.017 from detection**. Detection moved exactly the way I predicted; the mix moved further, the other way.
+2. **Matched-seed control** (`outputs/realisation_control_*.csv`). One fixed model, the first repeat's folds, seeds 42, 7 and 101, run under both generators:
+
+| Seed | Pre-fix PR-AUC | Post-fix PR-AUC | Difference |
+|---|---|---|---|
+| 7 | 0.7550 | 0.7223 | -0.0327 |
+| 42 | 0.7622 | 0.7812 | +0.0190 |
+| 101 | 0.7499 | 0.7197 | -0.0302 |
+| mean | 0.7557 | 0.7411 | **-0.0146** |
+
+At two of three seeds the fixes **lowered** PR-AUC. Seed 42, the one the whole
+evaluation runs on, is the seed where it rose. The mean effect (-0.015) is
+smaller than the seed-to-seed spread (sd 0.035 post-fix), so the magnitude is
+not resolvable with three seeds, but the sign agrees with the mix-adjusted
+analysis: **the fixes made the problem slightly harder, and the headline rose
+because of which dataset the seed happened to produce.**
+
+So the honest statement of the Phase 4 result is: *the reported improvement is
+not an improvement.* Anyone comparing the Phase 3 and Phase 4 headline tables
+without the decomposition would draw the wrong conclusion.
+
+**The false-positive composition prediction was wrong for an interesting
+reason.** I predicted honest agents would absorb more false positives, because
+honest batch-acceptors now look like held gaming jobs. The opposite happened
+(honest 0.162 to 0.151; systematic 0.673 to 0.716). The fix did not make honest
+agents look guilty; it made the latency feature uninformative, so the model
+stopped leaning on it and leaned harder on the agent-level signals that identify
+sim farming, which is systematic agents' typology and a larger share of this
+dataset's fraud. Making a signature ambiguous does not redistribute suspicion
+onto its lookalikes; it retires the feature.
+
+### 7c. The B3 prediction, scored
+
+Predicted: both flags clear, legitimate share landing near 4% to 12%, fraud
+purity below 40%, no new signature flagged.
+
+| Flag | Legitimate share before | After | Purity before | Purity after |
+|---|---|---|---|---|
+| `job_acceptance_latency_seconds` | 0.011% | 2.23% | 96.8% | 14.5% |
+| `submission_latency_seconds` | 0.019% | 2.95% | 94.5% | 11.5% |
+
+Both cleared and both purities fell well below 40% (correct), but the
+legitimate share landed at 2 to 3%, **below my 4% to 12% range** (wrong).
+
+"No new signature flagged" was also wrong: sim farming's
+`device_shared_agent_count_30d` came in at 0.998%, a hair under the 1% bar.
+Investigating before reporting it as a defect:
+
+| | seed 7 | seed 42 | seed 101 | seed 2024 |
+|---|---|---|---|---|
+| Legitimate share in region, pre-fix | 0.59% | 2.74% | 1.78% | 1.24% |
+| Legitimate share in region, post-fix | 1.50% | 1.00% | 2.17% | 2.31% |
+
+The signature swings by seed in **both** versions, and at seed 7 the *pre-fix*
+generator would have failed the same test. It depends on how ring membership and
+device counts fall out among just 18 systematic agents. Contrast the real
+defect, which was stable at 0.02% to 0.03% legitimate share and 92% to 94%
+purity across all four seeds.
+
+**Conclusion: this flag is realisation noise, not a defect, and no fix is
+made.** The honest counterpart exists and is named (honest teams sharing one
+enrolment device), the region is only 48% fraud, and 836 legitimate activations
+sit in it. A genuine missing-counterpart defect is stable across seeds; this one
+is not. The audit would be more reliable run across several seeds, which is a
+change to the diagnostic rather than to the generator, and is left for your
+decision.
+
+## 8. Two things that changed definition, and what was added
+
+**Read these before comparing any Phase 3 number to a Phase 4 number.**
+
+1. **The ambiguity measure is not comparable across phases.** Batch acceptance
+   and event backlog are genuine lookalike situations, so they joined
+   `FLAG_COLUMNS`. A record counts as ambiguous at three or more situations, and
+   there are now nine situations rather than seven, so the ambiguous share rises
+   from 0.108 to 0.137 partly by definition. The alternative, leaving two real
+   lookalikes out of the count to protect a comparison, would have been worse.
+2. **`submission_latency_seconds` changed meaning slightly for honest rows.**
+   The event-backlog pattern puts an honest delay between acceptance and
+   submission, where previously only fraud profiles and the fast-drive lookalike
+   lived. This is intended: it is the counterpart for the second flagged
+   signature.
+
+New generator parameters, all `source: assumption`, all chosen on behavioural
+grounds with the reasoning in the config comments:
+`batch_acceptance_agent_share` (0.12), `batch_acceptance_activation_prob`
+(0.65), `batch_acceptance_latency_minutes`, `event_backlog_share` (0.04),
+`event_backlog_submission_latency_minutes`.
+
+New analysis modules, each writing to `outputs/`:
+`src/eval/lookalike_audit.py` (B3), `src/eval/collusion_check.py` (B4),
+`src/eval/before_after.py` (Part C), `src/train/resampling_sweep.py` (Part D),
+`src/eval/agent_vs_activation.py` (Part E),
+`src/eval/realisation_control.py` (the confound control from section 4).
+
+A fix made along the way, unrelated to the defects: the training manifest hashed
+the config files when it wrote the manifest rather than when the run started, so
+editing a config during a long run could record a hash the run never used. It
+now captures the hashes at the start. `tests/test_config.py` checks the
+committed manifests against the configs on disk.

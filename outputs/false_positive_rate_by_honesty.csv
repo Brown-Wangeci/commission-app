@@ -1,0 +1,7 @@
+precision_target,honesty_type,false_positive_rate_mean,false_positive_rate_sd,legitimate_rows_mean,false_positives_mean
+0.9,honest,0.0010781,0.000297141,5600.6,6
+0.9,opportunistic,0.00303026,0.00208664,1585.8,5.2
+0.9,systematic,0.0272163,0.00672617,1086.6,29.2667
+0.95,honest,0.000311201,0.000225809,5600.6,1.73333
+0.95,opportunistic,0.00143653,0.00108403,1585.8,2.33333
+0.95,systematic,0.0117348,0.00279986,1086.6,12.6667

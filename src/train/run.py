@@ -156,18 +156,33 @@ def _run_fold(
         )
 
 
-def _manifest(
-    gen_cfg: Dict[str, Any], model_cfg: Dict[str, Any], data_manifest: Dict[str, Any], runtime: float
-) -> Dict[str, Any]:
-    bounds = time_boundaries(gen_cfg, model_cfg)
+def config_hashes() -> Dict[str, str]:
+    """Hashes of the config files as they are right now.
+
+    Taken when the run starts, not when the manifest is written, so that editing
+    a config during a long run cannot record a hash the run never used.
+    """
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "cv_seed": int(model_cfg["cross_validation"]["cv_seed"]),
         "config_hash": config_module.config_hash(
             [config_module.GENERATOR_CONFIG, config_module.MODEL_CONFIG]
         ),
         "generator_config_hash": config_module.config_hash([config_module.GENERATOR_CONFIG]),
         "model_config_hash": config_module.config_hash([config_module.MODEL_CONFIG]),
+    }
+
+
+def _manifest(
+    gen_cfg: Dict[str, Any],
+    model_cfg: Dict[str, Any],
+    data_manifest: Dict[str, Any],
+    runtime: float,
+    hashes: Dict[str, str],
+) -> Dict[str, Any]:
+    bounds = time_boundaries(gen_cfg, model_cfg)
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "cv_seed": int(model_cfg["cross_validation"]["cv_seed"]),
+        **hashes,
         "data_manifest": {
             key: data_manifest[key] for key in ("generated_at", "seed", "generator_config_hash")
         } | {"realised_fraud_rate": data_manifest["summary"]["realised_fraud_rate"]},
@@ -186,6 +201,7 @@ def _manifest(
 
 
 def train(gen_cfg: Dict[str, Any], model_cfg: Dict[str, Any]) -> RunRecords:
+    hashes = config_hashes()
     data_manifest = data_module.check_provenance()
     dataset = data_module.load_dataset()
     folds = build_folds(dataset.keys, dataset.labels, gen_cfg, model_cfg)
@@ -202,7 +218,7 @@ def train(gen_cfg: Dict[str, Any], model_cfg: Dict[str, Any]) -> RunRecords:
     pd.concat(records.importance, ignore_index=True).to_csv(
         OUTPUT_DIR / "xgb_feature_importance.csv", index=False
     )
-    manifest = _manifest(gen_cfg, model_cfg, data_manifest, time.perf_counter() - started)
+    manifest = _manifest(gen_cfg, model_cfg, data_manifest, time.perf_counter() - started, hashes)
     (OUTPUT_DIR / "training_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return records
 

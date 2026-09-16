@@ -1,0 +1,6 @@
+latency_above_hours,fraud_share_above_before,fraud_share_above_after,fraud_share_above_change,share_of_legitimate_above_before,share_of_legitimate_above_after,share_of_legitimate_above_change,share_of_payout_gaming_above_before,share_of_payout_gaming_above_after,share_of_payout_gaming_above_change
+1,0.130793,0.0942405,-0.0365525,0.0963896,0.160302,0.0639124,0.645777,0.654214,0.008437
+2,0.258054,0.109835,-0.148219,0.0279275,0.0915009,0.0635734,0.600363,0.609904,0.009541
+3,0.417215,0.116548,-0.300667,0.0117065,0.0710309,0.0593244,0.570391,0.570808,0.000417
+6,0.761364,0.129101,-0.632263,0.00201712,0.048415,0.0463979,0.477748,0.46742,-0.010328
+12,0.933333,0.135832,-0.797501,0.000300167,0.0299598,0.0296596,0.316985,0.310165,-0.00682

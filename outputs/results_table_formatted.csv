@@ -1,7 +1,7 @@
 model,description,n_folds,prevalence,pr_auc,roc_auc,recall_at_p90,recall_at_p95
-rules_t7,"Rules baseline (4 analyst rules, T7 time)",15,0.077 (0.004),0.364 (0.040),0.777 (0.017),0.086 (0.097),0.013 (0.007)
-logreg_t7,"Logistic regression, T7 feature set",15,0.077 (0.004),0.708 (0.030),0.929 (0.011),0.366 (0.063),0.216 (0.108)
-xgb_t7_smote,"XGBoost, T7 feature set, SMOTE",15,0.077 (0.004),0.761 (0.037),0.942 (0.015),0.502 (0.064),0.427 (0.060)
-xgb_t7_spw,"XGBoost, T7 feature set, scale_pos_weight",15,0.077 (0.004),0.741 (0.041),0.936 (0.019),0.458 (0.064),0.361 (0.086)
-xgb_t0_smote,"XGBoost, T0 feature set only, SMOTE",15,0.077 (0.004),0.680 (0.046),0.914 (0.024),0.399 (0.059),0.319 (0.064)
-xgb_t0_spw,"XGBoost, T0 feature set only, scale_pos_weight",15,0.077 (0.004),0.657 (0.051),0.907 (0.028),0.337 (0.064),0.260 (0.074)
+rules_t7,"Rules baseline (4 analyst rules, T7 time)",15,0.077 (0.007),0.388 (0.032),0.797 (0.025),0.102 (0.091),0.012 (0.013)
+logreg_t7,"Logistic regression, T7 feature set",15,0.077 (0.007),0.703 (0.034),0.931 (0.012),0.364 (0.052),0.234 (0.066)
+xgb_t7_smote,"XGBoost, T7 feature set, SMOTE",15,0.077 (0.007),0.781 (0.035),0.948 (0.011),0.535 (0.056),0.470 (0.059)
+xgb_t7_spw,"XGBoost, T7 feature set, scale_pos_weight",15,0.077 (0.007),0.766 (0.037),0.944 (0.012),0.514 (0.065),0.439 (0.062)
+xgb_t0_smote,"XGBoost, T0 feature set only, SMOTE",15,0.077 (0.007),0.711 (0.051),0.923 (0.020),0.453 (0.080),0.400 (0.076)
+xgb_t0_spw,"XGBoost, T0 feature set only, scale_pos_weight",15,0.077 (0.007),0.690 (0.048),0.917 (0.019),0.419 (0.077),0.368 (0.073)

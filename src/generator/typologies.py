@@ -33,6 +33,8 @@ FLAG_COLUMNS = (
     "flag_fixed_site",
     "flag_end_cycle_push",
     "flag_repeat_msisdn",
+    "flag_batch_acceptance",
+    "flag_event_backlog",
 )
 
 
@@ -181,6 +183,9 @@ def _plan_one_agent(
             "flag_fixed_site": bool(agent["fixed_site"]),
             "flag_end_cycle_push": end_cycle,
             "flag_repeat_msisdn": rng.random(count) < repeat_rate,
+            "flag_batch_acceptance": bool(agent["batch_acceptor"])
+            & (rng.random(count) < float(lookalike["batch_acceptance_activation_prob"])),
+            "flag_event_backlog": rng.random(count) < float(lookalike["event_backlog_share"]),
         }
     )
 
@@ -285,6 +290,7 @@ def hazard_specs(cfg: Dict[str, Any]) -> Dict[str, Any]:
 def acceptance_latency_specs(cfg: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "standard": cfg["legit_behaviour"]["acceptance_latency_minutes"],
+        "batch": cfg["legitimate_lookalikes"]["batch_acceptance_latency_minutes"],
         "held": cfg["typologies"]["payout_gaming"]["acceptance_latency_minutes"],
     }
 
@@ -293,6 +299,7 @@ def submission_latency_specs(cfg: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "standard": cfg["legit_behaviour"]["submission_latency_minutes"],
         "fast_honest": cfg["legitimate_lookalikes"]["fast_submission_latency_minutes"],
+        "event_backlog": cfg["legitimate_lookalikes"]["event_backlog_submission_latency_minutes"],
         "fraud_ghost": cfg["typologies"]["ghost"]["submission_latency_minutes"],
         "fraud_sim_farming": cfg["typologies"]["sim_farming"]["submission_latency_minutes"],
     }

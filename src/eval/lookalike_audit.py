@@ -106,6 +106,8 @@ def audit(dataset: data_module.Dataset, model_cfg: Dict[str, Any]) -> pd.DataFra
     rows: List[Dict[str, Any]] = []
     for typology in FRAUD_TYPOLOGIES:
         members = dataset.typology == typology
+        if not members.any():
+            continue
         for name in dataset.features.columns:
             values = dataset.features[name].to_numpy(dtype=float)
             measured = (
@@ -115,6 +117,7 @@ def audit(dataset: data_module.Dataset, model_cfg: Dict[str, Any]) -> pd.DataFra
             )
             rows.append({
                 "typology": typology,
+                "typology_rows": int(members.sum()),
                 "feature": name,
                 **measured,
                 "legitimate_counterpart": LOOKALIKE_COVER.get(name, "none configured"),

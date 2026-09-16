@@ -22,9 +22,25 @@ from ..generator.features import KEY_COLUMNS, T0_FEATURES, T7_FEATURES
 DATA_DIR = config_module.REPO_ROOT / "data"
 RUN_MANIFEST = config_module.REPO_ROOT / "outputs" / "run_manifest.json"
 
+# Features describing the agent's recent history rather than this activation or
+# its customer. The Phase 4 ablation removes them to separate "this agent looks
+# risky" from "this activation looks wrong".
+AGENT_HISTORY_FEATURES: Tuple[str, ...] = (
+    "agent_tenure_days",
+    "agent_activation_velocity_1h",
+    "agent_activation_velocity_24h",
+    "device_activations_7d",
+    "device_shared_agent_count_30d",
+    "distinct_devices_used_30d",
+)
+
 FEATURE_SETS: Dict[str, Tuple[str, ...]] = {
     "t0": T0_FEATURES,
     "t7": T0_FEATURES + T7_FEATURES,
+    "t7_no_agent_history": tuple(
+        name for name in T0_FEATURES + T7_FEATURES if name not in AGENT_HISTORY_FEATURES
+    ),
+    "t0_no_agent_history": tuple(name for name in T0_FEATURES if name not in AGENT_HISTORY_FEATURES),
 }
 
 

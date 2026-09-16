@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-09-15T18:31:44.560748+00:00",
+  "generated_at": "2026-09-16T04:22:39.943681+00:00",
   "cv_seed": 7,
-  "config_hash": "c6c8951f4e549e85e5ece358cdf8869d005051ac1ee0eb447cf1bedcf0930a22",
-  "generator_config_hash": "de70efb5659646ab0ee62e26fe5b689ba50215e424bd186f451d7acd6bb12629",
-  "model_config_hash": "5f56dcacfb842306bcca699d45c72109c6aee9862d3f38f952a77ffadc6192dd",
+  "config_hash": "37385cbcf2bcb09cd92e2f0d2cf2d6aa50a48f3f006c93463a1e7b84c86b084f",
+  "generator_config_hash": "e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251",
+  "model_config_hash": "895276a344a3b8c141954dccac5cea58fb34102ba99bc8488a335e43224e99be",
   "data_manifest": {
-    "generated_at": "2026-09-15T17:10:19.906178+00:00",
+    "generated_at": "2026-09-16T03:15:17.591683+00:00",
     "seed": 42,
-    "generator_config_hash": "de70efb5659646ab0ee62e26fe5b689ba50215e424bd186f451d7acd6bb12629",
-    "realised_fraud_rate": 0.07144210937064496
+    "generator_config_hash": "e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251",
+    "realised_fraud_rate": 0.07349806148034418
   },
   "package_versions": {
     "python": "3.14.3",
@@ -112,5 +112,5 @@
       "activity_dropoff_flag"
     ]
   },
-  "runtime_seconds": 1663.1
+  "runtime_seconds": 3967.6
 }
