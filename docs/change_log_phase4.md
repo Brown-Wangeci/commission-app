@@ -181,3 +181,86 @@ reported as inconclusive rather than as effects.
 Sections 6 and 7 are appended after this file is committed: section 6 for the B3
 lookalike audit and B4 collusion analysis (each with its own predictions, written
 before any fix they imply), section 7 for predictions against outcomes.
+
+## 6. B3 lookalike audit and B4 collusion check (pre-fix data, no fix yet applied)
+
+### 6a. Method
+
+`src/eval/lookalike_audit.py` generalises how defect 1 was found. For every
+typology and every observable feature it takes the tail holding 25% of that
+typology's rows, on the side where the typology sits relative to legitimate rows,
+and measures the share of legitimate rows in the same region. Under 1% is
+flagged (the threshold the supervisor set). Binary features use the flag value
+the typology prefers instead of a tail.
+
+The audit is marginal, one feature at a time. It would not catch a signature that
+is only near-separating in a combination of features. That limitation is
+recorded here rather than fixed.
+
+### 6b. Result: two flagged signatures, one root cause
+
+| Typology | Feature | Region | Typology share | Legitimate share | Fraud purity |
+|---|---|---|---|---|---|
+| payout gaming | `job_acceptance_latency_seconds` | above 15.8 h | 25.1% | **0.011%** | 96.8% |
+| payout gaming | `submission_latency_seconds` | above 16.5 h | 25.1% | **0.019%** | 94.5% |
+
+Both are defect 1. `submission_latency_seconds` measures assignment to
+submission, so it contains the acceptance delay: the held job leaks into it
+arithmetically. The B1 fix changes the acceptance latency of honest rows and so
+feeds both features. No separate fix is made for the second flag.
+
+**No other signature is flagged.** The next thinnest counterparts are
+`agent_activation_velocity_24h` for sim farming (2.4% of legitimate rows in the
+region, 41% fraud purity) and `device_shared_agent_count_30d` for sim farming
+(3.8%, 27% purity). Both have named lookalikes (campaign and market day
+clustering; honest device-sharing teams) and sit well above the 1% bar.
+
+**Prediction (pre-registered).** After B1, both flags clear: the legitimate share
+in each region rises above 1%, and I expect it to land near 4% to 12%, with the
+fraud purity of those regions falling from 97% and 95% to below 40%. No new
+signature becomes flagged.
+
+### 6c. B4: collusion is genuinely hard, not under-specified
+
+Collusion is compared against the legitimate trial-then-lapse population it is
+designed to hide inside. Single-feature AUC is oriented so 0.5 means
+indistinguishable; overlap is histogram intersection, where 1.0 means identical.
+
+| Feature | Group | AUC vs trial-lapse | Overlap | Collusion median | Trial-lapse median |
+|---|---|---|---|---|---|
+| `agent_activation_velocity_24h` | agent history | 0.753 | 0.59 | 6.00 | 2.00 |
+| `device_activations_7d` | agent history | 0.730 | 0.65 | 21.0 | 10.0 |
+| `days_to_payout_cutoff` | activation | 0.662 | 0.65 | 2.34 | 6.21 |
+| `agent_tenure_days` | agent history | 0.649 | 0.72 | 265 | 349 |
+| `customer_active_days_7d` | customer | 0.583 | 0.86 | 1.00 | 0.00 |
+| `usage_minutes_total_7d` | customer | 0.583 | 0.87 | 0.91 | 0.00 |
+| `transaction_count_7d` | customer | 0.575 | 0.88 | 0.00 | 0.00 |
+| `days_to_first_customer_activity` | customer | 0.560 | 0.88 | 2.00 | 8.00 |
+| `topup_amount_total_7d` | customer | 0.558 | 0.91 | 0.00 | 0.00 |
+| `activity_dropoff_flag` | customer | 0.510 | 0.98 | 0.00 | 0.00 |
+| `distance_from_agent_home_km` | activation | 0.510 | 0.96 | 2.33 | 2.44 |
+| `customer_msisdn_prior_activation_count` | activation | 0.503 | 0.995 | 0.00 | 0.00 |
+
+Every remaining feature sits between 0.503 and 0.552.
+
+**Finding: the design is working as intended.** On the customer channels that
+define the typology, collusion and trial-lapse are nearly the same distribution
+(AUC 0.51 to 0.58, overlap 0.86 to 0.98). Collusion's low recall is a property
+of the problem, not an omission, and is a finding to keep.
+
+Two qualifications, both reported rather than fixed:
+
+1. **What separability exists is situational or agent-level, not collusive.** A
+   probe model (agent-grouped 5-fold) separates collusion from trial-lapse at
+   ROC-AUC 0.836 using all features, but 0.730 with agent-history features
+   removed. The largest activation-level difference is `days_to_payout_cutoff`
+   (0.662), which collusion inherits because fraud episodes cluster near payout
+   cutoffs for every typology. It is not a collusion signature.
+2. **Two signatures collusion could plausibly have, and does not.** A colluding
+   customer is usually someone the agent knows, so real collusion might show
+   repeat use of the same MSISDN across cycles
+   (`customer_msisdn_prior_activation_count`, currently AUC 0.503, no signal at
+   all) and shorter distances from the agent's home (currently AUC 0.510).
+   **Neither is being added**, because adding a signature after seeing that
+   collusion recall is low is exactly the move this procedure exists to prevent.
+   They are recorded for your decision.

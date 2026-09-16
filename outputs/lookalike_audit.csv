@@ -1,0 +1,109 @@
+typology,feature,direction,threshold,typology_share_in_region,legitimate_share_in_region,fraud_purity_of_region,legitimate_counterpart,flagged_no_counterpart
+payout_gaming,job_acceptance_latency_seconds,upper tail,56916.1,0.250681,0.00010806,0.968421,batch_acceptance (honest agents who accept jobs and work them later),True
+payout_gaming,submission_latency_seconds,upper tail,59523.1,0.250681,0.000192107,0.945205,fast_submission_latency_minutes (honest queue at a drive),True
+sim_farming,agent_activation_velocity_24h,upper tail,13,0.255295,0.0238333,0.407993,campaign and market day volume multipliers,False
+ghost,complaint_or_refund_flag_7d,flag == 1,1,0.0655926,0.0333305,0.081403,legit_behaviour.complaint_daily_prob,False
+payout_gaming,complaint_or_refund_flag_7d,flag == 1,1,0.0372389,0.0333305,0.081403,legit_behaviour.complaint_daily_prob,False
+payout_gaming,agent_activation_velocity_24h,upper tail,11,0.259764,0.0363082,0.372223,campaign and market day volume multipliers,False
+sim_farming,device_shared_agent_count_30d,upper tail,3,0.444744,0.0380852,0.266929,device_sharing_team_share (honest team sharing one enrolment device),False
+collusion,agent_activation_velocity_24h,upper tail,10,0.273663,0.0461777,0.346474,campaign and market day volume multipliers,False
+ghost,agent_activation_velocity_24h,upper tail,10,0.267549,0.0461777,0.346474,campaign and market day volume multipliers,False
+ghost,device_activations_7d,upper tail,40,0.256617,0.0477025,0.277505,device_sharing_team_share (honest team sharing one enrolment device),False
+payout_gaming,device_activations_7d,upper tail,40,0.263397,0.0477025,0.277505,device_sharing_team_share (honest team sharing one enrolment device),False
+ghost,agent_activation_velocity_1h,upper tail,5,0.255466,0.0498997,0.257857,burst_intra_day_spread_hours (campaign and market day clustering),False
+sim_farming,agent_activation_velocity_1h,upper tail,5,0.28995,0.0498997,0.257857,burst_intra_day_spread_hours (campaign and market day clustering),False
+collusion,ip_location_mismatch_flag,flag == 1,1,0.0709877,0.0595771,0.2414,legit_behaviour.ip_mismatch_rate (roaming or VPN),False
+ghost,ip_location_mismatch_flag,flag == 1,1,0.195052,0.0595771,0.2414,legit_behaviour.ip_mismatch_rate (roaming or VPN),False
+payout_gaming,ip_location_mismatch_flag,flag == 1,1,0.0653951,0.0595771,0.2414,legit_behaviour.ip_mismatch_rate (roaming or VPN),False
+sim_farming,ip_location_mismatch_flag,flag == 1,1,0.423181,0.0595771,0.2414,legit_behaviour.ip_mismatch_rate (roaming or VPN),False
+sim_farming,acceptance_to_submission_seconds,lower tail,190.19,0.250289,0.0602135,0.179751,fast_submission_latency_minutes (honest queue at a drive),False
+collusion,device_activations_7d,upper tail,36,0.256173,0.0623267,0.256836,device_sharing_team_share (honest team sharing one enrolment device),False
+sim_farming,device_activations_7d,upper tail,35,0.254139,0.066601,0.251922,device_sharing_team_share (honest team sharing one enrolment device),False
+collusion,activity_dropoff_flag,flag == 1,1,0.317901,0.0725083,0.14389,mode_mix.trial_lapse (genuine try-then-lapse customers),False
+payout_gaming,activity_dropoff_flag,flag == 1,1,0.325159,0.0725083,0.14389,mode_mix.trial_lapse (genuine try-then-lapse customers),False
+sim_farming,activity_dropoff_flag,flag == 1,1,0.0951097,0.0725083,0.14389,mode_mix.trial_lapse (genuine try-then-lapse customers),False
+sim_farming,distance_from_agent_home_km,lower tail,0.520099,0.250289,0.0734088,0.137294,fixed_site_agent_share (honest agents working one fixed site),False
+payout_gaming,distinct_devices_used_30d,upper tail,3,0.288828,0.0832543,0.221249,devices_per_agent (honest agents with more than one handset),False
+sim_farming,distinct_devices_used_30d,upper tail,3,0.423951,0.0832543,0.221249,devices_per_agent (honest agents with more than one handset),False
+collusion,agent_activation_velocity_1h,upper tail,4,0.264403,0.0876487,0.209786,burst_intra_day_spread_hours (campaign and market day clustering),False
+ghost,proof_of_activation_missing_flag,flag == 1,1,0.424051,0.0903022,0.198956,legit_behaviour.proof_missing_rate,False
+sim_farming,proof_of_activation_missing_flag,flag == 1,1,0.368117,0.0903022,0.198956,legit_behaviour.proof_missing_rate,False
+ghost,acceptance_to_submission_seconds,lower tail,239.346,0.250288,0.0927276,0.159539,fast_submission_latency_minutes (honest queue at a drive),False
+payout_gaming,days_to_payout_cutoff,lower tail,1.15124,0.250681,0.0928356,0.148177,end_cycle_push (honest agents rushing the same deadline),False
+sim_farming,agent_tenure_days,lower tail,140.389,0.250289,0.0928596,0.151509,population.tenure_days (overlapping tenure distributions),False
+collusion,days_to_payout_cutoff,lower tail,1.15323,0.25,0.0933999,0.148347,end_cycle_push (honest agents rushing the same deadline),False
+ghost,days_to_payout_cutoff,lower tail,1.20967,0.250288,0.105311,0.14571,end_cycle_push (honest agents rushing the same deadline),False
+sim_farming,sim_age_at_activation_days,lower tail,0.967843,0.250289,0.108612,0.104977,same_day_sim_share (customer buys and registers the SIM at signup),False
+ghost,agent_tenure_days,lower tail,154.578,0.250288,0.114292,0.146431,population.tenure_days (overlapping tenure distributions),False
+sim_farming,submission_latency_seconds,lower tail,862.37,0.250289,0.117677,0.10313,fast_submission_latency_minutes (honest queue at a drive),False
+payout_gaming,agent_tenure_days,lower tail,156.716,0.250681,0.118086,0.145229,population.tenure_days (overlapping tenure distributions),False
+sim_farming,days_to_payout_cutoff,lower tail,1.34217,0.250289,0.13325,0.142813,end_cycle_push (honest agents rushing the same deadline),False
+ghost,distance_from_agent_home_km,lower tail,0.75257,0.250288,0.134535,0.133277,fixed_site_agent_share (honest agents working one fixed site),False
+collusion,agent_tenure_days,lower tail,174.429,0.25,0.148282,0.138112,population.tenure_days (overlapping tenure distributions),False
+ghost,submission_latency_seconds,lower tail,992.8,0.250288,0.154406,0.098556,fast_submission_latency_minutes (honest queue at a drive),False
+sim_farming,submission_hour_of_day,upper tail,18.7333,0.250289,0.160349,0.0816888,legit_behaviour.submission_hour (honest late-evening component),False
+ghost,submission_hour_of_day,upper tail,18.4458,0.250288,0.172116,0.0810897,legit_behaviour.submission_hour (honest late-evening component),False
+collusion,acceptance_to_submission_seconds,upper tail,2762.66,0.25,0.190114,0.0443599,fast_submission_latency_minutes (honest queue at a drive),False
+collusion,submission_latency_seconds,upper tail,4937.25,0.25,0.196057,0.0806779,fast_submission_latency_minutes (honest queue at a drive),False
+collusion,sim_age_at_activation_days,lower tail,6.46936,0.25,0.204222,0.155168,same_day_sim_share (customer buys and registers the SIM at signup),False
+collusion,customer_active_days_7d,lower tail,0,0.480453,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+collusion,days_to_first_customer_activity,upper tail,8,0.480453,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+collusion,usage_minutes_total_7d,lower tail,0,0.480453,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+ghost,customer_active_days_7d,lower tail,0,0.790564,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+ghost,days_to_first_customer_activity,upper tail,8,0.790564,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+ghost,usage_minutes_total_7d,lower tail,0,0.790564,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+payout_gaming,customer_active_days_7d,lower tail,0,0.264305,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+payout_gaming,days_to_first_customer_activity,upper tail,8,0.264305,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+payout_gaming,usage_minutes_total_7d,lower tail,0,0.264305,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+sim_farming,customer_active_days_7d,lower tail,0,0.799769,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+sim_farming,days_to_first_customer_activity,upper tail,8,0.799769,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+sim_farming,usage_minutes_total_7d,lower tail,0,0.799769,0.207403,0.195922,mode_mix.dormant (genuine but dormant customers),False
+payout_gaming,acceptance_to_submission_seconds,upper tail,2503.13,0.250681,0.214151,0.0442611,fast_submission_latency_minutes (honest queue at a drive),False
+ghost,network_type_is_cellular,flag == 0,0,0.410242,0.220527,0.138428,legit_behaviour.cellular_rate (honest wifi submissions),False
+payout_gaming,network_type_is_cellular,flag == 0,0,0.224342,0.220527,0.138428,legit_behaviour.cellular_rate (honest wifi submissions),False
+sim_farming,network_type_is_cellular,flag == 0,0,0.687717,0.220527,0.138428,legit_behaviour.cellular_rate (honest wifi submissions),False
+ghost,activation_method_is_manual_entry,flag == 1,1,0.606444,0.221031,0.137307,legit_behaviour.manual_entry_rate,False
+payout_gaming,activation_method_is_manual_entry,flag == 1,1,0.222525,0.221031,0.137307,legit_behaviour.manual_entry_rate,False
+sim_farming,activation_method_is_manual_entry,flag == 1,1,0.550635,0.221031,0.137307,legit_behaviour.manual_entry_rate,False
+collusion,job_acceptance_latency_seconds,upper tail,1874.79,0.25,0.233494,0.0938869,batch_acceptance (honest agents who accept jobs and work them later),False
+payout_gaming,distance_from_agent_home_km,upper tail,4.93428,0.250681,0.240662,0.0346754,fixed_site_agent_share (honest agents working one fixed site),False
+payout_gaming,sim_age_at_activation_days,upper tail,150.622,0.250681,0.246437,0.0456152,same_day_sim_share (customer buys and registers the SIM at signup),False
+sim_farming,job_acceptance_latency_seconds,lower tail,372.224,0.250289,0.247494,0.0644063,batch_acceptance (honest agents who accept jobs and work them later),False
+collusion,distance_from_agent_home_km,lower tail,1.20425,0.25,0.252008,0.121284,fixed_site_agent_share (honest agents working one fixed site),False
+ghost,job_acceptance_latency_seconds,upper tail,1743.78,0.250288,0.253605,0.0911751,batch_acceptance (honest agents who accept jobs and work them later),False
+ghost,sim_age_at_activation_days,upper tail,142.637,0.250288,0.258059,0.0452647,same_day_sim_share (customer buys and registers the SIM at signup),False
+collusion,transaction_count_7d,lower tail,0,0.602881,0.278003,0.171088,mode_mix.dormant (genuine but dormant customers),False
+ghost,transaction_count_7d,lower tail,0,0.849252,0.278003,0.171088,mode_mix.dormant (genuine but dormant customers),False
+payout_gaming,transaction_count_7d,lower tail,0,0.414169,0.278003,0.171088,mode_mix.dormant (genuine but dormant customers),False
+sim_farming,transaction_count_7d,lower tail,0,0.87062,0.278003,0.171088,mode_mix.dormant (genuine but dormant customers),False
+payout_gaming,submission_hour_of_day,upper tail,16.6333,0.251589,0.278507,0.0809462,legit_behaviour.submission_hour (honest late-evening component),False
+collusion,distinct_devices_used_30d,upper tail,2,0.406379,0.291714,0.127299,devices_per_agent (honest agents with more than one handset),False
+ghost,distinct_devices_used_30d,upper tail,2,0.468354,0.291714,0.127299,devices_per_agent (honest agents with more than one handset),False
+collusion,submission_hour_of_day,upper tail,16.2833,0.252058,0.303805,0.0826929,legit_behaviour.submission_hour (honest late-evening component),False
+collusion,sim_active_at_day7,flag == 0,0,0.381687,0.308728,0.109383,sim_deactivation_hazard (genuine accounts going inactive),False
+ghost,sim_active_at_day7,flag == 0,0,0.662831,0.308728,0.109383,sim_deactivation_hazard (genuine accounts going inactive),False
+payout_gaming,sim_active_at_day7,flag == 0,0,0.342416,0.308728,0.109383,sim_deactivation_hazard (genuine accounts going inactive),False
+sim_farming,sim_active_at_day7,flag == 0,0,0.484405,0.308728,0.109383,sim_deactivation_hazard (genuine accounts going inactive),False
+payout_gaming,agent_activation_velocity_1h,upper tail,2,0.493188,0.354353,0.119278,burst_intra_day_spread_hours (campaign and market day clustering),False
+collusion,topup_amount_total_7d,lower tail,0,0.676955,0.358687,0.143324,mode_mix.dormant (genuine but dormant customers),False
+ghost,topup_amount_total_7d,lower tail,0,0.852129,0.358687,0.143324,mode_mix.dormant (genuine but dormant customers),False
+payout_gaming,topup_amount_total_7d,lower tail,0,0.527702,0.358687,0.143324,mode_mix.dormant (genuine but dormant customers),False
+sim_farming,topup_amount_total_7d,lower tail,0,0.877166,0.358687,0.143324,mode_mix.dormant (genuine but dormant customers),False
+collusion,activation_method_is_manual_entry,flag == 0,0,0.79321,0.778969,0.0508807,legit_behaviour.manual_entry_rate,False
+collusion,network_type_is_cellular,flag == 1,1,0.789095,0.779473,0.0505579,legit_behaviour.cellular_rate (honest wifi submissions),False
+collusion,proof_of_activation_missing_flag,flag == 0,0,0.920782,0.909698,0.0565338,legit_behaviour.proof_missing_rate,False
+payout_gaming,proof_of_activation_missing_flag,flag == 0,0,0.91099,0.909698,0.0565338,legit_behaviour.proof_missing_rate,False
+ghost,activity_dropoff_flag,flag == 0,0,0.941887,0.927492,0.0652582,mode_mix.trial_lapse (genuine try-then-lapse customers),False
+collusion,complaint_or_refund_flag_7d,flag == 0,0,0.988683,0.966669,0.0710948,legit_behaviour.complaint_daily_prob,False
+sim_farming,complaint_or_refund_flag_7d,flag == 0,0,0.969195,0.966669,0.0710948,legit_behaviour.complaint_daily_prob,False
+collusion,device_shared_agent_count_30d,upper tail,1,1,1,0.0714421,device_sharing_team_share (honest team sharing one enrolment device),False
+collusion,customer_msisdn_prior_activation_count,upper tail,0,1,1,0.0714421,repeat_msisdn_rate (genuine reactivation),False
+collusion,support_contact_count_7d,upper tail,0,1,1,0.0714421,legit_behaviour.support_contact_daily_prob,False
+ghost,device_shared_agent_count_30d,upper tail,1,1,1,0.0714421,device_sharing_team_share (honest team sharing one enrolment device),False
+ghost,customer_msisdn_prior_activation_count,upper tail,0,1,1,0.0714421,repeat_msisdn_rate (genuine reactivation),False
+ghost,support_contact_count_7d,upper tail,0,1,1,0.0714421,legit_behaviour.support_contact_daily_prob,False
+payout_gaming,device_shared_agent_count_30d,upper tail,1,1,1,0.0714421,device_sharing_team_share (honest team sharing one enrolment device),False
+payout_gaming,customer_msisdn_prior_activation_count,upper tail,0,1,1,0.0714421,repeat_msisdn_rate (genuine reactivation),False
+payout_gaming,support_contact_count_7d,upper tail,0,1,1,0.0714421,legit_behaviour.support_contact_daily_prob,False
+sim_farming,customer_msisdn_prior_activation_count,upper tail,0,1,1,0.0714421,repeat_msisdn_rate (genuine reactivation),False
+sim_farming,support_contact_count_7d,upper tail,0,1,1,0.0714421,legit_behaviour.support_contact_daily_prob,False

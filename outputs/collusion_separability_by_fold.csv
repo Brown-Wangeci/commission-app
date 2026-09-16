@@ -1,0 +1,11 @@
+feature_set,fold,n_collusion,n_trial_lapse,roc_auc
+all_features,0,220,730,0.893104
+all_features,1,190,760,0.86588
+all_features,2,238,712,0.810818
+all_features,3,182,767,0.799655
+all_features,4,142,807,0.812503
+activation_and_customer_only,0,220,730,0.76293
+activation_and_customer_only,1,190,760,0.692486
+activation_and_customer_only,2,238,712,0.751823
+activation_and_customer_only,3,182,767,0.681534
+activation_and_customer_only,4,142,807,0.760258

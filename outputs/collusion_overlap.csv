@@ -1,0 +1,28 @@
+feature,group,collusion_median,trial_lapse_median,all_legitimate_median,auc_vs_trial_lapse,overlap_vs_trial_lapse,auc_vs_all_legitimate,overlap_vs_all_legitimate
+agent_activation_velocity_24h,agent history,6,2,2,0.752622,0.593277,0.748081,0.6017
+device_activations_7d,agent history,21,10,11,0.730421,0.653945,0.724924,0.664435
+days_to_payout_cutoff,activation or customer,2.33954,6.21142,6.11235,0.661543,0.651102,0.658285,0.658287
+agent_tenure_days,agent history,265.185,349.091,352.708,0.648777,0.719773,0.659978,0.70051
+agent_activation_velocity_1h,agent history,2,1,1,0.624298,0.802626,0.617452,0.818092
+customer_active_days_7d,activation or customer,1,0,3,0.583418,0.859723,0.746227,0.513151
+usage_minutes_total_7d,activation or customer,0.905449,0,25.6572,0.582848,0.870998,0.721758,0.790156
+transaction_count_7d,activation or customer,0,0,4,0.575281,0.881672,0.705546,0.77899
+distinct_devices_used_30d,agent history,1,1,1,0.563687,0.894469,0.568381,0.885336
+acceptance_to_submission_seconds,activation or customer,1304.99,1003.11,1018.02,0.560103,0.900652,0.561562,0.951299
+days_to_first_customer_activity,activation or customer,2,8,0,0.559863,0.884454,0.608799,0.726951
+topup_amount_total_7d,activation or customer,0,0,33.655,0.557617,0.914075,0.681955,0.926412
+submission_latency_seconds,activation or customer,2737.35,2317.38,2350.05,0.550545,0.913239,0.547537,0.937703
+device_shared_agent_count_30d,agent history,1,1,1,0.519068,0.961864,0.521384,0.957232
+sim_age_at_activation_days,activation or customer,45.2762,52.408,51.6308,0.518093,0.983146,0.51863,0.997117
+submission_hour_of_day,activation or customer,13.8,13.6917,13.7833,0.513616,0.878836,0.515918,0.891382
+sim_active_at_day7,activation or customer,1,1,1,0.512149,0.975702,0.53648,0.92704
+activity_dropoff_flag,activation or customer,0,0,0,0.509879,0.980242,0.622696,0.754607
+distance_from_agent_home_km,activation or customer,2.32857,2.44233,2.42679,0.509856,0.960541,0.505555,0.97596
+complaint_or_refund_flag_7d,activation or customer,0,0,0,0.508642,0.982715,0.511007,0.977986
+activation_method_is_manual_entry,activation or customer,0,0,0,0.508363,0.983273,0.50712,0.985759
+job_acceptance_latency_seconds,activation or customer,842.8,791.849,812.175,0.507363,0.962662,0.504334,0.991887
+network_type_is_cellular,activation or customer,1,1,1,0.506835,0.986329,0.504811,0.990379
+ip_location_mismatch_flag,activation or customer,0,0,0,0.506495,0.98701,0.505705,0.988589
+support_contact_count_7d,activation or customer,0,0,0,0.505517,0.988988,0.519064,0.961848
+proof_of_activation_missing_flag,activation or customer,0,0,0,0.50422,0.991559,0.505542,0.988916
+customer_msisdn_prior_activation_count,activation or customer,0,0,0,0.502698,0.994611,0.502572,0.99484

@@ -39,6 +39,7 @@ class Dataset:
     labels: np.ndarray
     typology: np.ndarray
     honesty_type: np.ndarray
+    mode: np.ndarray | None = None  # generator behaviour profile; evaluation breakdowns only
 
     def matrix(self, feature_set: str) -> pd.DataFrame:
         return self.features[list(FEATURE_SETS[feature_set])]
@@ -68,4 +69,5 @@ def load_dataset(data_dir: Path = DATA_DIR) -> Dataset:
         labels=aligned["is_fraudulent"].to_numpy().astype(int),
         typology=aligned["fraud_typology"].to_numpy().astype(str),
         honesty_type=aligned["honesty_type"].to_numpy().astype(str),
+        mode=aligned["mode"].to_numpy().astype(str),
     )
