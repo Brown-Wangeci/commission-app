@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-09-16T04:22:39.943681+00:00",
+  "generated_at": "2026-09-16T07:26:12.924999+00:00",
   "cv_seed": 7,
-  "config_hash": "37385cbcf2bcb09cd92e2f0d2cf2d6aa50a48f3f006c93463a1e7b84c86b084f",
+  "config_hash": "94a66c0ba2c24605dc3a262bed7658d838206a5df3ba75bca35135f81d39ac6e",
   "generator_config_hash": "e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251",
-  "model_config_hash": "895276a344a3b8c141954dccac5cea58fb34102ba99bc8488a335e43224e99be",
+  "model_config_hash": "f710b1b6503818bb082fde1316e677cc3ac99d520a0ec8d2fa29c8e41c9978a6",
   "data_manifest": {
     "generated_at": "2026-09-16T03:15:17.591683+00:00",
     "seed": 42,
@@ -110,7 +110,44 @@
       "complaint_or_refund_flag_7d",
       "sim_active_at_day7",
       "activity_dropoff_flag"
+    ],
+    "t7_no_agent_history": [
+      "submission_latency_seconds",
+      "job_acceptance_latency_seconds",
+      "acceptance_to_submission_seconds",
+      "distance_from_agent_home_km",
+      "sim_age_at_activation_days",
+      "customer_msisdn_prior_activation_count",
+      "days_to_payout_cutoff",
+      "ip_location_mismatch_flag",
+      "activation_method_is_manual_entry",
+      "proof_of_activation_missing_flag",
+      "submission_hour_of_day",
+      "network_type_is_cellular",
+      "customer_active_days_7d",
+      "days_to_first_customer_activity",
+      "transaction_count_7d",
+      "topup_amount_total_7d",
+      "usage_minutes_total_7d",
+      "support_contact_count_7d",
+      "complaint_or_refund_flag_7d",
+      "sim_active_at_day7",
+      "activity_dropoff_flag"
+    ],
+    "t0_no_agent_history": [
+      "submission_latency_seconds",
+      "job_acceptance_latency_seconds",
+      "acceptance_to_submission_seconds",
+      "distance_from_agent_home_km",
+      "sim_age_at_activation_days",
+      "customer_msisdn_prior_activation_count",
+      "days_to_payout_cutoff",
+      "ip_location_mismatch_flag",
+      "activation_method_is_manual_entry",
+      "proof_of_activation_missing_flag",
+      "submission_hour_of_day",
+      "network_type_is_cellular"
     ]
   },
-  "runtime_seconds": 3967.6
+  "runtime_seconds": 3330.6
 }
