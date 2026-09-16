@@ -1,0 +1,22 @@
+# Configuration for the inference service (src/serve). Separate from
+# config/generator.yaml and config/model.yaml because these are deployment
+# concerns, not generator or modelling parameters, but the same rule applies:
+# no number is hardcoded in a module, and every parameter states its source.
+
+artifact_dir: "artifacts"  # controls: where src.serve.artifact writes and src.serve.app reads the serialised model. source: assumption
+model_version: "t7_none-isotonic-v1"  # controls: the version string bumped by hand on a deliberate retrain, recorded in every prediction. source: assumption
+
+db_path: "outputs/predictions.db"  # controls: SQLite database file for persisted prediction records (Part C). source: assumption
+
+reason_phrases_path: "config/reason_phrases.yaml"  # controls: the plain-language mapping used to build reason strings (Part D). source: spec (Phase 7 supervisor review: write the mapping as config, not code)
+top_reason_count: 3  # controls: how many SHAP contributors are returned per prediction. source: spec (Phase 7 supervisor review: "top three SHAP contributors")
+
+host: "127.0.0.1"  # controls: bind address for `uvicorn src.serve.app:app`. source: assumption
+port: 8000  # controls: bind port. source: assumption
+
+# The two operating thresholds are NOT set here: they come from
+# outputs/band_operating_point.csv, the artifact of the Phase 6 cost
+# optimisation, so the service can never drift from the cost matrix that
+# derived them. src.serve.artifact copies the chosen row into the artifact
+# manifest at build time so a later change to outputs/ does not silently
+# change a deployed model's behaviour without a rebuild.

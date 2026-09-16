@@ -31,6 +31,16 @@ outputs/*.pkl
 outputs/*.joblib
 *.xgb
 
+# Phase 7: the deployable model itself (large, regenerable by
+# python -m src.serve.artifact) is not committed, but its manifest.json is --
+# same convention as outputs/*.json, provenance is a deliverable.
+artifacts/*/model.json
+artifacts/*/calibrator.pkl
+
+# The service's prediction database is runtime state, not a deliverable.
+outputs/predictions.db
+outputs/*.db
+
 # OS / editor
 .DS_Store
 Thumbs.db

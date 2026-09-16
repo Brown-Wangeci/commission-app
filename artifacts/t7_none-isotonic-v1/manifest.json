@@ -1,0 +1,173 @@
+{
+  "version": "t7_none-isotonic-v1",
+  "built_at": "2026-09-16T13:40:33.217388+00:00",
+  "model_type": "XGBoost binary classifier (gradient-boosted trees), isotonic-calibrated",
+  "feature_set": "t7",
+  "features": [
+    "submission_latency_seconds",
+    "job_acceptance_latency_seconds",
+    "acceptance_to_submission_seconds",
+    "distance_from_agent_home_km",
+    "agent_tenure_days",
+    "sim_age_at_activation_days",
+    "agent_activation_velocity_1h",
+    "agent_activation_velocity_24h",
+    "device_activations_7d",
+    "device_shared_agent_count_30d",
+    "distinct_devices_used_30d",
+    "customer_msisdn_prior_activation_count",
+    "days_to_payout_cutoff",
+    "ip_location_mismatch_flag",
+    "activation_method_is_manual_entry",
+    "proof_of_activation_missing_flag",
+    "submission_hour_of_day",
+    "network_type_is_cellular",
+    "customer_active_days_7d",
+    "days_to_first_customer_activity",
+    "transaction_count_7d",
+    "topup_amount_total_7d",
+    "usage_minutes_total_7d",
+    "support_contact_count_7d",
+    "complaint_or_refund_flag_7d",
+    "sim_active_at_day7",
+    "activity_dropoff_flag"
+  ],
+  "imbalance_method": "none",
+  "hyperparameters": {
+    "n_estimators": 700.0,
+    "max_depth": 3.0,
+    "learning_rate": 0.056227906565624895,
+    "min_child_weight": 10.0,
+    "subsample": 0.9183636766169222,
+    "colsample_bytree": 0.8639344086454759,
+    "reg_lambda": 2.9153819876616476
+  },
+  "inner_val_pr_auc": 0.6962899950959467,
+  "training": {
+    "n_fit_rows": 67909,
+    "n_calibration_rows": 22624,
+    "n_total_rows": 90533,
+    "training_seed": 1778582849
+  },
+  "provenance": {
+    "data": "synthetic, produced by src/generator (see docs/data_dictionary.md)",
+    "generator_config_hash": "e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251",
+    "model_config_hash": "7251a370d6d4ad667a8868667184f61d0686f30f3739b802004a5251e0887ae2",
+    "dataset": {
+      "generated_at": "2026-09-16T03:15:17.591683+00:00",
+      "seed": 42,
+      "num_activations": 90533,
+      "realised_fraud_rate": 0.07349806148034418
+    }
+  },
+  "operating_thresholds": {
+    "release_threshold": 0.266667,
+    "reject_threshold": 0.666667
+  },
+  "cost_matrix": [
+    {
+      "quantity": "commission",
+      "value": 1.0,
+      "unit": "commission",
+      "derivation": "the unit of account"
+    },
+    {
+      "quantity": "false_negative",
+      "value": 2.5,
+      "unit": "commissions",
+      "derivation": "commission paid on non-existent work, unrecoverable onboarding and investigation; CBK 2025 reports about four fifths of fraud-exposed value unrecovered"
+    },
+    {
+      "quantity": "false_positive_review",
+      "value": 0.05,
+      "unit": "commissions",
+      "derivation": "residual harm of the delay itself; Phase 5 measured a mean review wait of 0.006 days"
+    },
+    {
+      "quantity": "false_positive_reject",
+      "value": 3.0,
+      "unit": "commissions",
+      "derivation": "refusing honest earnings: lost commission, dispute handling and churn risk. Set above false_negative as a stated value judgement, not a measurement"
+    },
+    {
+      "quantity": "review_sensitivity",
+      "value": 0.85,
+      "unit": "probability",
+      "derivation": "P(a review catches fraud); a miss costs false_negative"
+    },
+    {
+      "quantity": "review_specificity",
+      "value": 0.95,
+      "unit": "probability",
+      "derivation": "P(a review clears honest work); a wrong refusal costs false_positive_reject"
+    },
+    {
+      "quantity": "cost of a reviewed fraudulent activation",
+      "value": 0.951285,
+      "unit": "commissions",
+      "derivation": "review 0.576 + (1 - 0.85) x 2.5"
+    },
+    {
+      "quantity": "cost of a reviewed genuine activation",
+      "value": 0.776285,
+      "unit": "commissions",
+      "derivation": "review 0.576 + delay 0.05 + (1 - 0.95) x 3.0"
+    },
+    {
+      "quantity": "loaded_hourly_rate_kes",
+      "value": 312.5,
+      "unit": "KSh per hour",
+      "derivation": "55000 KSh per month / 176 hours"
+    },
+    {
+      "quantity": "commission_value_kes",
+      "value": 81.34,
+      "unit": "KSh",
+      "derivation": "generator mean escrow times commission_rate; least-sourced input in the file"
+    },
+    {
+      "quantity": "review",
+      "value": 0.576285,
+      "unit": "commissions",
+      "derivation": "9 min / 60 * 312.50 KSh per hour / 81.34 KSh per commission"
+    },
+    {
+      "quantity": "reviews_per_reviewer_day",
+      "value": 40.0,
+      "unit": "reviews",
+      "derivation": "6 productive hours * 60 / 9 min"
+    },
+    {
+      "quantity": "mean_daily_activations",
+      "value": 508.996,
+      "unit": "activations",
+      "derivation": "mean across the seeds of activations divided by simulated days"
+    },
+    {
+      "quantity": "review_capacity_daily_share",
+      "value": 0.0785861,
+      "unit": "share of volume",
+      "derivation": "1 reviewer(s) * 40 reviews / 509 activations per day"
+    }
+  ],
+  "cross_validated_performance": {
+    "note": "Phase 5/6 out-of-fold performance across seeds 7, 42, 101, 2024; not measured on this artifact, which is trained on all of that data",
+    "t7_none": {
+      "prevalence_mean": 0.0728266,
+      "prevalence_sd_across_seeds": 0.00349437,
+      "pr_auc_mean": 0.711992,
+      "pr_auc_sd_across_seeds": 0.0338731,
+      "roc_auc_mean": 0.929654,
+      "roc_auc_sd_across_seeds": 0.0108391,
+      "recall_at_p90_mean": 0.42434,
+      "recall_at_p90_sd_across_seeds": 0.0553415,
+      "recall_at_p95_mean": 0.350552,
+      "recall_at_p95_sd_across_seeds": 0.0597254,
+      "prevalence_sd_across_folds": 0.00665071,
+      "pr_auc_sd_across_folds": 0.053344,
+      "roc_auc_sd_across_folds": 0.0170157,
+      "recall_at_p90_sd_across_folds": 0.0801317,
+      "recall_at_p95_sd_across_folds": 0.0870224
+    }
+  }
+}

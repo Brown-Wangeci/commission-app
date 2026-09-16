@@ -1,0 +1,164 @@
+# Plain-language templates for admin-facing reason strings.
+#
+# Every feature in T0_FEATURES and T7_FEATURES (src/generator/features.py) has
+# exactly one entry here. `src/serve/reasons.py` reads this file and refuses to
+# start if a feature is missing, so a new feature can never reach an admin as
+# a raw column name.
+#
+# `agent_level: true` marks a feature that describes the agent's recent
+# history rather than this specific activation or its customer -- the same
+# split as AGENT_HISTORY_FEATURES in src/train/data.py, used by the Phase 4
+# ablation and the Phase 5 SHAP breakdown. The service marks these in every
+# response so an admin can see when they are being told about the person
+# rather than the job. Kept as data here (not re-derived from that tuple) so
+# the reason mapping is inspectable and editable without touching code.
+#
+# `kind` selects how the raw feature value is turned into words:
+#   numeric - format the value directly into `template`
+#   hours   - the underlying feature is in seconds; divide by 3600 first
+#   flag    - a 0/1 feature; `template_true` or `template_false` is used
+
+features:
+  # --- T0: available the moment an activation is submitted ---
+  submission_latency_seconds:
+    agent_level: false
+    kind: hours
+    template: "{value:.1f} hours passed between the job being assigned and submitted"
+
+  job_acceptance_latency_seconds:
+    agent_level: false
+    kind: hours
+    template: "the job sat unaccepted for {value:.1f} hours"
+
+  acceptance_to_submission_seconds:
+    agent_level: false
+    kind: hours
+    template: "the agent took {value:.1f} hours between accepting the job and submitting it"
+
+  distance_from_agent_home_km:
+    agent_level: false
+    kind: numeric
+    template: "the activation was {value:.1f} km from the agent's registered base"
+
+  agent_tenure_days:
+    agent_level: true
+    kind: numeric
+    template: "the agent has been on the platform {value:.0f} days"
+
+  sim_age_at_activation_days:
+    agent_level: false
+    kind: numeric
+    template: "the SIM was registered {value:.1f} days before this activation"
+
+  agent_activation_velocity_1h:
+    agent_level: true
+    kind: numeric
+    template: "the agent submitted {value:.0f} activation(s) in the last hour, including this one"
+
+  agent_activation_velocity_24h:
+    agent_level: true
+    kind: numeric
+    template: "the agent submitted {value:.0f} activations in the previous 24 hours"
+
+  device_activations_7d:
+    agent_level: true
+    kind: numeric
+    template: "this device was used for {value:.0f} activations in the last 7 days"
+
+  device_shared_agent_count_30d:
+    agent_level: true
+    kind: numeric
+    template: "{value:.0f} different agent(s) used this device in the last 30 days"
+
+  distinct_devices_used_30d:
+    agent_level: true
+    kind: numeric
+    template: "the agent used {value:.0f} different device(s) in the last 30 days"
+
+  customer_msisdn_prior_activation_count:
+    agent_level: false
+    kind: numeric
+    template: "this phone number was activated {value:.0f} time(s) before, in the last 90 days"
+
+  days_to_payout_cutoff:
+    agent_level: false
+    kind: numeric
+    template: "the activation was submitted {value:.1f} days before the next payout cutoff"
+
+  ip_location_mismatch_flag:
+    agent_level: false
+    kind: flag
+    template_true: "the network location disagreed with the device's GPS location"
+    template_false: "the network location agreed with the device's GPS location"
+
+  activation_method_is_manual_entry:
+    agent_level: false
+    kind: flag
+    template_true: "the details were keyed in by hand rather than scanned"
+    template_false: "the details were scanned rather than keyed in by hand"
+
+  proof_of_activation_missing_flag:
+    agent_level: false
+    kind: flag
+    template_true: "no proof of activation was attached"
+    template_false: "proof of activation was attached"
+
+  submission_hour_of_day:
+    agent_level: false
+    kind: numeric
+    template: "the activation was submitted at {value:.0f}:00"
+
+  network_type_is_cellular:
+    agent_level: false
+    kind: flag
+    template_true: "the activation was submitted over mobile data"
+    template_false: "the activation was submitted over wifi"
+
+  # --- T7: available seven days after submission ---
+  customer_active_days_7d:
+    agent_level: false
+    kind: numeric
+    template: "the customer used the service on {value:.0f} of the first 8 days"
+
+  days_to_first_customer_activity:
+    agent_level: false
+    kind: numeric
+    template: "the customer first used the service {value:.0f} day(s) after signup"
+
+  transaction_count_7d:
+    agent_level: false
+    kind: numeric
+    template: "the customer made {value:.0f} transaction(s) in the first week"
+
+  topup_amount_total_7d:
+    agent_level: false
+    kind: numeric
+    template: "the customer topped up {value:.0f} shillings in the first week"
+
+  usage_minutes_total_7d:
+    agent_level: false
+    kind: numeric
+    template: "the customer used {value:.0f} minute(s) of service in the first week"
+
+  support_contact_count_7d:
+    agent_level: false
+    kind: numeric
+    template: "the customer contacted support on {value:.0f} day(s) in the first week"
+
+  complaint_or_refund_flag_7d:
+    agent_level: false
+    kind: flag
+    template_true: "a complaint or refund request was filed in the first week"
+    template_false: "no complaint or refund request was filed in the first week"
+
+  sim_active_at_day7:
+    agent_level: false
+    kind: flag
+    template_true: "the account was still active a week after signup"
+    template_false: "the account had been deactivated within the week"
+
+  activity_dropoff_flag:
+    agent_level: false
+    kind: flag
+    template_true: "the customer was active in the first two days and then stopped"
+    template_false: "the customer did not show an early-then-stop usage pattern"

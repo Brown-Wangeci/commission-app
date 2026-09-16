@@ -13,3 +13,14 @@ pyyaml==6.0.3
 matplotlib==3.11.2
 pytest==9.1.1
 jupyter==1.1.1
+
+# Phase 7: the inference service (src/serve). joblib is scikit-learn's own
+# serialisation helper (already installed transitively); listed explicitly
+# because src/serve/artifact.py imports it directly to persist the isotonic
+# calibrator. fastapi/uvicorn/pydantic are the service framework itself --
+# no reimplemented HTTP or validation layer.
+joblib==1.6.0
+fastapi==0.141.1
+uvicorn==0.53.0
+pydantic==2.13.5
+httpx==0.28.1  # FastAPI's recommended in-process test client (already installed transitively)
