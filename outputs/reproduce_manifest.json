@@ -1,0 +1,665 @@
+{
+  "generated_at": "2026-09-17T00:53:47.934154+00:00",
+  "stages_requested": [
+    "multiseed",
+    "calibrate",
+    "bands",
+    "figures"
+  ],
+  "seed_override": null,
+  "tolerance": 0.02,
+  "total_seconds": 1855.9,
+  "stage_seconds": {
+    "multiseed": 1795.4,
+    "calibrate": 4.1,
+    "bands": 47.3,
+    "figures": 9.1
+  },
+  "steps": [
+    {
+      "module": "src.train.multiseed",
+      "seconds": 1795.4,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.calibration",
+      "seconds": 4.1,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.costs",
+      "seconds": 1.3,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.bands",
+      "seconds": 6.4,
+      "returncode": 0
+    },
+    {
+      "module": "src.serve.bands_t0",
+      "seconds": 3.1,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.fairness",
+      "seconds": 3.4,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.band_comparison",
+      "seconds": 1.3,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.auto_release",
+      "seconds": 7.0,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.multiseed_results",
+      "seconds": 4.4,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.commission_sweep",
+      "seconds": 12.6,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.explanations",
+      "seconds": 4.1,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.disagreement",
+      "seconds": 3.6,
+      "returncode": 0
+    },
+    {
+      "module": "src.eval.figures",
+      "seconds": 9.1,
+      "returncode": 0
+    }
+  ],
+  "reproduced_within_tolerance": true,
+  "headline_comparison": [
+    {
+      "table": "PR-AUC by model",
+      "row": "model=t0_none",
+      "column": "pr_auc_mean",
+      "before": 0.627586,
+      "after": 0.627586,
+      "status": "OK"
+    },
+    {
+      "table": "PR-AUC by model",
+      "row": "model=t7_none",
+      "column": "pr_auc_mean",
+      "before": 0.711992,
+      "after": 0.711992,
+      "status": "OK"
+    },
+    {
+      "table": "PR-AUC by model",
+      "row": "model=t7_smote",
+      "column": "pr_auc_mean",
+      "before": 0.703405,
+      "after": 0.703405,
+      "status": "OK"
+    },
+    {
+      "table": "T7 band operating point",
+      "row": "variant=chosen (capacity constrained)",
+      "column": "release_threshold",
+      "before": 0.266667,
+      "after": 0.266667,
+      "status": "OK"
+    },
+    {
+      "table": "T7 band operating point",
+      "row": "variant=unconstrained",
+      "column": "release_threshold",
+      "before": 0.266667,
+      "after": 0.266667,
+      "status": "OK"
+    },
+    {
+      "table": "T7 band operating point",
+      "row": "variant=chosen (capacity constrained)",
+      "column": "reject_threshold",
+      "before": 0.666667,
+      "after": 0.666667,
+      "status": "OK"
+    },
+    {
+      "table": "T7 band operating point",
+      "row": "variant=unconstrained",
+      "column": "reject_threshold",
+      "before": 0.666667,
+      "after": 0.666667,
+      "status": "OK"
+    },
+    {
+      "table": "T7 band operating point",
+      "row": "variant=chosen (capacity constrained)",
+      "column": "expected_cost_per_activation",
+      "before": 0.106358,
+      "after": 0.106358,
+      "status": "OK"
+    },
+    {
+      "table": "T7 band operating point",
+      "row": "variant=unconstrained",
+      "column": "expected_cost_per_activation",
+      "before": 0.106358,
+      "after": 0.106358,
+      "status": "OK"
+    },
+    {
+      "table": "T0 band operating point",
+      "row": "variant=chosen (capacity constrained)",
+      "column": "release_threshold",
+      "before": 0.301471,
+      "after": 0.301471,
+      "status": "OK"
+    },
+    {
+      "table": "T0 band operating point",
+      "row": "variant=unconstrained",
+      "column": "release_threshold",
+      "before": 0.301471,
+      "after": 0.301471,
+      "status": "OK"
+    },
+    {
+      "table": "T0 band operating point",
+      "row": "variant=chosen (capacity constrained)",
+      "column": "reject_threshold",
+      "before": 0.729167,
+      "after": 0.729167,
+      "status": "OK"
+    },
+    {
+      "table": "T0 band operating point",
+      "row": "variant=unconstrained",
+      "column": "reject_threshold",
+      "before": 0.729167,
+      "after": 0.729167,
+      "status": "OK"
+    },
+    {
+      "table": "T0 band operating point",
+      "row": "variant=chosen (capacity constrained)",
+      "column": "expected_cost_per_activation",
+      "before": 0.121581,
+      "after": 0.121581,
+      "status": "OK"
+    },
+    {
+      "table": "T0 band operating point",
+      "row": "variant=unconstrained",
+      "column": "expected_cost_per_activation",
+      "before": 0.121581,
+      "after": 0.121581,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.9, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.110185,
+      "after": 0.110185,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.9, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.23155,
+      "after": 0.23155,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.9, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.0760723,
+      "after": 0.0760723,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.9, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.601393,
+      "after": 0.601393,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.95, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0548808,
+      "after": 0.0548808,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.95, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.112088,
+      "after": 0.112088,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.95, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.0312851,
+      "after": 0.0312851,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=logreg_t7, precision_target=0.95, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.418063,
+      "after": 0.418063,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.9, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.00933246,
+      "after": 0.00933246,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.9, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.111327,
+      "after": 0.111327,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.9, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.0077927,
+      "after": 0.0077927,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.9, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.171073,
+      "after": 0.171073,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.95, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0,
+      "after": 0.0,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.95, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.003763,
+      "after": 0.003763,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.95, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.0,
+      "after": 0.0,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=rules_t7, precision_target=0.95, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.0273258,
+      "after": 0.0273258,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.9, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0394866,
+      "after": 0.0394866,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.9, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.184567,
+      "after": 0.184567,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.9, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.259756,
+      "after": 0.259756,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.9, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.778657,
+      "after": 0.778657,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.95, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0184895,
+      "after": 0.0184895,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.95, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.129328,
+      "after": 0.129328,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.95, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.198927,
+      "after": 0.198927,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_smote, precision_target=0.95, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.723022,
+      "after": 0.723022,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.9, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0480332,
+      "after": 0.0480332,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.9, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.182307,
+      "after": 0.182307,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.9, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.209335,
+      "after": 0.209335,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.9, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.720201,
+      "after": 0.720201,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.95, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0209275,
+      "after": 0.0209275,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.95, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.131321,
+      "after": 0.131321,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.95, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.140262,
+      "after": 0.140262,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t0_spw, precision_target=0.95, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.66946,
+      "after": 0.66946,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.9, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.122849,
+      "after": 0.122849,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.9, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.367915,
+      "after": 0.367915,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.9, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.285403,
+      "after": 0.285403,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.9, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.832364,
+      "after": 0.832364,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.95, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0664526,
+      "after": 0.0664526,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.95, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.275154,
+      "after": 0.275154,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.95, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.222705,
+      "after": 0.222705,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_smote, precision_target=0.95, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.778848,
+      "after": 0.778848,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.9, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.128839,
+      "after": 0.128839,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.9, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.344343,
+      "after": 0.344343,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.9, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.271819,
+      "after": 0.271819,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.9, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.799666,
+      "after": 0.799666,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.95, typology=collusion",
+      "column": "recall_mean",
+      "before": 0.0591421,
+      "after": 0.0591421,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.95, typology=ghost",
+      "column": "recall_mean",
+      "before": 0.245718,
+      "after": 0.245718,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.95, typology=payout_gaming",
+      "column": "recall_mean",
+      "before": 0.189237,
+      "after": 0.189237,
+      "status": "OK"
+    },
+    {
+      "table": "Per-typology recall (single-seed CV)",
+      "row": "model=xgb_t7_spw, precision_target=0.95, typology=sim_farming",
+      "column": "recall_mean",
+      "before": 0.740606,
+      "after": 0.740606,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=honest, band=auto-released",
+      "column": "share_mean",
+      "before": 0.991417,
+      "after": 0.991417,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=honest, band=reject",
+      "column": "share_mean",
+      "before": 0.00127134,
+      "after": 0.00127134,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=honest, band=review",
+      "column": "share_mean",
+      "before": 0.00731162,
+      "after": 0.00731162,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=opportunistic, band=auto-released",
+      "column": "share_mean",
+      "before": 0.985109,
+      "after": 0.985109,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=opportunistic, band=reject",
+      "column": "share_mean",
+      "before": 0.00226932,
+      "after": 0.00226932,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=opportunistic, band=review",
+      "column": "share_mean",
+      "before": 0.0126216,
+      "after": 0.0126216,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=systematic, band=auto-released",
+      "column": "share_mean",
+      "before": 0.908477,
+      "after": 0.908477,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=systematic, band=reject",
+      "column": "share_mean",
+      "before": 0.0146857,
+      "after": 0.0146857,
+      "status": "OK"
+    },
+    {
+      "table": "Fairness by honesty",
+      "row": "honesty_type=systematic, band=review",
+      "column": "share_mean",
+      "before": 0.0768373,
+      "after": 0.0768373,
+      "status": "OK"
+    }
+  ],
+  "config_hash": "9830e2e161e36700c5bf279ff7e176597d075d39a598cddecdb941617e02781f"
+}

@@ -1,0 +1,10 @@
+t0_band,t7_band,share_mean,share_sd_across_seeds,share_pooled_across_seeds
+auto_release,auto_release,0.926436,0.00613173,0.926504
+auto_release,reject,0.00172467,0.000302301,0.0017247
+auto_release,review,0.0216692,0.00348698,0.0216734
+reject,auto_release,0.0014486,0.000597309,0.00144635
+reject,reject,0.0226223,0.00493866,0.0225685
+reject,review,0.0010909,0.000503202,0.00108613
+review,auto_release,0.00940312,0.00132272,0.00938762
+review,reject,0.00874865,0.00118356,0.00874904
+review,review,0.00685684,0.00109081,0.0068606

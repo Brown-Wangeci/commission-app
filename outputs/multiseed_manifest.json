@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T08:23:12.109265+00:00",
+  "generated_at": "2026-09-17T00:52:45.889632+00:00",
   "generator_config_hash": "e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251",
   "model_config_hash": "7251a370d6d4ad667a8868667184f61d0686f30f3739b802004a5251e0887ae2",
   "seeds": [
@@ -39,5 +39,5 @@
     "imbalanced-learn": "0.14.2",
     "shap": "0.52.0"
   },
-  "runtime_seconds": 940.4
+  "runtime_seconds": 1790.4
 }

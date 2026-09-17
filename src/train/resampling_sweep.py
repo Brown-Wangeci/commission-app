@@ -114,7 +114,7 @@ def main() -> None:
     print(summary.round(4).to_string(index=False))
     print()
     print("PR-AUC by method and ratio")
-    print(summary.pivot(index="minority_ratio", columns="method", values="pr_auc_mean").round(4).to_string())
+    print(summary.pivot(index="mean_minority_ratio", columns="method", values="pr_auc_mean").round(4).to_string())
 
 
 if __name__ == "__main__":
