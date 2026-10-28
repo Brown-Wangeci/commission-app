@@ -540,3 +540,77 @@ no issue covers them:
 - The Payouts screen lists these authorisations; the review History shows
   "Payout authorised".
 
+## Issue #16: Seed data
+
+`npm run db:seed` (`prisma/seed.ts`). **It needs the scoring service
+running**, because it never writes a score by hand. Every activation goes
+through the real code: assignment and escrow, submission with placeholder
+photos, T0 scoring by the real service, the durable T7 job run at the
+hold-close time, and real reviewer and agent actions. Every probability,
+band, cut-off and reason in the seeded data came from the scoring service.
+
+What it creates (all fictional): two reviewers (Amina Otieno, David Mwangi),
+two client businesses (Mwanga Mobile, Tujenge Pesa), six agents with
+different histories (Grace Wanjiku 550 days and a clean record; Faith Chebet
+820 days; Mercy Achieng 400 days with one refusal; Samuel Mutua with
+refusals and a dispute; Kevin Omondi 60 days; Brian Kiprop 20 days), four
+funded jobs with job areas in Nairobi and Kisumu, and 62 activations.
+Accounts: `reviewer@`, `reviewer2@`, `client@`, `client2@`, `grace@`,
+`faith@`, `mercy@`, `samuel@`, `kevin@`, `brian@` (all `@ledgerfield.test`),
+password `ledgerfield-demo`.
+
+Named cases, with the band the real model gave on the build run:
+
+| Case | State | Scores |
+|---|---|---|
+| Grace, the mockup-like case | in review | T0 auto_release 0.105, T7 review 0.382 |
+| Brian, escalated at submission | in review | T0 reject 0.747 |
+| Kevin, evidence asked for and returned | in review | T0 reject 0.747 |
+| Faith, could not be scored | in review, unscored (T0) | none |
+| Samuel, contested refusal | disputed | T0 review 0.398, T7 reject 0.757 |
+| Samuel, automatic refusal | refused (dispute open) | T0 review 0.398, T7 reject 0.757 |
+| Mercy, band changes between T0 and T7 | approved | T0 review 0.494, T7 auto_release 0.001 |
+| Mercy, awaiting evidence | awaiting evidence | T0 auto_release 0.271, T7 review 0.541 |
+| four agents, one each | held | T0 auto_release |
+| Grace | withdrawn | T0 auto_release |
+| Brian, just submitted | submitted (T0 queued) | none yet |
+
+- **The mockup-like case** (Grace, `LF-000050` on a fresh seed): she submits
+  at Gikomba 22 minutes after a submission at Thika Road Mall 9.3 km away,
+  photo 6 is 1.5 km outside the job area, the network reported Mombasa while
+  the GPS fix is in Nairobi, no proof of activation, details typed in, a SIM
+  registered the day before, and a customer inactive all week. The model's
+  biggest concern is the missing proof (+1.04); her 531 days on the platform
+  pull the other way (agent-level, -1.01). Her record shows 20 approved and
+  none rejected.
+- **How the cases were found:** the real model was probed with hand-built
+  requests (scratch scripts, not committed). Long tenure dominates: an agent
+  with about 3.6 years scores near 0.001 whatever the submission looks like.
+  Distance from base *lowers* risk in this model.
+- **Decision: risky cases are placed exactly two days before a payout
+  cutoff**, so the model's days-to-cutoff input, and so the outcome, is the
+  same whatever day the seed is run. The seed prints each named case's actual
+  state and scores and says if any landed elsewhere.
+- **Decision: two activations reuse a customer number** from an earlier
+  activation, which is how Brian's and Kevin's escalations arise. Both are
+  plausible re-registrations, and the reviewer sees "this phone number was
+  activated before".
+- **`scored_t0` and `scored_t7` are pass-through states.** The app moves an
+  activation through them and on to its next state in one transaction, so
+  no activation rests in them. Every seeded scored activation passed through
+  them, which the audit log shows. Seeding one to rest there would mean
+  creating a state the app itself never leaves an activation in.
+- **The "could not be scored" case** is made by pointing that one submission
+  at an unreachable address. Its background retry is due a minute later;
+  once the scheduler runs with the service up, the retry's score is stored
+  as advice and the flag clears. Show it before starting the scheduler.
+- **Safe to rerun:** the seed refuses to touch a database containing any
+  account outside `@ledgerfield.test`. Otherwise it truncates the app tables,
+  restarts the reference counter, clears seeded evidence files and builds
+  again. A live test runs it twice on an empty database (same counts both
+  times) and checks the refusal.
+- The seed pins a 7-day hold window for itself; a shorter
+  `HOLD_WINDOW_SECONDS` in `.env` still applies to new submissions.
+- Placeholder photos are flat PNG compositions generated in code
+  (`prisma/seed-support/placeholder-png.ts`).
+
