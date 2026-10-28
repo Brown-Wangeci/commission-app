@@ -673,3 +673,35 @@ Named cases, with the band the real model gave on the build run:
   with seed data: all 30 returned the expected 4xx in the standard shape with
   no stack trace. It is skipped when no app is running.
 
+## Issue #19: Deployment and environment configuration (left open)
+
+Done:
+- `.env.example` lists every variable the app, scripts and tests read, with
+  defaults and no secrets. A scan of `app/` found no committed secret; `.env`,
+  the local database directory and evidence storage are git-ignored.
+- `app/README.md`: requirements, first-time setup, running the app and the
+  scoring service together, the scheduler, every configuration variable,
+  tests, deployment steps, layout and known limitations.
+- `npm run dev:all` (`scripts/run-all.ts`) starts the local database, the
+  scoring service (with the repository's `.venv`), the app and, with
+  `--scheduler`, the scheduler, with labelled output. Tested: `/api/health`
+  reported database and scoring service OK.
+  - **Found and fixed while testing:** a scheduler that polls before the
+    scoring service has loaded finds it "down" and, correctly but needlessly,
+    sends due activations to review as unscored. `dev:all` now starts the
+    scheduler only on request and only after the scoring service reports its
+    models loaded.
+- `npm run start:deploy` runs `prisma migrate deploy` and then `next start`,
+  so migrations run as part of every deploy. `next start` honours `PORT`.
+- `GET /api/health` for hosting health checks.
+
+**Not done, and why #19 stays open:** the issue asks for the app to deploy
+to a hosted environment and pass the demonstration path there. That needs
+your hosting account, a hosted PostgreSQL, a place to run the Python scoring
+service with its model artifacts (which are not committed), persistent
+storage for evidence files, and secrets. None of that can be created from
+here without your accounts. The README's "Deploying" section lists the
+steps. No Dockerfile was written: Docker is installed but its daemon was not
+running, so a container build could not be tested, and an untested
+deployment file would be a guess.
+
