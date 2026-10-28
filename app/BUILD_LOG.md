@@ -441,3 +441,39 @@ trigger now receives the submission time and the agent as actor); a function
 prop was passed from a server component to a client component on the
 dashboard; stat tiles in grids were offset by a sibling-card margin.
 
+## Issue #11: Agent view
+
+- **My jobs** (`/agent`): unread notifications (evidence requests, decisions),
+  jobs assigned and waiting to be accepted (Accept button), and accepted jobs
+  ready for an activation.
+- **Submit an activation** (`/agent/submit/{assignmentId}`): customer number,
+  SIM registration date, scanned or typed, photos (up to 12), optional proof
+  of activation, a note, and the GPS fix (from the browser, or entered by
+  hand).
+  - **Decision: photo time and place.** Each photo is stamped with the file's
+    last-modified time and the device's current GPS fix when it is added.
+    EXIF is not parsed, to avoid a new dependency; a field app would read
+    the camera's own metadata.
+  - **Decision: a "simulated device details (demonstration only)" panel**
+    shows the browser-generated device id (kept in localStorage), the OS
+    detected from the browser, app version `web-0.1.0`, network type, and
+    the network-reported region (defaults to the GPS fix's region because
+    there is no geo-IP lookup; see #6). It also has a "use the job area
+    centre as my location (demo)" button, because desktop browsers often
+    have no GPS. The panel is labelled as simulation, not hidden.
+- **My activations** (`/agent/activations`): every activation with its status
+  and the plain-language reason.
+- **Activation detail**: status and reason; the reviewer's evidence request
+  with a reply form (note and/or photos); contest a refusal (once);
+  withdraw while undecided; the agent's own evidence.
+- **Decision: what an agent is told.** A person's decision is quoted with
+  the reviewer's reason. An automatic release or refusal is explained with
+  that decision's own probability and cut-off, and an automatic refusal also
+  lists the model's risk-raising reasons in plain words, so the agent can
+  contest it meaningfully. Signed contributions and agent-level analysis
+  stay on the reviewer's screen.
+- Rehearsed in a real browser: Mercy answered an evidence request through the
+  form and the activation moved from awaiting evidence to in review. This
+  exposed a bug (the form was read after an `await`, when React had cleared
+  it), which is fixed.
+
