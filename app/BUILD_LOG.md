@@ -614,3 +614,32 @@ Named cases, with the band the real model gave on the build run:
 - Placeholder photos are flat PNG compositions generated in code
   (`prisma/seed-support/placeholder-png.ts`).
 
+## Issue #17: End-to-end demonstration path
+
+- `app/DEMO.md`: set-up, accounts, a tour of the review screen on the
+  mockup-like case, a live path from job posting through funding,
+  assignment, acceptance, submission, T0 scoring, first-week activity,
+  forced T7, review and the final decision, an awaiting-evidence round trip,
+  and optional extras (a scoring failure, the scheduled path, a contested
+  refusal).
+- **Decision: the live path branches on the T0 band it actually gets.**
+  The model decides every band and the T0 score depends on the run date, so
+  the demo cannot promise a fixed outcome. DEMO.md tells the presenter which
+  first week to report: a dormant one if T0 was auto-release, an active one
+  if T0 was review or reject. Either way the band changes between T0 and T7.
+- **Rehearsed twice with no manual database edits** (28 October 2026, on a
+  fresh seed, against `next start`):
+  - `npm run demo:rehearse` (committed, `scripts/rehearse-demo.ts`): signs in
+    as each role and walks the path through the app's HTTP API. Result: T0
+    auto_release 24.1% -> dormant week -> T7 review 54.1% -> approved by the
+    reviewer -> payout authorised; then evidence requested on LF-000050 ->
+    Grace replied -> back in review -> approved.
+  - A headless browser clicked through the real forms (client posts and
+    funds, admin assigns, agent accepts and submits with uploaded photos,
+    client reports the week, admin forces T7 and approves). Result: held ->
+    T7 review 50.9% -> approved; the Payouts page lists the authorisation.
+    The browser script lives in the scratchpad, not the repository, because
+    it needs a local Chrome.
+- Added `GET /api/admin/agents` for the rehearsal script, and made the
+  hold-window panel's references link to the review screen.
+
