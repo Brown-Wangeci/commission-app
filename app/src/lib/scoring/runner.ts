@@ -1,6 +1,6 @@
 import type { ActivationState, Prisma, ScoringJob, ScoringMode } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { applyT0Decision } from "@/lib/activations/outcomes";
+import { applyT0Decision, applyT7Decision } from "@/lib/activations/outcomes";
 import { recordAuditEvent } from "@/lib/activations/transition";
 import { callScoringWithRetry, type CallResult } from "./client";
 import { recordDecision, type DecisionWithReasons, type ScoringTrigger } from "./decisions";
@@ -62,6 +62,7 @@ async function applyDecision(
   tx: Prisma.TransactionClient,
 ): Promise<void> {
   if (path === "primary" && mode === "t0") await applyT0Decision(tx, activationId, decision, now);
+  if (path === "primary" && mode === "t7") await applyT7Decision(tx, activationId, decision, now);
   if (path === "advisory") {
     await tx.activation.updateMany({ where: { id: activationId, unscoredStage: mode }, data: { unscoredStage: null } });
   }

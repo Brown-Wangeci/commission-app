@@ -49,3 +49,44 @@ export async function applyT0Decision(
   });
   await enqueueScoring(tx, { activationId, mode: "t7", dueAt: holdClosesAt, trigger: "hold_close" });
 }
+
+/**
+ * Hold-close decision. This is the only automatic decision that moves
+ * money: auto_release approves, review goes to a person, reject refuses.
+ */
+export async function applyT7Decision(
+  tx: Prisma.TransactionClient,
+  activationId: string,
+  decision: DecisionWithReasons,
+  now: Date,
+): Promise<void> {
+  await transitionActivation(tx, { activationId, from: "held", to: "scored_t7", note: scoreNote(decision), at: now });
+  if (decision.band === "auto_release") {
+    await transitionActivation(tx, {
+      activationId,
+      from: "scored_t7",
+      to: "approved",
+      note: "At or below the hold-close release cut-off: released automatically.",
+      at: now,
+    });
+    return;
+  }
+  if (decision.band === "review") {
+    await transitionActivation(tx, {
+      activationId,
+      from: "scored_t7",
+      to: "in_review",
+      note: "Between the hold-close cut-offs: sent to a reviewer.",
+      at: now,
+    });
+    await openReviewItem(tx, activationId, "band_review", now);
+    return;
+  }
+  await transitionActivation(tx, {
+    activationId,
+    from: "scored_t7",
+    to: "refused",
+    note: "Above the hold-close reject cut-off: refused automatically.",
+    at: now,
+  });
+}
