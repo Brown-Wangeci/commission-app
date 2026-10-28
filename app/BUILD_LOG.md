@@ -246,3 +246,35 @@ combination for a demonstration build.
   version are the ones the service returned. It passed against
   `t0_none-isotonic-v1`.
 
+## Issue #7: T7 scoring at hold-close
+
+- **Window length:** `HOLD_WINDOW_SECONDS`, default 604800 (7 days). Seconds
+  rather than days so tests and demos can use a window of a few seconds.
+- **Scheduled path:** `npm run scheduler` polls every
+  `SCHEDULER_INTERVAL_SECONDS` for due rows in `ScoringJob` and runs them. No
+  timer is held in memory: the schedule is the table. Each job is claimed by
+  a conditional update (`pending and due`, or `running` with an expired
+  lease), so several workers and any number of restarts produce exactly one
+  call. A test starts the scheduler as separate OS processes: once before the
+  due time, then two at once after it, then again. The fake scoring service
+  receives exactly one T7 request and the activation is decided once.
+- **Manual triggers:**
+  - `POST /api/admin/scoring/run-due` (admin) runs everything due now; the
+    dashboard's "Run due scoring now" button calls it.
+  - `POST /api/admin/activations/{id}/score-t7` (admin) forces T7 for one
+    activation; the dashboard's hold-window panel has a "Force T7 now" button
+    per held activation, and the review screen has one too (issue #12). On a
+    held activation it closes the hold early and applies the band. On one a
+    reviewer already owns (in review, awaiting evidence, disputed) the score
+    is stored as advice and does not change the state.
+  - `POST /api/cron/scoring` with `Authorization: Bearer $CRON_SECRET` for a
+    hosted cron service; returns 404 when `CRON_SECRET` is unset.
+- **T7 bands:** auto_release -> approved; review -> in_review; reject ->
+  refused. This is the only automatic decision that moves money.
+- **First-week activity:** the client reports it through
+  `POST /api/client/activations/{id}/activity` (days 0 to 7; a report replaces
+  earlier figures for the same days). **Demo concession:** the API does not
+  stop a client reporting a day that has not happened yet, because a demo
+  cannot wait a week. In production it should reject day d before
+  submission + d days.
+
