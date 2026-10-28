@@ -1,0 +1,42 @@
+{
+  "name": "ledgerfield",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ledgerfield: commission payout platform for independent sales agents, using the fraud-scoring service at the repository root.",
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "prisma generate && next build",
+    "start": "next start --port 3000",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:start": "tsx scripts/local-postgres.ts",
+    "db:migrate": "prisma migrate deploy",
+    "db:reset": "prisma migrate reset --force --skip-seed",
+    "db:seed": "tsx prisma/seed.ts",
+    "scheduler": "tsx scripts/scheduler.ts",
+    "scheduler:once": "tsx scripts/scheduler.ts --once"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "bcryptjs": "2.4.3",
+    "next": "15.5.28",
+    "next-auth": "4.24.15",
+    "react": "19.1.10",
+    "react-dom": "19.1.10",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "2.4.6",
+    "@types/node": "22.20.5",
+    "@types/react": "19.1.17",
+    "@types/react-dom": "19.1.11",
+    "embedded-postgres": "17.6.0-beta.15",
+    "prisma": "6.19.3",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  }
+}
