@@ -500,3 +500,23 @@ dashboard; stat tiles in grids were offset by a sibling-card margin.
   agent would need an agent directory. Admins assign from the Clients screen
   (built with the other admin screens).
 
+## Stage 3, remaining navigation items (no issue of their own)
+
+Built as thin but real screens on their own branch and pull request, since
+no issue covers them:
+- **Dashboard:** counts for every state, unread notifications, a warning
+  when anything could not be scored, the last eight model scores and
+  reviewer decisions, and the hold-window panel (force T7 / run due scoring).
+- **Agents:** every agent with submissions, approved, rejected, withdrawn,
+  pending and approval rate (or "Unavailable"), linking to the full history.
+- **Clients:** every client business and its jobs with escrow position.
+  Each job opens an admin job page with the **assign-an-agent control**
+  (this is where assignments, and so escrow holds, are created in the demo)
+  and the assignments with each hold's derived state.
+- **Payouts:** authorised payouts with amount, payout number, who authorised
+  it (a reviewer or automatic release) and the recorded status. It is empty
+  until the payout boundary (#15) is wired in; it also warns if any approved
+  activation lacks an authorisation.
+- **Audit log:** every audit event newest first, 100 per page, with the
+  activation, the actor and the recorded detail.
+
