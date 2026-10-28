@@ -113,3 +113,29 @@ combination for a demonstration build.
   thresholds are out of order, whose probability is outside 0 to 1, or which
   is missing a field is treated as a scoring failure, not a score.
 
+## Issue #2: Authentication and role separation
+
+- NextAuth.js 4 with an email and password credentials provider and JWT
+  sessions (8 hours). The role is copied into the token at sign-in so
+  middleware can check it without a database call.
+- **Decision: route policy lives in one table** (`src/lib/auth/policy.ts`):
+  `/admin` and `/api/admin` need admin, `/agent` and `/api/agent` need agent,
+  `/client` and `/api/client` need client. `src/middleware.ts` applies it to
+  every request (pages redirect, APIs return 401/403 JSON), and every route
+  handler checks the role again with `requireApiRole`, so a missed matcher
+  cannot expose a route.
+- **Decision: public sign-up creates agent and client accounts only.** Admin
+  accounts come from the seed script. A public form that could create a
+  reviewer would let anyone approve payouts.
+- Agents give an M-Pesa payout number and a base location at sign-up (the
+  scoring model needs `agent_home_lat/lon` and `agent_registration_date`).
+  Kenyan numbers are accepted as 07.., 01.., 254.. or +254.. and stored as
+  0XXXXXXXXX.
+- The standard error body `{ "error": { "code", "message", "details" } }` was
+  introduced here because sign-up needed it; issue #18 extends it everywhere.
+- Visual language set up in `src/app/globals.css`: paper background, white
+  cards, one green accent for money and primary actions, rust for "raises
+  risk", slate blue for "lowers risk" (chosen over red and green so the pair
+  stays distinguishable for colour-blind reviewers), violet for agent-history
+  factors.
+
