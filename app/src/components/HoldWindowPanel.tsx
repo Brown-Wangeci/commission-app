@@ -3,14 +3,6 @@ import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
 import { ActionButton } from "./ActionButton";
 
-type RunSummary = { summary: Record<string, number> };
-
-function describeRun(data: unknown): string {
-  const summary = (data as RunSummary).summary;
-  const ran = Object.entries(summary).filter(([, count]) => count > 0);
-  return ran.length === 0 ? "Nothing was due." : ran.map(([key, count]) => `${count} ${key.replace("_", " ")}`).join(", ");
-}
-
 /**
  * Activations waiting for the hold window to close, with the admin controls
  * for the T7 schedule: force one now, or run everything that is due.
@@ -29,7 +21,7 @@ export async function HoldWindowPanel() {
           <h2>Hold window</h2>
           <p className="small muted">Held activations are scored again by the T7 model when their hold closes.</p>
         </div>
-        <ActionButton url="/api/admin/scoring/run-due" label="Run due scoring now" describe={describeRun} />
+        <ActionButton url="/api/admin/scoring/run-due" label="Run due scoring now" report="run-summary" />
       </div>
       {held.length === 0 ? (
         <div className="empty">No activations are on hold.</div>

@@ -44,6 +44,8 @@ export type PreviousSubmission = {
   submittedAt: Date;
   gapMs: number;
   distanceKm: number;
+  gpsLat: number;
+  gpsLon: number;
 };
 
 export type DecisionView = {
@@ -60,6 +62,28 @@ export type DecisionView = {
 };
 
 export type ReviewDetail = Awaited<ReturnType<typeof reviewDetail>>;
+
+export type AuditEntry = {
+  at: Date;
+  kind: string;
+  fromState: ActivationState | null;
+  toState: ActivationState | null;
+  actorName: string | null;
+  detail: string | null;
+};
+
+const TIMELINE_KINDS = ["transition", "scoring_failed", "t7_forced", "activity_reported", "scoring_decision", "dispute_opened"];
+
+/** The activation's audit trail, oldest first, with actor names. Advisory scores only (primary ones show as transitions). */
+async function auditTrail(db: Tx, activationId: string): Promise<AuditEntry[]> {
+  const events = await db.auditEvent.findMany({ where: { activationId, kind: { in: TIMELINE_KINDS } }, orderBy: [{ at: "asc" }, { id: "asc" }] });
+  const actorIds = [...new Set(events.flatMap((e) => (e.actorId ? [e.actorId] : [])))];
+  const users = await db.user.findMany({ where: { id: { in: actorIds } }, select: { id: true, name: true } });
+  const names = new Map(users.map((u) => [u.id, u.name]));
+  return events
+    .filter((e) => e.kind !== "scoring_decision" || (e.detail ?? "").includes("(advisory)"))
+    .map((e) => ({ at: e.at, kind: e.kind, fromState: e.fromState, toState: e.toState, actorName: e.actorId ? names.get(e.actorId) ?? null : null, detail: e.detail }));
+}
 
 const detailInclude = {
   job: { include: { client: true } },
@@ -124,6 +148,8 @@ async function previousSubmission(
     submittedAt: previous.submittedAt,
     gapMs: activation.submittedAt.getTime() - previous.submittedAt.getTime(),
     distanceKm: distanceKm(previous.gpsLat, previous.gpsLon, activation.gpsLat, activation.gpsLon),
+    gpsLat: previous.gpsLat,
+    gpsLon: previous.gpsLon,
   };
 }
 
@@ -230,12 +256,13 @@ export async function reviewDetail(db: Tx, activationId: string) {
   const photos = items.filter((item) => item.kind === "photo");
   const decisions = (await decisionsFor(db, activation.id)).map(decisionView);
   const latest = decisions.at(-1) ?? null;
-  const [stats, previous, health, position]: [AgentStats, PreviousSubmission | null, ScoringHealth, QueuePosition | null] =
+  const [stats, previous, health, position, audit]: [AgentStats, PreviousSubmission | null, ScoringHealth, QueuePosition | null, AuditEntry[]] =
     await Promise.all([
       agentStats(db, activation.agentId),
       previousSubmission(db, activation),
       scoringHealth(db, activation.id, activation.unscoredStage),
       queuePosition(db, activation.id),
+      auditTrail(db, activation.id),
     ]);
   return {
     id: activation.id,
@@ -261,5 +288,6 @@ export async function reviewDetail(db: Tx, activationId: string) {
     payout: { amountKsh: activation.assignment.hold?.amountKsh ?? null, payoutMsisdn: activation.agent.payoutMsisdn, authorisation: activation.payout },
     actions: allowedActions(activation.state),
     position,
+    audit,
   };
 }

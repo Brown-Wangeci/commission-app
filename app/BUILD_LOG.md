@@ -369,3 +369,75 @@ combination for a demonstration build.
   `upheld`) or overturns (approve, dispute `overturned`). A second contest is
   refused with 409.
 
+## Issue #12: Admin review screen and review queue
+
+Built to the specified layout: top navigation with the "L Ledgerfield" mark,
+Dashboard, Review queue (count badge), Agents, Clients, Payouts, Audit log,
+and the signed-in reviewer's initials and name. The review screen
+(`/admin/review/{id}`) has the breadcrumb with working Previous and Next,
+the header, "What the agent submitted", "Check this first", "Submitted
+details", the agent card, "Model assessment", the payout panel and the
+closing line. Checked by screenshot at 1440 px and 390 px widths.
+
+The four corrections:
+1. **Thresholds.** No threshold exists anywhere in the UI code. The scale,
+   the "why it is here" line and the queue all read `releaseThreshold` and
+   `rejectThreshold` from the stored decision, which holds exactly what the
+   scoring service returned for the model that produced the score. On seed
+   data the screen shows 26.7% / 66.7% for T7 decisions and 30.1% / 72.9%
+   for T0 decisions. A test checks the sentence changes when the decision's
+   cut-offs change.
+2. **No retraining claim.** Closing line: "The model advises; you decide.
+   Your decision and your reason are recorded and shared with the agent and
+   the client." A test fails if the framing or closing line mentions
+   retraining, learning or feedback.
+3. **Ask for evidence** opens a form for what the agent should send (see #9
+   for the state and response flow); the item moves to the "Awaiting evidence"
+   tab of the queue.
+4. **Agent-level factors** carry an "About the agent" tag, a violet left rule
+   and tint, and the list ends with a count ("1 of 3 factors describe the
+   agent's past activity, not this submission"). When the biggest concern
+   is itself about the agent, the "Check this first" callout says so in
+   words ("This is about the agent, not this submission"). In the queue
+   list, submission factors and agent factors are in separate columns, which
+   is what issue #12 asks for ("kept apart").
+
+Decisions made on the owner's behalf:
+- **Decision: one ordering, marked, rather than two groups on the review
+  screen.** The build instruction asks for factors "ordered by magnitude";
+  issue #12 asks for agent reasons "kept apart". The review screen keeps one
+  magnitude-ordered list with agent factors visibly marked; the queue list
+  separates them into two columns.
+- **Decision: "Check this first" explanations** come from a fixed mapping of
+  each model feature to two or three plain sentences and inline actions
+  (`src/lib/review/concern.ts`). The sentences explain what the factor means
+  (from `docs/data_dictionary.md`) and quote only this submission's own
+  records (for example "Photo 6 was taken 1.5 km outside the job area").
+  They contain no statistics.
+- **Decision: "captured <date> at <time>"** uses the earliest photo capture
+  time; when no photo has a capture time it says "submitted" and uses the
+  submission time.
+- **Decision: "Sign-ups claimed" reads "1 (each activation is one
+  customer)"**, following the one-activation-one-sign-up decision in #1.
+- **Decision: the location map is an inline SVG drawn to scale** from the
+  recorded coordinates (job area circle, submission fix, numbered photos,
+  previous submission, agent's base), with an "Open in OpenStreetMap" link.
+  No map tiles are loaded, so it works offline and sends no locations to a
+  third party unless the reviewer clicks the link.
+- **Decision: approving or rejecting from the queue still requires a
+  reason**, typed inline.
+- **Decision: the History section is read from the audit log** the database
+  trigger writes, so it shows every transition with who acted and why,
+  including the T0 and T7 scores and any failed scoring calls.
+- The admin "View full history" link opens `/admin/agents/{id}`, every
+  submission of that agent with its status, latest score and last human
+  decision.
+- An unscored submission shows "Fraud probability: Unavailable" and the
+  recorded failures, never a number.
+
+Bugs found by looking at the rendered pages and fixed: the "Submitted" audit
+row carried the seed's run time rather than the submission time (the insert
+trigger now receives the submission time and the agent as actor); a function
+prop was passed from a server component to a client component on the
+dashboard; stat tiles in grids were offset by a sibling-card margin.
+

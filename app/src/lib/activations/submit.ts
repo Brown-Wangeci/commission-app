@@ -8,7 +8,7 @@ import { ensurePayoutCalendar } from "@/lib/payouts/calendar";
 import { removeActivationFiles, storeUpload, type StoredFile } from "@/lib/evidence/storage";
 import { enqueueScoring } from "@/lib/scoring/jobs";
 import { runScoringJob, type RunOutcome } from "@/lib/scoring/runner";
-import { recordAuditEvent } from "./transition";
+import { recordAuditEvent, setAuditContext } from "./transition";
 
 export type PhotoInput = {
   file: File;
@@ -71,7 +71,7 @@ function resolveIpRegion(device: DeviceInput, lat: number, lon: number): string 
 async function loadAssignment(input: SubmissionInput) {
   const assignment = await prisma.assignment.findUnique({
     where: { id: input.assignmentId },
-    include: { activation: true, job: true },
+    include: { activation: true, job: true, agent: true },
   });
   if (!assignment || assignment.agentId !== input.agentId) throw notFound("Assignment");
   if (!assignment.acceptedAt) throw conflict("Accept the job before submitting an activation for it.");
@@ -123,12 +123,14 @@ async function nextReference(tx: Prisma.TransactionClient): Promise<string> {
   return `LF-${String(row.n).padStart(6, "0")}`;
 }
 
+export type RecordedSubmission = { activationId: string; reference: string; jobId: string; submittedAt: Date };
+
 /**
- * Stores the activation and its evidence, schedules the T0 score in the same
- * transaction (so a crash after commit still gets it scored by the
- * scheduler), then runs that score straight away.
+ * Stores the activation and its evidence and schedules the T0 score in the
+ * same transaction, so a crash after commit still gets it scored by the
+ * scheduler. Does not run the score.
  */
-export async function submitActivation(input: SubmissionInput): Promise<SubmissionResult> {
+export async function recordSubmission(input: SubmissionInput): Promise<RecordedSubmission> {
   const submittedAt = input.submittedAt ?? new Date();
   const assignment = await loadAssignment(input);
   checkInput(input, submittedAt, assignment.acceptedAt!);
@@ -142,6 +144,11 @@ export async function submitActivation(input: SubmissionInput): Promise<Submissi
     const stored = await storeEvidence(activationId, input);
     ({ jobId, reference } = await prisma.$transaction(async (tx) => {
       const ref = await nextReference(tx);
+      await setAuditContext(tx, {
+        actorId: assignment.agent.userId,
+        note: `Submitted with ${input.photos.length} photo(s)${input.proof ? " and proof of activation" : ""}.`,
+        at: submittedAt,
+      });
       await tx.activation.create({
         data: {
           id: activationId,
@@ -181,7 +188,13 @@ export async function submitActivation(input: SubmissionInput): Promise<Submissi
     throw error;
   }
 
-  const scoring = await runScoringJob(jobId, submittedAt);
-  const after = await prisma.activation.findUniqueOrThrow({ where: { id: activationId } });
-  return { activationId, reference, state: after.state, scoring };
+  return { activationId, reference, jobId, submittedAt };
+}
+
+/** Records the submission, then runs its T0 score straight away. */
+export async function submitActivation(input: SubmissionInput): Promise<SubmissionResult> {
+  const recorded = await recordSubmission(input);
+  const scoring = await runScoringJob(recorded.jobId, recorded.submittedAt);
+  const after = await prisma.activation.findUniqueOrThrow({ where: { id: recorded.activationId } });
+  return { activationId: recorded.activationId, reference: recorded.reference, state: after.state, scoring };
 }
