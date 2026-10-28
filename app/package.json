@@ -5,8 +5,10 @@
   "description": "Ledgerfield: commission payout platform for independent sales agents, using the fraud-scoring service at the repository root.",
   "scripts": {
     "dev": "next dev --port 3000",
+    "dev:all": "tsx scripts/run-all.ts",
     "build": "prisma generate && next build",
     "start": "next start --port 3000",
+    "start:deploy": "prisma migrate deploy && next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:start": "tsx scripts/local-postgres.ts",
