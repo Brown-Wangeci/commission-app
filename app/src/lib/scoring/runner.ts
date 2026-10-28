@@ -1,7 +1,8 @@
 import type { ActivationState, Prisma, ScoringJob, ScoringMode } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { applyT0Decision, applyT7Decision } from "@/lib/activations/outcomes";
-import { recordAuditEvent } from "@/lib/activations/transition";
+import { recordAuditEvent, transitionActivation } from "@/lib/activations/transition";
+import { openReviewItem } from "@/lib/review/items";
 import { callScoringWithRetry, type CallResult } from "./client";
 import { recordDecision, type DecisionWithReasons, type ScoringTrigger } from "./decisions";
 import { claimJob, completeJob, dueJobIds, rescheduleAfterFailure } from "./jobs";
@@ -83,9 +84,40 @@ async function onSuccess(job: ScoringJob, path: JobPath, result: Extract<CallRes
   });
 }
 
-async function onFailure(job: ScoringJob, result: Extract<CallResult, { ok: false }>, now: Date): Promise<void> {
+const PRIMARY_LABEL: Record<ScoringMode, string> = { t0: "at submission (T0)", t7: "at hold-close (T7)" };
+
+/**
+ * A primary score that failed must never leave the activation where an
+ * automatic release could follow. It goes to a reviewer, marked with the
+ * stage that could not be scored; background retries continue, and any later
+ * score is advisory only.
+ */
+async function routeUnscoredToReview(
+  tx: Prisma.TransactionClient,
+  job: ScoringJob,
+  result: Extract<CallResult, { ok: false }>,
+  now: Date,
+): Promise<void> {
+  await transitionActivation(tx, {
+    activationId: job.activationId,
+    from: PRIMARY_STATE[job.mode],
+    to: "in_review",
+    note: `Could not be scored ${PRIMARY_LABEL[job.mode]} (${result.kind}). Sent to a reviewer; never auto-released.`,
+    at: now,
+    data: { unscoredStage: job.mode },
+  });
+  await openReviewItem(tx, job.activationId, "could_not_be_scored", now);
+}
+
+async function onFailure(
+  job: ScoringJob,
+  path: JobPath,
+  result: Extract<CallResult, { ok: false }>,
+  now: Date,
+): Promise<void> {
   await prisma.$transaction(async (tx) => {
     const next = await rescheduleAfterFailure(tx, job, `${result.kind}: ${result.message}`, now);
+    if (path === "primary") await routeUnscoredToReview(tx, job, result, now);
     await recordAuditEvent(tx, {
       kind: "scoring_failed",
       activationId: job.activationId,
@@ -107,20 +139,30 @@ export async function runScoringJob(jobId: string, now: Date = new Date()): Prom
   }
   const result = await callService(job);
   if (!result.ok) {
-    await onFailure(job, result, now);
+    await onFailure(job, path, result, now);
     return "failed";
   }
   await onSuccess(job, path, result, now);
   return path === "primary" ? "scored" : "advisory";
 }
 
-export type RunSummary = Record<RunOutcome, number>;
+export type RunSummary = Record<RunOutcome | "error", number>;
 
-/** Runs every job that is due now. Used by the scheduler and the manual trigger. */
+/**
+ * Runs every job that is due now. Used by the scheduler and the manual
+ * trigger. One job's unexpected error (for example the activation changed
+ * state mid-run) is logged and does not stop the others; its lease expires
+ * and the next poll takes it again.
+ */
 export async function runDueScoringJobs(now: Date = new Date(), limit = 50): Promise<RunSummary> {
-  const summary: RunSummary = { scored: 0, advisory: 0, failed: 0, obsolete: 0, not_claimed: 0 };
+  const summary: RunSummary = { scored: 0, advisory: 0, failed: 0, obsolete: 0, not_claimed: 0, error: 0 };
   for (const id of await dueJobIds(now, limit)) {
-    summary[await runScoringJob(id, now)] += 1;
+    try {
+      summary[await runScoringJob(id, now)] += 1;
+    } catch (error) {
+      console.error(`[scoring] job ${id} failed unexpectedly`, error);
+      summary.error += 1;
+    }
   }
   return summary;
 }
