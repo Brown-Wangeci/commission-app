@@ -215,6 +215,25 @@ model EscrowHold {
   createdAt    DateTime   @default(now())
 }
 
+// Derived, never stored: the "EscrowHoldState" view computes each hold's state
+// from its activation's state (issue #5). Created by migration
+// 20261028200000_escrow_hold_view.
+//   no activation yet                -> reserved
+//   approved                         -> released (to the agent)
+//   refused, withdrawn               -> returned (to the job's escrow balance)
+//   any other activation state       -> held
+view EscrowHoldState {
+  holdId          String           @unique
+  assignmentId    String           @unique
+  jobId           String
+  agentId         String
+  amountKsh       Int
+  createdAt       DateTime
+  activationId    String?
+  activationState ActivationState?
+  state           String
+}
+
 model Activation {
   id                   String                @id @default(cuid())
   reference            String                @unique
