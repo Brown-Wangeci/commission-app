@@ -72,7 +72,7 @@ export type AuditEntry = {
   detail: string | null;
 };
 
-const TIMELINE_KINDS = ["transition", "scoring_failed", "t7_forced", "activity_reported", "scoring_decision", "dispute_opened"];
+const TIMELINE_KINDS = ["transition", "scoring_failed", "t7_forced", "activity_reported", "scoring_decision", "dispute_opened", "payout_authorised"];
 
 /** The activation's audit trail, oldest first, with actor names. Advisory scores only (primary ones show as transitions). */
 async function auditTrail(db: Tx, activationId: string): Promise<AuditEntry[]> {

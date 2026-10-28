@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import { config } from "@/lib/config";
 import { formatProbability } from "@/lib/format";
 import { openDispute } from "@/lib/disputes/disputes";
+import { authorisePayout } from "@/lib/payouts/authorise";
 import { openReviewItem } from "@/lib/review/items";
 import type { DecisionWithReasons } from "@/lib/scoring/decisions";
 import { enqueueScoring } from "@/lib/scoring/jobs";
@@ -70,6 +71,7 @@ export async function applyT7Decision(
       note: "At or below the hold-close release cut-off: released automatically.",
       at: now,
     });
+    await authorisePayout(tx, { activationId, authorisedById: null, at: now });
     return;
   }
   if (decision.band === "review") {
