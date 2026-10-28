@@ -278,3 +278,31 @@ combination for a demonstration build.
   cannot wait a week. In production it should reject day d before
   submission + d days.
 
+## Issue #8: Scoring service failure handling
+
+- Failure kinds recorded per call in `ScoringAttempt`: `timeout` (slower than
+  `SCORING_TIMEOUT_MS`), `unavailable` (connection refused or reset),
+  `server_error` (5xx), `rejected_request` (4xx), `invalid_response` (a 200
+  that fails schema validation or is for another activation or mode), and
+  `missing_input` (the app could not build the request, for example no
+  first-week activity at T7; no call is made).
+- Each run makes up to `SCORING_IMMEDIATE_ATTEMPTS` calls with doubling
+  backoff from `SCORING_IMMEDIATE_BACKOFF_MS`. A rejected request is not
+  retried at once, since it would fail the same way.
+- **A failed primary score never leaves the activation where it could be
+  auto-released.** In the same transaction as the failure it moves to
+  `in_review`, `unscoredStage` is set to `t0` or `t7` (the explicit
+  could-not-be-scored marker), and a review item opens with reason
+  `could_not_be_scored`. The job is rescheduled with doubling backoff from
+  `SCORING_RETRY_BASE_SECONDS`, up to `SCORING_MAX_RUNS` runs, then marked
+  `failed`.
+- **A later successful retry is advice only:** the decision is stored and
+  `unscoredStage` cleared, but the state stays with the reviewer. A test has
+  the service down at hold-close, then back up and answering `auto_release`;
+  the activation stays in review.
+- `scoringHealth` gives the review queue the failure count, the last failure,
+  the next retry time and whether retries have run out. The queue and review
+  screen (issues #9 and #12) display it.
+- One job's unexpected error no longer stops a batch run; it is logged and
+  its lease lets the next poll retry it.
+
