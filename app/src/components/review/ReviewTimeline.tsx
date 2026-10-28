@@ -22,6 +22,8 @@ function title(entry: AuditEntry): string {
       return "Scored again (advice only)";
     case "dispute_opened":
       return "Refusal recorded for audit and contest";
+    case "payout_authorised":
+      return "Payout authorised";
     default:
       return entry.kind.replace("_", " ");
   }

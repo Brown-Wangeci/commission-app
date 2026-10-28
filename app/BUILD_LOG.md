@@ -520,3 +520,23 @@ no issue covers them:
 - **Audit log:** every audit event newest first, 100 per page, with the
   activation, the actor and the recorded detail.
 
+## Issue #15: Payout authorisation boundary
+
+- `src/lib/payouts/boundary.ts` defines `PayoutAuthoriser` (a provider name
+  and `authorise(tx, request)`) and the registry; `noop.ts` is the only
+  implementation: it records a `PayoutAuthorisation` row (provider `noop`)
+  and does nothing else.
+- Upstream code calls only `authorisePayout`: a reviewer's approval (including
+  overturning a contested refusal) and the automatic release at T7. The
+  amount comes from the escrow hold; the number from the agent's profile.
+- `PAYOUT_AUTHORISER` (default `noop`) selects the implementation. A test
+  registers a different implementation and shows approvals go through it
+  with no upstream change.
+- **Decision:** the authoriser runs inside the approval's database
+  transaction, so a failure rolls the approval back (tested). Whether a
+  real settlement call belongs inside that transaction, or behind an
+  outbox, is a settlement question and is left to #14.
+- **Not built: #14 Settlement design**, as instructed. The issue stays open.
+- The Payouts screen lists these authorisations; the review History shows
+  "Payout authorised".
+

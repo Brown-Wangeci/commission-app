@@ -4,6 +4,7 @@ import { conflict, notFound } from "@/lib/http/errors";
 import { notify } from "@/lib/notifications";
 import { recordAuditEvent, transitionActivation } from "@/lib/activations/transition";
 import { openDispute, resolveDispute } from "@/lib/disputes/disputes";
+import { authorisePayout } from "@/lib/payouts/authorise";
 import { closeReviewItem } from "./items";
 
 /**
@@ -77,6 +78,7 @@ async function decide(input: ReviewerInput, to: "approved" | "refused"): Promise
       activationId: input.activationId, action: to, reviewerId: input.reviewerId, reason: input.reason, decisionId: current.latestDecisionId, at,
     });
     await recordDisputeEffect(tx, { ...input, at, from: current.state, to, reviewItemId, decisionId: current.latestDecisionId });
+    if (to === "approved") await authorisePayout(tx, { activationId: input.activationId, authorisedById: input.reviewerId, at });
     await notify(tx, {
       userId: current.agentUserId,
       kind: to,
