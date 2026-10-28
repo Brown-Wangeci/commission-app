@@ -139,3 +139,48 @@ combination for a demonstration build.
   stays distinguishable for colour-blind reviewers), violet for agent-history
   factors.
 
+## Issue #3: Activation state machine with data-layer enforcement
+
+- **The lifecycle** (defined once in `src/lib/activations/states.ts`):
+
+  | From | To |
+  |---|---|
+  | submitted | scored_t0 (T0 scored), in_review (T0 could not be scored) |
+  | scored_t0 | held (T0 band auto_release or review), in_review (T0 band reject) |
+  | held | scored_t7 (T7 scored), in_review (T7 could not be scored), withdrawn |
+  | scored_t7 | approved (auto_release), in_review (review), refused (reject) |
+  | in_review | approved, refused, awaiting_evidence, withdrawn |
+  | awaiting_evidence | in_review (agent responded), withdrawn |
+  | refused | disputed (agent contests) |
+  | disputed | approved (overturned), refused (upheld) |
+  | approved, withdrawn | final |
+
+- **Decision: T0 never moves money.** At submission an `auto_release` or
+  `review` band puts the activation on hold until T7; a `reject` band sends it
+  straight to a reviewer instead of refusing it automatically. Reasons: the
+  research README shows a submission-time release is money already paid
+  before the stronger seven-day model sees the case, and the cost matrix
+  prices refusing an honest agent above paying one fraud, so an automatic
+  refusal on the weaker model's word is the costliest kind of error. Only the
+  T7 band acts automatically (release, review or refuse).
+- **Decision: a refused activation can be contested once.** refused ->
+  disputed -> approved/refused. The table allows the loop; the application
+  blocks a second contest because the dispute record is already resolved.
+- **Enforcement in the database:** the pairs are loaded into
+  `ActivationTransitionRule` by migration (SQL generated from the TypeScript
+  table by `scripts/transition-sql.ts`). A trigger on `Activation` rejects an
+  insert in any state but `submitted` and any state change not in the table,
+  for every client, including raw SQL. The rule table is read-only to every
+  client. A test checks the database table equals the TypeScript table, and
+  another writes every illegal pair (over 60) directly with SQL and expects
+  each to fail.
+- The same trigger writes every accepted change to `AuditEvent`, with the
+  actor, note and time passed through `set_config`, so the audit log cannot
+  miss a transition, even one made outside the app.
+- `transitionActivation` is a compare-and-swap (`WHERE state = from`), so two
+  reviewers acting at once cannot both succeed; the loser gets a 409.
+- **Found and fixed:** the local PostgreSQL ran in Africa/Nairobi time while
+  Prisma stores UTC, which would have put trigger-written timestamps three
+  hours off. The migration pins the database timezone to UTC and the trigger
+  computes UTC explicitly.
+

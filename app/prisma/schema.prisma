@@ -445,6 +445,15 @@ model CustomerActivityDay {
   @@unique([activationId, day])
 }
 
+// The legal activation transitions, loaded from src/lib/activations/states.ts
+// by migration and read by the state-guard trigger (issue #3).
+model ActivationTransitionRule {
+  fromState ActivationState
+  toState   ActivationState
+
+  @@id([fromState, toState])
+}
+
 // Every state transition is written here by the database trigger (issue #3);
 // other recorded events are written by application code.
 model AuditEvent {
