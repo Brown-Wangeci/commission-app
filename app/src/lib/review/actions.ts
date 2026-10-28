@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { conflict, notFound } from "@/lib/http/errors";
 import { notify } from "@/lib/notifications";
 import { recordAuditEvent, transitionActivation } from "@/lib/activations/transition";
+import { openDispute, resolveDispute } from "@/lib/disputes/disputes";
 import { closeReviewItem } from "./items";
 
 /**
@@ -33,6 +34,37 @@ function requireState(current: ActivationState, allowed: ActivationState[], acti
   if (!allowed.includes(current)) throw conflict(`Cannot ${action} an activation that is ${current.replace("_", " ")}.`);
 }
 
+type DisputeEffectInput = ReviewerInput & {
+  at: Date;
+  from: ActivationState;
+  to: "approved" | "refused";
+  reviewItemId: string | null;
+  decisionId: string | null;
+};
+
+/**
+ * A first refusal opens a dispute record; a decision on a contested refusal
+ * resolves it (refuse = upheld, approve = overturned). Approving an item
+ * that was never refused creates nothing.
+ */
+async function recordDisputeEffect(tx: Prisma.TransactionClient, input: DisputeEffectInput): Promise<void> {
+  if (input.from === "disputed") {
+    const outcome = input.to === "refused" ? "upheld" : "overturned";
+    await resolveDispute(tx, { activationId: input.activationId, outcome, reviewerId: input.reviewerId, note: input.reason, at: input.at });
+    return;
+  }
+  if (input.to === "refused") {
+    await openDispute(tx, {
+      activationId: input.activationId,
+      decisionId: input.decisionId,
+      reviewItemId: input.reviewItemId,
+      refusedById: input.reviewerId,
+      reason: input.reason,
+      at: input.at,
+    });
+  }
+}
+
 async function decide(input: ReviewerInput, to: "approved" | "refused"): Promise<void> {
   const at = input.at ?? new Date();
   await prisma.$transaction(async (tx) => {
@@ -41,9 +73,10 @@ async function decide(input: ReviewerInput, to: "approved" | "refused"): Promise
     await transitionActivation(tx, {
       activationId: input.activationId, from: current.state, to, actorId: input.reviewerId, note: input.reason, at,
     });
-    await closeReviewItem(tx, {
+    const reviewItemId = await closeReviewItem(tx, {
       activationId: input.activationId, action: to, reviewerId: input.reviewerId, reason: input.reason, decisionId: current.latestDecisionId, at,
     });
+    await recordDisputeEffect(tx, { ...input, at, from: current.state, to, reviewItemId, decisionId: current.latestDecisionId });
     await notify(tx, {
       userId: current.agentUserId,
       kind: to,

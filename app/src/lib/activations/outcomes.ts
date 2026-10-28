@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { config } from "@/lib/config";
 import { formatProbability } from "@/lib/format";
+import { openDispute } from "@/lib/disputes/disputes";
 import { openReviewItem } from "@/lib/review/items";
 import type { DecisionWithReasons } from "@/lib/scoring/decisions";
 import { enqueueScoring } from "@/lib/scoring/jobs";
@@ -82,11 +83,9 @@ export async function applyT7Decision(
     await openReviewItem(tx, activationId, "band_review", now);
     return;
   }
-  await transitionActivation(tx, {
-    activationId,
-    from: "scored_t7",
-    to: "refused",
-    note: "Above the hold-close reject cut-off: refused automatically.",
-    at: now,
-  });
+  const reason =
+    `Refused automatically at hold-close: the ${decision.modelVersion} probability ` +
+    `${formatProbability(decision.probability)} is above the reject cut-off ${formatProbability(decision.rejectThreshold)}.`;
+  await transitionActivation(tx, { activationId, from: "scored_t7", to: "refused", note: reason, at: now });
+  await openDispute(tx, { activationId, decisionId: decision.id, reviewItemId: null, refusedById: null, reason, at: now });
 }

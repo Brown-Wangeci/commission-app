@@ -354,3 +354,18 @@ combination for a demonstration build.
   before commit; the applied `20261028185524_notifications` only depends on
   the initial migration, so its sort position is harmless.
 
+## Issue #10: Dispute record on refusal
+
+- Every refusal creates a `Dispute` in the same transaction:
+  - by a reviewer: carries the reviewer, their reason, the closed review item
+    and the scoring decision in force;
+  - automatically at T7: carries the T7 decision, no reviewer, and a reason
+    built from that decision's own probability and reject cut-off.
+- Approving creates no dispute (tested).
+- **Decision: a refusal can be contested once.** The agent contests through
+  `POST /api/agent/activations/{id}/contest` (refused -> disputed). The item
+  returns to the waiting queue with a `dispute` review item, and the reviewer
+  who refused is notified. A reviewer then upholds (refuse again, dispute
+  `upheld`) or overturns (approve, dispute `overturned`). A second contest is
+  refused with 409.
+
