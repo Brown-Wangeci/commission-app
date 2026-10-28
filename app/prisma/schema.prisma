@@ -134,6 +134,21 @@ model User {
   client           ClientBusiness?
   reviewItems      ReviewItem[]      @relation("ReviewItemReviewer")
   evidenceRequests EvidenceRequest[] @relation("EvidenceRequester")
+  notifications    Notification[]
+}
+
+// In-app notifications (for example "a reviewer asked for more evidence").
+model Notification {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  kind         String
+  message      String
+  activationId String?
+  createdAt    DateTime  @default(now())
+  readAt       DateTime?
+
+  @@index([userId, readAt])
 }
 
 model ClientBusiness {
