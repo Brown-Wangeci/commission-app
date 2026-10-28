@@ -21,6 +21,9 @@ export type StatusInput = {
 
 export type StatusExplanation = { headline: string; detail: string | null; modelReasons: string[] };
 
+/** Who is reading: the agent who submitted, or the client whose job it was. */
+export type Audience = "agent" | "client";
+
 function lastHuman(input: StatusInput, action: "approved" | "refused") {
   return [...input.closedReviews].reverse().find((item) => item.action === action) ?? null;
 }
@@ -40,20 +43,23 @@ function approved(input: StatusInput): StatusExplanation {
   return { headline: "Approved", detail, modelReasons: [] };
 }
 
-function refused(input: StatusInput): StatusExplanation {
+function refused(input: StatusInput, audience: Audience): StatusExplanation {
   const human = lastHuman(input, "refused");
   const canContest = input.dispute?.status === "open";
-  const contestLine = canContest ? " You can contest this once." : input.dispute?.status === "upheld" ? " The refusal was upheld after your contest." : "";
+  const whose = audience === "agent" ? "your" : "the agent's";
+  const contestLine =
+    canContest && audience === "agent" ? " You can contest this once." : input.dispute?.status === "upheld" ? ` The refusal was upheld after ${whose} contest.` : "";
   if (human) return { headline: "Refused by a reviewer", detail: `${human.reason ?? ""}${contestLine}`, modelReasons: [] };
   return { headline: "Refused automatically", detail: `${input.dispute?.refusalReason ?? "Refused at hold-close."}${contestLine}`, modelReasons: modelReasons(input) };
 }
 
-export function explainStatus(input: StatusInput): StatusExplanation {
+export function explainStatus(input: StatusInput, audience: Audience = "agent"): StatusExplanation {
+  const agent = audience === "agent";
   switch (input.state) {
     case "submitted":
     case "scored_t0":
     case "scored_t7":
-      return { headline: "Received", detail: "Your submission is being checked.", modelReasons: [] };
+      return { headline: "Received", detail: agent ? "Your submission is being checked." : "The submission is being checked.", modelReasons: [] };
     case "held":
       return {
         headline: "Checked and on hold",
@@ -65,18 +71,26 @@ export function explainStatus(input: StatusInput): StatusExplanation {
         headline: "With a reviewer",
         detail: input.unscoredStage
           ? "The automatic check could not run, so a person will decide. Nothing is paid or refused automatically in the meantime."
-          : "A reviewer is checking your evidence. You will be told the decision and the reason.",
+          : agent
+            ? "A reviewer is checking your evidence. You will be told the decision and the reason."
+            : "A reviewer is checking the agent's evidence.",
         modelReasons: [],
       };
     case "awaiting_evidence":
-      return { headline: "A reviewer needs more evidence", detail: input.openRequestMessage, modelReasons: [] };
+      return { headline: agent ? "A reviewer needs more evidence" : "A reviewer asked the agent for more evidence", detail: input.openRequestMessage, modelReasons: [] };
     case "approved":
       return approved(input);
     case "refused":
-      return refused(input);
+      return refused(input, audience);
     case "disputed":
-      return { headline: "Refusal contested", detail: "You contested the refusal. A reviewer will look at it again.", modelReasons: [] };
-    case "withdrawn":
-      return { headline: "Withdrawn", detail: input.withdrawReason ? `You withdrew it: ${input.withdrawReason}` : "You withdrew it.", modelReasons: [] };
+      return {
+        headline: "Refusal contested",
+        detail: agent ? "You contested the refusal. A reviewer will look at it again." : "The agent contested the refusal. A reviewer will look at it again.",
+        modelReasons: [],
+      };
+    case "withdrawn": {
+      const who = agent ? "You withdrew it" : "The agent withdrew it";
+      return { headline: "Withdrawn", detail: input.withdrawReason ? `${who}: ${input.withdrawReason}` : `${who}.`, modelReasons: [] };
+    }
   }
 }
