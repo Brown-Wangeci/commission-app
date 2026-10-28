@@ -477,3 +477,26 @@ dashboard; stat tiles in grids were offset by a sibling-card margin.
   exposed a bug (the form was read after an `await`, when React had cleared
   it), which is fixed.
 
+## Issue #13: Client view
+
+- **Jobs** (`/client`): every job with funded and available escrow, slots
+  used, and outcome counts.
+- **Post a job** (`/client/jobs/new`): title, description, job area (place
+  name, centre, radius 50 m to 50 km), payout per activation, commission rate
+  (entered as a percentage, stored as a fraction), activations wanted, and an
+  optional first deposit.
+- **Job detail** (`/client/jobs/{id}`): escrow split into funded, locked,
+  released and available (all derived from the holds, see #5), a "Fund
+  escrow" form, and every activation with its outcome and reason.
+- **First-week activity** (`/client/activations/{id}/activity`): a day 0 to 7
+  table the client fills from its own records. The hold-close (T7) score
+  reads it.
+- **Decision: the client sees outcomes and reasons, not evidence or model
+  internals.** The reason text is the same explanation the agent gets,
+  worded for the client ("the agent withdrew it", no contest prompt). Customer
+  photos stay with the reviewer and the agent.
+- **Decision: the platform (an admin) assigns agents to jobs**, not the
+  client. Issue #2 says a client must not reach agent data, and choosing an
+  agent would need an agent directory. Admins assign from the Clients screen
+  (built with the other admin screens).
+
