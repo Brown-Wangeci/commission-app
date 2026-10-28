@@ -1,0 +1,462 @@
+// Ledgerfield data model.
+//
+// Rules the schema encodes:
+// - One user holds exactly one role (agent, admin or client).
+// - A job is posted by a client business and has a circular job area.
+// - Assigning a job to an agent creates an Assignment and its EscrowHold.
+//   An assignment yields at most one Activation (one customer sign-up), the
+//   same unit the scoring model scores.
+// - Scoring decisions are a one-to-many child of Activation, never columns
+//   on it (issue #4).
+// - Activation.state is guarded by a database trigger (issue #3); escrow
+//   hold state is derived from it by a view, never stored (issue #5).
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  agent
+  admin
+  client
+}
+
+enum ActivationState {
+  submitted
+  scored_t0
+  held
+  scored_t7
+  in_review
+  awaiting_evidence
+  approved
+  refused
+  disputed
+  withdrawn
+}
+
+enum ScoringMode {
+  t0
+  t7
+}
+
+enum Band {
+  auto_release
+  review
+  reject
+}
+
+enum ReasonDirection {
+  raises
+  lowers
+}
+
+enum ActivationMethod {
+  qr_scan
+  manual_entry
+}
+
+enum NetworkType {
+  cellular
+  wifi
+}
+
+enum EvidenceKind {
+  photo
+  proof
+}
+
+enum LocationSource {
+  exif
+  device
+  none
+}
+
+enum JobStatus {
+  open
+  closed
+}
+
+enum ReviewOpenReason {
+  band_review
+  t0_reject_escalation
+  could_not_be_scored
+  evidence_returned
+  dispute
+}
+
+enum ReviewAction {
+  approved
+  refused
+  evidence_requested
+  withdrawn_by_agent
+}
+
+enum EvidenceRequestStatus {
+  open
+  answered
+  withdrawn
+}
+
+enum DisputeStatus {
+  open
+  contested
+  upheld
+  overturned
+}
+
+enum ScoringJobStatus {
+  pending
+  running
+  succeeded
+  failed
+  cancelled
+}
+
+enum ScoringAttemptOutcome {
+  succeeded
+  failed
+}
+
+model User {
+  id               String            @id @default(cuid())
+  email            String            @unique
+  name             String
+  passwordHash     String
+  role             Role
+  createdAt        DateTime          @default(now())
+  agent            Agent?
+  client           ClientBusiness?
+  reviewItems      ReviewItem[]      @relation("ReviewItemReviewer")
+  evidenceRequests EvidenceRequest[] @relation("EvidenceRequester")
+}
+
+model ClientBusiness {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  name      String
+  createdAt DateTime @default(now())
+  jobs      Job[]
+}
+
+model Agent {
+  id           String       @id @default(cuid())
+  userId       String       @unique
+  user         User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  payoutMsisdn String
+  registeredAt DateTime
+  homeLat      Float
+  homeLon      Float
+  homeAreaName String
+  createdAt    DateTime     @default(now())
+  assignments  Assignment[]
+  activations  Activation[]
+}
+
+model Job {
+  id                     String          @id @default(cuid())
+  clientId               String
+  client                 ClientBusiness  @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  title                  String
+  description            String
+  areaName               String
+  areaLat                Float
+  areaLon                Float
+  areaRadiusM            Int
+  payoutPerActivationKsh Int
+  commissionRate         Float
+  slots                  Int
+  status                 JobStatus       @default(open)
+  createdAt              DateTime        @default(now())
+  deposits               EscrowDeposit[]
+  assignments            Assignment[]
+  activations            Activation[]
+}
+
+model EscrowDeposit {
+  id          String   @id @default(cuid())
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  amountKsh   Int
+  createdById String
+  createdAt   DateTime @default(now())
+}
+
+model Assignment {
+  id           String      @id @default(cuid())
+  jobId        String
+  job          Job         @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  agentId      String
+  agent        Agent       @relation(fields: [agentId], references: [id], onDelete: Restrict)
+  assignedById String
+  assignedAt   DateTime
+  acceptedAt   DateTime?
+  hold         EscrowHold?
+  activation   Activation?
+
+  @@unique([id, agentId, jobId])
+  @@index([agentId])
+  @@index([jobId])
+}
+
+// No state column: the hold's state is read from the EscrowHoldState view,
+// which derives it from the linked activation's state.
+model EscrowHold {
+  id           String     @id @default(cuid())
+  assignmentId String     @unique
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  amountKsh    Int
+  createdAt    DateTime   @default(now())
+}
+
+model Activation {
+  id                   String                @id @default(cuid())
+  reference            String                @unique
+  assignmentId         String                @unique
+  agentId              String
+  jobId                String
+  assignment           Assignment            @relation(fields: [assignmentId, agentId, jobId], references: [id, agentId, jobId], onDelete: Restrict)
+  agent                Agent                 @relation(fields: [agentId], references: [id], onDelete: Restrict)
+  job                  Job                   @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  state                ActivationState       @default(submitted)
+  submittedAt          DateTime
+  heldAt               DateTime?
+  holdClosesAt         DateTime?
+  unscoredStage        ScoringMode?
+  deviceId             String
+  deviceOs             String
+  appVersion           String
+  ipRegion             String
+  networkType          NetworkType
+  gpsLat               Float
+  gpsLon               Float
+  gpsAccuracyM         Float?
+  customerMsisdnHash   String
+  customerMsisdnMasked String
+  simRegisteredAt      DateTime
+  activationMethod     ActivationMethod
+  proofHash            String?
+  agentNote            String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  evidence             EvidenceItem[]
+  decisions            ScoringDecision[]
+  attempts             ScoringAttempt[]
+  scoringJobs          ScoringJob[]
+  reviewItems          ReviewItem[]
+  evidenceRequests     EvidenceRequest[]
+  dispute              Dispute?
+  payout               PayoutAuthorisation?
+  activity             CustomerActivityDay[]
+
+  @@unique([assignmentId, agentId, jobId])
+  @@index([agentId, submittedAt])
+  @@index([deviceId, submittedAt])
+  @@index([customerMsisdnHash, submittedAt])
+  @@index([state])
+}
+
+model EvidenceItem {
+  id                String           @id @default(cuid())
+  activationId      String
+  activation        Activation       @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  evidenceRequestId String?
+  evidenceRequest   EvidenceRequest? @relation(fields: [evidenceRequestId], references: [id], onDelete: Restrict)
+  kind              EvidenceKind
+  sequence          Int
+  fileName          String
+  mimeType          String
+  storagePath       String
+  sha256            String
+  capturedAt        DateTime?
+  gpsLat            Float?
+  gpsLon            Float?
+  gpsAccuracyM      Float?
+  locationSource    LocationSource
+  uploadedAt        DateTime         @default(now())
+
+  @@unique([activationId, sequence])
+}
+
+// Append-only (issue #4): a trigger rejects UPDATE and DELETE.
+model ScoringDecision {
+  id               String          @id @default(cuid())
+  activationId     String
+  activation       Activation      @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  mode             ScoringMode
+  modelVersion     String
+  featureSet       String
+  rawScore         Float
+  probability      Float
+  band             Band
+  releaseThreshold Float
+  rejectThreshold  Float
+  scoredAt         DateTime
+  recordedAt       DateTime        @default(now())
+  trigger          String
+  reasons          ScoringReason[]
+  disputes         Dispute[]
+
+  @@index([activationId, recordedAt])
+}
+
+model ScoringReason {
+  id           String          @id @default(cuid())
+  decisionId   String
+  decision     ScoringDecision @relation(fields: [decisionId], references: [id], onDelete: Restrict)
+  rank         Int
+  feature      String
+  description  String
+  contribution Float
+  direction    ReasonDirection
+  isAgentLevel Boolean
+
+  @@unique([decisionId, rank])
+}
+
+// Every call to the scoring service, successful or not (issue #8).
+model ScoringAttempt {
+  id           String                @id @default(cuid())
+  activationId String
+  activation   Activation            @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  mode         ScoringMode
+  outcome      ScoringAttemptOutcome
+  errorKind    String?
+  errorMessage String?
+  durationMs   Int
+  attemptedAt  DateTime              @default(now())
+
+  @@index([activationId, attemptedAt])
+}
+
+// Durable schedule for scoring calls (issues #6, #7, #8). The scheduler
+// queries for due rows; nothing is held in memory.
+model ScoringJob {
+  id           String           @id @default(cuid())
+  activationId String
+  activation   Activation       @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  mode         ScoringMode
+  dueAt        DateTime
+  status       ScoringJobStatus @default(pending)
+  attempts     Int              @default(0)
+  lockedUntil  DateTime?
+  lastError    String?
+  trigger      String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([activationId, mode])
+  @@index([status, dueAt])
+}
+
+model ReviewItem {
+  id           String           @id @default(cuid())
+  activationId String
+  activation   Activation       @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  openedAt     DateTime
+  openReason   ReviewOpenReason
+  closedAt     DateTime?
+  action       ReviewAction?
+  reviewerId   String?
+  reviewer     User?            @relation("ReviewItemReviewer", fields: [reviewerId], references: [id], onDelete: Restrict)
+  reason       String?
+  decisionId   String?
+
+  @@index([activationId, openedAt])
+  @@index([closedAt])
+}
+
+model EvidenceRequest {
+  id            String                @id @default(cuid())
+  activationId  String
+  activation    Activation            @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  requestedById String
+  requestedBy   User                  @relation("EvidenceRequester", fields: [requestedById], references: [id], onDelete: Restrict)
+  requestedAt   DateTime
+  message       String
+  status        EvidenceRequestStatus @default(open)
+  respondedAt   DateTime?
+  responseNote  String?
+  items         EvidenceItem[]
+
+  @@index([activationId])
+}
+
+model Dispute {
+  id             String           @id @default(cuid())
+  activationId   String           @unique
+  activation     Activation       @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  decisionId     String?
+  decision       ScoringDecision? @relation(fields: [decisionId], references: [id], onDelete: Restrict)
+  reviewItemId   String?          @unique
+  refusedById    String?
+  refusalReason  String
+  status         DisputeStatus    @default(open)
+  openedAt       DateTime
+  contestedAt    DateTime?
+  contestNote    String?
+  resolvedAt     DateTime?
+  resolvedById   String?
+  resolutionNote String?
+}
+
+model PayoutAuthorisation {
+  id             String     @id @default(cuid())
+  activationId   String     @unique
+  activation     Activation @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  amountKsh      Int
+  payoutMsisdn   String
+  authorisedAt   DateTime
+  authorisedById String?
+  provider       String
+  providerRef    String?
+}
+
+model PayoutCycle {
+  id       Int      @id
+  startsAt DateTime
+  cutoffAt DateTime
+
+  @@index([cutoffAt])
+}
+
+// First-week customer activity, reported by the client business, needed for
+// T7 scoring. One row per activation per day (0 to 7).
+model CustomerActivityDay {
+  id                String     @id @default(cuid())
+  activationId      String
+  activation        Activation @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  day               Int
+  customerActive    Boolean
+  transactionCount  Int
+  topupAmountKsh    Float
+  usageMinutes      Float
+  supportContact    Boolean
+  complaintOrRefund Boolean
+  simActive         Boolean
+  reportedAt        DateTime   @default(now())
+
+  @@unique([activationId, day])
+}
+
+// Every state transition is written here by the database trigger (issue #3);
+// other recorded events are written by application code.
+model AuditEvent {
+  id           BigInt           @id @default(autoincrement())
+  kind         String
+  activationId String?
+  fromState    ActivationState?
+  toState      ActivationState?
+  actorId      String?
+  detail       String?
+  at           DateTime         @default(now())
+
+  @@index([at])
+  @@index([activationId])
+}
