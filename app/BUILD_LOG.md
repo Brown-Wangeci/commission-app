@@ -306,3 +306,51 @@ combination for a demonstration build.
 - One job's unexpected error no longer stops a batch run; it is logged and
   its lease lets the next poll retry it.
 
+## Issue #9: Review queue backend
+
+- **Queue:** `GET /api/admin/review?tab=waiting|evidence`. "waiting" is every
+  activation a reviewer must decide (`in_review`, `disputed`); "evidence"
+  holds items parked in `awaiting_evidence`. Oldest first, by when the item
+  entered the queue. Each row carries the latest decision with both
+  thresholds, the failure count, and the reasons **split into
+  submission-level and agent-level lists**.
+- **Detail:** `GET /api/admin/review/{id}` returns everything the review
+  screen shows: queue position (N of M, previous and next ids), evidence with
+  per-photo distance outside the job area, a summary (count, capture window,
+  GPS accuracy range, photos without location, photos outside the area), the
+  previous submission (time gap and distance), device, payout number and
+  amount (from the escrow hold), the agent's statistics, every scoring
+  decision with reasons by magnitude, the biggest risk-raising factor, the
+  scoring health, the review history, evidence requests and the dispute.
+- **Agent statistics are computed from that agent's activations only.**
+  Approval rate = approved / (approved + rejected), where rejected counts
+  refused and disputed. **Decision:** withdrawn activations are reported but
+  excluded from the rate, since the agent withdrew them before any decision.
+  With nothing decided the rate is `null` and the screen says "no decided
+  submissions yet".
+- **Actions** (admin only): approve, refuse, ask for evidence. A reason is
+  required for every action (5 to 2000 characters). Each is a
+  compare-and-swap transition with the reviewer as actor and the reason as
+  note, and closes the review item with reviewer, time, reason and the id of
+  the scoring decision in force.
+- **Ask for evidence (correction 3):** `in_review -> awaiting_evidence`.
+  Creates an `EvidenceRequest` (what was asked, by whom, when), notifies the
+  agent, and moves the item to the evidence tab. The agent answers through
+  `POST /api/agent/activations/{id}/evidence` with a note and/or photos. The
+  request is marked answered, the new photos are linked to it, the activation
+  returns to `in_review` with a new review item (`evidence_returned`), and
+  the reviewer who asked is notified.
+- **Decision: notifications are in-app only** (a `Notification` table shown
+  on the agent's home screen and the admin's). No SMS or email is sent; the
+  table is what a delivery channel would read from.
+- **Decision:** an agent can withdraw an undecided activation (held, in
+  review, awaiting evidence). Pending scoring jobs are cancelled and its
+  escrow returns to the job.
+- **Decision: clients cannot open evidence photos.** `GET /api/evidence/{id}`
+  serves files to admins and the activation's own agent only; clients see
+  outcomes, not customer photos.
+- Migration note: `prisma migrate dev --create-only` also applies pending
+  migrations, which produced one empty duplicate migration. It was removed
+  before commit; the applied `20261028185524_notifications` only depends on
+  the initial migration, so its sort position is harmless.
+

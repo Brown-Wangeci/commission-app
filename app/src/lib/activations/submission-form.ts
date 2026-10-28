@@ -61,7 +61,7 @@ function parsePhotoMeta(raw: string | undefined, count: number) {
   return meta;
 }
 
-function photoInputs(form: FormData): PhotoInput[] {
+export function photoInputs(form: FormData): PhotoInput[] {
   const photos = files(form, "photos");
   if (photos.length > MAX_PHOTOS) throw badRequest(`Attach at most ${MAX_PHOTOS} photos.`);
   const meta = parsePhotoMeta(text(form, "photoMeta"), photos.length);
