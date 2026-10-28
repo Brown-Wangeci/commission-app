@@ -64,7 +64,12 @@ export async function storeBytes(
 export async function readStored(storagePath: string): Promise<Buffer> {
   const absolute = path.resolve(root(), storagePath);
   if (!absolute.startsWith(root())) throw new ApiError(400, "bad_request", "Invalid evidence path.");
-  return fs.readFile(absolute);
+  try {
+    return await fs.readFile(absolute);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") throw new ApiError(404, "not_found", "The evidence file is missing from storage.");
+    throw error;
+  }
 }
 
 export async function removeActivationFiles(activationId: string): Promise<void> {

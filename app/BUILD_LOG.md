@@ -643,3 +643,33 @@ Named cases, with the band the real model gave on the build run:
 - Added `GET /api/admin/agents` for the rehearsal script, and made the
   hold-window panel's references link to the review screen.
 
+## Issue #18: Error handling and input validation
+
+- **One error shape** for every API route:
+  `{ "error": { "code", "message", "details"? } }`. Every route handler is
+  wrapped in `withErrors`, which converts anything thrown:
+  - zod validation errors -> 422 `validation_failed` with per-field details;
+  - malformed JSON or a non-multipart upload -> 400 `bad_request`;
+  - `ApiError`s -> their own 4xx (401, 403, 404, 409, 413, 415);
+  - **new:** a transition the database trigger rejects -> 409
+    `illegal_transition`; Prisma "not found" (P2025) -> 404; unique and
+    foreign-key violations (P2002, P2003) -> 409;
+  - anything else -> logged with the route name, returned as a generic 500
+    `internal_error` with no internal message or stack.
+- **New:** an evidence record whose file is missing on disk -> 404 (was 500).
+- **New:** any `/api` path with no route answers 404 in the same JSON shape
+  (`src/app/api/[...unknown]/route.ts`) instead of an HTML page.
+- Middleware already answers 401/403 in the same shape for protected API
+  paths.
+- **New:** page error, not-found and global-error pages in the app's style,
+  showing a reference digest but no internal detail.
+- **Exception, recorded:** NextAuth's own `/api/auth/*` endpoints keep
+  NextAuth's responses; they are library routes, not ours.
+- **Exception, recorded:** an HTTP method a route does not define gets Next's
+  built-in 405 with an empty body.
+- Tests: unit tests for the mapping and the wrapper (including that a 500
+  leaks nothing and is logged), and a live matrix (`tests/api-live.test.ts`)
+  of 30 bad requests across every route and role, run against `next start`
+  with seed data: all 30 returned the expected 4xx in the standard shape with
+  no stack trace. It is skipped when no app is running.
+
