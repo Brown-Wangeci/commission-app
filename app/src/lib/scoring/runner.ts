@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { applyT0Decision, applyT7Decision } from "@/lib/activations/outcomes";
 import { recordAuditEvent, transitionActivation } from "@/lib/activations/transition";
 import { openReviewItem } from "@/lib/review/items";
+import { formatDateTime } from "@/lib/format";
 import { callScoringWithRetry, type CallResult } from "./client";
 import { recordDecision, type DecisionWithReasons, type ScoringTrigger } from "./decisions";
 import { claimJob, completeJob, dueJobIds, rescheduleAfterFailure } from "./jobs";
@@ -121,7 +122,7 @@ async function onFailure(
     await recordAuditEvent(tx, {
       kind: "scoring_failed",
       activationId: job.activationId,
-      detail: `${job.mode.toUpperCase()} could not be scored (${result.kind}: ${result.message}). ${next ? `Retrying at ${next.toISOString()}.` : "No retries left."}`,
+      detail: `${job.mode.toUpperCase()} could not be scored (${result.kind}: ${result.message}). ${next ? `Next automatic retry ${formatDateTime(next)}.` : "No retries left."}`,
       at: now,
     });
   });

@@ -61,7 +61,7 @@ export async function respondToEvidenceRequest(input: EvidenceResponse): Promise
     await tx.evidenceRequest.update({ where: { id: request.id }, data: { status: "answered", respondedAt: at, responseNote: input.note } });
     await transitionActivation(tx, {
       activationId: activation.id, from: "awaiting_evidence", to: "in_review",
-      note: `Agent responded with ${stored.length} photo(s)${input.note ? " and a note" : ""}.`, at,
+      note: `Agent responded with ${stored.length} photo(s)${input.note ? `: "${input.note}"` : "."}`, at,
     });
     await openReviewItem(tx, activation.id, "evidence_returned", at);
     await notify(tx, {

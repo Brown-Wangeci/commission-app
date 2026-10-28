@@ -11,11 +11,18 @@ type Props = {
   body?: unknown;
   className?: string;
   confirm?: string;
-  describe?: (data: unknown) => string;
+  /** How to report a successful response; props must be serialisable, so this is a name, not a function. */
+  report?: "run-summary";
 };
 
+function describeRunSummary(data: unknown): string {
+  const summary = (data as { summary?: Record<string, number> }).summary ?? {};
+  const ran = Object.entries(summary).filter(([, count]) => count > 0);
+  return ran.length === 0 ? "Nothing was due." : ran.map(([key, count]) => `${count} ${key.replace("_", " ")}`).join(", ");
+}
+
 /** A button that POSTs to an API route, shows the outcome, and refreshes the page. */
-export function ActionButton({ url, label, busyLabel, body = {}, className = "btn small", confirm, describe }: Props) {
+export function ActionButton({ url, label, busyLabel, body = {}, className = "btn small", confirm, report }: Props) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -30,7 +37,7 @@ export function ActionButton({ url, label, busyLabel, body = {}, className = "bt
       setMessage({ ok: false, text: result.message });
       return;
     }
-    if (describe) setMessage({ ok: true, text: describe(result.data) });
+    if (report === "run-summary") setMessage({ ok: true, text: describeRunSummary(result.data) });
     router.refresh();
   }
 

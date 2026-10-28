@@ -25,7 +25,10 @@ export class IllegalTransitionError extends ApiError {
  * the audit row. set_config(..., true) lasts until the end of the current
  * transaction, so this must run inside one.
  */
-async function setAuditContext(tx: Prisma.TransactionClient, input: TransitionInput): Promise<void> {
+export async function setAuditContext(
+  tx: Prisma.TransactionClient,
+  input: Pick<TransitionInput, "actorId" | "note" | "at">,
+): Promise<void> {
   const at = input.at ? input.at.toISOString().replace("Z", "") : "";
   await tx.$queryRaw`SELECT
     set_config('ledgerfield.actor_id', ${input.actorId ?? ""}, true),

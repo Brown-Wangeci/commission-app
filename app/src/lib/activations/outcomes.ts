@@ -44,7 +44,7 @@ export async function applyT0Decision(
     activationId,
     from: "scored_t0",
     to: "held",
-    note: `Held until ${holdClosesAt.toISOString()} for the hold-close score.`,
+    note: "Held for the hold window; scored again by the hold-close model when it closes.",
     at: now,
     data: { heldAt: now, holdClosesAt },
   });
