@@ -14,7 +14,8 @@
     "db:reset": "prisma migrate reset --force --skip-seed",
     "db:seed": "tsx prisma/seed.ts",
     "scheduler": "tsx scripts/scheduler.ts",
-    "scheduler:once": "tsx scripts/scheduler.ts --once"
+    "scheduler:once": "tsx scripts/scheduler.ts --once",
+    "demo:rehearse": "tsx scripts/rehearse-demo.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

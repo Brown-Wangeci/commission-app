@@ -34,7 +34,7 @@ export async function HoldWindowPanel() {
             <tbody>
               {held.map((activation) => (
                 <tr key={activation.id}>
-                  <td className="mono">{activation.reference}</td>
+                  <td><Link href={`/admin/review/${activation.id}`} className="mono">{activation.reference}</Link></td>
                   <td><Link href={`/admin/agents/${activation.agentId}`}>{activation.agent.user.name}</Link></td>
                   <td>{activation.job.title}</td>
                   <td className="num">{activation.holdClosesAt ? formatDateTime(activation.holdClosesAt) : "Not recorded"}</td>
