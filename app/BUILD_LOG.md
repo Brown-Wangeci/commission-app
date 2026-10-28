@@ -705,3 +705,20 @@ steps. No Dockerfile was written: Docker is installed but its daemon was not
 running, so a container build could not be tested, and an untested
 deployment file would be a guess.
 
+## End of build: status
+
+- **Closed (17):** #1 to #13, #15 to #18, each merged through its own pull
+  request (#20 to #37). The remaining admin screens went in through PR #33,
+  and #19's configuration work through PR #38.
+- **Open (2):** #14 Settlement design, not built as instructed; #19, the
+  configuration is merged, but the hosted deployment needs the owner's
+  accounts (see the #19 entry).
+- **Final check on `main`** (commit `c43ad16`, 28 October 2026): production
+  build passes; 137 of 137 tests pass, including the live scoring-service,
+  seed and 30-case API suites with the scoring service and `next start`
+  running; the seed reports every named case where intended.
+- **Rehearsed end to end** through the API and through a real browser (see
+  #17); no manual database edits.
+- **GitHub API:** no gh command failed during the build.
+- **Owner's uncommitted ML work** at the repository root was never staged or
+  changed.
