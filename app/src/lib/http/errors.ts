@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
@@ -56,9 +57,28 @@ function fromZod(error: ZodError): ApiError {
   return new ApiError(422, "validation_failed", "Some fields are missing or invalid.", details);
 }
 
+const ILLEGAL_TRANSITION = /illegal activation transition/;
+
+/**
+ * Database errors that mean the request conflicts with the data, not that
+ * the server failed. Anything else from the database stays a 500.
+ */
+function fromDatabase(error: unknown): ApiError | null {
+  const message = error instanceof Error ? error.message : "";
+  if (ILLEGAL_TRANSITION.test(message)) {
+    return new ApiError(409, "illegal_transition", "That change is not allowed from the activation's current state.");
+  }
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2025") return new ApiError(404, "not_found", "The record was not found.");
+    if (error.code === "P2002") return new ApiError(409, "conflict", "That record already exists.");
+    if (error.code === "P2003") return new ApiError(409, "conflict", "That refers to a record that does not exist.");
+  }
+  return null;
+}
+
 /** Converts anything thrown in a route into the standard error response. */
 export function toErrorResponse(error: unknown, route: string): NextResponse<ErrorBody> {
-  const apiError = error instanceof ZodError ? fromZod(error) : error;
+  const apiError = error instanceof ZodError ? fromZod(error) : (fromDatabase(error) ?? error);
   if (apiError instanceof ApiError) {
     return errorResponse(apiError.status, {
       error: { code: apiError.code, message: apiError.message, details: apiError.details },
