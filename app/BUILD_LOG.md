@@ -204,3 +204,45 @@ combination for a demonstration build.
   twice. Recorded as a known gap for the settlement redesign.
 - Job balance = deposits minus reserved, held and released holds.
 
+## Issue #6: T0 scoring call at submission
+
+- `POST /api/agent/activations` (multipart) validates the form, stores the
+  evidence files, creates the activation and schedules its T0 score **in the
+  same transaction**, then runs that score straight away. If the process dies
+  after the commit, the scheduler (issue #7) finds the pending T0 job and
+  scores it, so a submission can never be stranded unscored.
+- The request carries T0 inputs only: `downstream_activity` is always empty
+  in mode `t0` (and the payload builder only reads activity rows in mode
+  `t7`). A test asserts this.
+- History sent: every activation in the previous 90 days sharing the agent,
+  device or customer number. Calendar sent: cycles from 30 days before to 60
+  days after submission, created on demand.
+- **Assumption: payout calendar.** 14-day cycles with an 18:00 Nairobi cutoff,
+  mirroring `calendar.payout_cycle_length_days` and `payout_cutoff_hour` in
+  `config/generator.yaml` (both marked "assumption" there). The first cycle
+  starts Monday 5 January 2026, 00:00 Nairobi time; that anchor is an app-side
+  assumption (`src/lib/payouts/calendar.ts`).
+- **Assumption: network region.** The model compares the IP region with the
+  region nearest the GPS fix. A browser cannot do geo-IP lookup, and no geo-IP
+  database is bundled. The submission accepts an `ipRegion` from the device
+  and, when none is sent, uses the region nearest the GPS fix. That means web
+  submissions show no IP/GPS mismatch unless the region is set explicitly.
+  The agent form exposes the field in a "simulated device" panel so a demo can
+  set it. A real field app would fill it from the network.
+- **Decision:** region display names (Nairobi, Kisumu, Mombasa, Eldoret) are
+  the cities at the generator's coordinates; the codes sent are the model's
+  (`region_a`..`region_d`).
+- **Decision:** `job_id` sent to the model is the assignment id, because in
+  the training data each job is one assignment yielding one activation.
+  `job_id` is not a model feature.
+- Customer numbers are stored only as a salted SHA-256 hash
+  (`MSISDN_HASH_SALT`) plus a masked form for display (`07** *** 333`).
+  `proof_of_activation_hash` is the SHA-256 of the proof file, if attached.
+- Evidence files are stored on local disk under `EVIDENCE_STORAGE_DIR`, one
+  folder per activation. Accepted types: JPEG, PNG, WebP, HEIC/HEIF, up to
+  `EVIDENCE_MAX_BYTES` each, at most 12 photos.
+- A live test (`tests/scoring-live.test.ts`) submits through the real scoring
+  service when it is running and checks the stored thresholds and model
+  version are the ones the service returned. It passed against
+  `t0_none-isotonic-v1`.
+
