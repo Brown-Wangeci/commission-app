@@ -99,3 +99,17 @@ combination for a demonstration build.
   Moving to `prisma.config.ts` stops Prisma loading `.env` automatically, so
   the warning was left in place.
 
+## Issue #4: Scoring decision storage
+
+- `ScoringDecision` is a one-to-many child of `Activation`. Each row stores the
+  model (`t0`/`t7`), model version, feature set, raw score, calibrated
+  probability, band, both thresholds in force, when the service scored it and
+  why the call was made (`submission`, `hold_close`, `admin_forced`,
+  `retry`). Its reasons are child rows with rank, feature, plain-language
+  description, signed contribution, direction and the agent-level flag.
+- Append-only is enforced by the database: a trigger rejects every UPDATE and
+  DELETE on `ScoringDecision`, `ScoringReason` and `ScoringAttempt`.
+- Service responses are validated with zod before storage. A response whose
+  thresholds are out of order, whose probability is outside 0 to 1, or which
+  is missing a field is treated as a scoring failure, not a score.
+
