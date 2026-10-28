@@ -184,3 +184,23 @@ combination for a demonstration build.
   hours off. The migration pins the database timezone to UTC and the trigger
   computes UTC explicitly.
 
+## Issue #5: Escrow hold creation and derived state
+
+- `assignJob` creates the assignment and its `EscrowHold` (amount = the job's
+  payout per activation) in one transaction, after locking the job row with
+  `SELECT ... FOR UPDATE`, so concurrent assignments cannot spend the same
+  escrow twice. It refuses a closed job, a job with no free slots, and a job
+  whose available escrow does not cover another payout.
+- **Hold state is never stored.** The `EscrowHoldState` database view derives
+  it from the activation state: no activation yet -> `reserved`; `approved`
+  -> `released`; `refused` or `withdrawn` -> `returned`; anything else ->
+  `held`. A test walks an activation through refusal, dispute and approval
+  and checks the hold's state changes each time while the hold row itself is
+  byte-for-byte unchanged.
+- **Decision:** a refused activation's money counts as returned to the job's
+  available balance. If that refusal is later contested, the hold reads
+  `held` again. Because settlement is out of scope (#14), nothing is actually
+  paid back, and a reassignment in the meantime could commit the same money
+  twice. Recorded as a known gap for the settlement redesign.
+- Job balance = deposits minus reserved, held and released holds.
+
