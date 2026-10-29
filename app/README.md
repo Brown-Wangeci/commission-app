@@ -1,7 +1,8 @@
 # Ledgerfield
 
 Ledgerfield manages commission payouts for independent sales agents. A client
-business posts a job and locks money in escrow. The platform assigns the job
+business deposits money into escrow and publishes a job with a commission
+structure; publishing locks the job's maximum liability. The platform assigns the job
 to an agent, who signs a customer up and submits the activation with photo
 evidence. The fraud-scoring service in this repository scores it twice: at
 submission (T0) and when the seven-day hold window closes (T7). Each score
@@ -179,6 +180,30 @@ DEMO.md.
 **Not done in this build:** no hosted deployment was made. It needs your
 hosting account, database and secrets. Issue #19 stays open for that.
 
+## Money
+
+- **Every amount is an integer number of Kenyan Shilling cents**, in columns
+  named `...Cents` (rates in basis points, `...Bps`). `src/lib/money/` is the
+  only place amounts are parsed, computed or formatted, using integer and
+  string operations only. `npm run check:money` (run first by
+  `npm run build`) fails if a Float or Decimal column could hold money.
+- **Commission** for one approved submission is
+  `floor(submission value x rate in bps / 10000) + flat amount`. It is
+  computed and stored as a `Commission` record when the activation is
+  approved, copying the job's structure, and the payout authorisation pays
+  exactly that amount. Every computed amount on screen has a derivation line
+  under it, and the APIs return it (`GET /api/admin/review/{id}`,
+  `GET /api/client/escrow`).
+- **Escrow belongs to the client.** `POST /api/client/escrow/fund` deposits;
+  publishing a job (`POST /api/client/jobs`) locks slots x commission and is
+  refused with a 409 when the available balance falls short; closing it
+  (`POST /api/client/jobs/{id}/close`) returns the unspent remainder. Balances
+  are derived from deposits, locks and hold states, never stored.
+- **Existing databases:** `npm run db:migrate` applies migration
+  `20261029100000_money_in_cents`, which converts seeded data in place (each
+  old flat payout becomes a structure that reproduces it to the cent) and
+  checks every conversion as it runs.
+
 ## Project layout
 
 ```
@@ -192,7 +217,8 @@ app/
   src/lib/activations/        state machine, submission, outcomes of each band
   src/lib/scoring/            scoring-service contract, client, payload, durable jobs
   src/lib/review/             queue, review detail, reviewer actions, review-screen copy
-  src/lib/escrow/, payouts/   holds and balances; the payout authorisation boundary
+  src/lib/money/              integer cents, the commission calculation, the money-column check
+  src/lib/escrow/, payouts/   client and job escrow, holds; commission records; the payout boundary
   tests/                      Vitest suites
 ```
 
@@ -207,3 +233,11 @@ app/
   authorisation and moves no money.
 - First-week customer activity is entered by the client by hand; a real
   integration would receive it from the client's systems.
+- One money row holds at most KSh 21,474,836.47 (a PostgreSQL INTEGER of
+  cents), so a job's maximum liability is capped there; publication above it
+  is refused with a clear message.
+- Closing a job does not cancel its open assignments: money reserved or held
+  for them stays committed until each activation is decided.
+- The local PostgreSQL from `npm run db:start` was initialised in the WIN1252
+  encoding on this machine, so it cannot store characters outside that code
+  page. Stored audit text avoids them; a hosted database should be UTF8.

@@ -722,3 +722,135 @@ deployment file would be a guess.
 - **GitHub API:** no gh command failed during the build.
 - **Owner's uncommitted ML work** at the repository root was never staged or
   changed.
+
+## Build 1: money model and commission (issues #40 to #43)
+
+Scope as instructed: the money model, commission calculation, escrow locking
+and the feature vector. Evidence configuration, M-Pesa and blockchain were
+not touched.
+
+### Issue #40: money in integer cents (NFR-07, DR-08)
+- Every money column is an `Int` of Kenyan Shilling cents named `...Cents`:
+  `EscrowDeposit.amountCents`, `EscrowHold.amountCents`,
+  `PayoutAuthorisation.amountCents`, `Job.submissionValueCents`,
+  `Job.flatCommissionCents`, `Job.escrowLockedCents`, the `Commission`
+  amounts, and the view's `amountCents`. Rates are `Int` basis points
+  (`commissionRateBps`). No money column is Float or Decimal.
+- **Decision (A2): the customer top-up became integer cents (`topupCents`),
+  not a renamed Float.** It is money (a KSh amount the customer paid), so
+  calling it "not monetary" would be a relabelling rather than a fact, and
+  NFR-07 says all monetary values. Cents lose nothing: the amounts have at
+  most two decimals. The model was trained on shillings, so the scoring
+  payload converts cents to shillings at the boundary, in one place
+  (`shillingsForModel` in `src/lib/scoring/payload.ts`), from the decimal
+  text of the cents, and the rate to a fraction (`rateForModel`). Those two
+  are model inputs, not money the platform computes with.
+- `src/lib/money/cents.ts` parses shillings text to cents and formats cents
+  as `KSh 4,750.00` (design-system rule: full amount, two decimals, true
+  minus sign) with string and integer operations only. Sums and products use
+  BigInt and refuse anything that is not a safe integer.
+- **Build check (A3):** `scripts/check-money-columns.ts`, run first by
+  `npm run build`. A Float or Decimal column fails unless it is in an
+  allow-list of non-money columns with a reason (coordinates, scores,
+  minutes); a numeric column whose name looks like money must be an `Int`
+  named `...Cents` or `...Bps`. The same allow-list is checked against the
+  migrated database's `information_schema` in `tests/money-columns.test.ts`.
+  Shown failing: with `EscrowHold.amountCents` as Float and `topupCents` as
+  Decimal it lists both and exits 1.
+- **Migration (A4):** `20261029100000_money_in_cents`, written by hand
+  because Prisma's generated SQL would drop the old columns before copying
+  them. It multiplies every amount by 100 and checks each conversion,
+  stopping with an error rather than storing a wrong or oversized value.
+  Each old flat payout becomes a structure that reproduces it to the cent:
+  the old rate as basis points, a submission value of
+  `ceil(payout cents x 10000 / bps)`, no flat amount. Verified on a copy of
+  the seeded development database (the original was not touched): 4 jobs
+  reproduce their payouts exactly; 48 approved activations got 48 commission
+  records, each equal to its hold and its payout; deposit, hold, payout and
+  top-up totals are exactly x100; no balance is negative.
+  `tests/migration-money.test.ts` repeats this on its own legacy fixture,
+  including an underfunded job, an overfunded job and a rate that does not
+  convert to whole basis points (0.12345 becomes 1235).
+- **Ceiling, recorded:** one row holds at most KSh 21,474,836.47 (a
+  PostgreSQL INTEGER). BigInt columns would lift it but make every amount a
+  JavaScript bigint, which JSON cannot carry; not worth it at this scale.
+  Publication above the ceiling is refused with a clear message.
+
+### Issue #41: commission structure and calculation (FR-18, FR-04 in part)
+- **Decision: "job value" is the value of one approved submission**
+  (`submissionValueCents`), the base the rate applies to. The commission is
+  computed per approved submission (B3), and applying the rate to a job's
+  total value on every submission would pay the whole job's commission each
+  time. If "job value" was meant as the total, only this field's meaning and
+  the form label change.
+- `commission = floor(value x bps / 10000) + flat`, BigInt multiplication and
+  integer division, in `src/lib/money/commission.ts`. The rate must be 1 to
+  10000 bps, because the scoring service requires a rate above zero; a
+  structure that pays nothing per submission is refused.
+- On every path to approval (reviewer approval, automatic release at
+  hold-close, an overturned dispute) `authorisePayout` writes one
+  `Commission` record in the approving transaction, copying the structure,
+  rate component and amount. The payout authorisation pays that amount and
+  is linked to it. The database enforces the rest: one per activation, only
+  for an approved activation and its own job's structure, amount equal to
+  floor plus flat (CHECK), append-only (trigger), and an authorisation must
+  pay exactly its commission (trigger).
+- **Decision: a published job's structure, slots and lock are fixed** (a
+  trigger rejects changes), so the hold reserved at assignment always equals
+  the commission computed at approval; `authorisePayout` still checks and
+  refuses a mismatch rather than paying it.
+- **Derivation lines (B5):** every computed amount on screen has one, e.g.
+  "KSh 1,234.56 × 8.25% = KSh 101.85 (rounded down to the cent) + KSh 20.00
+  flat". The APIs return them: `GET /api/admin/review/{id}` (`payout.amount`)
+  and the new `GET /api/client/escrow`. Checked on the running build: every
+  money page renders them, and none shows a whole-shilling amount.
+- FR-04's deadline is not part of this build.
+
+### Issue #42: escrow locked at publication, released at close (FR-07, FR-20)
+- **Decision: escrow belongs to the client, not the job**, as FR-07 and
+  FR-20 describe ("the client's available balance"). Deposits move to the
+  client (`POST /api/client/escrow/fund`; the per-job fund route is gone).
+- Publishing locks `slots x commission` with the client row locked
+  (`SELECT ... FOR UPDATE`), so two publications cannot spend the same money;
+  it is refused with a 409 naming the shortfall, and a deposit sent with a
+  refused job is rolled back too.
+- Closing (`POST /api/client/jobs/{id}/close`) returns the lock less
+  everything reserved, held or released. Money still reserved or held stays
+  committed until decided: released on approval, returned on refusal or
+  withdrawal. A closed job cannot reopen (trigger) or take assignments.
+- Escrow stays derived (C3): the hold view is unchanged except for cents, and
+  balances are computed from deposits, locks and hold states.
+- **Converted jobs** lock the smaller of their maximum liability and what was
+  deposited for them, so no client starts negative and no job can commit
+  more than it was funded for. The UI says when a lock is below the full
+  liability.
+- **Found, not fixed:** closing a job does not cancel its unsubmitted
+  assignments, so their reservations stay committed until submitted and
+  decided.
+
+### Issue #43: full feature vector on each decision (DR-10 groundwork)
+- The scoring service already computed the vector and kept it for
+  `/explain`; `/score` now returns it (`feature_vector`, two lines in
+  `src/serve/schemas.py` and `src/serve/app.py`, with a test that it matches
+  the training pipeline's values for T0 and T7). The app requires it in the
+  contract and stores it in `ScoringDecision.featureVector` (JSONB,
+  append-only with the decision; null on decisions recorded earlier).
+- No retraining loop was built. DR-10 remains a documented deviation.
+- **The running scoring service must be restarted** to return the vector;
+  an old process's responses are now treated as scoring failures.
+
+### Found during this build
+- **The local PostgreSQL cluster is WIN1252, not UTF8.** It rejected the
+  true minus sign (U+2212) in an audit entry. Stored audit text now avoids
+  it (display strings keep it). Not changed: re-initialising the cluster
+  would discard the development data. A hosted database should be UTF8.
+
+### Verification
+- App: 185 of 185 tests pass with the scoring service and `next start`
+  running (no live test skipped). Python: `tests/test_serve.py` 44 of 44.
+- `npm run build` passes, the money check included; `prisma migrate diff`
+  between the migrations and the schema reports no difference.
+- `npm run demo:rehearse` passed against a migrated copy of the seeded
+  development database, including approving a migrated activation.
+- The development database itself was not migrated. Run `npm run db:migrate`
+  (and restart the scoring service) before using it with this build.

@@ -1,8 +1,11 @@
-import type { Assignment } from "@prisma/client";
+import type { Assignment, ClientBusiness, Job } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { acceptAssignment, assignJob, fundJob } from "@/lib/escrow/holds";
+import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
+import { fundEscrow } from "@/lib/escrow/client";
+import { createJob, type JobInput } from "@/lib/jobs/jobs";
+import { maxLiability } from "@/lib/money/commission";
 import { submitActivation, type SubmissionInput, type SubmissionResult } from "@/lib/activations/submit";
-import { createAgent, createClient, createJob, createUser } from "./factories";
+import { createAgent, createClient, createUser, TEST_TERMS } from "./factories";
 
 const PNG_BYTES = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
 
@@ -10,11 +13,45 @@ export function photo(name = "photo.png"): File {
   return new File([PNG_BYTES], name, { type: "image/png" });
 }
 
+/**
+ * A valid job as a client would post it: KSh 300.00 per approved submission,
+ * 10 slots, in the same area as the factory job (submissionFor's GPS fix is
+ * inside it).
+ */
+export function jobInput(overrides: Partial<JobInput> = {}): JobInput {
+  return {
+    title: "SIM registration drive, Gikomba Market",
+    description: "Sign up new customers in person.",
+    areaName: "Gikomba market",
+    areaLat: -1.2833,
+    areaLon: 36.8333,
+    areaRadiusM: 1500,
+    ...TEST_TERMS,
+    slots: 10,
+    initialDepositCents: 0,
+    ...overrides,
+  };
+}
+
+/**
+ * A job published through the real code: the client deposits exactly the
+ * job's maximum liability (plus any extra), then publishes it.
+ */
+export async function publishFundedJob(
+  overrides: Partial<JobInput> = {},
+  options: { client?: ClientBusiness; extraDepositCents?: number } = {},
+): Promise<{ client: ClientBusiness; job: Job }> {
+  const client = options.client ?? (await createClient());
+  const input = jobInput(overrides);
+  const liability = maxLiability(input, input.slots).amountCents;
+  await fundEscrow({ clientId: client.id, amountCents: liability + (options.extraDepositCents ?? 0), actorId: client.userId });
+  const job = await createJob({ clientId: client.id, actorId: client.userId, job: input });
+  return { client, job };
+}
+
 /** A funded job, assigned to an agent who has accepted it. */
 export async function readyAssignment(options: { agentId?: string; assignedAt?: Date } = {}): Promise<Assignment> {
-  const client = await createClient();
-  const job = await createJob(client.id, { slots: 20 });
-  await fundJob({ jobId: job.id, clientId: client.id, amountKsh: 20 * job.payoutPerActivationKsh, actorId: client.userId });
+  const { job } = await publishFundedJob({ slots: 20 });
   const admin = await createUser("admin");
   const agentId = options.agentId ?? (await createAgent()).id;
   const assignedAt = options.assignedAt ?? new Date(Date.now() - 3 * 60 * 60 * 1000);

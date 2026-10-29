@@ -3,13 +3,15 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { postJson } from "@/lib/client-api";
+import { formatCents } from "@/lib/money/cents";
+import type { PayoutAmountView } from "@/lib/payouts/amount";
 
 type Action = "approve" | "request-evidence" | "refuse";
 
 type Props = {
   activationId: string;
   stateLabel: string;
-  amountKsh: number | null;
+  amount: PayoutAmountView | null;
   payoutMsisdn: string;
   canApprove: boolean;
   canRefuse: boolean;
@@ -36,11 +38,11 @@ const FORM_TEXT: Record<Action, { label: string; hint: string; submit: string }>
   },
 };
 
-function amountText(amountKsh: number | null): string {
-  return amountKsh === null ? "Amount unavailable" : `KSh ${new Intl.NumberFormat("en-KE").format(amountKsh)}`;
-}
-
-/** "Approving pays ...", the amount from the escrow hold, and the three decisions. */
+/**
+ * "Approving pays ...", the commission with its derivation line (from the
+ * job's commission structure before approval, from the stored commission
+ * record after), and the three decisions.
+ */
 export function PayoutPanel(props: Props) {
   const router = useRouter();
   const [open, setOpen] = useState<Action | null>(null);
@@ -73,7 +75,13 @@ export function PayoutPanel(props: Props) {
       <h2 id="payout-heading" className="pays" style={{ fontWeight: 500 }}>
         Approving pays <span className="mono" style={{ color: "var(--ink)" }}>{props.payoutMsisdn}</span>
       </h2>
-      <div className="amount">{amountText(props.amountKsh)}</div>
+      <div className="amount">{props.amount ? formatCents(props.amount.amountCents) : "Amount unavailable"}</div>
+      {props.amount && (
+        <span className="derivation">
+          {props.amount.commission.derivation}
+          {props.amount.basis === "recorded" ? " (commission recorded at approval)" : ""}
+        </span>
+      )}
       {!decidable && <p className="small muted" style={{ marginTop: 8 }}>This submission is {props.stateLabel.toLowerCase()}; there is nothing to decide here.</p>}
       {decidable && (
         <div className="decide-buttons" id="decide-ask">

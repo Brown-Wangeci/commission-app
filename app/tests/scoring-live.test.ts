@@ -47,5 +47,10 @@ describe.runIf(up)("live scoring service", () => {
     expect(decision.releaseThreshold).toBeLessThan(decision.rejectThreshold);
     expect(decision.reasons.length).toBeGreaterThan(0);
     expect(["held", "in_review"]).toContain(result.state);
+    // Issue #43: every T0 feature the model scored is stored, not only the top reasons.
+    const vector = decision.featureVector as Record<string, number>;
+    expect(Object.keys(vector)).toHaveLength(18);
+    expect(vector).toHaveProperty("agent_tenure_days");
+    for (const reason of decision.reasons) expect(vector).toHaveProperty(reason.feature);
   });
 });

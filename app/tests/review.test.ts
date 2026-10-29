@@ -37,7 +37,7 @@ describe("review queue listing (issue #9)", () => {
     expect(rows[0].agentReasons.every((r) => r.isAgentLevel)).toBe(true);
     expect(rows[0].agentReasons).toHaveLength(1);
     expect(rows[0].latest).toMatchObject({ mode: "t0", band: "reject", releaseThreshold: 0.301471 });
-    expect(rows[0].amountKsh).toBe(300);
+    expect(rows[0].amount).toMatchObject({ amountCents: 30_000, basis: "job_terms" });
   });
 
   it("gives each item its position and neighbours", async () => {
@@ -158,7 +158,7 @@ describe("review detail (issue #9)", () => {
     expect(detail.concern?.feature).toBe("distance_from_agent_home_km");
     expect(detail.actions).toMatchObject({ canApprove: true, canRequestEvidence: true });
     expect(detail.position).toMatchObject({ total: 2 });
-    expect(detail.payout).toMatchObject({ amountKsh: 300, payoutMsisdn: "0712000000" });
+    expect(detail.payout).toMatchObject({ amount: { amountCents: 30_000, basis: "job_terms", commission: { derivation: "KSh 3,000.00 × 10.00% = KSh 300.00" } }, payoutMsisdn: "0712000000" });
   });
 
   it("summarises capture windows and accuracy only from recorded values", () => {

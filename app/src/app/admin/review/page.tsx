@@ -3,7 +3,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { listQueue, type QueueRow, type QueueTab } from "@/lib/review/queue";
 import { capitalise, openReasonLabel } from "@/lib/review/copy";
-import { formatContribution, formatDateTime, formatKsh, formatProbability } from "@/lib/format";
+import { formatContribution, formatDateTime, formatProbability } from "@/lib/format";
+import { Money } from "@/components/Money";
 import { StateChip, UnscoredChip } from "@/components/review/StateChip";
 import { QueueRowActions } from "@/components/review/QueueRowActions";
 import type { ReasonView } from "@/lib/review/reasons";
@@ -72,7 +73,7 @@ function Row({ row, tab }: { row: QueueRow; tab: QueueTab }) {
           <p className="small muted">No score yet: the model could not be reached{row.unscoredStage ? ` ${row.unscoredStage === "t0" ? "at submission" : "at hold-close"}` : ""}. Retries continue; any later score is advice only.</p>
         )}
       </td>
-      <td className="num right">{row.amountKsh === null ? "Unavailable" : formatKsh(row.amountKsh)}</td>
+      <td className="right small">{row.amount === null ? "Unavailable" : <Money cents={row.amount.amountCents} derivation={row.amount.commission.derivation} />}</td>
       <td className="right">
         {tab === "waiting" ? <QueueRowActions activationId={row.id} reference={row.reference} /> : <Link className="btn small" href={`/admin/review/${row.id}`}>Open</Link>}
       </td>

@@ -41,7 +41,7 @@ describe("payout authorisation boundary (issue #15)", () => {
     const { activationId } = await submitReady();
     await approveActivation({ activationId, reviewerId: reviewer.id, reason: "Evidence checks out" });
     const payout = await prisma.payoutAuthorisation.findUniqueOrThrow({ where: { activationId } });
-    expect(payout).toMatchObject({ provider: "noop", amountKsh: 300, payoutMsisdn: "0712000000", authorisedById: reviewer.id, providerRef: null });
+    expect(payout).toMatchObject({ provider: "noop", amountCents: 30_000, payoutMsisdn: "0712000000", authorisedById: reviewer.id, providerRef: null });
   });
 
   it("records an automatic authorisation when the hold-close score releases", async () => {
@@ -68,7 +68,7 @@ describe("payout authorisation boundary (issue #15)", () => {
     const { activationId } = await submitReady();
     await approveActivation({ activationId, reviewerId: reviewer.id, reason: "Evidence checks out" });
     expect(replacement.requests).toHaveLength(1);
-    expect(replacement.requests[0]).toMatchObject({ activationId, amountKsh: 300, authorisedById: reviewer.id });
+    expect(replacement.requests[0]).toMatchObject({ activationId, amountCents: 30_000, authorisedById: reviewer.id });
     expect((await prisma.payoutAuthorisation.findUniqueOrThrow({ where: { activationId } })).provider).toBe("test-provider");
   });
 

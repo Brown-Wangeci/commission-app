@@ -59,3 +59,33 @@ describe("scoring decision storage (issue #4)", () => {
     expect(scoreResponseSchema.safeParse(body).success).toBe(false);
   });
 });
+
+describe("full feature vector on each decision (issue #43, DR-10 groundwork)", () => {
+  it("stores every feature the service scored, by name and value, not only the top three reasons", async () => {
+    const id = await newActivationId();
+    const t0 = fakeResponse({ activation_id: id, mode: "t0" });
+    const t7 = fakeResponse({ activation_id: id, mode: "t7" });
+    await recordDecision(prisma, id, t0, "submission");
+    await recordDecision(prisma, id, t7, "hold_close");
+    const [first, second] = await decisionsFor(prisma, id);
+    expect(first.featureVector).toEqual(t0.feature_vector);
+    expect(second.featureVector).toEqual(t7.feature_vector);
+    expect(Object.keys(second.featureVector as object).length).toBeGreaterThan(second.reasons.length);
+  });
+
+  it("keeps the stored vector append-only with its decision", async () => {
+    const id = await newActivationId();
+    const decision = await recordDecision(prisma, id, fakeResponse({ activation_id: id }), "submission");
+    await expect(
+      prisma.scoringDecision.update({ where: { id: decision.id }, data: { featureVector: {} } }),
+    ).rejects.toThrow(/append-only/);
+  });
+
+  it("treats a response without a feature vector, or with an empty or non-numeric one, as a scoring failure", () => {
+    const { feature_vector: _omitted, ...missing } = fakeResponse({ activation_id: "x" });
+    expect(scoreResponseSchema.safeParse(missing).success).toBe(false);
+    expect(scoreResponseSchema.safeParse(fakeResponse({ activation_id: "x", feature_vector: {} })).success).toBe(false);
+    const nonNumeric = { ...fakeResponse({ activation_id: "x" }), feature_vector: { agent_tenure_days: "412" } };
+    expect(scoreResponseSchema.safeParse(nonNumeric).success).toBe(false);
+  });
+});

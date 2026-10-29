@@ -11,6 +11,7 @@
  */
 import { loadEnv } from "./load-env";
 import { placeholderPng } from "../prisma/seed-support/placeholder-png";
+import { formatCents } from "../src/lib/money/cents";
 
 loadEnv();
 
@@ -60,7 +61,17 @@ function nairobiDate(date: Date): string {
 }
 
 type Decision = { mode: string; band: string; probability: number; releaseThreshold: number; rejectThreshold: number };
-type Detail = { state: string; reference: string; decisions: Decision[]; payout: { authorisation: Json | null } };
+type Detail = {
+  state: string;
+  reference: string;
+  decisions: Decision[];
+  payout: { authorisation: Json | null; amount: { amountCents: number; basis: string; commission: { derivation: string } } | null };
+};
+
+function paid(detail: Detail): string {
+  if (!detail.payout.authorisation || !detail.payout.amount) return "no";
+  return `yes, ${formatCents(detail.payout.amount.amountCents)} (${detail.payout.amount.commission.derivation}; ${detail.payout.amount.basis})`;
+}
 
 function describe(decision: Decision): string {
   return `${decision.mode.toUpperCase()} ${decision.band} at ${(decision.probability * 100).toFixed(1)}% (cut-offs ${(decision.releaseThreshold * 100).toFixed(1)}% / ${(decision.rejectThreshold * 100).toFixed(1)}%)`;
@@ -70,31 +81,42 @@ function week(kind: "engaged" | "dormant_lapsed"): Json[] {
   return Array.from({ length: 8 }, (_, day) => {
     const active = kind === "engaged";
     return {
-      day, customerActive: active, transactionCount: active ? 3 : 0, topupAmountKsh: active ? 100 : 0, usageMinutes: active ? 25 : 0,
+      day, customerActive: active, transactionCount: active ? 3 : 0, topupCents: active ? 10_000 : 0, usageMinutes: active ? 25 : 0,
       supportContact: false, complaintOrRefund: false, simActive: kind === "engaged" || day < 4,
     };
   });
 }
 
+type EscrowView = {
+  availableCents: number;
+  availableDerivation: string;
+  jobs: Array<{ job: { id: string }; terms: { commission: { amountCents: number; derivation: string }; liability: { amountCents: number; derivation: string } } }>;
+};
+
 async function postJobAndFund(client: Session): Promise<string> {
-  step("1. Client (client2@) posts a job with a job area and funds escrow");
+  step("1. Client (client2@) deposits into escrow and publishes a job, locking its maximum liability");
+  await call(client, "POST", "/api/client/escrow/fund", { amountCents: 35_000 });
+  // KSh 2,500.00 x 12.00% + KSh 50.00 flat = KSh 350.00 per approved submission; 2 slots lock KSh 700.00.
+  // The second half of the lock is deposited with the job itself.
   const { jobId } = await call<{ jobId: string }>(client, "POST", "/api/client/jobs", {
     title: "Demo: wallet activations, Kibuye Market", description: "Sign up new wallet customers in person at the market.",
     areaName: "Kibuye Market, Kisumu", areaLat: -0.0995, areaLon: 34.768, areaRadiusM: 800,
-    payoutPerActivationKsh: 350, commissionRatePercent: 10, slots: 2, initialFundingKsh: 350,
+    submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 2, initialDepositCents: 35_000,
   });
-  await call(client, "POST", `/api/client/jobs/${jobId}/fund`, { amountKsh: 350 });
-  console.log(`   job ${jobId}, KSh 700 deposited for two slots`);
+  const escrow = await call<EscrowView>(client, "GET", "/api/client/escrow");
+  const terms = escrow.jobs.find((row) => row.job.id === jobId)!.terms;
+  console.log(`   job ${jobId}: ${formatCents(terms.commission.amountCents)} per approved submission (${terms.commission.derivation})`);
+  console.log(`   locked ${formatCents(terms.liability.amountCents)} (${terms.liability.derivation}); available ${formatCents(escrow.availableCents)} (${escrow.availableDerivation})`);
   return jobId;
 }
 
 async function assignToMercy(admin: Session, jobId: string): Promise<string> {
-  step("2. Reviewer (reviewer@) assigns the job to Mercy Achieng; one payout is locked in escrow");
+  step("2. Reviewer (reviewer@) assigns the job to Mercy Achieng; one commission is reserved from the job's lock");
   const { agents } = await call<{ agents: Array<{ id: string; email: string }> }>(admin, "GET", "/api/admin/agents");
   const mercy = agents.find((agent) => agent.email === "mercy@ledgerfield.test");
   if (!mercy) throw new Error("Seed agent mercy@ledgerfield.test not found. Run npm run db:seed.");
-  const { assignmentId, holdKsh } = await call<{ assignmentId: string; holdKsh: number }>(admin, "POST", `/api/admin/jobs/${jobId}/assign`, { agentId: mercy.id });
-  console.log(`   assignment ${assignmentId}, KSh ${holdKsh} held`);
+  const { assignmentId, holdCents } = await call<{ assignmentId: string; holdCents: number }>(admin, "POST", `/api/admin/jobs/${jobId}/assign`, { agentId: mercy.id });
+  console.log(`   assignment ${assignmentId}, ${formatCents(holdCents)} held`);
   return assignmentId;
 }
 
@@ -161,7 +183,7 @@ async function evidencePath(admin: Session): Promise<void> {
   console.log(`   Grace responded -> ${(await detail(admin, target.id)).state}`);
   await call(admin, "POST", `/api/admin/review/${target.id}/approve`, { reason: "Confirmation SMS matches the customer and the date." });
   const after = await detail(admin, target.id);
-  console.log(`   reviewer approved -> ${after.state}; payout authorised: ${after.payout.authorisation ? "yes" : "no"}`);
+  console.log(`   reviewer approved -> ${after.state}; payout authorised: ${paid(after)}`);
 }
 
 async function main(): Promise<void> {
@@ -178,7 +200,7 @@ async function main(): Promise<void> {
   const t7 = afterT7.decisions.find((d) => d.mode === "t7");
   if (t7) console.log(`   ${describe(t7)}`);
   const final = await finalDecision(admin, id, afterT7);
-  console.log(`   final state: ${final.state}; payout authorised: ${final.payout.authorisation ? "yes" : "no"}`);
+  console.log(`   final state: ${final.state}; payout authorised: ${paid(final)}`);
   console.log(`   band changed between T0 and T7: ${t7 && t7.band !== t0.band ? "yes" : "no"}`);
   await evidencePath(admin);
   console.log("\nRehearsal complete.");

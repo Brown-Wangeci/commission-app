@@ -5,41 +5,63 @@ import { requirePageRole } from "@/lib/auth/session";
 import { clientJob } from "@/lib/jobs/jobs";
 import { ApiError } from "@/lib/http/errors";
 import { isFinal } from "@/lib/activations/states";
-import { formatDateTime, formatKsh } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
+import { formatCents, sumCents } from "@/lib/money/cents";
+import { MoneyStat } from "@/components/Money";
 import { StateChip } from "@/components/review/StateChip";
-import { FundForm } from "@/components/client/FundForm";
+import { CloseJobButton } from "@/components/client/CloseJobButton";
 
-/** One job: escrow, deposits, and the outcome of every activation with its reason. */
+/** One job: its commission, its escrow, and the outcome of every activation with its reason. */
 export default async function ClientJobPage({ params }: { params: Promise<{ id: string }> }) {
   const client = await clientFor(await requirePageRole("client"));
   const detail = await clientJob(client.id, (await params).id).catch((error) => {
     if (error instanceof ApiError && error.status === 404) notFound();
     throw error;
   });
-  const { job, balance, activations, deposits } = detail;
+  const { job, terms, escrow, unspentDerivation, activations } = detail;
+  const inProgressCents = sumCents([escrow.reservedCents, escrow.heldCents]);
+  const fullyLocked = escrow.lockedCents === terms.liability.amountCents;
   return (
     <main className="page">
       <div className="breadcrumb"><Link href="/client">&larr; Jobs</Link></div>
       <div className="page-header">
         <div>
-          <h1>{job.title}</h1>
+          <h1>{job.title}{job.status === "closed" && <span className="chip neutral" style={{ marginLeft: 10 }}>Closed</span>}</h1>
           <p className="muted small">
-            {job.areaName}, within {job.areaRadiusM} m of {job.areaLat.toFixed(4)}, {job.areaLon.toFixed(4)} &middot; {formatKsh(job.payoutPerActivationKsh)} per activation &middot;{" "}
-            {(job.commissionRate * 100).toFixed(1)}% commission &middot; {job.slots} activations wanted
+            {job.areaName}, within {job.areaRadiusM} m of {job.areaLat.toFixed(4)}, {job.areaLon.toFixed(4)} &middot; {job.slots} activations wanted
+            {job.closedAt ? ` · closed ${formatDateTime(job.closedAt)}` : ""}
           </p>
         </div>
       </div>
       <div className="grid-4" style={{ marginBottom: 16 }}>
-        <div className="card stat"><div className="stat-label">Funded</div><div className="stat-value">{formatKsh(balance.fundedKsh)}</div></div>
-        <div className="card stat"><div className="stat-label">Locked (reserved and held)</div><div className="stat-value">{formatKsh(balance.reservedKsh + balance.heldKsh)}</div></div>
-        <div className="card stat"><div className="stat-label">Released to agents</div><div className="stat-value">{formatKsh(balance.releasedKsh)}</div></div>
-        <div className="card stat"><div className="stat-label">Available</div><div className="stat-value">{formatKsh(balance.availableKsh)}</div></div>
+        <MoneyStat label="Commission per approved submission" cents={terms.commission.amountCents} derivation={terms.commission.derivation} />
+        <MoneyStat
+          label="Locked at publication"
+          cents={escrow.lockedCents}
+          derivation={fullyLocked ? terms.liability.derivation : `converted from per-job funding; full liability ${formatCents(terms.liability.amountCents)}`}
+        />
+        <MoneyStat label="Released to agents" cents={escrow.releasedCents} />
+        <MoneyStat
+          label={job.status === "open" ? "Unspent (locked until you close the job)" : "Returned to your balance"}
+          cents={escrow.unspentCents}
+          derivation={unspentDerivation}
+        />
       </div>
       <section className="card card-pad" style={{ marginBottom: 16 }}>
-        <div className="row-between wrap" style={{ alignItems: "flex-end" }}>
-          <FundForm jobId={job.id} suggestedKsh={job.payoutPerActivationKsh * 5} />
-          <p className="tiny muted">{deposits.length} deposit{deposits.length === 1 ? "" : "s"} so far{deposits[0] ? `, latest ${formatDateTime(deposits[0].createdAt)}` : ""}. Refused or withdrawn activations return their payout to the available balance.</p>
-        </div>
+        {job.status === "open" ? (
+          <div className="row-between wrap" style={{ alignItems: "flex-start", gap: 16 }}>
+            <p className="small muted" style={{ maxWidth: 560 }}>
+              {formatCents(inProgressCents)} is reserved or held for activations in progress. A refused or withdrawn activation&rsquo;s money
+              returns to this job&rsquo;s unspent amount; closing the job returns the unspent amount to your available balance.
+            </p>
+            <CloseJobButton jobId={job.id} unspentCents={escrow.unspentCents} inProgressCents={inProgressCents} />
+          </div>
+        ) : (
+          <p className="small muted">
+            This job is closed. {formatCents(inProgressCents)} is still committed to activations in progress; it is released to the agent on
+            approval or returned to your balance on refusal or withdrawal.
+          </p>
+        )}
       </section>
       <section className="card">
         <div className="card-pad"><h2>Activations on this job ({activations.length})</h2></div>

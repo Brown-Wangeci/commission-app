@@ -2,7 +2,9 @@ import Link from "next/link";
 import { agentFor } from "@/lib/auth/actors";
 import { requirePageRole } from "@/lib/auth/session";
 import { agentHome } from "@/lib/agents/views";
-import { formatDateTime, formatKsh } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
+import { formatCents } from "@/lib/money/cents";
+import { payoutAmountView } from "@/lib/payouts/amount";
 import { ActionButton } from "@/components/ActionButton";
 import { NotificationsPanel } from "@/components/NotificationsPanel";
 
@@ -10,12 +12,14 @@ type Assignment = Awaited<ReturnType<typeof agentHome>>["toAccept"][number];
 
 function JobLine({ assignment }: { assignment: Assignment }) {
   const { job } = assignment;
+  const amount = payoutAmountView({ job, hold: assignment.hold, commission: null });
   return (
     <div>
       <div className="strong">{job.title}</div>
       <div className="small muted">
-        {job.client.name} &middot; {job.areaName} (within {job.areaRadiusM} m) &middot; pays {assignment.hold ? formatKsh(assignment.hold.amountKsh) : "amount unavailable"}
+        {job.client.name} &middot; {job.areaName} (within {job.areaRadiusM} m) &middot; pays {amount ? formatCents(amount.amountCents) : "amount unavailable"} once approved
       </div>
+      {amount && <span className="derivation">{amount.commission.derivation}</span>}
       <div className="tiny muted">Assigned {formatDateTime(assignment.assignedAt)}</div>
     </div>
   );

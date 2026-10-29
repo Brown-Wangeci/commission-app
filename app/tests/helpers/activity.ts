@@ -8,7 +8,7 @@ export async function addWeekOfActivity(activationId: string, active = true): Pr
       day,
       customerActive: active,
       transactionCount: active ? 2 : 0,
-      topupAmountKsh: active ? 50 : 0,
+      topupCents: active ? 5_000 : 0,
       usageMinutes: active ? 12 : 0,
       supportContact: false,
       complaintOrRefund: false,

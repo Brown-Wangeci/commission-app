@@ -4,7 +4,9 @@ import { agentFor } from "@/lib/auth/actors";
 import { requirePageRole } from "@/lib/auth/session";
 import { agentActivation } from "@/lib/agents/views";
 import { ApiError } from "@/lib/http/errors";
-import { formatDateTime, formatKsh } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
+import { formatCents } from "@/lib/money/cents";
+import { payoutAmountView } from "@/lib/payouts/amount";
 import { StateChip } from "@/components/review/StateChip";
 import { EvidenceResponseForm } from "@/components/agent/EvidenceResponseForm";
 import { ReasonAction } from "@/components/ReasonAction";
@@ -69,6 +71,7 @@ export default async function AgentActivationPage({ params }: { params: Promise<
   });
   const { activation } = detail;
   const photos = activation.evidence;
+  const amount = payoutAmountView({ job: activation.job, hold: activation.assignment.hold, commission: activation.commission });
   return (
     <main className="page page-narrow">
       <div className="breadcrumb"><Link href="/agent/activations">&larr; My activations</Link></div>
@@ -77,8 +80,9 @@ export default async function AgentActivationPage({ params }: { params: Promise<
         <h1>{activation.job.title}</h1>
         <p className="claim">
           Submitted {formatDateTime(activation.submittedAt)} &middot; customer <span className="mono">{activation.customerMsisdnMasked}</span> &middot; pays{" "}
-          {activation.assignment.hold ? formatKsh(activation.assignment.hold.amountKsh) : "amount unavailable"}
+          {amount ? formatCents(amount.amountCents) : "amount unavailable"}
         </p>
+        {amount && <span className="derivation">{amount.commission.derivation}{amount.basis === "recorded" ? " (commission recorded at approval)" : ""}</span>}
       </div>
       <div className="stack-lg">
         <Status detail={detail} />

@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { agentStats } from "@/lib/agents/history";
-import { formatDate, formatDateTime, formatKsh, formatPercent, formatProbability, initials } from "@/lib/format";
+import { formatDate, formatDateTime, formatPercent, formatProbability, initials } from "@/lib/format";
+import { payoutAmountView } from "@/lib/payouts/amount";
+import { Money } from "@/components/Money";
 import { StateChip } from "@/components/review/StateChip";
 
 /** One agent's full history, from their own records. */
@@ -18,6 +20,7 @@ export default async function AgentHistoryPage({ params }: { params: Promise<{ i
       include: {
         job: { include: { client: true } },
         assignment: { include: { hold: true } },
+        commission: true,
         decisions: { orderBy: { recordedAt: "desc" }, take: 1 },
         reviewItems: { where: { closedAt: { not: null } }, orderBy: { closedAt: "desc" }, take: 1, include: { reviewer: true } },
       },
@@ -54,6 +57,7 @@ export default async function AgentHistoryPage({ params }: { params: Promise<{ i
                 {activations.map((activation) => {
                   const decision = activation.decisions[0];
                   const review = activation.reviewItems[0];
+                  const amount = payoutAmountView({ job: activation.job, hold: activation.assignment.hold, commission: activation.commission });
                   return (
                     <tr key={activation.id}>
                       <td><Link href={`/admin/review/${activation.id}`} className="mono">{activation.reference}</Link></td>
@@ -62,7 +66,7 @@ export default async function AgentHistoryPage({ params }: { params: Promise<{ i
                       <td><StateChip state={activation.state} /></td>
                       <td className="small">{decision ? `${formatProbability(decision.probability)} (${decision.mode.toUpperCase()}, ${decision.band.replace("_", " ")})` : <span className="muted">No score</span>}</td>
                       <td className="small">{review ? <>{review.action?.replace("_", " ")} by {review.reviewer?.name ?? "the agent"}<div className="tiny muted">{review.reason}</div></> : <span className="muted">None</span>}</td>
-                      <td className="num right small">{activation.assignment.hold ? formatKsh(activation.assignment.hold.amountKsh) : "Unavailable"}</td>
+                      <td className="right small">{amount ? <Money cents={amount.amountCents} derivation={amount.commission.derivation} /> : "Unavailable"}</td>
                     </tr>
                   );
                 })}

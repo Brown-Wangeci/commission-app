@@ -154,7 +154,7 @@ describe("first-week activity reporting", () => {
         clientId: stranger.id,
         activationId,
         actorId: stranger.userId,
-        report: { days: [{ day: 0, customerActive: true, transactionCount: 1, topupAmountKsh: 20, usageMinutes: 3, supportContact: false, complaintOrRefund: false, simActive: true }] },
+        report: { days: [{ day: 0, customerActive: true, transactionCount: 1, topupCents: 2_000, usageMinutes: 3, supportContact: false, complaintOrRefund: false, simActive: true }] },
       }),
     ).rejects.toMatchObject({ status: 404 });
   });

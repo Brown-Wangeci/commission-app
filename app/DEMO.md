@@ -77,8 +77,11 @@ Sign in as **reviewer@**. The top bar shows the review queue count.
      than the job. Open "All 2 scores": at submission this was 10.5%,
      auto-release, with the submission-time model's own cut-offs (30.1% /
      72.9%).
-   - **Payout panel and closing line:** approving pays her payout number,
-     KSh 300 from the job's escrow hold. The model advises; the person decides.
+   - **Payout panel and closing line:** approving pays her payout number
+     KSh 300.00, with the derivation line under it ("KSh 3,000.00 × 10.00% =
+     KSh 300.00"): the job's commission structure applied to one approved
+     submission. On approval the commission is recorded with that
+     derivation. The model advises; the person decides.
 3. Click **Next** to see the other variants of "why it is here":
    - **LF-000052** (Brian, 15 days on the platform): rejected at submission
      (74.7%) but escalated rather than refused, because a submission-time
@@ -96,15 +99,24 @@ week showed steady use. The History section lists both steps.
 
 This creates a new activation whose band changes between T0 and T7.
 
-1. **Client posts and funds a job.** Sign in as **client2@** (Tujenge Pesa).
-   **Post a job**: title "Wallet activations, Kibuye Market (demo)";
-   description "Sign up new wallet customers at the market."; place "Kibuye
-   Market, Kisumu"; centre `-0.0995`, `34.768`; radius `800`; payout `350`;
-   commission `10`; activations wanted `2`; deposit `700`. You land on the job
-   page: KSh 700 funded, KSh 700 available.
+1. **Client funds escrow and publishes a job.** Sign in as **client2@**
+   (Tujenge Pesa). The Jobs page shows the escrow balance: on fresh seed data
+   KSh 0.00 available, because every seeded job locked exactly what was
+   deposited. **Post a job**: title "Wallet activations, Kibuye Market
+   (demo)"; description "Sign up new wallet customers at the market."; place
+   "Kibuye Market, Kisumu"; centre `-0.0995`, `34.768`; radius `800`; value
+   of one approved submission `2500`; commission rate `12`; flat amount `50`;
+   activations wanted `2`. The preview reads KSh 350.00 per approved
+   submission ("KSh 2,500.00 × 12.00% = KSh 300.00 + KSh 50.00 flat") and
+   KSh 700.00 to lock ("2 × KSh 350.00 per approved submission").
+   - To show the refusal first, leave the deposit empty and **Publish the
+     job**: it is refused, saying the available KSh 0.00 does not cover
+     KSh 700.00.
+   - Enter `700` in "Deposit into escrow now" and publish. You land on the job
+     page: KSh 700.00 locked at publication, KSh 700.00 unspent.
 2. **Platform assigns an agent.** As **reviewer@**: **Clients**, then open the
-   new job. Choose **Mercy Achieng (Kondele, Kisumu)** and **Assign**. KSh 350
-   is now locked in an escrow hold ("reserved").
+   new job. Choose **Mercy Achieng (Kondele, Kisumu)** and **Assign**.
+   KSh 350.00 is reserved from the job's lock in an escrow hold.
 3. **Agent accepts and submits.** Sign in as **mercy@**. On **My jobs**,
    **Accept job**, then **Submit activation**:
    - customer phone: any new number, e.g. `0711 234 567`;
@@ -141,11 +153,15 @@ This creates a new activation whose band changes between T0 and T7.
    - If the hold-close model released or refused it automatically, that is
      the final decision; the History shows it, and a refusal carries a
      dispute record the agent can contest once.
-7. **See the outcome everywhere.** **Payouts** lists the authorisation (KSh
-   350 to Mercy's number, by Amina Otieno, via `noop`). As **client2@** the job
-   shows the outcome and the reviewer's reason. As **mercy@**, **My
-   activations** shows "Approved by a reviewer" with the reason. The **Audit
-   log** shows every step.
+7. **See the outcome everywhere.** **Payouts** lists the authorisation
+   (KSh 350.00 to Mercy's number, with its derivation, by Amina Otieno, via
+   `noop`). As **client2@** the job shows the outcome and the reviewer's
+   reason, KSh 350.00 released and KSh 350.00 unspent. As **mercy@**, **My
+   activations** shows "Approved by a reviewer" with the reason and the
+   commission's derivation. The **Audit log** shows every step.
+8. **Close the job.** As **client2@**, open the job and **Close this job**.
+   The confirmation says KSh 350.00 returns to the available balance; after
+   closing, the Jobs page shows it there.
 
 **What to expect.** On the build rehearsal (28 October 2026) step 3 scored
 auto-release at T0 (24.1%; cut-offs 30.1% / 72.9%), the dormant week in

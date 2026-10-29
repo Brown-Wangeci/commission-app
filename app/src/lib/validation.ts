@@ -1,6 +1,29 @@
 import { z } from "zod";
+import { MAX_ROW_CENTS } from "@/lib/money/cents";
+import { BPS_PER_WHOLE } from "@/lib/money/commission";
 
 /** Shared input rules, so every route validates the same field the same way. */
+
+/**
+ * Money in a request: a JSON integer number of cents. Text such as "1500" is
+ * refused rather than coerced, because it would be ambiguous whether it meant
+ * shillings or cents.
+ */
+export function centsSchema(label: string, min = 0) {
+  const whole = `${label} must be a whole number of cents.`;
+  return z
+    .number({ invalid_type_error: whole, required_error: `${label} is required.` })
+    .int(whole)
+    .min(min, min > 0 ? `${label} must be at least 1 cent.` : `${label} cannot be negative.`)
+    .max(MAX_ROW_CENTS, `${label} is larger than one record can hold.`);
+}
+
+/** A rate in basis points: 1 (0.01%) to 10000 (100%). */
+export const rateBpsSchema = z
+  .number({ invalid_type_error: "The rate must be a whole number of basis points.", required_error: "The rate is required." })
+  .int("The rate must be a whole number of basis points.")
+  .min(1, "The rate must be at least 1 basis point (0.01%).")
+  .max(BPS_PER_WHOLE, "The rate cannot exceed 10000 basis points (100%).");
 
 export const idSchema = z.string().trim().min(1).max(64);
 

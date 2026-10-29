@@ -321,6 +321,23 @@ def test_score_t0_mode_succeeds_with_only_submission_time_data(frames):
         assert body["feature_set"] == "t0"
 
 
+@pytest.mark.parametrize("mode", ["t0", "t7"])
+def test_score_returns_the_full_feature_vector_it_scored(frames, dataset, mode):
+    """The response carries every feature the model scored (app issue #43),
+    and each value is the training pipeline's own value for that activation."""
+    features = data_module.FEATURE_SETS[mode]
+    activation_id = frames["activations"].iloc[50]["activation_id"]
+    payload = serve_testing.build_request_payload(activation_id, frames, HISTORY_DAYS, mode=mode)
+    with TestClient(app) as client:
+        response = client.post("/score", json=payload)
+    assert response.status_code == 200
+    vector = response.json()["feature_vector"]
+    assert sorted(vector) == sorted(features)
+    expected = dataset.features.iloc[serve_testing.position_of(dataset.keys, activation_id)]
+    for feature in features:
+        assert vector[feature] == pytest.approx(float(expected[feature]), abs=1e-6), feature
+
+
 def test_score_t0_reasons_only_reference_t0_features(frames):
     activation_id = frames["activations"].iloc[0]["activation_id"]
     payload = serve_testing.build_request_payload(activation_id, frames, HISTORY_DAYS, mode="t0")

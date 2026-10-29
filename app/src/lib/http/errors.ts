@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
+import { MoneyError } from "@/lib/money/cents";
 
 /**
  * One error shape for every API route:
@@ -58,6 +59,7 @@ function fromZod(error: ZodError): ApiError {
 }
 
 const ILLEGAL_TRANSITION = /illegal activation transition/;
+const FIXED_JOB_TERMS = /ledgerfield: (a published job's commission structure|a closed job cannot be reopened)/;
 
 /**
  * Database errors that mean the request conflicts with the data, not that
@@ -68,6 +70,9 @@ function fromDatabase(error: unknown): ApiError | null {
   if (ILLEGAL_TRANSITION.test(message)) {
     return new ApiError(409, "illegal_transition", "That change is not allowed from the activation's current state.");
   }
+  if (FIXED_JOB_TERMS.test(message)) {
+    return new ApiError(409, "conflict", "A published job's commission, slots and escrow lock are fixed, and a closed job cannot reopen.");
+  }
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === "P2025") return new ApiError(404, "not_found", "The record was not found.");
     if (error.code === "P2002") return new ApiError(409, "conflict", "That record already exists.");
@@ -76,9 +81,14 @@ function fromDatabase(error: unknown): ApiError | null {
   return null;
 }
 
+/** An amount the money rules refuse (not whole cents, too large) is invalid input. */
+function fromMoney(error: unknown): ApiError | null {
+  return error instanceof MoneyError ? new ApiError(422, "validation_failed", error.message) : null;
+}
+
 /** Converts anything thrown in a route into the standard error response. */
 export function toErrorResponse(error: unknown, route: string): NextResponse<ErrorBody> {
-  const apiError = error instanceof ZodError ? fromZod(error) : (fromDatabase(error) ?? error);
+  const apiError = error instanceof ZodError ? fromZod(error) : (fromMoney(error) ?? fromDatabase(error) ?? error);
   if (apiError instanceof ApiError) {
     return errorResponse(apiError.status, {
       error: { code: apiError.code, message: apiError.message, details: apiError.details },

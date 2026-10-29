@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson } from "@/lib/client-api";
+import { formatCents } from "@/lib/money/cents";
 
 type Option = { id: string; label: string };
 
@@ -19,13 +20,13 @@ export function AssignAgentForm({ jobId, agents }: { jobId: string; agents: Opti
     setBusy(true);
     setError(null);
     setDone(null);
-    const result = await postJson<{ holdKsh: number | null }>(`/api/admin/jobs/${jobId}/assign`, { agentId });
+    const result = await postJson<{ holdCents: number | null }>(`/api/admin/jobs/${jobId}/assign`, { agentId });
     setBusy(false);
     if (!result.ok) {
       setError(result.message);
       return;
     }
-    setDone(`Assigned. KSh ${result.data.holdKsh ?? "?"} locked in escrow; the agent can now accept the job.`);
+    setDone(`Assigned. ${result.data.holdCents === null ? "One commission" : formatCents(result.data.holdCents)} reserved from the job's locked escrow; the agent can now accept the job.`);
     router.refresh();
   }
 

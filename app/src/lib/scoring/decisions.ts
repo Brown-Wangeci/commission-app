@@ -41,6 +41,7 @@ export async function recordDecision(
       rejectThreshold: response.reject_threshold,
       scoredAt: new Date(response.scored_at),
       trigger,
+      featureVector: response.feature_vector,
       reasons: { create: reasons },
     },
     include: { reasons: { orderBy: { rank: "asc" } } },

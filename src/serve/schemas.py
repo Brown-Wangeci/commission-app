@@ -153,6 +153,10 @@ class ScoreResponse(BaseModel):
     release_threshold: float
     reject_threshold: float
     top_reasons: list[ReasonContribution]
+    # Every feature the model scored, by name, exactly as it went into the
+    # model. Returned so the caller can store it with its decision record
+    # (app issue #43); the same vector is already kept by /explain.
+    feature_vector: dict[str, float]
     scored_at: datetime
 
 
