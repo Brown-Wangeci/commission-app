@@ -1001,7 +1001,8 @@ the requirement's words:
   running (no live test skipped), on a UTF8 database. After the last two
   changes (the flagged-tiles rule and its test), the suite was rerun without
   the live services: 202 passed, the 36 live tests skipped, none failed.
-  Python: the serving tests pass, including the new boundary test.
+  Python: `tests/test_serve.py` 45 of 45 locally, including the new
+  boundary test; the full Python suite runs in CI.
 - `npm run demo:rehearse` passed: a client-defined job, a form built from
   version 1, approval with the commission recorded.
 - 22 checks on the rendered pages passed: review grid and labels by version,
