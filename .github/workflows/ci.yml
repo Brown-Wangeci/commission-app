@@ -1,0 +1,82 @@
+# Runs both test suites on every push and pull request (NFR-14, issue #52).
+#
+# app: the Next.js application's Vitest suite against a PostgreSQL service
+#      container (each run creates its own UTF8 database), plus the money
+#      column check, the typecheck and the production build. The live suites
+#      (real scoring service, running app) skip themselves here.
+# ml:  the Python suite. The dataset and the model artifacts are not
+#      committed, so the job regenerates them first exactly as the README
+#      describes: the seed-42 dataset, then the T7 and T0 artifacts.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: App tests (Vitest)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: ledgerfield
+          POSTGRES_PASSWORD: ledgerfield
+          POSTGRES_DB: ledgerfield
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ledgerfield"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: app
+    env:
+      DATABASE_URL: postgresql://ledgerfield:ledgerfield@localhost:5432/ledgerfield
+      TEST_DATABASE_URL: postgresql://ledgerfield:ledgerfield@localhost:5432/ledgerfield_test
+      # Test-only values: not secrets, never used outside this job.
+      MSISDN_HASH_SALT: ci-only-salt-not-a-secret-0123456789
+      NEXTAUTH_SECRET: ci-only-nextauth-secret-not-a-secret
+      NEXTAUTH_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npx prisma generate
+      - name: Vitest
+        run: npx vitest run
+      - name: Production build (runs the money column check first)
+        run: npm run build
+      - name: Typecheck tests and scripts too (after the build writes next-env.d.ts)
+        run: npm run typecheck
+
+  ml:
+    name: ML tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - name: Generate the seed-42 dataset
+        run: python -m src.generator.run
+      - name: Build the T7 and T0 serving artifacts
+        run: |
+          python -m src.serve.artifact
+          python -m src.serve.artifact t0_none t0_none-isotonic-v1
+      - name: pytest
+        run: python -m pytest -q
