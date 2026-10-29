@@ -3,12 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson } from "@/lib/client-api";
+import { centsToKshText, parseKshToCents } from "@/lib/money/cents";
 
 export type ActivityRow = {
   day: number;
   customerActive: boolean;
   transactionCount: number;
-  topupAmountKsh: number;
+  topupCents: number;
   usageMinutes: number;
   supportContact: boolean;
   complaintOrRefund: boolean;
@@ -17,14 +18,17 @@ export type ActivityRow = {
 
 const DAYS = [0, 1, 2, 3, 4, 5, 6, 7];
 
-function rowFrom(form: FormData, day: number): ActivityRow {
+/** The top-up is typed in shillings and sent as integer cents; a fraction of a cent is refused. */
+function rowFrom(form: FormData, day: number): ActivityRow | string {
   const checked = (name: string) => form.get(`${name}-${day}`) === "on";
   const number = (name: string) => Number(form.get(`${name}-${day}`) || 0);
+  const topupCents = parseKshToCents(String(form.get(`topup-${day}`) || "0"));
+  if (topupCents === null) return `Day ${day}: enter the top-up in shillings, with at most two decimal places.`;
   return {
     day,
     customerActive: checked("active"),
     transactionCount: number("tx"),
-    topupAmountKsh: number("topup"),
+    topupCents,
     usageMinutes: number("minutes"),
     supportContact: checked("support"),
     complaintOrRefund: checked("complaint"),
@@ -42,9 +46,15 @@ export function ActivityForm({ activationId, existing, backHref }: { activationI
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const days = DAYS.map((day) => rowFrom(form, day));
+    const invalid = days.find((row): row is string => typeof row === "string");
+    if (invalid) {
+      setError(invalid);
+      return;
+    }
     setBusy(true);
     setError(null);
-    const result = await postJson(`/api/client/activations/${activationId}/activity`, { days: DAYS.map((day) => rowFrom(form, day)) });
+    const result = await postJson(`/api/client/activations/${activationId}/activity`, { days });
     setBusy(false);
     if (!result.ok) {
       setError(result.message);
@@ -69,7 +79,7 @@ export function ActivityForm({ activationId, existing, backHref }: { activationI
                   <td className="num">{day}</td>
                   <td><input type="checkbox" name={`active-${day}`} defaultChecked={row?.customerActive ?? false} aria-label={`Day ${day} active`} /></td>
                   <td><input className="input" name={`tx-${day}`} inputMode="numeric" defaultValue={row?.transactionCount ?? 0} style={{ width: 80 }} /></td>
-                  <td><input className="input" name={`topup-${day}`} inputMode="decimal" defaultValue={row?.topupAmountKsh ?? 0} style={{ width: 90 }} /></td>
+                  <td><input className="input" name={`topup-${day}`} inputMode="decimal" defaultValue={row ? centsToKshText(row.topupCents) : "0"} style={{ width: 90 }} /></td>
                   <td><input className="input" name={`minutes-${day}`} inputMode="decimal" defaultValue={row?.usageMinutes ?? 0} style={{ width: 80 }} /></td>
                   <td><input type="checkbox" name={`support-${day}`} defaultChecked={row?.supportContact ?? false} aria-label={`Day ${day} support`} /></td>
                   <td><input type="checkbox" name={`complaint-${day}`} defaultChecked={row?.complaintOrRefund ?? false} aria-label={`Day ${day} complaint`} /></td>

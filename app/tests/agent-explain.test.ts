@@ -6,7 +6,7 @@ function decision(mode: "t0" | "t7", band: "auto_release" | "review" | "reject",
   return {
     id: `${mode}-1`, activationId: "a", mode, modelVersion: `${mode}_none-isotonic-v1`, featureSet: mode, rawScore: probability,
     probability, band, releaseThreshold: mode === "t7" ? 0.266667 : 0.301471, rejectThreshold: mode === "t7" ? 0.666667 : 0.729167,
-    scoredAt: new Date(), recordedAt: new Date(), trigger: "hold_close",
+    scoredAt: new Date(), recordedAt: new Date(), trigger: "hold_close", featureVector: null,
     reasons: [
       { id: "r1", decisionId: "d", rank: 1, feature: "proof_of_activation_missing_flag", description: "no proof of activation was attached", contribution: 1.04, direction: "raises", isAgentLevel: false },
       { id: "r2", decisionId: "d", rank: 2, feature: "agent_tenure_days", description: "the agent has been on the platform 531 days", contribution: -1.01, direction: "lowers", isAgentLevel: true },

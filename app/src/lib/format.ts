@@ -1,6 +1,7 @@
 /**
  * Display formatting. Every date and time is shown in Kenyan time
- * (Africa/Nairobi), whatever the server's own timezone is.
+ * (Africa/Nairobi), whatever the server's own timezone is. Money is
+ * formatted by formatCents in src/lib/money/cents.ts, never here.
  */
 export const DISPLAY_TIMEZONE = "Africa/Nairobi";
 
@@ -10,10 +11,6 @@ export function initials(name: string): string {
   const first = parts[0][0] ?? "";
   const last = parts.length > 1 ? parts[parts.length - 1][0] ?? "" : "";
   return (first + last).toUpperCase();
-}
-
-export function formatKsh(amount: number): string {
-  return `KSh ${new Intl.NumberFormat("en-KE", { maximumFractionDigits: 0 }).format(amount)}`;
 }
 
 export function formatDate(date: Date): string {

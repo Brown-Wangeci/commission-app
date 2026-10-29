@@ -259,6 +259,9 @@ legend { font-size: 13px; font-weight: 650; padding: 0 6px; color: var(--ink-2);
 .stat { padding: 14px 16px; }
 .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; }
 .stat-value { font-size: 26px; font-weight: 650; margin-top: 2px; font-variant-numeric: tabular-nums; }
+/* The design system's derivation line, required under every computed amount. */
+.derivation { display: block; font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--ink-2); font-variant-numeric: tabular-nums; margin-top: 2px; overflow-wrap: anywhere; }
+.stat .derivation { margin-top: 6px; }
 
 /* ---------- Auth pages ---------- */
 .auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }

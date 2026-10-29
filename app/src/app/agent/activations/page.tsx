@@ -2,7 +2,9 @@ import Link from "next/link";
 import { agentFor } from "@/lib/auth/actors";
 import { requirePageRole } from "@/lib/auth/session";
 import { agentActivations } from "@/lib/agents/views";
-import { formatDateTime, formatKsh } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
+import { payoutAmountView } from "@/lib/payouts/amount";
+import { Money } from "@/components/Money";
 import { StateChip } from "@/components/review/StateChip";
 
 /** Every activation the agent has submitted, with its status and the reason for it. */
@@ -25,7 +27,9 @@ export default async function AgentActivationsPage() {
             <table className="table">
               <thead><tr><th>Reference</th><th>Job</th><th>Submitted</th><th>Status</th><th>Why</th><th className="right">Payout</th></tr></thead>
               <tbody>
-                {rows.map(({ activation, explanation }) => (
+                {rows.map(({ activation, explanation }) => {
+                  const amount = payoutAmountView({ job: activation.job, hold: activation.assignment.hold, commission: activation.commission });
+                  return (
                   <tr key={activation.id}>
                     <td><Link href={`/agent/activations/${activation.id}`} className="mono">{activation.reference}</Link></td>
                     <td className="small">{activation.job.title}<div className="tiny muted">{activation.job.client.name}</div></td>
@@ -34,9 +38,10 @@ export default async function AgentActivationsPage() {
                     <td className="small" style={{ maxWidth: 420 }}>
                       <strong>{explanation.headline}.</strong> {explanation.detail}
                     </td>
-                    <td className="right num small">{activation.assignment.hold ? formatKsh(activation.assignment.hold.amountKsh) : "Unavailable"}</td>
+                    <td className="right small">{amount ? <Money cents={amount.amountCents} derivation={amount.commission.derivation} /> : "Unavailable"}</td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

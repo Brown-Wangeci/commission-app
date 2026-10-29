@@ -1,5 +1,6 @@
 import type { ActivationState, Band, ReviewOpenReason, ScoringMode } from "@prisma/client";
 import type { Tx } from "@/lib/db";
+import { payoutAmountView, type PayoutAmountView } from "@/lib/payouts/amount";
 import { splitByLevel, toReasonView, type ReasonView } from "./reasons";
 
 /**
@@ -34,7 +35,7 @@ export type QueueRow = {
   submittedAt: Date;
   waitingSince: Date;
   openReason: ReviewOpenReason | null;
-  amountKsh: number | null;
+  amount: PayoutAmountView | null;
   latest: QueueDecision | null;
   submissionReasons: ReasonView[];
   agentReasons: ReasonView[];
@@ -46,6 +47,7 @@ const queueInclude = {
   job: { include: { client: true } },
   agent: { include: { user: true } },
   assignment: { include: { hold: true } },
+  commission: true,
   reviewItems: { where: { closedAt: null }, orderBy: { openedAt: "desc" as const }, take: 1 },
   evidenceRequests: { where: { status: "open" as const }, orderBy: { requestedAt: "desc" as const }, take: 1 },
   decisions: { orderBy: { recordedAt: "desc" as const }, take: 1, include: { reasons: true } },
@@ -75,7 +77,7 @@ function toRow(activation: LoadedRow): QueueRow {
     submittedAt: activation.submittedAt,
     waitingSince: request?.requestedAt ?? openItem?.openedAt ?? activation.updatedAt,
     openReason: openItem?.openReason ?? null,
-    amountKsh: activation.assignment.hold?.amountKsh ?? null,
+    amount: payoutAmountView({ job: activation.job, hold: activation.assignment.hold, commission: activation.commission }),
     latest: decision
       ? {
           mode: decision.mode,

@@ -1,50 +1,69 @@
-import type { EscrowHoldState, Prisma } from "@prisma/client";
+import type { EscrowHoldState, Job, Prisma } from "@prisma/client";
 import { prisma, type Tx } from "@/lib/db";
 import { badRequest, conflict, notFound } from "@/lib/http/errors";
 import { recordAuditEvent } from "@/lib/activations/transition";
+import { differenceCents, formatCents, sumCents } from "@/lib/money/cents";
+import { computeCommission } from "@/lib/money/commission";
 
 /** Hold states as the EscrowHoldState view reports them. */
 export type HoldState = "reserved" | "held" | "released" | "returned";
 
-export type EscrowBalance = {
-  fundedKsh: number;
-  reservedKsh: number;
-  heldKsh: number;
-  releasedKsh: number;
-  returnedKsh: number;
-  /** Funded money not committed to any reserved, held or released hold. */
-  availableKsh: number;
+/**
+ * One job's escrow, derived from its lock and the state of its holds (issue
+ * #42). Nothing here is stored: the lock is fixed at publication and each
+ * hold's state comes from its activation's state (issue #5).
+ */
+export type JobEscrow = {
+  /** Locked from the client's balance at publication. */
+  lockedCents: number;
+  reservedCents: number;
+  heldCents: number;
+  releasedCents: number;
+  returnedCents: number;
+  /** Locked money not reserved, held or released: free within the lock while the job is open, back with the client once it closes. */
+  unspentCents: number;
+  /** What the job takes from the client's balance: the whole lock while open; only reserved, held and released money once closed. */
+  committedCents: number;
 };
+
+type LockedJob = Pick<Job, "status" | "escrowLockedCents">;
 
 export async function holdStateFor(db: Tx, assignmentId: string): Promise<EscrowHoldState | null> {
   return db.escrowHoldState.findUnique({ where: { assignmentId } });
 }
 
 function sumBy(holds: EscrowHoldState[], state: HoldState): number {
-  return holds.filter((hold) => hold.state === state).reduce((total, hold) => total + hold.amountKsh, 0);
+  return sumCents(holds.filter((hold) => hold.state === state).map((hold) => hold.amountCents));
 }
 
-export async function escrowBalance(db: Tx, jobId: string): Promise<EscrowBalance> {
-  const [deposits, holds] = await Promise.all([
-    db.escrowDeposit.aggregate({ where: { jobId }, _sum: { amountKsh: true } }),
-    db.escrowHoldState.findMany({ where: { jobId } }),
-  ]);
-  const fundedKsh = deposits._sum.amountKsh ?? 0;
-  const reservedKsh = sumBy(holds, "reserved");
-  const heldKsh = sumBy(holds, "held");
-  const releasedKsh = sumBy(holds, "released");
+export function jobEscrowFrom(job: LockedJob, holds: EscrowHoldState[]): JobEscrow {
+  const reservedCents = sumBy(holds, "reserved");
+  const heldCents = sumBy(holds, "held");
+  const releasedCents = sumBy(holds, "released");
+  const spokenFor = sumCents([reservedCents, heldCents, releasedCents]);
   return {
-    fundedKsh,
-    reservedKsh,
-    heldKsh,
-    releasedKsh,
-    returnedKsh: sumBy(holds, "returned"),
-    availableKsh: fundedKsh - reservedKsh - heldKsh - releasedKsh,
+    lockedCents: job.escrowLockedCents,
+    reservedCents,
+    heldCents,
+    releasedCents,
+    returnedCents: sumBy(holds, "returned"),
+    unspentCents: differenceCents(job.escrowLockedCents, spokenFor),
+    committedCents: job.status === "open" ? job.escrowLockedCents : spokenFor,
   };
 }
 
-/** Serialises escrow changes on one job, so two assignments cannot overspend it. */
-async function lockJob(tx: Prisma.TransactionClient, jobId: string): Promise<void> {
+export async function jobEscrow(db: Tx, job: LockedJob & { id: string }): Promise<JobEscrow> {
+  return jobEscrowFrom(job, await db.escrowHoldState.findMany({ where: { jobId: job.id } }));
+}
+
+/** "KSh 900.00 locked − KSh 300.00 in progress − KSh 300.00 released" */
+export function unspentDerivation(escrow: JobEscrow): string {
+  const inProgress = sumCents([escrow.reservedCents, escrow.heldCents]);
+  return `${formatCents(escrow.lockedCents)} locked − ${formatCents(inProgress)} in progress − ${formatCents(escrow.releasedCents)} released`;
+}
+
+/** Serialises escrow changes on one job, so two assignments cannot overspend its lock. */
+export async function lockJob(tx: Prisma.TransactionClient, jobId: string): Promise<void> {
   const rows = await tx.$queryRaw<{ id: string }[]>`SELECT id FROM "Job" WHERE id = ${jobId} FOR UPDATE`;
   if (rows.length === 0) throw notFound("Job");
 }
@@ -52,9 +71,10 @@ async function lockJob(tx: Prisma.TransactionClient, jobId: string): Promise<voi
 export type AssignInput = { jobId: string; agentId: string; assignedById: string; at?: Date };
 
 /**
- * Assigns one slot of a job to an agent and locks one payout's worth of the
- * job's escrow in a hold, in a single transaction. Fails if the job is
- * closed, out of slots, or not funded enough.
+ * Assigns one slot of a job to an agent and reserves one commission's worth
+ * of the job's locked escrow in a hold, in a single transaction. Fails if the
+ * job is closed, out of slots, or (for a job converted from the old per-job
+ * funding) its lock does not cover another commission.
  */
 export async function assignJob(input: AssignInput) {
   const at = input.at ?? new Date();
@@ -66,11 +86,12 @@ export async function assignJob(input: AssignInput) {
     if (!agent) throw notFound("Agent");
     const used = await tx.assignment.count({ where: { jobId: job.id } });
     if (used >= job.slots) throw conflict("Every slot on this job is already assigned.");
-    const balance = await escrowBalance(tx, job.id);
-    if (balance.availableKsh < job.payoutPerActivationKsh) {
-      throw conflict("The job's escrow does not cover another payout. The client must fund it first.", {
-        availableKsh: balance.availableKsh,
-        neededKsh: job.payoutPerActivationKsh,
+    const commissionCents = computeCommission(job).amountCents;
+    const escrow = await jobEscrow(tx, job);
+    if (escrow.unspentCents < commissionCents) {
+      throw conflict("The job's locked escrow does not cover another commission.", {
+        unspentCents: escrow.unspentCents,
+        neededCents: commissionCents,
       });
     }
     const assignment = await tx.assignment.create({
@@ -79,14 +100,14 @@ export async function assignJob(input: AssignInput) {
         agentId: agent.id,
         assignedById: input.assignedById,
         assignedAt: at,
-        hold: { create: { amountKsh: job.payoutPerActivationKsh, createdAt: at } },
+        hold: { create: { amountCents: commissionCents, createdAt: at } },
       },
       include: { hold: true },
     });
     await recordAuditEvent(tx, {
       kind: "job_assigned",
       actorId: input.assignedById,
-      detail: `Job "${job.title}" assigned to agent ${agent.id}; KSh ${job.payoutPerActivationKsh} locked in escrow.`,
+      detail: `Job "${job.title}" assigned to agent ${agent.id}; ${formatCents(commissionCents)} reserved from the job's locked escrow.`,
       at,
     });
     return assignment;
@@ -109,26 +130,5 @@ export async function acceptAssignment(input: { assignmentId: string; agentId: s
       at,
     });
     return updated;
-  });
-}
-
-/** Adds money to a job's escrow. Only the client that owns the job may fund it. */
-export async function fundJob(input: { jobId: string; clientId: string; amountKsh: number; actorId: string }) {
-  if (!Number.isInteger(input.amountKsh) || input.amountKsh <= 0) {
-    throw badRequest("Enter a whole number of shillings above zero.");
-  }
-  return prisma.$transaction(async (tx) => {
-    await lockJob(tx, input.jobId);
-    const job = await tx.job.findUniqueOrThrow({ where: { id: input.jobId } });
-    if (job.clientId !== input.clientId) throw notFound("Job");
-    const deposit = await tx.escrowDeposit.create({
-      data: { jobId: job.id, amountKsh: input.amountKsh, createdById: input.actorId },
-    });
-    await recordAuditEvent(tx, {
-      kind: "escrow_funded",
-      actorId: input.actorId,
-      detail: `KSh ${input.amountKsh} deposited into escrow for job "${job.title}".`,
-    });
-    return deposit;
   });
 }

@@ -10,6 +10,12 @@
 //   on it (issue #4).
 // - Activation.state is guarded by a database trigger (issue #3); escrow
 //   hold state is derived from it by a view, never stored (issue #5).
+// - Money is an integer number of Kenyan Shilling cents, and every money
+//   column says so in its name (issue #40). scripts/check-money-columns.ts
+//   fails the build if a Float or Decimal column could hold money.
+// - Escrow belongs to the client business. Publishing a job locks its
+//   maximum liability from the client's available balance; closing it
+//   returns the unspent remainder (issue #42).
 
 generator client {
   provider        = "prisma-client-js"
@@ -152,12 +158,13 @@ model Notification {
 }
 
 model ClientBusiness {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  id        String          @id @default(cuid())
+  userId    String          @unique
+  user      User            @relation(fields: [userId], references: [id], onDelete: Restrict)
   name      String
-  createdAt DateTime @default(now())
+  createdAt DateTime        @default(now())
   jobs      Job[]
+  deposits  EscrowDeposit[]
 }
 
 model Agent {
@@ -174,33 +181,46 @@ model Agent {
   activations  Activation[]
 }
 
+// The commission structure (submission value, rate, flat amount), the slot
+// count and the escrow lock are fixed at publication: a trigger rejects any
+// later change, so every commission computed on the job uses the structure it
+// was published with. A job can be closed once and never reopened.
 model Job {
-  id                     String          @id @default(cuid())
-  clientId               String
-  client                 ClientBusiness  @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  title                  String
-  description            String
-  areaName               String
-  areaLat                Float
-  areaLon                Float
-  areaRadiusM            Int
-  payoutPerActivationKsh Int
-  commissionRate         Float
-  slots                  Int
-  status                 JobStatus       @default(open)
-  createdAt              DateTime        @default(now())
-  deposits               EscrowDeposit[]
-  assignments            Assignment[]
-  activations            Activation[]
+  id                   String         @id @default(cuid())
+  clientId             String
+  client               ClientBusiness @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  title                String
+  description          String
+  areaName             String
+  areaLat              Float
+  areaLon              Float
+  areaRadiusM          Int
+  /// What one approved submission is worth to the client: the base the rate applies to.
+  submissionValueCents Int
+  /// Commission rate in basis points (1 to 10000; 10000 is 100%).
+  commissionRateBps    Int
+  /// Paid on top of the rate component for each approved submission.
+  flatCommissionCents  Int            @default(0)
+  slots                Int
+  /// Maximum liability locked from the client's escrow at publication: slots x commission per submission.
+  escrowLockedCents    Int
+  status               JobStatus      @default(open)
+  createdAt            DateTime       @default(now())
+  closedAt             DateTime?
+  assignments          Assignment[]
+  activations          Activation[]
+  commissions          Commission[]
 }
 
 model EscrowDeposit {
-  id          String   @id @default(cuid())
-  jobId       String
-  job         Job      @relation(fields: [jobId], references: [id], onDelete: Restrict)
-  amountKsh   Int
+  id          String         @id @default(cuid())
+  clientId    String
+  client      ClientBusiness @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  amountCents Int
   createdById String
-  createdAt   DateTime @default(now())
+  createdAt   DateTime       @default(now())
+
+  @@index([clientId])
 }
 
 model Assignment {
@@ -226,7 +246,7 @@ model EscrowHold {
   id           String     @id @default(cuid())
   assignmentId String     @unique
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
-  amountKsh    Int
+  amountCents  Int
   createdAt    DateTime   @default(now())
 }
 
@@ -242,7 +262,7 @@ view EscrowHoldState {
   assignmentId    String           @unique
   jobId           String
   agentId         String
-  amountKsh       Int
+  amountCents     Int
   createdAt       DateTime
   activationId    String?
   activationState ActivationState?
@@ -287,6 +307,7 @@ model Activation {
   evidenceRequests     EvidenceRequest[]
   dispute              Dispute?
   payout               PayoutAuthorisation?
+  commission           Commission?
   activity             CustomerActivityDay[]
 
   @@unique([assignmentId, agentId, jobId])
@@ -334,6 +355,9 @@ model ScoringDecision {
   scoredAt         DateTime
   recordedAt       DateTime        @default(now())
   trigger          String
+  /// Every feature the model scored, by name, as the service computed it
+  /// (issue #43). Null only on decisions recorded before it was stored.
+  featureVector    Json?
   reasons          ScoringReason[]
   disputes         Dispute[]
 
@@ -440,11 +464,37 @@ model Dispute {
   resolutionNote String?
 }
 
+// Append-only (issue #41): one per approved activation, computed at approval
+// from the job's commission structure, which it copies so the amount can be
+// reconstructed from this row alone. A trigger rejects UPDATE and DELETE, and
+// CHECK constraints tie the amount to the copied structure.
+model Commission {
+  id                   String               @id @default(cuid())
+  activationId         String               @unique
+  activation           Activation           @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  jobId                String
+  job                  Job                  @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  submissionValueCents Int
+  commissionRateBps    Int
+  /// floor(submissionValueCents x commissionRateBps / 10000)
+  rateComponentCents   Int
+  flatCommissionCents  Int
+  /// rateComponentCents + flatCommissionCents
+  amountCents          Int
+  computedAt           DateTime
+  /// The reviewer who approved, or null for an automatic release.
+  approvedById         String?
+  recordedAt           DateTime             @default(now())
+  payout               PayoutAuthorisation?
+}
+
 model PayoutAuthorisation {
   id             String     @id @default(cuid())
   activationId   String     @unique
   activation     Activation @relation(fields: [activationId], references: [id], onDelete: Restrict)
-  amountKsh      Int
+  commissionId   String     @unique
+  commission     Commission @relation(fields: [commissionId], references: [id], onDelete: Restrict)
+  amountCents    Int
   payoutMsisdn   String
   authorisedAt   DateTime
   authorisedById String?
@@ -461,7 +511,10 @@ model PayoutCycle {
 }
 
 // First-week customer activity, reported by the client business, needed for
-// T7 scoring. One row per activation per day (0 to 7).
+// T7 scoring. One row per activation per day (0 to 7). The customer's top-up
+// is money even though the platform never moves it, so it is held in integer
+// cents like every other amount and converted to shillings only at the
+// scoring-service boundary (issue #40).
 model CustomerActivityDay {
   id                String     @id @default(cuid())
   activationId      String
@@ -469,7 +522,7 @@ model CustomerActivityDay {
   day               Int
   customerActive    Boolean
   transactionCount  Int
-  topupAmountKsh    Float
+  topupCents        Int
   usageMinutes      Float
   supportContact    Boolean
   complaintOrRefund Boolean

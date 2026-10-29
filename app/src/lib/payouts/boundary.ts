@@ -11,10 +11,14 @@ import type { PayoutAuthorisation, Prisma } from "@prisma/client";
  *
  * The call happens inside the database transaction that approves the
  * activation, so an authoriser that throws rolls the approval back.
+ *
+ * The amount is the activation's commission, computed and recorded at
+ * approval (issue #41), in integer cents.
  */
 export type PayoutRequest = {
   activationId: string;
-  amountKsh: number;
+  commissionId: string;
+  amountCents: number;
   payoutMsisdn: string;
   /** The reviewer who approved, or null for an automatic release. */
   authorisedById: string | null;
@@ -37,7 +41,8 @@ export function recordAuthorisation(
   return tx.payoutAuthorisation.create({
     data: {
       activationId: request.activationId,
-      amountKsh: request.amountKsh,
+      commissionId: request.commissionId,
+      amountCents: request.amountCents,
       payoutMsisdn: request.payoutMsisdn,
       authorisedAt: request.at,
       authorisedById: request.authorisedById,

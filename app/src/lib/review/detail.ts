@@ -3,6 +3,7 @@ import type { Tx } from "@/lib/db";
 import { notFound } from "@/lib/http/errors";
 import { distanceKm, kmOutsideArea, nearestRegion, regionByCode, type JobArea } from "@/lib/geo";
 import { agentStats, type AgentStats } from "@/lib/agents/history";
+import { payoutAmountView } from "@/lib/payouts/amount";
 import { decisionsFor, type DecisionWithReasons } from "@/lib/scoring/decisions";
 import { scoringHealth, type ScoringHealth } from "@/lib/scoring/status";
 import { biggestConcern, byMagnitude, toReasonView, type ReasonView } from "./reasons";
@@ -94,6 +95,7 @@ const detailInclude = {
   evidenceRequests: { orderBy: { requestedAt: "asc" as const }, include: { requestedBy: true, items: true } },
   dispute: true,
   payout: true,
+  commission: true,
 };
 
 function evidenceView(item: EvidenceItem, area: JobArea): EvidenceView {
@@ -285,7 +287,11 @@ export async function reviewDetail(db: Tx, activationId: string) {
     health,
     ...historyViews(activation),
     dispute: activation.dispute,
-    payout: { amountKsh: activation.assignment.hold?.amountKsh ?? null, payoutMsisdn: activation.agent.payoutMsisdn, authorisation: activation.payout },
+    payout: {
+      amount: payoutAmountView({ job: activation.job, hold: activation.assignment.hold, commission: activation.commission }),
+      payoutMsisdn: activation.agent.payoutMsisdn,
+      authorisation: activation.payout,
+    },
     actions: allowedActions(activation.state),
     position,
     audit,

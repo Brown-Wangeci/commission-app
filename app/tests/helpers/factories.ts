@@ -1,5 +1,6 @@
 import type { Activation, Agent, Assignment, ClientBusiness, Job, User } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { maxLiability } from "@/lib/money/commission";
 
 let counter = 0;
 function next(): number {
@@ -39,7 +40,17 @@ export async function createAgent(overrides: Partial<Agent> = {}): Promise<Agent
   });
 }
 
+/** KSh 3,000.00 x 10.00% = KSh 300.00 per approved submission. */
+export const TEST_TERMS = { submissionValueCents: 300_000, commissionRateBps: 1000, flatCommissionCents: 0 } as const;
+
+/**
+ * A job row written directly, bypassing publication: its lock defaults to the
+ * full liability, but no deposit backs it. Tests of publication and the
+ * client balance use createJob from src/lib/jobs/jobs.ts instead
+ * (helpers/submission.ts publishFundedJob).
+ */
 export async function createJob(clientId: string, overrides: Partial<Job> = {}): Promise<Job> {
+  const terms = { ...TEST_TERMS, slots: 10, ...overrides };
   return prisma.job.create({
     data: {
       clientId,
@@ -49,10 +60,8 @@ export async function createJob(clientId: string, overrides: Partial<Job> = {}):
       areaLat: -1.2833,
       areaLon: 36.8333,
       areaRadiusM: 1500,
-      payoutPerActivationKsh: 300,
-      commissionRate: 0.1,
-      slots: 10,
-      ...overrides,
+      escrowLockedCents: overrides.escrowLockedCents ?? maxLiability(terms, terms.slots).amountCents,
+      ...terms,
     },
   });
 }

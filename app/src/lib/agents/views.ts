@@ -8,6 +8,7 @@ import { explainStatus, type StatusExplanation } from "./explain";
 const statusInclude = {
   job: { include: { client: true } },
   assignment: { include: { hold: true } },
+  commission: true,
   decisions: { orderBy: { recordedAt: "asc" as const }, include: { reasons: { orderBy: { rank: "asc" as const } } } },
   reviewItems: { orderBy: { openedAt: "asc" as const } },
   evidenceRequests: { orderBy: { requestedAt: "asc" as const } },

@@ -28,7 +28,11 @@ import type { ActivationState, Agent, Job } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
 import { hashPassword } from "@/lib/auth/password";
-import { acceptAssignment, assignJob, fundJob } from "@/lib/escrow/holds";
+import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
+import { fundEscrow } from "@/lib/escrow/client";
+import { createJob } from "@/lib/jobs/jobs";
+import { sumCents } from "@/lib/money/cents";
+import { maxLiability } from "@/lib/money/commission";
 import { recordSubmission, submitActivation, type PhotoInput, type SubmissionInput } from "@/lib/activations/submit";
 import { respondToEvidenceRequest, withdrawActivation } from "@/lib/activations/agent-actions";
 import { approveActivation, refuseActivation, requestEvidence } from "@/lib/review/actions";
@@ -124,7 +128,7 @@ async function reportWeek(activationId: string, kind: Activity): Promise<void> {
       day,
       customerActive: active,
       transactionCount: active ? Math.round(between(1, 4)) : 0,
-      topupAmountKsh: active ? Math.round(between(20, 150)) : 0,
+      topupCents: active ? Math.round(between(20, 150)) * 100 : 0,
       usageMinutes: active ? Math.round(between(5, 40)) : 0,
       supportContact: kind === "dormant_complaint" && day === 2,
       complaintOrRefund: kind === "dormant_complaint" && day === 2,
@@ -291,21 +295,36 @@ async function main(): Promise<void> {
   const brian = await createAgent({ key: "brian", name: "Brian Kiprop", tenureDays: 20, home: PLACES.kawangware, area: "Kawangware", msisdn: "0798002217" }, now);
   const kevin = await createAgent({ key: "kevin", name: "Kevin Omondi", tenureDays: 60, home: { lat: -1.3, lon: 36.79 }, area: "Kibera", msisdn: "0757331904" }, now);
 
-  const jobSpec = (clientId: string, title: string, area: string, at: Point, radius: number, payout: number, slots: number) =>
-    prisma.job.create({
-      data: {
-        clientId, title, description: `${title}. Sign up new customers in person, scan the SIM pack where possible and attach proof of activation.`,
-        areaName: area, areaLat: at.lat, areaLon: at.lon, areaRadiusM: radius, payoutPerActivationKsh: payout, commissionRate: 0.1, slots,
-        createdAt: new Date(now.getTime() - 160 * DAY),
-      },
-    });
-  const gikomba = await jobSpec(mwanga.id, "SIM registration drive, Gikomba Market", "Gikomba Market", PLACES.gikomba, 700, 300, 80);
-  const trm = await jobSpec(mwanga.id, "Data bundle sign-ups, Thika Road Mall", "Thika Road Mall", PLACES.trm, 500, 250, 40);
-  const kibuye = await jobSpec(tujenge.id, "Wallet activations, Kibuye Market", "Kibuye Market, Kisumu", PLACES.kibuye, 800, 350, 40);
-  const githurai = await jobSpec(tujenge.id, "Wallet activations, Githurai 45 stage", "Githurai 45 stage", PLACES.githurai, 600, 280, 40);
-  for (const [job, owner] of [[gikomba, mwangaOwner], [trm, mwangaOwner], [kibuye, tujengeOwner], [githurai, tujengeOwner]] as const) {
-    await fundJob({ jobId: job.id, clientId: job.clientId, amountKsh: job.payoutPerActivationKsh * job.slots, actorId: owner.id });
+  // Each job's commission structure. Gikomba and Thika Road Mall are a plain
+  // rate; Kibuye adds a flat amount; Githurai's rate lands between cents, so
+  // its derivation line shows the floor (KSh 2,333.33 x 12.00% = KSh 279.99).
+  type Terms = { submissionValueCents: number; commissionRateBps: number; flatCommissionCents: number; slots: number };
+  const posted = new Date(now.getTime() - 160 * DAY);
+  const spec = (clientId: string, title: string, area: string, at: Point, radius: number, terms: Terms) => ({
+    clientId,
+    job: {
+      title, description: `${title}. Sign up new customers in person, scan the SIM pack where possible and attach proof of activation.`,
+      areaName: area, areaLat: at.lat, areaLon: at.lon, areaRadiusM: radius, initialDepositCents: 0, ...terms,
+    },
+  });
+  const specs = [
+    spec(mwanga.id, "SIM registration drive, Gikomba Market", "Gikomba Market", PLACES.gikomba, 700, { submissionValueCents: 300_000, commissionRateBps: 1000, flatCommissionCents: 0, slots: 80 }),
+    spec(mwanga.id, "Data bundle sign-ups, Thika Road Mall", "Thika Road Mall", PLACES.trm, 500, { submissionValueCents: 250_000, commissionRateBps: 1000, flatCommissionCents: 0, slots: 40 }),
+    spec(tujenge.id, "Wallet activations, Kibuye Market", "Kibuye Market, Kisumu", PLACES.kibuye, 800, { submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 40 }),
+    spec(tujenge.id, "Wallet activations, Githurai 45 stage", "Githurai 45 stage", PLACES.githurai, 600, { submissionValueCents: 233_333, commissionRateBps: 1200, flatCommissionCents: 0, slots: 40 }),
+  ];
+  // Each client deposits exactly what its jobs will lock, then publishes them.
+  for (const [client, owner] of [[mwanga, mwangaOwner], [tujenge, tujengeOwner]] as const) {
+    const own = specs.filter((s) => s.clientId === client.id);
+    const amountCents = sumCents(own.map((s) => maxLiability(s.job, s.job.slots).amountCents));
+    await fundEscrow({ clientId: client.id, amountCents, actorId: owner.id, at: posted });
   }
+  const owners = new Map([[mwanga.id, mwangaOwner.id], [tujenge.id, tujengeOwner.id]]);
+  const published: Job[] = [];
+  for (const s of specs) {
+    published.push(await createJob({ clientId: s.clientId, actorId: owners.get(s.clientId)!, job: s.job, at: posted }));
+  }
+  const [gikomba, trm, kibuye, githurai] = published;
 
   // Histories: decided activations from 35 to 150 days ago.
   for (let i = 0; i < 18; i += 1) {

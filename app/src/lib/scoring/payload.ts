@@ -8,6 +8,8 @@ import type {
   ScoreRequestPayload,
   ScoringModeName,
 } from "./contract";
+import { centsToKshText } from "@/lib/money/cents";
+import { BPS_PER_WHOLE } from "@/lib/money/commission";
 import { toServiceTime } from "./time";
 
 /**
@@ -24,9 +26,23 @@ export const HISTORY_DAYS = 90;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 type ActivationWithContext = Activation & {
-  assignment: Assignment & { hold: { amountKsh: number } | null };
+  assignment: Assignment & { hold: { amountCents: number } | null };
   job: Job;
 };
+
+/**
+ * The model was trained on shillings and a fractional rate (data dictionary
+ * section 2a), so amounts leave the app as shillings here and nowhere else.
+ * These are model inputs, not money the platform computes with: the value
+ * sent is the decimal text of the stored cents, read as a number.
+ */
+function shillingsForModel(cents: number): number {
+  return Number(centsToKshText(cents));
+}
+
+function rateForModel(bps: number): number {
+  return bps / BPS_PER_WHOLE;
+}
 
 export class PayloadError extends Error {
   constructor(message: string) {
@@ -58,8 +74,8 @@ function activationEvent(activation: ActivationWithContext): ActivationEventPayl
     sim_registration_date: toServiceTime(activation.simRegisteredAt),
     activation_method: activation.activationMethod,
     proof_of_activation_hash: activation.proofHash,
-    escrow_amount: assignment.hold.amountKsh,
-    commission_rate: job.commissionRate,
+    escrow_amount: shillingsForModel(assignment.hold.amountCents),
+    commission_rate: rateForModel(job.commissionRateBps),
   };
 }
 
@@ -85,7 +101,7 @@ function activityDay(day: CustomerActivityDay): DownstreamActivityPayload {
     event_day: day.day,
     customer_active_flag: day.customerActive,
     transaction_count: day.transactionCount,
-    topup_amount: day.topupAmountKsh,
+    topup_amount: shillingsForModel(day.topupCents),
     usage_minutes: day.usageMinutes,
     support_contact_flag: day.supportContact,
     complaint_or_refund_flag: day.complaintOrRefund,

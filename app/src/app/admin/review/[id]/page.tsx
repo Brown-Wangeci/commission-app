@@ -48,7 +48,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
           <PayoutPanel
             activationId={detail.id}
             stateLabel={stateLabel(detail.state)}
-            amountKsh={detail.payout.amountKsh}
+            amount={detail.payout.amount}
             payoutMsisdn={detail.payout.payoutMsisdn}
             canApprove={detail.actions.canApprove}
             canRefuse={detail.actions.canRefuse}

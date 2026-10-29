@@ -3,17 +3,19 @@ import { prisma } from "@/lib/db";
 import { conflict, notFound } from "@/lib/http/errors";
 import { isFinal } from "@/lib/activations/states";
 import { recordAuditEvent } from "@/lib/activations/transition";
+import { centsSchema } from "@/lib/validation";
 
 /**
  * First-week customer activity, reported by the client business whose
  * service the customer signed up for. The T7 model reads it at hold-close.
- * A report replaces any earlier report for the same days.
+ * A report replaces any earlier report for the same days. The customer's
+ * top-up is money, so it arrives and is stored as integer cents (issue #40).
  */
 export const activityDaySchema = z.object({
   day: z.coerce.number().int().min(0).max(7),
   customerActive: z.boolean(),
   transactionCount: z.coerce.number().int().min(0).max(100000),
-  topupAmountKsh: z.coerce.number().min(0).max(10_000_000),
+  topupCents: centsSchema("The top-up").max(1_000_000_000, "The top-up is larger than KSh 10,000,000.00."),
   usageMinutes: z.coerce.number().min(0).max(24 * 60),
   supportContact: z.boolean(),
   complaintOrRefund: z.boolean(),
