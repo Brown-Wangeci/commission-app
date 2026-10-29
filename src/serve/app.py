@@ -97,6 +97,7 @@ def score(request: schemas.ScoreRequest) -> schemas.ScoreResponse:
             )
             for r in scored.top_reasons
         ],
+        feature_vector=scored.feature_vector,
         scored_at=scored.scored_at,
     )
 

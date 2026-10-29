@@ -27,6 +27,10 @@ export const scoreResponseSchema = z
     release_threshold: z.number().min(0).max(1),
     reject_threshold: z.number().min(0).max(1),
     top_reasons: z.array(reasonSchema),
+    /** Every feature the model scored, by name (issue #43). */
+    feature_vector: z.record(z.number().finite()).refine((vector) => Object.keys(vector).length > 0, {
+      message: "feature_vector is empty",
+    }),
     scored_at: z.string().min(1),
   })
   .refine((body) => body.release_threshold <= body.reject_threshold, {
