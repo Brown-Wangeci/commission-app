@@ -12,7 +12,9 @@ depend on the day you run it (see "What to expect" in Part 2).
 
 ## Before you start
 
-You need four things running. App setup is in [README.md](README.md).
+You need four things running. App setup is in [README.md](README.md). The
+database must be UTF8: the app refuses to start on any other (README,
+"Database encoding"; `npm run db:create -- <name>` makes one).
 
 | Terminal | From | Command |
 |---|---|---|
@@ -106,9 +108,17 @@ This creates a new activation whose band changes between T0 and T7.
    (demo)"; description "Sign up new wallet customers at the market."; place
    "Kibuye Market, Kisumu"; centre `-0.0995`, `34.768`; radius `800`; value
    of one approved submission `2500`; commission rate `12`; flat amount `50`;
-   activations wanted `2`. The preview reads KSh 350.00 per approved
-   submission ("KSh 2,500.00 × 12.00% = KSh 300.00 + KSh 50.00 flat") and
-   KSh 700.00 to lock ("2 × KSh 350.00 per approved submission").
+   activations wanted `2`; a deadline a few weeks out. The preview reads
+   KSh 350.00 per approved submission ("KSh 2,500.00 × 12.00% = KSh 300.00 +
+   KSh 50.00 flat") and KSh 700.00 to lock ("2 × KSh 350.00 per approved
+   submission").
+   - **Evidence the agent must submit** is the client's own list. Add three
+     fields: **+ Choice from a list**, "ID document seen", options National
+     ID / Passport / Alien ID; **+ Text**, "Market stall number", allowed
+     characters "Letters, digits and hyphens", 2 to 10; **+ Photo**, "Photo
+     of the stall", 1 to 4. Each shows its expected format in words. These
+     fields are for the client's checks and the reviewer's; they never reach
+     the fraud model.
    - To show the refusal first, leave the deposit empty and **Publish the
      job**: it is refused, saying the available KSh 0.00 does not cover
      KSh 700.00.
@@ -118,10 +128,15 @@ This creates a new activation whose band changes between T0 and T7.
    new job. Choose **Mercy Achieng (Kondele, Kisumu)** and **Assign**.
    KSh 350.00 is reserved from the job's lock in an escrow hold.
 3. **Agent accepts and submits.** Sign in as **mercy@**. On **My jobs**,
-   **Accept job**, then **Submit activation**:
+   **Accept job**, then **Submit activation**. The form is built from the
+   job's fields: "Every activation" holds the platform's own fields, and
+   "Evidence for this job" holds the three the client just defined, in that
+   order. Try **Submit activation** empty first: it names every missing
+   mandatory field. Then:
    - customer phone: any new number, e.g. `0711 234 567`;
-   - SIM registration date: yesterday; leave "Scanned the code" selected;
-   - photos: two or three of any images (placeholders are fine);
+   - SIM registration date: yesterday; choose "Scanned the code";
+   - ID document seen: National ID; market stall number: `B-14`;
+   - photo of the stall: two or three of any images (placeholders are fine);
    - leave proof of activation empty;
    - open **Simulated device details (demonstration only)**: set the region
      reported by the network to **Mombasa (region_c)**, then **Use the job
@@ -159,7 +174,20 @@ This creates a new activation whose band changes between T0 and T7.
    reason, KSh 350.00 released and KSh 350.00 unspent. As **mercy@**, **My
    activations** shows "Approved by a reviewer" with the reason and the
    commission's derivation. The **Audit log** shows every step.
-8. **Close the job.** As **client2@**, open the job and **Close this job**.
+8. **The review screen shows the client's fields.** As **reviewer@**, open
+   the activation: "What the agent submitted" groups the photos under "Photo
+   of the stall", each tile with its own capture time and GPS accuracy, and
+   "Submitted details" lists "ID document seen" and "Market stall number"
+   with the client's labels and version 1.
+9. **Change the fields; the past stays judged by its version.** As
+   **client2@**, open the job, **Edit evidence fields**, add "Stall owner's
+   contact number" (phone, optional) and **Save as version 2**. Mercy's
+   submission still shows version 1 on the review screen. The seeded Gikomba
+   job shows the same on real data: open any of Grace's older Gikomba
+   activations ("Evidence fields version 1; the job has since moved to
+   version 2"), then the mockup case LF-000052 (version 2, with two more
+   fields).
+10. **Close the job.** As **client2@**, open the job and **Close this job**.
    The confirmation says KSh 350.00 returns to the available balance; after
    closing, the Jobs page shows it there.
 
@@ -192,6 +220,15 @@ Mercy's **LF-000056** is already parked in "awaiting evidence" if you want to
 show the agent's side first.
 
 ## Optional extras
+
+- **The form changes per job.** The four seeded jobs ask for different
+  evidence: Gikomba (SIM pack photo, 19 to 20 digit ICCID, customer type, and
+  since version 2 a registration-form photo and the customer's estate),
+  Thika Road Mall (bundle sold, bundles activated 1 to 10, last bundle date,
+  confirmation photo), Kibuye (ID document seen, stall number, owner's
+  number, stall photo), Githurai (stage photo, SACCO name). Assign Faith to
+  Gikomba and Mercy to Kibuye, accept both, and open each **Submit
+  activation** form side by side.
 
 - **A scoring failure.** Stop the scoring service (Ctrl+C in terminal 2) and
   submit another activation as an agent (assign a second slot first). It
