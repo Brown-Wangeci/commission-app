@@ -56,6 +56,45 @@ npm run db:start                (leave running; local PostgreSQL on port 5433)
 npm run db:migrate              (in a second terminal)
 ```
 
+### Database encoding: the database must be UTF8
+
+Agents and clients type names, notes and evidence in any language, so the
+database must be **UTF8**. A database in a single-byte encoding such as
+WIN1252 (the default of a PostgreSQL cluster initialised on Windows with a
+Windows locale) rejects every character outside its code page. The app, the
+scheduler and the seed check the connected database when they start and
+refuse to run, saying why, if it is not UTF8; `/api/health` reports it as
+`"database": "not_utf8"`.
+
+Create a UTF8 database with:
+
+```
+createdb -E UTF8 --template=template0 <name>
+```
+
+`template0` is needed because the default template may carry another
+encoding. On a cluster whose locale is not UTF-8 (a Windows cluster with an
+`English_..1252` locale, for example) PostgreSQL also needs a compatible
+locale; add `--locale=C`:
+
+```
+createdb -E UTF8 --template=template0 --locale=C <name>
+```
+
+The local PostgreSQL from `npm run db:start` ships no `createdb` client, so
+use the equivalent script, which runs against the server in `DATABASE_URL`
+and only ever creates:
+
+```
+npm run db:create -- ledgerfield_utf8
+```
+
+Then point `DATABASE_URL` at the new database and run `npm run db:migrate`
+and `npm run db:seed`. `npm run db:start` creates the databases it is asked
+for as UTF8 when they do not exist yet, and initialises a brand-new cluster
+as UTF8; it never changes an existing database. The test suite creates each
+of its throwaway databases as UTF8 whatever the cluster's encoding.
+
 Start the scoring service (see below), then:
 
 ```
@@ -204,6 +243,40 @@ hosting account, database and secrets. Issue #19 stays open for that.
   old flat payout becomes a structure that reproduces it to the cent) and
   checks every conversion as it runs.
 
+## Evidence fields
+
+- **Each job has its own evidence fields**, set by the client when posting
+  (and editable later): an ordered list of fields, each with a label, a type
+  (text, number, date, choice from a list, phone number, photo), whether it
+  is mandatory, and the expected format. They are stored as JSON
+  (`EvidenceConfig.fields`), so a job's field set needs no schema change.
+- **Versions.** Every edit adds the next version; versions are never changed.
+  A submission is validated against the version in force when it is made
+  and records it (`Activation.evidenceConfigId`), so an edit never
+  invalidates past submissions, and the review screen labels them with their
+  own version's labels. A form opened before an edit is refused with a 409
+  so the agent reloads it.
+- **The capture form is built from the fields**: the platform's own fields
+  (customer number, SIM date, capture method, proof, note;
+  `src/lib/evidence/platform.ts`) and then the job's. Both are validated in
+  one pass on the server; the form runs the same rules in the browser first.
+- **Two layers.** The platform's fields are the observable inputs the fraud
+  model reads. A client's fields are stored in `Activation.evidencePayload`
+  and are never sent to the scoring service; `tests/layer-boundary.test.ts`
+  fails if any of their values can reach a scoring request.
+- **Deadline.** Every job published now has one (FR-04); after it the job
+  takes no new assignments, acceptances or submissions.
+- **APIs:** `GET/POST /api/client/jobs/{id}/evidence-config` (current version
+  and history; save a new version), `GET /api/agent/assignments/{id}/evidence-form`
+  (the form definition and the version id a submission must send back).
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push and pull request: the app's
+Vitest suite against a PostgreSQL container, the production build (with the
+money-column check) and the typecheck; and the Python suite, after
+regenerating the dataset and the serving artifacts, which are not committed.
+
 ## Project layout
 
 ```
@@ -218,6 +291,7 @@ app/
   src/lib/scoring/            scoring-service contract, client, payload, durable jobs
   src/lib/review/             queue, review detail, reviewer actions, review-screen copy
   src/lib/money/              integer cents, the commission calculation, the money-column check
+  src/lib/evidence/           field definitions and validation, platform fields, configuration versions
   src/lib/escrow/, payouts/   client and job escrow, holds; commission records; the payout boundary
   tests/                      Vitest suites
 ```
@@ -238,6 +312,11 @@ app/
   is refused with a clear message.
 - Closing a job does not cancel its open assignments: money reserved or held
   for them stays committed until each activation is decided.
-- The local PostgreSQL from `npm run db:start` was initialised in the WIN1252
-  encoding on this machine, so it cannot store characters outside that code
-  page. Stored audit text avoids them; a hosted database should be UTF8.
+- The app refuses a database that is not UTF8 (see "Database encoding"). A
+  development database created before that check, in a WIN1252 cluster, has
+  to be replaced by a UTF8 one; the app does not convert it.
+- Photo capture time is the file's last-modified time and photo location is
+  the device's fix when the photo is added; EXIF is not read. The
+  submission's own timestamp is when the server received it.
+- Evidence fields are not shown to the client with the outcome; the client
+  sees outcomes and reasons, as before.

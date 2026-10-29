@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:start": "tsx scripts/local-postgres.ts",
+    "db:create": "tsx scripts/create-database.ts",
     "db:migrate": "prisma migrate deploy",
     "db:reset": "prisma migrate reset --force --skip-seed",
     "db:seed": "tsx prisma/seed.ts",

@@ -1,12 +1,18 @@
 # Requirements gap plan
 
 **Status after Build 1 (issues #40 to #43):** WP2 is done. FR-07, FR-18,
-FR-20, NFR-07 and DR-08 are met with tests; FR-04 keeps only its deadline gap;
-NFR-14 keeps only its CI gap; FR-19 now authorises the computed commission
-but still disburses nothing; DR-10 has the feature-vector groundwork and
-stays a deviation. The CSV is current (16 met, 17 partially met, 22 not met,
-4 not verifiable; 309 hours remaining). The ranking below is the original
-plan and has not been recomputed.
+FR-20, NFR-07 and DR-08 are met with tests; FR-19 now authorises the
+computed commission but still disburses nothing; DR-10 has the
+feature-vector groundwork and stays a deviation.
+
+**Status after Build 2 (issues #45 to #52):** WP3 is done: FR-05, FR-09,
+FR-12 and DR-06 are met with tests; DR-07 now retains the configuration
+version but stays partially met (no device capture time, no record of where
+the location came from). From WP10, FR-04's deadline is done (FR-04 met).
+From WP8, the CI workflow exists; NFR-14 needs only branch protection. The
+database must now be UTF8. The CSV is current (21 met, 15 partially met, 19
+not met, 4 not verifiable; 268 hours remaining). The ranking below is the
+original plan and has not been recomputed.
 
 Companion to `docs/chapter5/requirements_traceability.csv`. It groups the 48
 requirements that are not met (24), partially met (20) or not verifiable (4)

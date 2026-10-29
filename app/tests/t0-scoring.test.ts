@@ -4,7 +4,7 @@ import { submitActivation } from "@/lib/activations/submit";
 import { toServiceTime } from "@/lib/scoring/time";
 import { resetDatabase } from "./helpers/db";
 import { replyWith, startFakeScoring, type FakeScoring } from "./helpers/fake-scoring";
-import { readyAssignment, submissionFor, submitReady } from "./helpers/submission";
+import { daysFromNow, readyAssignment, submissionFor, submitReady } from "./helpers/submission";
 
 let fake: FakeScoring;
 
@@ -42,7 +42,7 @@ describe("T0 scoring at submission (issue #6)", () => {
     });
     const updated = await prisma.assignment.findUniqueOrThrow({ where: { id: assignment.id } });
     await submitActivation(
-      submissionFor(updated, { submittedAt, simRegisteredAt: new Date("2026-09-01T00:00:00Z") }),
+      submissionFor(updated, { submittedAt, values: { simRegisteredAt: "2026-09-01" } }),
     );
     expect(fake.requests[0].activation.timestamp_submitted).toBe("2026-10-14T10:42:00.000");
     expect(toServiceTime(submittedAt)).toBe("2026-10-14T10:42:00.000");
@@ -52,7 +52,7 @@ describe("T0 scoring at submission (issue #6)", () => {
     const first = await readyAssignment();
     await submitActivation(submissionFor(first, { submittedAt: new Date(Date.now() - 60 * 60 * 1000) }));
     const second = await readyAssignment({ agentId: first.agentId });
-    await submitActivation(submissionFor(second, { customerMsisdn: "0799888777" }));
+    await submitActivation(submissionFor(second, { values: { customerMsisdn: "0799888777" } }));
     const historySent = fake.requests[1].recent_activations.map((a) => a.agent_id);
     expect(historySent).toEqual([first.agentId]);
   });
@@ -96,9 +96,10 @@ describe("T0 scoring at submission (issue #6)", () => {
   });
 
   it("refuses a SIM registration date after the submission", async () => {
-    await expect(
-      submitReady({ simRegisteredAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) }),
-    ).rejects.toMatchObject({ status: 400 });
+    await expect(submitReady({ values: { simRegisteredAt: daysFromNow(2) } })).rejects.toMatchObject({
+      status: 422,
+      details: [{ path: "fields.simRegisteredAt", message: "SIM registration date: The date cannot be in the future." }],
+    });
   });
 
   it("refuses a second activation for the same assignment", async () => {

@@ -1,7 +1,9 @@
 import type { Job } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
-import { conflict, notFound } from "@/lib/http/errors";
+import { ApiError, conflict, notFound } from "@/lib/http/errors";
+import { addConfigVersion } from "@/lib/evidence/config";
+import { evidenceConfigInputSchema, nairobiDate } from "@/lib/evidence/fields";
 import { recordAuditEvent } from "@/lib/activations/transition";
 import { availableDerivation, clientEscrow, lockClient, recordDeposit } from "@/lib/escrow/client";
 import { jobEscrow, lockJob, unspentDerivation, type JobEscrow } from "@/lib/escrow/holds";
@@ -40,6 +42,10 @@ export const jobInputSchema = z
     flatCommissionCents: centsSchema("The flat commission").default(0),
     slots: z.coerce.number().int().min(1).max(10_000),
     initialDepositCents: centsSchema("The deposit").default(0),
+    /** The last day work is accepted, YYYY-MM-DD in Kenya; the job closes to new work at the end of it (FR-04). */
+    deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Give the deadline as a date, YYYY-MM-DD."),
+    /** The evidence the agent must submit, in order (FR-05); version 1 of the job's configuration. */
+    evidenceFields: evidenceConfigInputSchema.default([]),
   })
   .superRefine((job, ctx) => {
     try {
@@ -73,6 +79,7 @@ export function jobTerms(job: Pick<Job, "submissionValueCents" | "commissionRate
 export async function createJob(input: { clientId: string; actorId: string; job: JobInput; at?: Date }) {
   const { job } = input;
   const terms = jobTerms(job);
+  const deadlineAt = deadlineFor(job.deadline, input.at ?? new Date());
   return prisma.$transaction(async (tx) => {
     await lockClient(tx, input.clientId);
     if (job.initialDepositCents > 0) {
@@ -107,19 +114,32 @@ export async function createJob(input: { clientId: string; actorId: string; job:
         flatCommissionCents: job.flatCommissionCents,
         slots: job.slots,
         escrowLockedCents: terms.liability.amountCents,
+        deadlineAt,
         createdAt: input.at,
       },
     });
+    const config = await addConfigVersion(tx, { jobId: created.id, fields: job.evidenceFields, actorId: input.actorId, at: input.at });
     await recordAuditEvent(tx, {
       kind: "job_posted",
       actorId: input.actorId,
       detail:
         `Job "${created.title}" published: ${formatCents(terms.commission.amountCents)} per approved submission ` +
-        `(${terms.commission.derivation}); ${formatCents(terms.liability.amountCents)} locked from the client's escrow (${terms.liability.derivation}).`,
+        `(${terms.commission.derivation}); ${formatCents(terms.liability.amountCents)} locked from the client's escrow (${terms.liability.derivation}); ` +
+        `deadline ${job.deadline}; ${config.fields.length} evidence field(s), configuration version 1.`,
       at: input.at,
     });
     return created;
   });
+}
+
+/** The end of the deadline day in Kenya. It must fall on or after the publication date, within two years. */
+function deadlineFor(deadline: string, publishedAt: Date): Date {
+  const deadlineAt = new Date(`${deadline}T23:59:59.999+03:00`);
+  const invalid = (message: string) => new ApiError(422, "validation_failed", message, [{ path: "deadline", message }]);
+  if (Number.isNaN(deadlineAt.getTime()) || nairobiDate(deadlineAt) !== deadline) throw invalid("Give a real date as the deadline.");
+  if (deadline < nairobiDate(publishedAt)) throw invalid("The deadline cannot be before the job is published.");
+  if (deadlineAt.getTime() - publishedAt.getTime() > 2 * 366 * 24 * 60 * 60 * 1000) throw invalid("The deadline must be within two years.");
+  return deadlineAt;
 }
 
 /**

@@ -1,5 +1,6 @@
-import type { Activation, Agent, Assignment, ClientBusiness, Job, User } from "@prisma/client";
+import type { Activation, Agent, Assignment, ClientBusiness, Job, Prisma, User } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import type { FieldDefinition } from "@/lib/evidence/fields";
 import { maxLiability } from "@/lib/money/commission";
 
 let counter = 0;
@@ -43,6 +44,11 @@ export async function createAgent(overrides: Partial<Agent> = {}): Promise<Agent
 /** KSh 3,000.00 x 10.00% = KSh 300.00 per approved submission. */
 export const TEST_TERMS = { submissionValueCents: 300_000, commissionRateBps: 1000, flatCommissionCents: 0 } as const;
 
+/** The test job's evidence fields: one mandatory photo field, as every job asked for before configuration existed. */
+export const TEST_EVIDENCE_FIELDS: FieldDefinition[] = [
+  { key: "field_1", label: "Photos of the activation", type: "photo", mandatory: true, help: null, format: { minCount: 1, maxCount: 12 } },
+];
+
 /**
  * A job row written directly, bypassing publication: its lock defaults to the
  * full liability, but no deposit backs it. Tests of publication and the
@@ -62,6 +68,7 @@ export async function createJob(clientId: string, overrides: Partial<Job> = {}):
       areaRadiusM: 1500,
       escrowLockedCents: overrides.escrowLockedCents ?? maxLiability(terms, terms.slots).amountCents,
       ...terms,
+      evidenceConfigs: { create: { version: 1, fields: TEST_EVIDENCE_FIELDS as unknown as Prisma.InputJsonValue } },
     },
   });
 }
@@ -85,11 +92,14 @@ export async function createAssignment(
 
 export async function createActivation(
   assignment: Assignment,
-  overrides: Partial<Activation> = {},
+  overrides: Partial<Omit<Activation, "evidencePayload">> = {},
 ): Promise<Activation> {
   const n = next();
+  const config = await prisma.evidenceConfig.findFirstOrThrow({ where: { jobId: assignment.jobId }, orderBy: { version: "desc" } });
   return prisma.activation.create({
     data: {
+      evidenceConfigId: config.id,
+      evidencePayload: {},
       reference: `LF-T${String(n).padStart(5, "0")}`,
       assignmentId: assignment.id,
       agentId: assignment.agentId,

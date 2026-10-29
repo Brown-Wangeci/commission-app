@@ -854,3 +854,156 @@ not touched.
   development database, including approving a migrated activation.
 - The development database itself was not migrated. Run `npm run db:migrate`
   (and restart the scoring service) before using it with this build.
+
+## Build 2: configurable evidence submission (issues #45 to #52)
+
+Scope as instructed: the evidence framework, the job deadline and CI.
+M-Pesa and blockchain were not touched.
+
+### Issue #45: the database must be UTF8 (pre-step)
+- `src/lib/db-encoding.ts` reads the connected database's encoding.
+  `src/instrumentation.ts` runs it when the Next.js server starts and, on a
+  database that is not UTF8, prints the reason and the instruction and exits
+  with code 1. The scheduler and the seed check too; `/api/health` reports
+  `not_utf8` with a 503. A database that cannot be reached at start is not
+  called wrongly encoded; health reports it as before.
+- Shown working against the owner's real development database (WIN1252),
+  which was only read: `next start` printed "The database "ledgerfield" is
+  encoded WIN1252, not UTF8 ..." and exited 1. The cluster was not altered.
+- **Decision: the README gives `createdb -E UTF8 --template=template0` and
+  adds `--locale=C`**, because on a cluster with a Windows `..1252` locale
+  PostgreSQL refuses a UTF8 database without a compatible locale.
+- **Decision: `npm run db:create -- <name>`.** The embedded PostgreSQL ships
+  no `createdb`, so this script runs the equivalent `CREATE DATABASE` against
+  the server in `DATABASE_URL`; it only creates, and refuses an existing name.
+- `npm run db:start` now creates missing databases as UTF8 and initialises a
+  new cluster as UTF8; it never changes an existing database. The test suite
+  creates every throwaway database as UTF8 with the C locale, which works on
+  any cluster; tests/db-encoding.test.ts creates a WIN1252 database and
+  checks the refusal.
+
+### Issue #46: per-job evidence configuration (FR-05, DR-06, DR-07)
+- **Decision: two kinds of field, one definition format.** The platform's
+  own fields (customer number, SIM date, capture method, proof, note;
+  `src/lib/evidence/platform.ts`) are the observable inputs the fraud model
+  reads, stored in the activation's fixed columns. A client's fields are
+  stored as JSON. Both are written as the same field definitions, rendered
+  by the same component and validated in the same pass, so the form
+  hardcodes no field while the model's inputs stay fixed.
+- Types: text, number, date, choice from the client's list, Kenyan mobile
+  number, photo. Each has its own expected format (text: allowed characters
+  and length; number: decimal places and bounds; date: future allowed or
+  not; choice: the options; photo: fewest and most).
+- **Decision: text formats are presets, not client-written regular
+  expressions.** A client's regex runs on the server for every submission,
+  and a badly written one can hang it.
+- **Decision: no currency type.** An evidence field is information about the
+  work, never money the platform holds, so it cannot bypass the cents rules.
+- **Representation (DR-06):** `EvidenceConfig.fields` (JSONB, an ordered
+  array of definitions) and `Activation.evidencePayload` (JSONB, values by
+  field key; a photo field holds its photos' evidence numbers). Files stay in
+  `EvidenceItem`, which gains `fieldKey`, so each photo keeps its own
+  capture time and location (B2).
+- **Versions (A3):** each edit adds the next version; a trigger makes
+  versions append-only. A submission is validated against the version in
+  force and records it in `Activation.evidenceConfigId` (a foreign key that
+  must name a version of the activation's own job); a trigger makes that and
+  the payload unchangeable. Field keys (`field_N`) survive edits, and a new
+  field never reuses a removed field's key.
+- **Decision: a form opened before an edit is refused with a 409** ("reload
+  the form"), so a submission is always judged by the version in force when
+  it arrives. The offline build (WP5) will need to decide whether a
+  submission captured offline under an earlier version is honoured.
+- **Privacy, recorded:** a client's phone field stores the number as typed
+  (normalised) in the payload, unlike the customer number, which is hashed.
+  It is personal data a client chose to collect; it falls under NFR-13 and
+  the DR-11 retention work.
+- **Migration:** every existing job gets version 1 holding the evidence all
+  jobs asked for before (one to twelve photos); every activation is linked
+  to it with its photos listed. Verified on a copy of the seeded development
+  database: 4 jobs, 62 activations, 341 evidence files, each linked and filed
+  correctly (the one reply to an evidence request under no field);
+  tests/migration-evidence.test.ts repeats it on its own fixture.
+
+### Issues #47 and #48: the capture form and validation (FR-09, FR-12)
+- The form renders the platform's fields, then the job's, from their
+  definitions (`EvidenceFieldInputs`), and sends `evidenceConfigId`.
+  `GET /api/agent/assignments/{id}/evidence-form` returns the same
+  definition for a future offline client.
+- The server validates everything in one pass. A missing mandatory field is
+  named ("Missing mandatory fields: SIM serial number, Customer type, ...");
+  every failure is reported against its field as `fields.<key>`. Values under
+  keys the configuration does not have are ignored and never stored. The
+  form runs the same rules in the browser first; the server never relies on
+  it.
+- **Interpretation recorded:** the device's own context (GPS fix, device,
+  network) is captured by the device, not typed as evidence, so it stays out
+  of the configurable fields.
+
+### Issue #49: the layer boundary
+- The scoring payload never reads the evidence payload, and
+  `assertFixedShape` refuses to send a request with any key outside the data
+  dictionary. tests/layer-boundary.test.ts fills every client field type with
+  sentinels and checks none reaches the T0 request, the T7 request, or a
+  later activation's history, and that rewriting the stored payload leaves
+  the request identical. On the service side, `tests/test_serve.py` checks
+  a request carrying client evidence is rejected and the model scores
+  exactly the 27 fixed features.
+
+### Issue #50: the review surface
+- Submitted fields are listed with the labels of the submission's own
+  version, which the screen names ("the job has since moved to version 2"
+  when it has). Photos are grouped per photo field in the design system's
+  grid: square tiles, a mono index badge, capture time and GPS accuracy
+  under each tile, flagged tiles outlined and tinted amber with the reason
+  written inline.
+- **Found and fixed while checking the rendered pages:** with more photos
+  than fit, a flagged photo could sit behind "View all" with its reason
+  unseen. Flagged photos now take the visible places first.
+
+### Issue #51: job deadline (FR-04)
+- Set when posting, stored as the end of that day in Kenya, fixed after
+  publication (trigger). After it, no assignment, acceptance or submission.
+  Jobs published before deadlines existed keep none.
+
+### Issue #52: CI (NFR-14)
+- `.github/workflows/ci.yml`: the app suite against a PostgreSQL container,
+  the build and typecheck; the Python suite after regenerating the dataset
+  and the artifacts, which are not committed. **Not done:** requiring the
+  check before merge is a branch-protection setting on the repository, which
+  this build did not change.
+
+### What every submission retains (DR-07, E)
+Checked rather than assumed. Retained on the record itself, all NOT NULL:
+the submission timestamp, the device location (latitude, longitude, with
+accuracy when known) and the configuration version. Missing or weaker than
+the requirement's words:
+- **The submission's capture time is when the server received it.** There is
+  no device-reported capture time for the submission; an offline capture
+  would be stamped when it syncs.
+- **A photo's capture time is the file's last-modified time**, not EXIF, and
+  can be absent; its location is the device's fix when the photo was added.
+- **Where the location came from is not recorded.** The agent can type it,
+  or use the demo button, and the record cannot tell those from a GPS fix.
+
+### Found during this build
+- The scheduler test used a 4-second hold window; a scheduler process now
+  starts slowly enough that the window closed before its first run. It uses
+  12 seconds.
+- The seed's Mercy "awaiting evidence" case moved from review to reject: the
+  agent now enters the SIM date as a calendar date, which made that SIM
+  about 41 hours old at submission instead of 32, and a probe against the
+  real model showed the case turns at about 36 hours. That case now uses a
+  same-day SIM; every named case lands where intended.
+
+### Verification
+- App: 235 of 235 tests passed with the scoring service and `next start`
+  running (no live test skipped), on a UTF8 database. After the last two
+  changes (the flagged-tiles rule and its test), the suite was rerun without
+  the live services: 202 passed, the 36 live tests skipped, none failed.
+  Python: `tests/test_serve.py` 45 of 45 locally, including the new
+  boundary test; the full Python suite runs in CI.
+- `npm run demo:rehearse` passed: a client-defined job, a form built from
+  version 1, approval with the commission recorded.
+- 22 checks on the rendered pages passed: review grid and labels by version,
+  two different capture forms, the client's editor and version history.

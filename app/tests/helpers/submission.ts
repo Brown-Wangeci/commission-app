@@ -4,13 +4,32 @@ import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
 import { fundEscrow } from "@/lib/escrow/client";
 import { createJob, type JobInput } from "@/lib/jobs/jobs";
 import { maxLiability } from "@/lib/money/commission";
-import { submitActivation, type SubmissionInput, type SubmissionResult } from "@/lib/activations/submit";
-import { createAgent, createClient, createUser, TEST_TERMS } from "./factories";
+import { submitActivation, type PhotoInput, type SubmissionInput, type SubmissionResult } from "@/lib/activations/submit";
+import { evidenceConfigInputSchema, nairobiDate, type FieldInput } from "@/lib/evidence/fields";
+import { createAgent, createClient, createUser, TEST_EVIDENCE_FIELDS, TEST_TERMS } from "./factories";
 
 const PNG_BYTES = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function photo(name = "photo.png"): File {
   return new File([PNG_BYTES], name, { type: "image/png" });
+}
+
+/** A photo as the device stamps it: its own capture time and, when known, its own place. */
+export function photoInput(name: string, at: { lat: number; lon: number; accuracy: number } | null = { lat: -1.2835, lon: 36.8331, accuracy: 6 }): PhotoInput {
+  return {
+    file: photo(name),
+    capturedAt: new Date(),
+    gpsLat: at?.lat ?? null,
+    gpsLon: at?.lon ?? null,
+    gpsAccuracyM: at?.accuracy ?? null,
+    locationSource: at ? "device" : "none",
+  };
+}
+
+/** A date n days from now as the agent types it (YYYY-MM-DD in Kenya). */
+export function daysFromNow(days: number): string {
+  return nairobiDate(new Date(Date.now() + days * DAY_MS));
 }
 
 /**
@@ -18,7 +37,10 @@ export function photo(name = "photo.png"): File {
  * 10 slots, in the same area as the factory job (submissionFor's GPS fix is
  * inside it).
  */
-export function jobInput(overrides: Partial<JobInput> = {}): JobInput {
+type JobOverrides = Partial<Omit<JobInput, "evidenceFields">> & { evidenceFields?: FieldInput[] };
+
+export function jobInput(overrides: JobOverrides = {}): JobInput {
+  const { evidenceFields, ...rest } = overrides;
   return {
     title: "SIM registration drive, Gikomba Market",
     description: "Sign up new customers in person.",
@@ -29,7 +51,10 @@ export function jobInput(overrides: Partial<JobInput> = {}): JobInput {
     ...TEST_TERMS,
     slots: 10,
     initialDepositCents: 0,
-    ...overrides,
+    deadline: daysFromNow(60),
+    ...rest,
+    // Parsed as the API parses it, so tests may write fields as a client sends them.
+    evidenceFields: evidenceConfigInputSchema.parse(evidenceFields ?? TEST_EVIDENCE_FIELDS.map(({ key: _key, ...field }) => field)),
   };
 }
 
@@ -38,7 +63,7 @@ export function jobInput(overrides: Partial<JobInput> = {}): JobInput {
  * job's maximum liability (plus any extra), then publishes it.
  */
 export async function publishFundedJob(
-  overrides: Partial<JobInput> = {},
+  overrides: JobOverrides = {},
   options: { client?: ClientBusiness; extraDepositCents?: number } = {},
 ): Promise<{ client: ClientBusiness; job: Job }> {
   const client = options.client ?? (await createClient());
@@ -60,24 +85,24 @@ export async function readyAssignment(options: { agentId?: string; assignedAt?: 
   return prisma.assignment.findUniqueOrThrow({ where: { id: assignment.id } });
 }
 
+/**
+ * A valid submission for the test job's evidence fields (one mandatory photo
+ * field, field_1). `values` and `photos` in the overrides are merged into the
+ * defaults, field by field.
+ */
 export function submissionFor(assignment: Assignment, overrides: Partial<SubmissionInput> = {}): SubmissionInput {
+  const values = { customerMsisdn: "0711222333", simRegisteredAt: daysFromNow(-20), activationMethod: "qr_scan", ...overrides.values };
+  const photos = { field_1: [photoInput("a.png"), photoInput("b.png", null)], proof: [photoInput("proof.png", null)], ...overrides.photos };
   return {
     agentId: assignment.agentId,
     assignmentId: assignment.id,
-    customerMsisdn: "0711222333",
-    simRegisteredAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
-    activationMethod: "qr_scan",
     gpsLat: -1.2835,
     gpsLon: 36.8331,
     gpsAccuracyM: 8,
     device: { deviceId: "device-test-1", deviceOs: "android", appVersion: "3.4.0", networkType: "cellular", ipRegion: null },
-    agentNote: null,
-    photos: [
-      { file: photo("a.png"), capturedAt: new Date(), gpsLat: -1.2835, gpsLon: 36.8331, gpsAccuracyM: 6, locationSource: "device" },
-      { file: photo("b.png"), capturedAt: new Date(), gpsLat: null, gpsLon: null, gpsAccuracyM: null, locationSource: "none" },
-    ],
-    proof: photo("proof.png"),
     ...overrides,
+    values,
+    photos,
   };
 }
 

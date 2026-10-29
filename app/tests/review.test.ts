@@ -143,7 +143,7 @@ describe("review detail (issue #9)", () => {
     const second = await readyAssignment({ agentId: first.agentId });
     const far = { file: photo("far.png"), capturedAt: new Date(), gpsLat: -1.35, gpsLon: 36.95, gpsAccuracyM: 12, locationSource: "device" as const };
     const result = await submitActivation(
-      submissionFor(second, { customerMsisdn: "0700111222", photos: [...submissionFor(second).photos, far] }),
+      submissionFor(second, { values: { customerMsisdn: "0700111222" }, photos: { field_1: [...submissionFor(second).photos.field_1, far] } }),
     );
     const detail = await reviewDetail(prisma, result.activationId);
 

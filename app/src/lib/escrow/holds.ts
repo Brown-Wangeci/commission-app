@@ -82,6 +82,7 @@ export async function assignJob(input: AssignInput) {
     await lockJob(tx, input.jobId);
     const job = await tx.job.findUniqueOrThrow({ where: { id: input.jobId } });
     if (job.status !== "open") throw conflict("This job is closed.");
+    if (job.deadlineAt && at > job.deadlineAt) throw conflict("This job's deadline has passed; it takes no new assignments.");
     const agent = await tx.agent.findUnique({ where: { id: input.agentId } });
     if (!agent) throw notFound("Agent");
     const used = await tx.assignment.count({ where: { jobId: job.id } });
@@ -118,10 +119,11 @@ export async function assignJob(input: AssignInput) {
 export async function acceptAssignment(input: { assignmentId: string; agentId: string; at?: Date }) {
   const at = input.at ?? new Date();
   return prisma.$transaction(async (tx) => {
-    const assignment = await tx.assignment.findUnique({ where: { id: input.assignmentId } });
+    const assignment = await tx.assignment.findUnique({ where: { id: input.assignmentId }, include: { job: true } });
     if (!assignment || assignment.agentId !== input.agentId) throw notFound("Assignment");
     if (assignment.acceptedAt) throw conflict("You have already accepted this job.");
     if (at < assignment.assignedAt) throw badRequest("Acceptance cannot precede assignment.");
+    if (assignment.job.deadlineAt && at > assignment.job.deadlineAt) throw conflict("This job's deadline has passed; it can no longer be accepted.");
     const updated = await tx.assignment.update({ where: { id: assignment.id }, data: { acceptedAt: at } });
     await recordAuditEvent(tx, {
       kind: "assignment_accepted",

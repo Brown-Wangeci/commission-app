@@ -2,8 +2,11 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { agentFor } from "@/lib/auth/actors";
 import { requirePageRole } from "@/lib/auth/session";
+import { prisma } from "@/lib/db";
 import { assignmentForSubmission } from "@/lib/agents/views";
-import { MAX_PHOTOS } from "@/lib/activations/submit";
+import { currentEvidenceConfig } from "@/lib/evidence/config";
+import { PLATFORM_FIELDS } from "@/lib/evidence/platform";
+import { formatDateTime } from "@/lib/format";
 import { ApiError } from "@/lib/http/errors";
 import { REGIONS } from "@/lib/geo";
 import { formatCents } from "@/lib/money/cents";
@@ -19,6 +22,9 @@ export default async function SubmitPage({ params }: { params: Promise<{ assignm
   if (assignment.activation) redirect(`/agent/activations/${assignment.activation.id}`);
   if (!assignment.acceptedAt) redirect("/agent");
   const amount = payoutAmountView({ job: assignment.job, hold: assignment.hold, commission: null });
+  const evidence = await currentEvidenceConfig(prisma, assignment.jobId);
+  const deadline = assignment.job.deadlineAt;
+  const pastDeadline = deadline !== null && deadline < new Date();
   return (
     <main className="page page-narrow">
       <div className="breadcrumb"><Link href="/agent">&larr; My jobs</Link></div>
@@ -29,15 +35,23 @@ export default async function SubmitPage({ params }: { params: Promise<{ assignm
             {assignment.job.title} for {assignment.job.client.name} &middot; pays {amount ? formatCents(amount.amountCents) : "amount unavailable"} once approved
           </p>
           {amount && <span className="derivation">{amount.commission.derivation}</span>}
+          {deadline && <p className="small muted">Deadline: {formatDateTime(deadline)}</p>}
         </div>
       </div>
       <div className="card card-pad">
-        <SubmitActivationForm
-          assignmentId={assignment.id}
-          job={{ title: assignment.job.title, areaName: assignment.job.areaName, areaLat: assignment.job.areaLat, areaLon: assignment.job.areaLon, areaRadiusM: assignment.job.areaRadiusM }}
-          regions={REGIONS.map((region) => ({ code: region.code, name: region.name }))}
-          maxPhotos={MAX_PHOTOS}
-        />
+        {pastDeadline ? (
+          <p className="small">This job&rsquo;s deadline has passed; it takes no more submissions.</p>
+        ) : (
+          <SubmitActivationForm
+            assignmentId={assignment.id}
+            job={{ title: assignment.job.title, areaName: assignment.job.areaName, areaLat: assignment.job.areaLat, areaLon: assignment.job.areaLon, areaRadiusM: assignment.job.areaRadiusM }}
+            regions={REGIONS.map((region) => ({ code: region.code, name: region.name }))}
+            platformFields={PLATFORM_FIELDS}
+            jobFields={evidence.fields}
+            evidenceConfigId={evidence.id}
+            configVersion={evidence.version}
+          />
+        )}
       </div>
     </main>
   );

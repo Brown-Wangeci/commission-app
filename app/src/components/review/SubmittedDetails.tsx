@@ -18,13 +18,34 @@ function gpsLine(detail: ReviewDetail): string {
 
 const NETWORK: Record<string, string> = { cellular: "mobile data", wifi: "wifi" };
 
-/** The label/value list of what was submitted. Unrecorded values say so. */
+/**
+ * The label/value list of what was submitted. Unrecorded values say so. The
+ * job's own fields come first, labelled as the client configured them in the
+ * version this submission was validated against (issue #50).
+ */
 export function SubmittedDetails({ detail }: { detail: ReviewDetail }) {
   const s = detail.submission;
   const regionsDiffer = s.ipRegionName !== null && s.ipRegionName !== s.gpsRegionName;
+  const jobFields = detail.evidence.fields.filter((field) => field.type !== "photo");
   return (
     <section className="card card-pad" aria-labelledby="details-heading">
       <h2 id="details-heading" style={{ marginBottom: 8 }}>Submitted details</h2>
+      {jobFields.length > 0 && (
+        <>
+          <h3 className="group-label" style={{ marginTop: 4 }}>Fields set for this job <span className="muted small">(version {detail.evidence.version})</span></h3>
+          <dl className="dl" style={{ marginBottom: 12 }}>
+            {jobFields.map((field) => (
+              <div key={field.key} style={{ display: "contents" }}>
+                <dt>{field.label}</dt>
+                <dd>
+                  {field.value ?? <span className="muted">Not provided</span>}
+                  <span className="tiny muted" style={{ display: "block" }}>{field.format}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </>
+      )}
       <dl className="dl">
         <dt>Sign-ups claimed</dt>
         <dd>1 <span className="muted small">(each activation is one customer)</span></dd>

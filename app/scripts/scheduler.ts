@@ -18,6 +18,8 @@ async function main(): Promise<void> {
   const { config } = await import("../src/lib/config");
   const { runDueScoringJobs } = await import("../src/lib/scoring/runner");
   const { prisma } = await import("../src/lib/db");
+  const { assertUtf8Database } = await import("../src/lib/db-encoding");
+  await assertUtf8Database(prisma);
   const once = process.argv.includes("--once");
 
   const tick = async (): Promise<void> => {

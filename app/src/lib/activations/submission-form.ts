@@ -1,24 +1,28 @@
 import { z } from "zod";
 import { badRequest } from "@/lib/http/errors";
-import { idSchema, kenyanMsisdnSchema, latitudeSchema, longitudeSchema } from "@/lib/validation";
-import { MAX_PHOTOS, type PhotoInput, type SubmissionInput } from "./submit";
+import { MAX_JOB_PHOTOS } from "@/lib/evidence/fields";
+import { idSchema, latitudeSchema, longitudeSchema } from "@/lib/validation";
+import type { PhotoInput, SubmissionInput } from "./submit";
 
-/** A calendar date entered by the agent, read as midnight Nairobi time. */
-const localDateSchema = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Use the date format YYYY-MM-DD.")
-  .transform((value) => new Date(`${value}T00:00:00+03:00`))
-  .refine((date) => !Number.isNaN(date.getTime()), "Enter a real date.");
+/**
+ * The multipart form the capture form posts (issue #47). Field names:
+ *   evidenceConfigId          the configuration version the form was rendered from
+ *   field:<key>               a typed value for one evidence field
+ *   photos:<key>              the photo files for one photo field
+ *   photoMeta:<key>           JSON: one { capturedAt, gpsLat, gpsLon, gpsAccuracyM, locationSource } per photo
+ * plus the device's own context (location, device, network). Nothing here
+ * judges the evidence: submitActivation validates every field against the
+ * job's configuration, so a crafted request is held to the same rules as
+ * the form.
+ */
 
 const optionalNumber = z
   .union([z.literal(""), z.null(), z.undefined(), z.coerce.number()])
   .transform((value) => (typeof value === "number" && Number.isFinite(value) ? value : null));
 
-const fieldsSchema = z.object({
+const contextSchema = z.object({
   assignmentId: idSchema,
-  customerMsisdn: kenyanMsisdnSchema,
-  simRegisteredAt: localDateSchema,
-  activationMethod: z.enum(["qr_scan", "manual_entry"]),
+  evidenceConfigId: idSchema,
   gpsLat: latitudeSchema,
   gpsLon: longitudeSchema,
   gpsAccuracyM: optionalNumber.refine((v) => v === null || v >= 0, "Accuracy cannot be negative."),
@@ -27,7 +31,6 @@ const fieldsSchema = z.object({
   appVersion: z.string().trim().min(1).max(40),
   networkType: z.enum(["cellular", "wifi"]),
   ipRegion: z.string().trim().max(40).optional().transform((v) => (v ? v : null)),
-  agentNote: z.string().trim().max(1000).optional().transform((v) => (v ? v : null)),
 });
 
 const photoMetaSchema = z.array(
@@ -49,22 +52,18 @@ function files(form: FormData, name: string): File[] {
   return form.getAll(name).filter((value): value is File => value instanceof File && value.size > 0);
 }
 
-function parsePhotoMeta(raw: string | undefined, count: number) {
+/** Photos with their own capture time and place, as the device stamped each one. */
+function photosNamed(form: FormData, filesName: string, metaName: string): PhotoInput[] {
+  const photos = files(form, filesName);
   let json: unknown = [];
   try {
+    const raw = text(form, metaName);
     json = raw ? JSON.parse(raw) : [];
   } catch {
-    throw badRequest("photoMeta must be a JSON array.");
+    throw badRequest(`${metaName} must be a JSON array.`);
   }
   const meta = photoMetaSchema.parse(json);
-  if (meta.length !== count) throw badRequest("photoMeta must have one entry per photo.");
-  return meta;
-}
-
-export function photoInputs(form: FormData): PhotoInput[] {
-  const photos = files(form, "photos");
-  if (photos.length > MAX_PHOTOS) throw badRequest(`Attach at most ${MAX_PHOTOS} photos.`);
-  const meta = parsePhotoMeta(text(form, "photoMeta"), photos.length);
+  if (meta.length !== photos.length) throw badRequest(`${metaName} must have one entry per photo.`);
   return photos.map((file, index) => {
     const m = meta[index];
     const hasGps = m.gpsLat != null && m.gpsLon != null;
@@ -79,30 +78,49 @@ export function photoInputs(form: FormData): PhotoInput[] {
   });
 }
 
-/** Turns the submission form into validated input. Throws 400/422 on bad input. */
+function photosFor(form: FormData, key: string): PhotoInput[] {
+  return photosNamed(form, `photos:${key}`, `photoMeta:${key}`);
+}
+
+/** The photos of an evidence-request reply ("photos" and "photoMeta"), which belong to no field. */
+export function photoInputs(form: FormData): PhotoInput[] {
+  const photos = photosNamed(form, "photos", "photoMeta");
+  if (photos.length > MAX_JOB_PHOTOS) throw badRequest(`Attach at most ${MAX_JOB_PHOTOS} photos.`);
+  return photos;
+}
+
+/** Turns the submission form into input for submitActivation. Throws 400/422 on a malformed form. */
 export function parseSubmissionForm(form: FormData, agentId: string): SubmissionInput {
-  const fields = fieldsSchema.parse(Object.fromEntries(
-    Object.keys(fieldsSchema.shape).map((key) => [key, text(form, key)]),
-  ));
-  const proof = files(form, "proof")[0] ?? null;
+  const context = contextSchema.parse(Object.fromEntries(Object.keys(contextSchema.shape).map((key) => [key, text(form, key)])));
+  const values: Record<string, string> = {};
+  const photos: Record<string, PhotoInput[]> = {};
+  const keys = new Set<string>();
+  for (const name of form.keys()) {
+    const match = /^(field|photos|photoMeta):(.{1,64})$/.exec(name);
+    if (match) keys.add(`${match[1] === "field" ? "v" : "p"}:${match[2]}`);
+  }
+  for (const entry of keys) {
+    const key = entry.slice(2);
+    if (entry.startsWith("v:")) values[key] = text(form, `field:${key}`) ?? "";
+    else photos[key] = photosFor(form, key);
+  }
+  const total = Object.values(photos).reduce((sum, list) => sum + list.length, 0);
+  if (total > MAX_JOB_PHOTOS + 1) throw badRequest(`Attach at most ${MAX_JOB_PHOTOS} photos and one proof of activation.`);
   return {
     agentId,
-    assignmentId: fields.assignmentId,
-    customerMsisdn: fields.customerMsisdn,
-    simRegisteredAt: fields.simRegisteredAt,
-    activationMethod: fields.activationMethod,
-    gpsLat: fields.gpsLat,
-    gpsLon: fields.gpsLon,
-    gpsAccuracyM: fields.gpsAccuracyM,
+    assignmentId: context.assignmentId,
+    evidenceConfigId: context.evidenceConfigId,
+    values,
+    photos,
+    gpsLat: context.gpsLat,
+    gpsLon: context.gpsLon,
+    gpsAccuracyM: context.gpsAccuracyM,
     device: {
-      deviceId: fields.deviceId,
-      deviceOs: fields.deviceOs,
-      appVersion: fields.appVersion,
-      networkType: fields.networkType,
-      ipRegion: fields.ipRegion,
+      deviceId: context.deviceId,
+      deviceOs: context.deviceOs,
+      appVersion: context.appVersion,
+      networkType: context.networkType,
+      ipRegion: context.ipRegion,
     },
-    agentNote: fields.agentNote,
-    photos: photoInputs(form),
-    proof,
   };
 }

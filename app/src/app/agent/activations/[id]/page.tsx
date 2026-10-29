@@ -87,6 +87,19 @@ export default async function AgentActivationPage({ params }: { params: Promise<
       <div className="stack-lg">
         <Status detail={detail} />
         <Actions detail={detail} />
+        {detail.fields.some((field) => field.type !== "photo") && (
+          <section className="card card-pad">
+            <h2 style={{ marginBottom: 8 }}>What you submitted for this job</h2>
+            <dl className="dl">
+              {detail.fields.filter((field) => field.type !== "photo").map((field) => (
+                <div key={field.key} style={{ display: "contents" }}>
+                  <dt>{field.label}</dt>
+                  <dd>{field.value ?? <span className="muted">Not provided</span>}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
         <section className="card card-pad">
           <h2 style={{ marginBottom: 12 }}>Your evidence ({photos.length})</h2>
           {photos.length === 0 ? <p className="small muted">No files.</p> : (

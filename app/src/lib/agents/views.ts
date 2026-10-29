@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "@/lib/http/errors";
 import { WITHDRAWABLE_STATES } from "@/lib/activations/states";
+import { configVersion } from "@/lib/evidence/config";
+import { submittedFields } from "@/lib/evidence/view";
 import { explainStatus, type StatusExplanation } from "./explain";
 
 /** Data for the agent's own screens. Every query is scoped to the agent. */
@@ -20,13 +22,13 @@ type Loaded = Awaited<ReturnType<typeof loadOwn>>;
 async function loadOwn(agentId: string, activationId: string) {
   const activation = await prisma.activation.findUnique({
     where: { id: activationId },
-    include: { ...statusInclude, evidence: { orderBy: { sequence: "asc" } }, payout: true },
+    include: { ...statusInclude, evidence: { orderBy: { sequence: "asc" } }, payout: true, evidenceConfig: true },
   });
   if (!activation || activation.agentId !== agentId) throw notFound("Activation");
   return activation;
 }
 
-function explanationOf(activation: Omit<Loaded, "evidence" | "payout">): StatusExplanation {
+function explanationOf(activation: Omit<Loaded, "evidence" | "payout" | "evidenceConfig">): StatusExplanation {
   const openRequest = activation.evidenceRequests.findLast((request) => request.status === "open");
   const withdrawn = activation.reviewItems.findLast((item) => item.action === "withdrawn_by_agent");
   return explainStatus({
@@ -66,6 +68,8 @@ export async function agentActivation(agentId: string, activationId: string) {
   const activation = await loadOwn(agentId, activationId);
   return {
     activation,
+    /** What the agent submitted, labelled by the configuration version it was validated against. */
+    fields: submittedFields(configVersion(activation.evidenceConfig), activation.evidencePayload),
     explanation: explanationOf(activation),
     openRequest: activation.evidenceRequests.findLast((request) => request.status === "open") ?? null,
     canWithdraw: WITHDRAWABLE_STATES.includes(activation.state),

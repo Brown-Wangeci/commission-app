@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { clientFor } from "@/lib/auth/actors";
 import { requirePageRole } from "@/lib/auth/session";
 import { clientJob } from "@/lib/jobs/jobs";
+import { prisma } from "@/lib/db";
+import { currentEvidenceConfig } from "@/lib/evidence/config";
+import { describeFormat, FIELD_TYPE_LABELS } from "@/lib/evidence/fields";
 import { ApiError } from "@/lib/http/errors";
 import { isFinal } from "@/lib/activations/states";
 import { formatDateTime } from "@/lib/format";
@@ -19,6 +22,7 @@ export default async function ClientJobPage({ params }: { params: Promise<{ id: 
     throw error;
   });
   const { job, terms, escrow, unspentDerivation, activations } = detail;
+  const evidence = await currentEvidenceConfig(prisma, job.id);
   const inProgressCents = sumCents([escrow.reservedCents, escrow.heldCents]);
   const fullyLocked = escrow.lockedCents === terms.liability.amountCents;
   return (
@@ -29,6 +33,7 @@ export default async function ClientJobPage({ params }: { params: Promise<{ id: 
           <h1>{job.title}{job.status === "closed" && <span className="chip neutral" style={{ marginLeft: 10 }}>Closed</span>}</h1>
           <p className="muted small">
             {job.areaName}, within {job.areaRadiusM} m of {job.areaLat.toFixed(4)}, {job.areaLon.toFixed(4)} &middot; {job.slots} activations wanted
+            {job.deadlineAt ? ` · deadline ${formatDateTime(job.deadlineAt)}` : ""}
             {job.closedAt ? ` · closed ${formatDateTime(job.closedAt)}` : ""}
           </p>
         </div>
@@ -61,6 +66,24 @@ export default async function ClientJobPage({ params }: { params: Promise<{ id: 
             This job is closed. {formatCents(inProgressCents)} is still committed to activations in progress; it is released to the agent on
             approval or returned to your balance on refusal or withdrawal.
           </p>
+        )}
+      </section>
+      <section className="card card-pad" style={{ marginBottom: 16 }}>
+        <div className="row-between wrap" style={{ marginBottom: 8 }}>
+          <h2>Evidence fields <span className="muted small">(version {evidence.version})</span></h2>
+          {job.status === "open" && <Link href={`/client/jobs/${job.id}/evidence`} className="btn small">Edit evidence fields</Link>}
+        </div>
+        {evidence.fields.length === 0 ? (
+          <p className="small muted">No job-specific fields: agents submit only the platform&rsquo;s own (customer number, SIM date, capture method, optional proof).</p>
+        ) : (
+          <ol className="small" style={{ margin: 0, paddingLeft: 18 }}>
+            {evidence.fields.map((field) => (
+              <li key={field.key}>
+                <strong>{field.label}</strong> &middot; {FIELD_TYPE_LABELS[field.type]} &middot; {field.mandatory ? "mandatory" : "optional"} &middot;{" "}
+                <span className="muted">{describeFormat(field)}</span>
+              </li>
+            ))}
+          </ol>
         )}
       </section>
       <section className="card">

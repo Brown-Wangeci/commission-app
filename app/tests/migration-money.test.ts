@@ -1,56 +1,22 @@
-import { execSync } from "node:child_process";
-import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { clientEscrow } from "@/lib/escrow/client";
 import { storedCommissionView } from "@/lib/payouts/commissions";
+import { databaseBefore, type MigrationDb } from "./helpers/migration-db";
 
 /**
  * Issue #40, A4: the money migration converts existing data correctly.
  *
  * Builds a separate database at the migration before this one, writes data
  * in the old shape (whole shillings, Float rate and top-up, per-job
- * deposits, an approved and paid activation), applies the new migration with
- * `prisma migrate deploy`, and checks every converted value. The database is
- * this test's own and is dropped at the end.
+ * deposits, an approved and paid activation), applies the remaining
+ * migrations with `prisma migrate deploy`, and checks every converted value.
+ * The database is this test's own and is dropped at the end.
  */
 const NEW_MIGRATION = "20261029100000_money_in_cents";
-const MIGRATIONS = path.resolve(__dirname, "../prisma/migrations");
-const SCHEMA = path.resolve(__dirname, "../prisma/schema.prisma");
 
-const runUrl = process.env.DATABASE_URL ?? "";
-const dbName = `ledgerfield_mig_${Date.now()}_${process.pid}`;
-const dbUrl = (() => {
-  const url = new URL(runUrl);
-  url.pathname = `/${dbName}`;
-  return url.toString();
-})();
-const maintenanceUrl = (() => {
-  const url = new URL(runUrl);
-  url.pathname = "/postgres";
-  return url.toString();
-})();
-
-let tmp = "";
+let scratch: MigrationDb;
 let db: PrismaClient;
-
-function deploy(schema: string): void {
-  execSync(`npx prisma migrate deploy --schema "${schema}"`, { env: { ...process.env, DATABASE_URL: dbUrl }, stdio: "pipe" });
-}
-
-/** The schema file and every migration except the new one, so deploy stops just before it. */
-function migrationsBefore(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ledgerfield-mig-"));
-  fs.copyFileSync(SCHEMA, path.join(dir, "schema.prisma"));
-  fs.mkdirSync(path.join(dir, "migrations"));
-  for (const entry of fs.readdirSync(MIGRATIONS)) {
-    if (entry === NEW_MIGRATION) continue;
-    fs.cpSync(path.join(MIGRATIONS, entry), path.join(dir, "migrations", entry), { recursive: true });
-  }
-  return dir;
-}
 
 async function exec(sql: string): Promise<void> {
   await db.$executeRawUnsafe(sql);
@@ -69,12 +35,8 @@ const APPROVED = ["scored_t0", "held", "scored_t7", "approved"];
 const REFUSED = ["scored_t0", "held", "scored_t7", "refused"];
 
 beforeAll(async () => {
-  const maintenance = new PrismaClient({ datasourceUrl: maintenanceUrl });
-  await maintenance.$executeRawUnsafe(`CREATE DATABASE "${dbName}"`);
-  await maintenance.$disconnect();
-  tmp = migrationsBefore();
-  deploy(path.join(tmp, "schema.prisma"));
-  db = new PrismaClient({ datasourceUrl: dbUrl });
+  scratch = await databaseBefore(NEW_MIGRATION, "money");
+  db = scratch.db;
 
   await exec(`INSERT INTO "User" (id, email, name, "passwordHash", role) VALUES
     ('owner', 'owner@x.test', 'Owner', 'x', 'client'), ('agentuser', 'agent@x.test', 'Agent', 'x', 'agent'), ('admin', 'admin@x.test', 'Admin', 'x', 'admin')`);
@@ -105,15 +67,11 @@ beforeAll(async () => {
   await exec(`INSERT INTO "CustomerActivityDay" (id, "activationId", day, "customerActive", "transactionCount", "topupAmountKsh", "usageMinutes", "supportContact", "complaintOrRefund", "simActive") VALUES
     ('day0', 'actA1', 0, true, 2, 12.5, 30, false, false, true), ('day1', 'actA1', 1, false, 0, 0, 0, false, false, true)`);
 
-  deploy(SCHEMA);
+  scratch.migrate();
 }, 180_000);
 
 afterAll(async () => {
-  await db?.$disconnect();
-  const maintenance = new PrismaClient({ datasourceUrl: maintenanceUrl });
-  await maintenance.$executeRawUnsafe(`DROP DATABASE IF EXISTS "${dbName}" WITH (FORCE)`);
-  await maintenance.$disconnect();
-  if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
+  await scratch?.drop();
 });
 
 describe("money migration on existing data (issue #40, A4)", () => {

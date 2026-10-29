@@ -16,6 +16,13 @@ import { toServiceTime } from "./time";
  * Builds the /score request for one activation from the observable record
  * only. Nothing here reads a decision, a review outcome or any label.
  *
+ * Nor does anything here read the activation's evidence payload: the
+ * client-defined evidence fields are layer one (template validation) and
+ * never reach layer two (the model), which takes only the fixed behavioural
+ * features computed from these fields (issue #49). `assertFixedShape` refuses
+ * to send a request carrying any key outside the data dictionary, and
+ * tests/layer-boundary.test.ts proves no client field value reaches it.
+ *
  * History window: the longest trailing window the model uses is 90 days
  * (`features.msisdn_history_days` in config/generator.yaml), so every
  * earlier activation within 90 days that shares the agent, the device or the
@@ -150,6 +157,25 @@ async function loadActivity(db: Tx, activationId: string): Promise<DownstreamAct
   return days.map(activityDay);
 }
 
+/** The data dictionary's keys (section 2a), the only ones an activation event may carry. */
+export const ACTIVATION_EVENT_KEYS = [
+  "activation_id", "agent_id", "job_id", "client_business_id", "job_assigned_timestamp", "job_accepted_timestamp",
+  "timestamp_submitted", "device_id", "device_os", "app_version", "ip_geolocation_region", "network_type",
+  "submission_gps_lat", "submission_gps_lon", "customer_msisdn_hash", "sim_registration_date", "activation_method",
+  "proof_of_activation_hash", "escrow_amount", "commission_rate",
+] as const;
+const REQUEST_KEYS = ["mode", "activation", "agents", "recent_activations", "payout_calendar", "downstream_activity"];
+
+/** Refuses a request whose shape is not exactly the contract's, so nothing extra can travel to the model. */
+export function assertFixedShape(request: ScoreRequestPayload): void {
+  const sameKeys = (object: object, expected: readonly string[]) =>
+    Object.keys(object).length === expected.length && Object.keys(object).every((key) => expected.includes(key));
+  if (!sameKeys(request, REQUEST_KEYS)) throw new PayloadError("the score request has keys outside the contract");
+  for (const event of [request.activation, ...request.recent_activations]) {
+    if (!sameKeys(event, ACTIVATION_EVENT_KEYS)) throw new PayloadError("an activation event has keys outside the data dictionary");
+  }
+}
+
 export async function buildScoreRequest(
   db: Tx,
   activationId: string,
@@ -160,7 +186,7 @@ export async function buildScoreRequest(
   const agentIds = [...new Set([activation.agentId, ...history.map((item) => item.agentId)])];
   const agents = await db.agent.findMany({ where: { id: { in: agentIds } } });
   const calendar = await loadCalendar(db, activation.submittedAt);
-  return {
+  const request: ScoreRequestPayload = {
     mode,
     activation: activationEvent(activation),
     agents: agents.map(agentRecord),
@@ -168,4 +194,6 @@ export async function buildScoreRequest(
     payout_calendar: calendar.map(payoutCycle),
     downstream_activity: mode === "t7" ? await loadActivity(db, activation.id) : [],
   };
+  assertFixedShape(request);
+  return request;
 }
