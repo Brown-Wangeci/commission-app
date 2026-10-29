@@ -59,7 +59,8 @@ function fromZod(error: ZodError): ApiError {
 }
 
 const ILLEGAL_TRANSITION = /illegal activation transition/;
-const FIXED_JOB_TERMS = /ledgerfield: (a published job's commission structure|a closed job cannot be reopened)/;
+const FIXED_JOB_TERMS = /ledgerfield: (a published job's commission structure|a published job's deadline|a closed job cannot be reopened)/;
+const FIXED_EVIDENCE = /ledgerfield: a submission's evidence and its configuration version cannot change/;
 
 /**
  * Database errors that mean the request conflicts with the data, not that
@@ -71,7 +72,10 @@ function fromDatabase(error: unknown): ApiError | null {
     return new ApiError(409, "illegal_transition", "That change is not allowed from the activation's current state.");
   }
   if (FIXED_JOB_TERMS.test(message)) {
-    return new ApiError(409, "conflict", "A published job's commission, slots and escrow lock are fixed, and a closed job cannot reopen.");
+    return new ApiError(409, "conflict", "A published job's commission, slots, escrow lock and deadline are fixed, and a closed job cannot reopen.");
+  }
+  if (FIXED_EVIDENCE.test(message)) {
+    return new ApiError(409, "conflict", "A submission's evidence and the configuration it was validated against are fixed once submitted.");
   }
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === "P2025") return new ApiError(404, "not_found", "The record was not found.");

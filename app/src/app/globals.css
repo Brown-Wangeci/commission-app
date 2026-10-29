@@ -296,6 +296,25 @@ legend { font-size: 13px; font-weight: 650; padding: 0 6px; color: var(--ink-2);
 .thumb.more { display: grid; place-items: center; font-size: 18px; font-weight: 650; color: var(--ink-2); text-decoration: none; }
 .thumb.more:hover { background: var(--line); }
 .caption { font-size: 13px; color: var(--ink-2); margin-top: 12px; }
+
+/* The design system's evidence thumbnail grid (issue #50): square tiles, a
+   mono index badge, capture time and GPS accuracy under each tile, and a
+   flagged tile outlined and tinted amber with its reason written inline. */
+:root { --flag: #935f00; --flag-soft: #fbf1dc; --placeholder: #ecebe4; }
+.group-label { font-size: 14px; font-weight: 600; margin: 0; }
+.tile-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 640px) { .tile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.tile { margin: 0; border-radius: 8px; padding: 0 0 4px; }
+.tile-img { position: relative; display: block; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; background: var(--placeholder); }
+.tile-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile-n { position: absolute; left: 6px; bottom: 6px; background: #fff; border-radius: 4px; padding: 1px 5px; font-family: var(--mono); font-size: 11px; color: var(--ink); }
+.tile figcaption { font-size: 11px; color: var(--ink-2); margin-top: 4px; line-height: 1.35; padding: 0 2px; }
+.tile.flagged { background: var(--flag-soft); }
+.tile.flagged .tile-img { box-shadow: inset 0 0 0 2px var(--flag); }
+.tile.flagged .tile-img img { opacity: 0.88; }
+.tile-flag { display: block; color: var(--flag); font-weight: 600; }
+.tile-more { aspect-ratio: 1 / 1; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); display: grid; place-content: center; text-align: center; gap: 2px; font-size: 12px; text-decoration: none; }
+.tile-more-n { font-size: 22px; font-weight: 600; }
 .caption .warn-text { color: var(--raise); font-weight: 600; }
 
 .concern-value { font-family: var(--mono); font-size: 15px; font-weight: 650; white-space: nowrap; }

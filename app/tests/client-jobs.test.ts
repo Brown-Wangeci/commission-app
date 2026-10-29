@@ -19,6 +19,7 @@ const valid = {
   flatCommissionCents: 5_000,
   slots: "20",
   initialDepositCents: 700_000,
+  deadline: "2027-06-30",
 };
 
 describe("client jobs (issues #13, #41, #42)", () => {

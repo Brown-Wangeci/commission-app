@@ -98,10 +98,17 @@ async function postJobAndFund(client: Session): Promise<string> {
   await call(client, "POST", "/api/client/escrow/fund", { amountCents: 35_000 });
   // KSh 2,500.00 x 12.00% + KSh 50.00 flat = KSh 350.00 per approved submission; 2 slots lock KSh 700.00.
   // The second half of the lock is deposited with the job itself.
+  // The client's own evidence fields: the capture form is built from them.
+  const evidenceFields = [
+    { label: "ID document seen", type: "single_select", mandatory: true, help: null, format: { options: ["National ID", "Passport", "Alien ID"].map((v) => ({ value: v, label: v })) } },
+    { label: "Market stall number", type: "text", mandatory: true, help: null, format: { pattern: "code", minLength: 2, maxLength: 10 } },
+    { label: "Photo of the stall", type: "photo", mandatory: true, help: null, format: { minCount: 1, maxCount: 4 } },
+  ];
   const { jobId } = await call<{ jobId: string }>(client, "POST", "/api/client/jobs", {
     title: "Demo: wallet activations, Kibuye Market", description: "Sign up new wallet customers in person at the market.",
     areaName: "Kibuye Market, Kisumu", areaLat: -0.0995, areaLon: 34.768, areaRadiusM: 800,
     submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 2, initialDepositCents: 35_000,
+    deadline: nairobiDate(new Date(Date.now() + 30 * DAY)), evidenceFields,
   });
   const escrow = await call<EscrowView>(client, "GET", "/api/client/escrow");
   const terms = escrow.jobs.find((row) => row.job.id === jobId)!.terms;
@@ -123,20 +130,30 @@ async function assignToMercy(admin: Session, jobId: string): Promise<string> {
 async function acceptAndSubmit(agent: Session, assignmentId: string): Promise<string> {
   step("3. Agent (mercy@) accepts and submits an activation; it is scored at T0");
   await call(agent, "POST", `/api/agent/assignments/${assignmentId}/accept`);
+  // The form comes from the job's configuration; the submission names the version it was built from.
+  type FormField = { key: string; label: string; type: string };
+  const definition = await call<{ evidenceConfigId: string; version: number; jobFields: FormField[] }>(agent, "GET", `/api/agent/assignments/${assignmentId}/evidence-form`);
+  const keyOf = (label: string) => definition.jobFields.find((f) => f.label === label)!.key;
+  console.log(`   form built from evidence fields version ${definition.version}: ${definition.jobFields.map((f) => f.label).join("; ")}`);
   const form = new FormData();
-  const fields: Record<string, string> = {
-    assignmentId, customerMsisdn: `07${String(Date.now()).slice(-8)}`, simRegisteredAt: nairobiDate(new Date(Date.now() - DAY)),
-    activationMethod: "qr_scan", gpsLat: "-0.0991", gpsLon: "34.7684", gpsAccuracyM: "9",
+  const context: Record<string, string> = {
+    assignmentId, evidenceConfigId: definition.evidenceConfigId, gpsLat: "-0.0991", gpsLon: "34.7684", gpsAccuracyM: "9",
     deviceId: "dev-mercy-6120", deviceOs: "android", appVersion: "web-0.1.0", networkType: "cellular", ipRegion: "region_c",
-    agentNote: "Customer registered at her stall; no proof screenshot, her phone battery was flat.",
   };
-  for (const [key, value] of Object.entries(fields)) form.set(key, value);
+  const values: Record<string, string> = {
+    customerMsisdn: `07${String(Date.now()).slice(-8)}`, simRegisteredAt: nairobiDate(new Date(Date.now() - DAY)), activationMethod: "qr_scan",
+    agentNote: "Customer registered at her stall; no proof screenshot, her phone battery was flat.",
+    [keyOf("ID document seen")]: "National ID", [keyOf("Market stall number")]: "B-14",
+  };
+  for (const [key, value] of Object.entries(context)) form.set(key, value);
+  for (const [key, value] of Object.entries(values)) form.set(`field:${key}`, value);
+  const photoKey = keyOf("Photo of the stall");
   const meta = [];
   for (let i = 0; i < 3; i += 1) {
-    form.append("photos", new File([placeholderPng(900 + i)], `demo-${i + 1}.png`, { type: "image/png" }));
+    form.append(`photos:${photoKey}`, new File([placeholderPng(900 + i)], `demo-${i + 1}.png`, { type: "image/png" }));
     meta.push({ capturedAt: new Date(Date.now() - (10 - i) * 60_000).toISOString(), gpsLat: -0.0992, gpsLon: 34.7683, gpsAccuracyM: 8, locationSource: "device" });
   }
-  form.set("photoMeta", JSON.stringify(meta));
+  form.set(`photoMeta:${photoKey}`, JSON.stringify(meta));
   const result = await call<{ activationId: string; reference: string; state: string }>(agent, "POST", "/api/agent/activations", form);
   console.log(`   ${result.reference} submitted; state now ${result.state}`);
   return result.activationId;

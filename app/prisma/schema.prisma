@@ -207,9 +207,33 @@ model Job {
   status               JobStatus      @default(open)
   createdAt            DateTime       @default(now())
   closedAt             DateTime?
+  /// After this the job takes no new assignments, acceptances or submissions (FR-04, issue #51).
+  /// Null only on jobs published before deadlines existed.
+  deadlineAt           DateTime?
   assignments          Assignment[]
   activations          Activation[]
   commissions          Commission[]
+  evidenceConfigs      EvidenceConfig[]
+}
+
+// One version of a job's evidence configuration (FR-05, DR-06, issue #46):
+// the ordered field definitions a client set, as JSON, so each job has its
+// own field set with no schema change. Append-only: editing a job's fields
+// adds the next version, and a submission keeps the version it was
+// validated against.
+model EvidenceConfig {
+  id          String       @id @default(cuid())
+  jobId       String
+  job         Job          @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  version     Int
+  /// Ordered field definitions: src/lib/evidence/fields.ts FieldDefinition[].
+  fields      Json
+  createdById String?
+  createdAt   DateTime     @default(now())
+  activations Activation[]
+
+  @@unique([jobId, version])
+  @@unique([id, jobId])
 }
 
 model EscrowDeposit {
@@ -297,6 +321,12 @@ model Activation {
   activationMethod     ActivationMethod
   proofHash            String?
   agentNote            String?
+  /// The configuration version this submission was validated against (DR-07); always one of its own job's.
+  evidenceConfigId     String
+  evidenceConfig       EvidenceConfig        @relation(fields: [evidenceConfigId, jobId], references: [id, jobId], onDelete: Restrict)
+  /// Values for the job's own fields, by field key; photo fields hold evidence sequence numbers.
+  /// Never sent to the scoring service (issue #49). Fixed once written, like evidenceConfigId.
+  evidencePayload      Json
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   evidence             EvidenceItem[]
@@ -323,6 +353,8 @@ model EvidenceItem {
   activation        Activation       @relation(fields: [activationId], references: [id], onDelete: Restrict)
   evidenceRequestId String?
   evidenceRequest   EvidenceRequest? @relation(fields: [evidenceRequestId], references: [id], onDelete: Restrict)
+  /// The field this file was attached to (a job field key, or "proof"); null for a reply to an evidence request.
+  fieldKey          String?
   kind              EvidenceKind
   sequence          Int
   fileName          String

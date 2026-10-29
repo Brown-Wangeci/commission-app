@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import { postJson, type FieldErrors } from "@/lib/client-api";
 import { differenceCents, formatCents, MoneyError, parseKshToCents, parsePercentToBps, sumCents } from "@/lib/money/cents";
 import { commissionDerivation, computeCommission, liabilityDerivation, maxLiability } from "@/lib/money/commission";
+import { EvidenceFieldsEditor, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
 
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
   return errors[name] ? <span className="field-error">{errors[name]}</span> : null;
@@ -95,6 +96,7 @@ export function PostJobForm({ availableCents }: { availableCents: number }) {
   const [busy, setBusy] = useState(false);
   const [centre, setCentre] = useState({ lat: "", lon: "" });
   const [terms, setTerms] = useState<Terms>({ value: "", rate: "10", flat: "", slots: "", deposit: "" });
+  const [fields, setFields] = useState<EditorRow[]>([]);
 
   function useMyLocation() {
     navigator.geolocation?.getCurrentPosition(
@@ -119,6 +121,8 @@ export function PostJobForm({ availableCents }: { availableCents: number }) {
       areaLat: form.areaLat,
       areaLon: form.areaLon,
       areaRadiusM: form.areaRadiusM,
+      deadline: form.deadline,
+      evidenceFields: fields.map(toFieldInput),
       ...parsed,
     };
     setBusy(true);
@@ -154,6 +158,16 @@ export function PostJobForm({ availableCents }: { availableCents: number }) {
           <textarea id="description" name="description" className="textarea" />
           <FieldError errors={errors} name="description" />
         </div>
+        <Field name="deadline" label="Deadline" type="date" errors={errors} hint="The last day work is accepted. After it, no new assignments or submissions; the deadline cannot be changed once published." />
+      </fieldset>
+      <fieldset className="stack">
+        <legend>Evidence the agent must submit</legend>
+        <p className="hint" style={{ margin: 0 }}>
+          The capture form is built from these fields, in this order, and every submission is checked against them. You can change them
+          later; submissions already made stay judged by the fields in force when they were made. These fields are for your checks and the
+          reviewer&rsquo;s; they are never given to the fraud model.
+        </p>
+        <EvidenceFieldsEditor rows={fields} onChange={setFields} errors={errors} />
       </fieldset>
       <fieldset className="stack">
         <legend>Job area</legend>

@@ -1,15 +1,27 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { postForm, type FieldErrors } from "@/lib/client-api";
+import { nairobiDate, validateEvidence, type FieldDefinition } from "@/lib/evidence/fields";
+import { EvidenceFieldInputs } from "./EvidenceFieldInputs";
 
 type Region = { code: string; name: string };
 type JobArea = { title: string; areaName: string; areaLat: number; areaLon: number; areaRadiusM: number };
 type Fix = { lat: number; lon: number; accuracy: number | null };
 type Photo = { file: File; capturedAt: string; fix: Fix | null };
 
-type Props = { assignmentId: string; job: JobArea; regions: Region[]; maxPhotos: number };
+type Props = {
+  assignmentId: string;
+  job: JobArea;
+  regions: Region[];
+  /** The platform's own fields (src/lib/evidence/platform.ts). */
+  platformFields: FieldDefinition[];
+  /** The job's configured fields, from the configuration version below. */
+  jobFields: FieldDefinition[];
+  evidenceConfigId: string;
+  configVersion: number;
+};
 
 const APP_VERSION = "web-0.1.0";
 
@@ -49,33 +61,47 @@ function locate(onFix: (fix: Fix) => void, onFail: () => void): void {
   );
 }
 
-function buildForm(form: HTMLFormElement, photos: Photo[], device: { id: string; os: string }): FormData {
+/** Each photo travels with its own capture time and place, per field. */
+function buildForm(form: HTMLFormElement, photos: Record<string, Photo[]>, device: { id: string; os: string }): FormData {
   const data = new FormData(form);
-  data.delete("photos");
-  for (const photo of photos) data.append("photos", photo.file);
-  data.set("photoMeta", JSON.stringify(photos.map((photo) => ({
-    capturedAt: photo.capturedAt,
-    gpsLat: photo.fix?.lat ?? null,
-    gpsLon: photo.fix?.lon ?? null,
-    gpsAccuracyM: photo.fix?.accuracy ?? null,
-    locationSource: photo.fix ? "device" : "none",
-  }))));
+  for (const [key, list] of Object.entries(photos)) {
+    for (const photo of list) data.append(`photos:${key}`, photo.file);
+    data.set(`photoMeta:${key}`, JSON.stringify(list.map((photo) => ({
+      capturedAt: photo.capturedAt,
+      gpsLat: photo.fix?.lat ?? null,
+      gpsLon: photo.fix?.lon ?? null,
+      gpsAccuracyM: photo.fix?.accuracy ?? null,
+      locationSource: photo.fix ? "device" : "none",
+    }))));
+  }
   data.set("deviceId", device.id);
   data.set("deviceOs", device.os);
   data.set("appVersion", APP_VERSION);
   return data;
 }
 
-/** The activation submission form (multipart to /api/agent/activations). */
-export function SubmitActivationForm({ assignmentId, job, regions, maxPhotos }: Props) {
+/** Server errors arrive as fields.<key>; the inputs are keyed by field key. */
+function byFieldKey(errors: FieldErrors): Record<string, string> {
+  return Object.fromEntries(Object.entries(errors).map(([path, message]) => [path.replace(/^fields\./, ""), message]));
+}
+
+/**
+ * The activation submission form (multipart to /api/agent/activations),
+ * rendered from the platform's fields and the job's configuration (FR-09).
+ * It checks the evidence in the browser with the same rules the server uses,
+ * to show problems before uploading; the server checks again regardless.
+ */
+export function SubmitActivationForm({ assignmentId, job, regions, platformFields, jobFields, evidenceConfigId, configVersion }: Props) {
   const router = useRouter();
   const [device, setDevice] = useState({ id: "", os: "" });
   const [fix, setFix] = useState<Fix | null>(null);
   const [coords, setCoords] = useState({ lat: "", lon: "", accuracy: "" });
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [photos, setPhotos] = useState<Record<string, Photo[]>>({});
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const today = nairobiDate(new Date());
+  const allFields = [...platformFields, ...jobFields];
 
   const applyFix = (next: Fix) => {
     setFix(next);
@@ -87,21 +113,40 @@ export function SubmitActivationForm({ assignmentId, job, regions, maxPhotos }: 
     locate(applyFix, () => setMessage("Your location is not available. Enter it by hand below."));
   }, []);
 
-  function addPhotos(event: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(event.target.files ?? []);
+  /** A photo is stamped with its own file time and the device's location at the moment it is added. */
+  function addPhotos(key: string, files: File[]) {
+    const field = allFields.find((f) => f.key === key);
+    const max = field?.type === "photo" ? field.format.maxCount : 0;
     const added = files.map((file) => ({ file, capturedAt: new Date(file.lastModified).toISOString(), fix }));
-    setPhotos((current) => [...current, ...added].slice(0, maxPhotos));
-    event.target.value = "";
+    setPhotos((current) => ({ ...current, [key]: [...(current[key] ?? []), ...added].slice(0, max) }));
+  }
+
+  function removePhoto(key: string, index: number) {
+    setPhotos((current) => ({ ...current, [key]: (current[key] ?? []).filter((_, i) => i !== index) }));
+  }
+
+  /** The same rules the server applies, run first in the browser. */
+  function checkHere(form: HTMLFormElement): FieldErrors | null {
+    const data = new FormData(form);
+    const values = Object.fromEntries(allFields.map((f) => [f.key, String(data.get(`field:${f.key}`) ?? "")]));
+    const photoCounts = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.length]));
+    const result = validateEvidence(allFields, { values, photoCounts }, { today });
+    if (result.ok) return null;
+    setMessage(result.missing.length > 0 ? `Missing mandatory field${result.missing.length === 1 ? "" : "s"}: ${result.missing.join(", ")}.` : "Some fields are not in the expected format.");
+    return Object.fromEntries(result.issues.map((issue) => [issue.key, issue.message]));
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setBusy(true);
     setMessage(null);
+    const local = checkHere(event.currentTarget);
+    setErrors(local ?? {});
+    if (local) return;
+    setBusy(true);
     const result = await postForm<{ activationId: string }>("/api/agent/activations", buildForm(event.currentTarget, photos, device));
     setBusy(false);
     if (!result.ok) {
-      setErrors(result.fieldErrors);
+      setErrors(byFieldKey(result.fieldErrors));
       setMessage(result.message);
       return;
     }
@@ -109,62 +154,30 @@ export function SubmitActivationForm({ assignmentId, job, regions, maxPhotos }: 
     router.refresh();
   }
 
+  const fieldErrors = byFieldKey(errors);
+  const attached = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.map((p) => ({ name: p.file.name, located: p.fix !== null }))]));
+
   return (
     <form className="stack-lg" onSubmit={submit} noValidate>
       <input type="hidden" name="assignmentId" value={assignmentId} />
+      <input type="hidden" name="evidenceConfigId" value={evidenceConfigId} />
       {message && <div className="alert error" role="alert">{message}</div>}
 
       <fieldset className="stack">
-        <legend>The customer</legend>
-        <div className="field">
-          <label htmlFor="customerMsisdn">Customer&rsquo;s phone number</label>
-          <input id="customerMsisdn" name="customerMsisdn" className="input" inputMode="tel" placeholder="0712 345 678" />
-          <span className="hint">Stored only as a one-way code; nobody can read the number back.</span>
-          <FieldError errors={errors} name="customerMsisdn" />
-        </div>
-        <div className="field">
-          <label htmlFor="simRegisteredAt">SIM registration date</label>
-          <input id="simRegisteredAt" name="simRegisteredAt" type="date" className="input" />
-          <FieldError errors={errors} name="simRegisteredAt" />
-        </div>
-        <div className="field">
-          <span className="label">How did you capture the details?</span>
-          <label className="row small"><input type="radio" name="activationMethod" value="qr_scan" defaultChecked /> Scanned the code on the SIM pack</label>
-          <label className="row small"><input type="radio" name="activationMethod" value="manual_entry" /> Typed them in by hand</label>
-        </div>
+        <legend>Every activation</legend>
+        <EvidenceFieldInputs fields={platformFields} errors={fieldErrors} photos={attached} onAddPhotos={addPhotos} onRemovePhoto={removePhoto} locationKnown={fix !== null} today={today} />
       </fieldset>
 
       <fieldset className="stack">
-        <legend>Evidence</legend>
-        <div className="field">
-          <label htmlFor="photoInput">Photos ({photos.length} of up to {maxPhotos})</label>
-          <input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="environment" multiple onChange={addPhotos} />
-          <span className="hint">Each photo is stamped with its file time and your current location{fix ? "" : " (location unavailable, so photos will have none)"}.</span>
-          <FieldError errors={errors} name="photos" />
-        </div>
-        {photos.length > 0 && (
-          <ul className="small" style={{ margin: 0, paddingLeft: 18 }}>
-            {photos.map((photo, index) => (
-              <li key={index}>
-                Photo {index + 1}: {photo.file.name} {photo.fix ? `(${photo.fix.lat.toFixed(4)}, ${photo.fix.lon.toFixed(4)})` : "(no location)"}{" "}
-                <button type="button" className="linkbutton" onClick={() => setPhotos(photos.filter((_, i) => i !== index))}>remove</button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="field">
-          <label htmlFor="proof">Proof of activation (optional)</label>
-          <input id="proof" name="proof" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
-          <span className="hint">For example a photo of the activation confirmation message.</span>
-        </div>
-        <div className="field">
-          <label htmlFor="agentNote">Note for the reviewer (optional)</label>
-          <textarea id="agentNote" name="agentNote" className="textarea" maxLength={1000} />
-        </div>
+        <legend>Evidence for this job</legend>
+        <p className="hint">Set by the client for this job (version {configVersion} of its evidence fields).</p>
+        {jobFields.length === 0
+          ? <p className="small muted">This job asks for nothing beyond the fields above.</p>
+          : <EvidenceFieldInputs fields={jobFields} errors={fieldErrors} photos={attached} onAddPhotos={addPhotos} onRemovePhoto={removePhoto} locationKnown={fix !== null} today={today} />}
       </fieldset>
 
       <fieldset className="stack">
-        <legend>Where you are</legend>
+        <legend>Captured by your device</legend>
         <div className="grid-3">
           <div className="field"><label htmlFor="gpsLat">Latitude</label><input id="gpsLat" name="gpsLat" className="input" value={coords.lat} onChange={(e) => setCoords({ ...coords, lat: e.target.value })} /><FieldError errors={errors} name="gpsLat" /></div>
           <div className="field"><label htmlFor="gpsLon">Longitude</label><input id="gpsLon" name="gpsLon" className="input" value={coords.lon} onChange={(e) => setCoords({ ...coords, lon: e.target.value })} /><FieldError errors={errors} name="gpsLon" /></div>

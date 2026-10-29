@@ -26,11 +26,14 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { ActivationState, Agent, Job } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { assertUtf8Database } from "@/lib/db-encoding";
 import { config } from "@/lib/config";
 import { hashPassword } from "@/lib/auth/password";
 import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
 import { fundEscrow } from "@/lib/escrow/client";
-import { createJob } from "@/lib/jobs/jobs";
+import { createJob, jobInputSchema } from "@/lib/jobs/jobs";
+import { currentEvidenceConfig, updateEvidenceConfig } from "@/lib/evidence/config";
+import { nairobiDate, type FieldDefinition, type FieldInput } from "@/lib/evidence/fields";
 import { sumCents } from "@/lib/money/cents";
 import { maxLiability } from "@/lib/money/commission";
 import { recordSubmission, submitActivation, type PhotoInput, type SubmissionInput } from "@/lib/activations/submit";
@@ -180,14 +183,69 @@ type SubmitSpec = {
   acceptedMinutesBefore?: number;
   assignedMinutesBefore?: number;
   gps?: Point;
+  /** Photos in the job's first photo field (the others get one or two). */
   photoCount?: number;
   outside?: { index: number; at: Point };
-  overrides?: Partial<SubmissionInput>;
+  /** Platform values to override (customer number, SIM date, capture method). */
+  values?: Record<string, string>;
+  noProof?: boolean;
   device?: Partial<SubmissionInput["device"]>;
   queueOnly?: boolean;
 };
 
 let adminId = "";
+
+const TEXT_SAMPLES = ["Super Metro", "Embassava", "Kenya Mpya", "Forward Travellers", "Seen at the stall with the customer"];
+
+function digits(length: number): string {
+  return Array.from({ length }, () => Math.floor(random() * 10)).join("");
+}
+
+/** A value that meets one field's format, as an agent would type it. */
+function sampleValue(field: FieldDefinition, at: Date): string {
+  switch (field.type) {
+    case "text": {
+      const { pattern, minLength, maxLength } = field.format;
+      const length = Math.max(minLength, Math.min(maxLength, pattern === "digits" ? minLength || 8 : 6));
+      if (pattern === "digits") return digits(length);
+      if (pattern === "letters_digits") return `S${digits(Math.max(1, length - 1))}`;
+      if (pattern === "code") return `B-${digits(Math.max(1, Math.min(length, maxLength) - 2))}`;
+      return TEXT_SAMPLES[Math.floor(random() * TEXT_SAMPLES.length)].slice(0, maxLength);
+    }
+    case "number": {
+      const low = field.format.min ?? 1;
+      const high = field.format.max ?? low + 9;
+      return String(Math.round(between(low, high)));
+    }
+    case "date":
+      return nairobiDate(new Date(at.getTime() - between(1, 20) * DAY));
+    case "single_select":
+      return field.format.options[Math.floor(random() * field.format.options.length)].value;
+    case "phone":
+      return `07${digits(8)}`;
+    case "photo":
+      return "";
+  }
+}
+
+/** Values and photos for every field of a job's configuration, the first photo field taking `photoCount`. */
+function jobEvidence(fields: FieldDefinition[], spec: SubmitSpec, gps: Point) {
+  const values: Record<string, string> = {};
+  const evidence: Record<string, PhotoInput[]> = {};
+  let firstPhotoField = true;
+  for (const field of fields) {
+    if (field.type === "photo") {
+      const { minCount, maxCount } = field.format;
+      const wanted = firstPhotoField ? spec.photoCount ?? Math.round(between(3, 6)) : field.mandatory ? Math.min(maxCount, minCount + 1) : random() < 0.5 ? 1 : 0;
+      const count = Math.max(minCount, Math.min(maxCount, wanted));
+      if (count > 0) evidence[field.key] = photos(count, gps, new Date(spec.at.getTime() - 12 * MINUTE), 9, firstPhotoField ? spec.outside : undefined);
+      firstPhotoField = false;
+    } else if (field.mandatory || random() < 0.6) {
+      values[field.key] = sampleValue(field, spec.at);
+    }
+  }
+  return { values, photos: evidence };
+}
 
 async function submit(spec: SubmitSpec): Promise<string> {
   const assignedAt = new Date(spec.at.getTime() - (spec.assignedMinutesBefore ?? between(90, 240)) * MINUTE);
@@ -196,22 +254,25 @@ async function submit(spec: SubmitSpec): Promise<string> {
   await acceptAssignment({ assignmentId: assignment.id, agentId: spec.agent.id, at: acceptedAt });
   const area = { lat: spec.job.areaLat, lon: spec.job.areaLon };
   const gps = spec.gps ?? jitter(area, 150);
-  const count = spec.photoCount ?? Math.round(between(3, 6));
+  const config = await currentEvidenceConfig(prisma, spec.job.id);
+  const evidence = jobEvidence(config.fields, spec, gps);
+  const proof: PhotoInput = { file: photoFile(), capturedAt: null, gpsLat: null, gpsLon: null, gpsAccuracyM: null, locationSource: "none" };
   const input: SubmissionInput = {
     agentId: spec.agent.id,
     assignmentId: assignment.id,
-    customerMsisdn: nextCustomer(),
-    simRegisteredAt: new Date(spec.at.getTime() - between(6, 60) * DAY),
-    activationMethod: "qr_scan",
+    values: {
+      customerMsisdn: nextCustomer(),
+      simRegisteredAt: nairobiDate(new Date(spec.at.getTime() - between(6, 60) * DAY)),
+      activationMethod: "qr_scan",
+      ...evidence.values,
+      ...spec.values,
+    },
+    photos: { ...evidence.photos, ...(spec.noProof ? {} : { proof: [proof] }) },
     gpsLat: gps.lat,
     gpsLon: gps.lon,
     gpsAccuracyM: Math.round(between(4, 12)),
     device: { deviceId: spec.agent.device, deviceOs: "android", appVersion: "3.4.0", networkType: "cellular", ipRegion: null, ...spec.device },
-    agentNote: null,
-    photos: photos(count, gps, new Date(spec.at.getTime() - 12 * MINUTE), 9, spec.outside),
-    proof: photoFile(),
     submittedAt: spec.at,
-    ...spec.overrides,
   };
   if (spec.queueOnly) return (await recordSubmission(input)).activationId;
   return (await submitActivation(input)).activationId;
@@ -274,6 +335,7 @@ const PLACES = {
 };
 
 async function main(): Promise<void> {
+  await assertUtf8Database(prisma);
   await ensureServiceUp();
   await clearPreviousSeed();
   const now = new Date();
@@ -300,18 +362,39 @@ async function main(): Promise<void> {
   // its derivation line shows the floor (KSh 2,333.33 x 12.00% = KSh 279.99).
   type Terms = { submissionValueCents: number; commissionRateBps: number; flatCommissionCents: number; slots: number };
   const posted = new Date(now.getTime() - 160 * DAY);
-  const spec = (clientId: string, title: string, area: string, at: Point, radius: number, terms: Terms) => ({
+  const deadline = nairobiDate(new Date(now.getTime() + 60 * DAY));
+  const spec = (clientId: string, title: string, area: string, at: Point, radius: number, terms: Terms, evidenceFields: FieldInput[]) => ({
     clientId,
     job: {
       title, description: `${title}. Sign up new customers in person, scan the SIM pack where possible and attach proof of activation.`,
-      areaName: area, areaLat: at.lat, areaLon: at.lon, areaRadiusM: radius, initialDepositCents: 0, ...terms,
+      areaName: area, areaLat: at.lat, areaLon: at.lon, areaRadiusM: radius, initialDepositCents: 0, deadline, evidenceFields, ...terms,
     },
   });
+  // Four genuinely different evidence configurations, so the capture form
+  // and the review screen change from job to job (issue #46).
+  const opts = (...labels: string[]) => ({ options: labels.map((label) => ({ value: label, label })) });
   const specs = [
-    spec(mwanga.id, "SIM registration drive, Gikomba Market", "Gikomba Market", PLACES.gikomba, 700, { submissionValueCents: 300_000, commissionRateBps: 1000, flatCommissionCents: 0, slots: 80 }),
-    spec(mwanga.id, "Data bundle sign-ups, Thika Road Mall", "Thika Road Mall", PLACES.trm, 500, { submissionValueCents: 250_000, commissionRateBps: 1000, flatCommissionCents: 0, slots: 40 }),
-    spec(tujenge.id, "Wallet activations, Kibuye Market", "Kibuye Market, Kisumu", PLACES.kibuye, 800, { submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 40 }),
-    spec(tujenge.id, "Wallet activations, Githurai 45 stage", "Githurai 45 stage", PLACES.githurai, 600, { submissionValueCents: 233_333, commissionRateBps: 1200, flatCommissionCents: 0, slots: 40 }),
+    spec(mwanga.id, "SIM registration drive, Gikomba Market", "Gikomba Market", PLACES.gikomba, 700, { submissionValueCents: 300_000, commissionRateBps: 1000, flatCommissionCents: 0, slots: 80 }, [
+      { label: "Photo of the SIM pack, serial number visible", type: "photo", mandatory: true, help: "Hold the pack flat in good light.", format: { minCount: 1, maxCount: 8 } },
+      { label: "SIM serial number (ICCID)", type: "text", mandatory: true, help: "The 19 or 20 digits printed on the SIM card.", format: { pattern: "digits", minLength: 19, maxLength: 20 } },
+      { label: "Customer type", type: "single_select", mandatory: true, help: null, format: opts("New to the network", "Switching from another network", "Replacing a lost SIM") },
+    ]),
+    spec(mwanga.id, "Data bundle sign-ups, Thika Road Mall", "Thika Road Mall", PLACES.trm, 500, { submissionValueCents: 250_000, commissionRateBps: 1000, flatCommissionCents: 0, slots: 40 }, [
+      { label: "Bundle sold", type: "single_select", mandatory: true, help: null, format: opts("Daily 1 GB", "Weekly 5 GB", "Monthly 20 GB", "Monthly unlimited", "Night bundle") },
+      { label: "Bundles activated during this visit", type: "number", mandatory: true, help: null, format: { decimals: 0, min: 1, max: 10 } },
+      { label: "Date the customer last bought a bundle", type: "date", mandatory: false, help: "Leave empty if this is their first.", format: { allowFuture: false } },
+      { label: "Photo of the bundle confirmation message", type: "photo", mandatory: true, help: null, format: { minCount: 1, maxCount: 6 } },
+    ]),
+    spec(tujenge.id, "Wallet activations, Kibuye Market", "Kibuye Market, Kisumu", PLACES.kibuye, 800, { submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 40 }, [
+      { label: "ID document seen", type: "single_select", mandatory: true, help: "The document you checked; do not photograph it.", format: opts("National ID", "Passport", "Alien ID", "Refugee ID") },
+      { label: "Market stall number", type: "text", mandatory: true, help: null, format: { pattern: "code", minLength: 2, maxLength: 10 } },
+      { label: "Stall owner's contact number", type: "phone", mandatory: false, help: null, format: { country: "KE" } },
+      { label: "Photo of the stall", type: "photo", mandatory: true, help: null, format: { minCount: 1, maxCount: 6 } },
+    ]),
+    spec(tujenge.id, "Wallet activations, Githurai 45 stage", "Githurai 45 stage", PLACES.githurai, 600, { submissionValueCents: 233_333, commissionRateBps: 1200, flatCommissionCents: 0, slots: 40 }, [
+      { label: "Photo at the stage", type: "photo", mandatory: true, help: null, format: { minCount: 1, maxCount: 6 } },
+      { label: "Matatu SACCO name", type: "text", mandatory: false, help: null, format: { pattern: "any", minLength: 2, maxLength: 60 } },
+    ]),
   ];
   // Each client deposits exactly what its jobs will lock, then publishes them.
   for (const [client, owner] of [[mwanga, mwangaOwner], [tujenge, tujengeOwner]] as const) {
@@ -322,7 +405,7 @@ async function main(): Promise<void> {
   const owners = new Map([[mwanga.id, mwangaOwner.id], [tujenge.id, tujengeOwner.id]]);
   const published: Job[] = [];
   for (const s of specs) {
-    published.push(await createJob({ clientId: s.clientId, actorId: owners.get(s.clientId)!, job: s.job, at: posted }));
+    published.push(await createJob({ clientId: s.clientId, actorId: owners.get(s.clientId)!, job: jobInputSchema.parse(s.job), at: posted }));
   }
   const [gikomba, trm, kibuye, githurai] = published;
 
@@ -337,16 +420,36 @@ async function main(): Promise<void> {
   for (let i = 0; i < 8; i += 1) {
     await history({ agent: mercy, job: kibuye, at: nairobiTime(now, 120 - i * 9, 9 + (i % 7), 20 + (i % 3) * 12) }, "engaged", "approve");
   }
-  const mercyRefusedRisky = { activationMethod: "manual_entry" as const, proof: null };
-  await history({ agent: mercy, job: kibuye, at: nairobiTime(now, 45, 16, 50), overrides: mercyRefusedRisky, device: { ipRegion: "region_a" } }, "dormant_lapsed", "refuse");
+  await history({ agent: mercy, job: kibuye, at: nairobiTime(now, 45, 16, 50), values: { activationMethod: "manual_entry" }, noProof: true, device: { ipRegion: "region_a" } }, "dormant_lapsed", "refuse");
   for (let i = 0; i < 4; i += 1) {
     await history({ agent: samuel, job: githurai, at: nairobiTime(now, 110 - i * 12, 12 + (i % 4), 10 + i * 7) }, "engaged", "approve");
   }
+  // Earlier sign-ups whose customer numbers come back later (Brian's and Kevin's cases).
+  const reusedNumber = nextCustomer();
+  await history({ agent: faith, job: gikomba, at: nairobiTime(now, 40, 11, 0), values: { customerMsisdn: reusedNumber } }, "engaged", "approve");
+  const kevinNumber = nextCustomer();
+  await history({ agent: grace, job: gikomba, at: nairobiTime(now, 50, 12, 30), values: { customerMsisdn: kevinNumber } }, "engaged", "approve");
+
+  // Thirty days ago the client added two optional fields to the Gikomba job.
+  // Everything above stays judged by version 1; everything below meets version 2.
+  const gikombaV1 = (await currentEvidenceConfig(prisma, gikomba.id)).fields;
+  await updateEvidenceConfig({
+    jobId: gikomba.id,
+    clientId: mwanga.id,
+    actorId: mwangaOwner.id,
+    at: new Date(now.getTime() - 30 * DAY),
+    fields: [
+      ...gikombaV1,
+      { label: "Photo of the signed registration form", type: "photo", mandatory: false, help: null, format: { minCount: 0, maxCount: 1 } },
+      { label: "Customer's estate or village", type: "text", mandatory: false, help: null, format: { pattern: "any", minLength: 2, maxLength: 60 } },
+    ],
+  });
 
   /** Hand-keyed, no proof, a SIM registered the day before, network region far from the GPS fix. */
   const risky = (agent: SeedAgent, job: Job, at: Date, method: "manual_entry" | "qr_scan" = "manual_entry"): SubmitSpec => ({
     agent, job, at, acceptedMinutesBefore: 3, assignedMinutesBefore: 20,
-    overrides: { activationMethod: method, proof: null, simRegisteredAt: new Date(at.getTime() - 32 * HOUR) },
+    values: { activationMethod: method, simRegisteredAt: nairobiDate(new Date(at.getTime() - DAY)) },
+    noProof: true,
     device: { ipRegion: "region_c" },
   });
 
@@ -385,17 +488,13 @@ async function main(): Promise<void> {
   expected.push({ label: "Grace, the mockup case (T7 review)", id: mockup, want: "in_review" });
 
   // Brian, new agent: escalated to review at T0.
-  const reusedNumber = nextCustomer();
-  await history({ agent: faith, job: gikomba, at: nairobiTime(now, 40, 11, 0), overrides: { customerMsisdn: reusedNumber } }, "engaged", "approve");
   const brianSpec = risky(brian, gikomba, beforeCutoff(now, 0));
-  const brianEscalated = await submit({ ...brianSpec, overrides: { ...brianSpec.overrides, customerMsisdn: reusedNumber } });
+  const brianEscalated = await submit({ ...brianSpec, values: { ...brianSpec.values, customerMsisdn: reusedNumber } });
   expected.push({ label: "Brian, escalated at T0", id: brianEscalated, want: "in_review" });
 
   // Kevin: escalated at T0, asked for evidence, answered, back in the queue.
-  const kevinNumber = nextCustomer();
-  await history({ agent: grace, job: gikomba, at: nairobiTime(now, 50, 12, 30), overrides: { customerMsisdn: kevinNumber } }, "engaged", "approve");
   const kevinSpec = risky(kevin, gikomba, beforeCutoff(now, 0, 2, 90));
-  const kevinReturned = await submit({ ...kevinSpec, overrides: { ...kevinSpec.overrides, customerMsisdn: kevinNumber } });
+  const kevinReturned = await submit({ ...kevinSpec, values: { ...kevinSpec.values, customerMsisdn: kevinNumber } });
 
   // Could not be scored: the service is unreachable for this one submission.
   const realUrl = process.env.SCORING_SERVICE_URL;
@@ -408,7 +507,13 @@ async function main(): Promise<void> {
   expected.push({ label: "Faith, could not be scored at T0", id: unscored, want: "in_review" });
 
   // Mercy: a reviewer has asked for more evidence.
-  const mercyAsked = await submit(risky(mercy, kibuye, beforeCutoff(now, 8, 2, 35), "qr_scan"));
+  // A SIM registered the same morning. The agent now enters a date, not a
+  // time, so "the day before" makes this SIM about 41 hours old at 17:25, past
+  // the age at which the model refuses this case outright; a same-day date
+  // keeps it under that, and the hold-close model sends it to a reviewer.
+  const mercyAskedAt = beforeCutoff(now, 8, 2, 35);
+  const mercyAskedSpec = risky(mercy, kibuye, mercyAskedAt, "qr_scan");
+  const mercyAsked = await submit({ ...mercyAskedSpec, values: { ...mercyAskedSpec.values, simRegisteredAt: nairobiDate(mercyAskedAt) } });
   await closeHold(mercyAsked, "dormant_lapsed");
   expected.push({ label: "Mercy, awaiting evidence", id: mercyAsked, want: "awaiting_evidence" });
 

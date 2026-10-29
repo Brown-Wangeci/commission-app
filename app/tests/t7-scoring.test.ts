@@ -124,7 +124,8 @@ describe("durable schedule across process restarts (issue #7)", () => {
   }
 
   it("makes the T7 call exactly once even with restarts and two workers", async () => {
-    process.env.HOLD_WINDOW_SECONDS = "4";
+    // Long enough that a scheduler process started straight away runs before the window closes.
+    process.env.HOLD_WINDOW_SECONDS = "12";
     const id = await heldActivation("auto_release", 0.05);
 
     const before = await runSchedulerProcess();

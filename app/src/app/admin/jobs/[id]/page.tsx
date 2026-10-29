@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { jobEscrow, unspentDerivation } from "@/lib/escrow/holds";
 import { jobTerms } from "@/lib/jobs/jobs";
+import { currentEvidenceConfig } from "@/lib/evidence/config";
+import { describeFormat } from "@/lib/evidence/fields";
 import { formatDateTime } from "@/lib/format";
 import { formatCents, sumCents } from "@/lib/money/cents";
 import { MoneyStat } from "@/components/Money";
@@ -25,6 +27,7 @@ export default async function AdminJobPage({ params }: { params: Promise<{ id: s
     prisma.escrowHoldState.findMany({ where: { jobId: job.id } }),
   ]);
   const terms = jobTerms(job);
+  const evidence = await currentEvidenceConfig(prisma, job.id);
   const holdState = new Map(holdStates.map((h) => [h.assignmentId, h.state]));
   return (
     <main className="page">
@@ -32,7 +35,10 @@ export default async function AdminJobPage({ params }: { params: Promise<{ id: s
       <div className="page-header">
         <div>
           <h1>{job.title}{job.status === "closed" && <span className="chip neutral" style={{ marginLeft: 10 }}>Closed</span>}</h1>
-          <p className="muted small">{job.client.name} &middot; {job.areaName}, within {job.areaRadiusM} m &middot; {job.assignments.length} of {job.slots} slots assigned</p>
+          <p className="muted small">
+            {job.client.name} &middot; {job.areaName}, within {job.areaRadiusM} m &middot; {job.assignments.length} of {job.slots} slots assigned
+            {job.deadlineAt ? ` · deadline ${formatDateTime(job.deadlineAt)}` : ""}
+          </p>
         </div>
       </div>
       <div className="grid-4" style={{ marginBottom: 16 }}>
@@ -53,6 +59,16 @@ export default async function AdminJobPage({ params }: { params: Promise<{ id: s
           The client closed this job{job.closedAt ? ` on ${formatDateTime(job.closedAt)}` : ""}. It takes no new assignments.
         </section>
       )}
+      <section className="card card-pad" style={{ marginBottom: 16 }}>
+        <h2 style={{ marginBottom: 8 }}>Evidence fields <span className="muted small">(version {evidence.version}, set by the client)</span></h2>
+        {evidence.fields.length === 0 ? <p className="small muted">None beyond the platform&rsquo;s own.</p> : (
+          <ol className="small" style={{ margin: 0, paddingLeft: 18 }}>
+            {evidence.fields.map((field) => (
+              <li key={field.key}><strong>{field.label}</strong> &middot; {field.mandatory ? "mandatory" : "optional"} &middot; <span className="muted">{describeFormat(field)}</span></li>
+            ))}
+          </ol>
+        )}
+      </section>
       <section className="card">
         <div className="card-pad"><h2>Assignments ({job.assignments.length})</h2></div>
         {job.assignments.length === 0 ? <div className="empty">Nobody has been assigned yet.</div> : (

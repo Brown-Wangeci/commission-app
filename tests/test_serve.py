@@ -338,6 +338,25 @@ def test_score_returns_the_full_feature_vector_it_scored(frames, dataset, mode):
         assert vector[feature] == pytest.approx(float(expected[feature]), abs=1e-6), feature
 
 
+def test_client_defined_evidence_cannot_enter_the_model(frames):
+    """The two-layer boundary (app issue #49): a client's configurable evidence
+    fields are layer one and never reach layer two. The service refuses any
+    request carrying a field outside the data dictionary, wherever it is put,
+    and the model scores exactly the 27 fixed behavioural features."""
+    activation_id = frames["activations"].iloc[50]["activation_id"]
+    evidence = {"field_1": "8925402123456789012", "field_2": "Passport", "field_3": 3}
+    in_activation = serve_testing.build_request_payload(activation_id, frames, HISTORY_DAYS, mode="t0")
+    in_activation["activation"]["evidence_payload"] = evidence
+    at_top_level = serve_testing.build_request_payload(activation_id, frames, HISTORY_DAYS, mode="t0")
+    at_top_level["evidence_payload"] = evidence
+    with TestClient(app) as client:
+        for payload in (in_activation, at_top_level):
+            assert client.post("/score", json=payload).status_code == 422
+    assert len(data_module.FEATURE_SETS["t7"]) == 27
+    assert set(data_module.FEATURE_SETS["t7"]) == set(T0_FEATURES) | set(T7_FEATURES)
+    assert len(data_module.FEATURE_SETS["t0"]) == 18
+
+
 def test_score_t0_reasons_only_reference_t0_features(frames):
     activation_id = frames["activations"].iloc[0]["activation_id"]
     payload = serve_testing.build_request_payload(activation_id, frames, HISTORY_DAYS, mode="t0")

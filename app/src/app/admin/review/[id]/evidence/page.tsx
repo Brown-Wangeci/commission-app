@@ -26,6 +26,9 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
     throw error;
   });
   const items = detail.proof ? [...detail.photos, detail.proof] : detail.photos;
+  const labelOf = new Map(detail.evidence.photoGroups.map((group) => [group.key, group.label]));
+  const title = (item: EvidenceView) =>
+    item.kind === "proof" ? "Proof of activation" : `Photo ${item.sequence}: ${labelOf.get(item.fieldKey ?? "replies") ?? "Photo"}`;
   return (
     <main className="page">
       <div className="breadcrumb">
@@ -48,7 +51,7 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
                 <img src={item.url} alt={item.kind === "proof" ? "Proof of activation" : `Evidence photo ${item.sequence}`} />
               </a>
               <figcaption>
-                <strong>{item.kind === "proof" ? "Proof of activation" : `Photo ${item.sequence}`}</strong>
+                <strong>{title(item)}</strong>
                 <br />
                 {describe(item)}
               </figcaption>

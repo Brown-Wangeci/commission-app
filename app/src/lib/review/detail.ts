@@ -4,6 +4,9 @@ import { notFound } from "@/lib/http/errors";
 import { distanceKm, kmOutsideArea, nearestRegion, regionByCode, type JobArea } from "@/lib/geo";
 import { agentStats, type AgentStats } from "@/lib/agents/history";
 import { payoutAmountView } from "@/lib/payouts/amount";
+import { configVersion, currentEvidenceConfig, type ConfigVersion } from "@/lib/evidence/config";
+import { submittedFields, type SubmittedField } from "@/lib/evidence/view";
+import { formatDistance } from "@/lib/format";
 import { decisionsFor, type DecisionWithReasons } from "@/lib/scoring/decisions";
 import { scoringHealth, type ScoringHealth } from "@/lib/scoring/status";
 import { biggestConcern, byMagnitude, toReasonView, type ReasonView } from "./reasons";
@@ -18,15 +21,22 @@ export type EvidenceView = {
   id: string;
   sequence: number;
   kind: "photo" | "proof";
+  /** The evidence field the file was attached to; null for a reply to an evidence request. */
+  fieldKey: string | null;
   capturedAt: Date | null;
   gpsLat: number | null;
   gpsLon: number | null;
   gpsAccuracyM: number | null;
   locationSource: string;
   kmOutsideArea: number | null;
+  /** Why the tile is flagged, written out for the reviewer; null when nothing is wrong. */
+  flag: string | null;
   fromRequestId: string | null;
   url: string;
 };
+
+/** One group of the photo grid: a configured photo field, or the replies to evidence requests. */
+export type PhotoGroup = { key: string; label: string; format: string | null; photos: EvidenceView[] };
 
 export type EvidenceSummary = {
   photoCount: number;
@@ -96,23 +106,43 @@ const detailInclude = {
   dispute: true,
   payout: true,
   commission: true,
+  evidenceConfig: true,
 };
+
+function photoFlag(kind: "photo" | "proof", kmOutside: number | null): string | null {
+  if (kind !== "photo") return null;
+  if (kmOutside === null) return "No location recorded";
+  return kmOutside > 0 ? `Taken ${formatDistance(kmOutside)} outside the job area` : null;
+}
 
 function evidenceView(item: EvidenceItem, area: JobArea): EvidenceView {
   const located = item.gpsLat !== null && item.gpsLon !== null;
+  const kmOutside = located ? kmOutsideArea(area, item.gpsLat!, item.gpsLon!) : null;
   return {
     id: item.id,
     sequence: item.sequence,
     kind: item.kind,
+    fieldKey: item.fieldKey,
     capturedAt: item.capturedAt,
     gpsLat: item.gpsLat,
     gpsLon: item.gpsLon,
     gpsAccuracyM: item.gpsAccuracyM,
     locationSource: item.locationSource,
-    kmOutsideArea: located ? kmOutsideArea(area, item.gpsLat!, item.gpsLon!) : null,
+    kmOutsideArea: kmOutside,
+    flag: photoFlag(item.kind, kmOutside),
     fromRequestId: item.evidenceRequestId,
     url: `/api/evidence/${item.id}`,
   };
+}
+
+/** The photo grid's groups: each configured photo field in order, then any replies to evidence requests. */
+function photoGroups(fields: SubmittedField[], photos: EvidenceView[]): PhotoGroup[] {
+  const groups: PhotoGroup[] = fields
+    .filter((field) => field.type === "photo")
+    .map((field) => ({ key: field.key, label: field.label, format: field.format, photos: photos.filter((p) => p.fieldKey === field.key) }));
+  const replies = photos.filter((p) => p.fromRequestId !== null);
+  if (replies.length > 0) groups.push({ key: "replies", label: "Sent in reply to an evidence request", format: null, photos: replies });
+  return groups;
 }
 
 function extent(values: number[]): [number | null, number | null] {
@@ -258,14 +288,17 @@ export async function reviewDetail(db: Tx, activationId: string) {
   const photos = items.filter((item) => item.kind === "photo");
   const decisions = (await decisionsFor(db, activation.id)).map(decisionView);
   const latest = decisions.at(-1) ?? null;
-  const [stats, previous, health, position, audit]: [AgentStats, PreviousSubmission | null, ScoringHealth, QueuePosition | null, AuditEntry[]] =
+  const [stats, previous, health, position, audit, current]: [AgentStats, PreviousSubmission | null, ScoringHealth, QueuePosition | null, AuditEntry[], ConfigVersion] =
     await Promise.all([
       agentStats(db, activation.agentId),
       previousSubmission(db, activation),
       scoringHealth(db, activation.id, activation.unscoredStage),
       queuePosition(db, activation.id),
       auditTrail(db, activation.id),
+      currentEvidenceConfig(db, activation.jobId),
     ]);
+  // Labels and order come from the version this submission was validated against, not the job's current one.
+  const fields = submittedFields(configVersion(activation.evidenceConfig), activation.evidencePayload);
   return {
     id: activation.id,
     reference: activation.reference,
@@ -277,6 +310,13 @@ export async function reviewDetail(db: Tx, activationId: string) {
     job: { id: activation.job.id, title: activation.job.title, areaName: activation.job.areaName, areaLat: area.areaLat, areaLon: area.areaLon, areaRadiusM: area.areaRadiusM, clientName: activation.job.client.name },
     agent: agentCard(activation, stats),
     submission: submissionView(activation, area),
+    evidence: {
+      configId: activation.evidenceConfigId,
+      version: activation.evidenceConfig.version,
+      currentVersion: current.version,
+      fields,
+      photoGroups: photoGroups(fields, photos),
+    },
     photos,
     proof: items.find((item) => item.kind === "proof") ?? null,
     evidenceSummary: summariseEvidence(photos, activation.proofHash !== null),

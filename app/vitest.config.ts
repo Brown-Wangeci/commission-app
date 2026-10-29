@@ -24,9 +24,11 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: { "@": path.resolve(__dirname, "src") },
     },
+    // tsconfig keeps JSX for Next to compile; tests that render components need it compiled here.
+    esbuild: { jsx: "automatic" },
     test: {
       environment: "node",
-      include: ["tests/**/*.test.ts"],
+      include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
       globalSetup: ["tests/global-setup.ts"],
       fileParallelism: false,
       testTimeout: 60000,
