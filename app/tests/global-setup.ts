@@ -1,6 +1,9 @@
 import { execSync } from "node:child_process";
 import { PrismaClient } from "@prisma/client";
 
+/** The options every database this suite creates is made with. */
+export const UTF8_DATABASE = "WITH ENCODING 'UTF8' TEMPLATE template0 LC_COLLATE 'C' LC_CTYPE 'C'";
+
 /**
  * Creates a brand-new database for this test run and applies every migration
  * to it with `prisma migrate deploy`. That is the check for issue #1: the
@@ -37,7 +40,9 @@ export default async function setup(): Promise<() => Promise<void>> {
   const name = databaseName(runUrl);
 
   try {
-    await withMaintenance(runUrl, (db) => db.$executeRawUnsafe(`CREATE DATABASE "${name}"`));
+    // UTF8 whatever the cluster's own encoding (issue #45); the C locale is
+    // compatible with every encoding, so this works on a WIN1252 cluster too.
+    await withMaintenance(runUrl, (db) => db.$executeRawUnsafe(`CREATE DATABASE "${name}" ${UTF8_DATABASE}`));
   } catch (error) {
     throw new Error(
       `Could not create test database ${name}. Is PostgreSQL running (npm run db:start)?\n${String(error)}`,

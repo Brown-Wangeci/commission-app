@@ -1,17 +1,17 @@
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
+import { databaseEncoding } from "@/lib/db-encoding";
 
 /**
- * For hosting health checks. Reports whether the database answers and
- * whether the scoring service reports its models loaded. Returns 200 when
- * the app can serve requests (database up), 503 otherwise; a scoring
- * service that is down is reported but does not fail the check, because the
- * app handles that by routing to review.
+ * For hosting health checks. Reports whether the database answers, whether
+ * it is UTF8 (issue #45), and whether the scoring service reports its models
+ * loaded. Returns 200 when the app can serve requests (database up and
+ * UTF8), 503 otherwise; a scoring service that is down is reported but does
+ * not fail the check, because the app handles that by routing to review.
  */
-async function database(): Promise<"ok" | "unavailable"> {
+async function database(): Promise<"ok" | "not_utf8" | "unavailable"> {
   try {
-    await prisma.$queryRaw`SELECT 1`;
-    return "ok";
+    return (await databaseEncoding(prisma)).encoding === "UTF8" ? "ok" : "not_utf8";
   } catch {
     return "unavailable";
   }

@@ -35,13 +35,22 @@ function readConfig(): LocalPgConfig {
   };
 }
 
+/**
+ * Creates a missing database as UTF8 (issue #45). An existing database is
+ * left exactly as it is, whatever its encoding; the app refuses to start on
+ * one that is not UTF8 and says how to make one.
+ */
 async function ensureDatabase(pg: EmbeddedPostgres, name: string): Promise<void> {
+  const client = pg.getPgClient();
+  await client.connect();
   try {
-    await pg.createDatabase(name);
-    console.log(`created database ${name}`);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (!message.includes("already exists")) throw error;
+    const existing = await client.query("SELECT 1 FROM pg_database WHERE datname = $1", [name]);
+    if (existing.rowCount === 0) {
+      await client.query(`CREATE DATABASE "${name}" WITH ENCODING 'UTF8' TEMPLATE template0 LC_COLLATE 'C' LC_CTYPE 'C'`);
+      console.log(`created database ${name} (UTF8)`);
+    }
+  } finally {
+    await client.end();
   }
 }
 
@@ -54,6 +63,8 @@ async function main(): Promise<void> {
     user: config.user,
     password: config.password,
     persistent: true,
+    // Applies only when a new cluster is initialised; an existing one is untouched.
+    initdbFlags: ["--encoding=UTF8", "--locale=C"],
   });
   if (firstRun) await pg.initialise();
   await pg.start();
