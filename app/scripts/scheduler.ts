@@ -1,10 +1,11 @@
 /**
- * Scoring scheduler. Every SCHEDULER_INTERVAL_SECONDS it asks the database
- * for scoring jobs that are due (T7 at hold-close, and retries after
- * failures) and runs them. Nothing is kept in memory between polls: the
- * schedule is the ScoringJob table, so stopping and restarting this process
- * neither loses nor repeats a call. Several copies may run at once; each job
- * is claimed by exactly one.
+ * Scheduler. Every SCHEDULER_INTERVAL_SECONDS it asks the database for
+ * scoring jobs that are due (T7 at hold-close, and retries after failures) and
+ * payment instructions that are due (B2C sends, retries, status checks), and
+ * runs them. Nothing is kept in memory between polls: the schedule is the
+ * ScoringJob, Disbursement and FundingAttempt tables, so stopping and
+ * restarting this process neither loses nor repeats a call. Several copies may
+ * run at once; each row is claimed by exactly one.
  *
  * Usage:
  *   npm run scheduler          poll until stopped
@@ -17,6 +18,7 @@ loadEnv();
 async function main(): Promise<void> {
   const { config } = await import("../src/lib/config");
   const { runDueScoringJobs } = await import("../src/lib/scoring/runner");
+  const { runDuePayments } = await import("../src/lib/payments/worker");
   const { prisma } = await import("../src/lib/db");
   const { assertUtf8Database } = await import("../src/lib/db-encoding");
   await assertUtf8Database(prisma);
@@ -26,6 +28,10 @@ async function main(): Promise<void> {
     const summary = await runDueScoringJobs(new Date());
     const ran = Object.values(summary).reduce((total, count) => total + count, 0);
     if (ran > 0 || once) console.log(`[scheduler] ${new Date().toISOString()} ${JSON.stringify(summary)}`);
+    const payments = await runDuePayments(new Date());
+    if (once || payments.sends + payments.checks + payments.expired + payments.error > 0) {
+      console.log(`[scheduler] payments ${JSON.stringify(payments)}`);
+    }
   };
 
   if (once) {

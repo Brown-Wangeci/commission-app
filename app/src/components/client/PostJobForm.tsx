@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson, type FieldErrors } from "@/lib/client-api";
-import { differenceCents, formatCents, MoneyError, parseKshToCents, parsePercentToBps, sumCents } from "@/lib/money/cents";
+import { differenceCents, formatCents, MoneyError, parseKshToCents, parsePercentToBps } from "@/lib/money/cents";
 import { commissionDerivation, computeCommission, liabilityDerivation, maxLiability } from "@/lib/money/commission";
 import { EvidenceFieldsEditor, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
 
@@ -23,17 +23,16 @@ function Field(props: { name: string; label: string; errors: FieldErrors; hint?:
 }
 
 /** The money fields as typed, in shillings and per cent. */
-type Terms = { value: string; rate: string; flat: string; slots: string; deposit: string };
+type Terms = { value: string; rate: string; flat: string; slots: string };
 
 /** API field (integer units) -> the form field it came from (shillings or per cent). */
 const FIELD_FOR: Record<string, string> = {
   submissionValueCents: "submissionValueKsh",
   commissionRateBps: "commissionRatePercent",
   flatCommissionCents: "flatCommissionKsh",
-  initialDepositCents: "initialDepositKsh",
 };
 
-type Parsed = { submissionValueCents: number; commissionRateBps: number; flatCommissionCents: number; slots: number; initialDepositCents: number };
+type Parsed = { submissionValueCents: number; commissionRateBps: number; flatCommissionCents: number; slots: number };
 
 /** Converts the typed terms to integer units, or returns an error per field. */
 function parseTerms(terms: Terms): { parsed: Parsed | null; errors: FieldErrors } {
@@ -41,16 +40,14 @@ function parseTerms(terms: Terms): { parsed: Parsed | null; errors: FieldErrors 
   const value = parseKshToCents(terms.value);
   const rate = parsePercentToBps(terms.rate);
   const flat = terms.flat.trim() === "" ? 0 : parseKshToCents(terms.flat);
-  const deposit = terms.deposit.trim() === "" ? 0 : parseKshToCents(terms.deposit);
   const slots = /^\d{1,5}$/.test(terms.slots.trim()) ? Number(terms.slots.trim()) : null;
   if (value === null || value === 0) errors.submissionValueKsh = "Enter the value in shillings, with at most two decimal places.";
   if (rate === null || rate === 0) errors.commissionRatePercent = "Enter a rate from 0.01 to 100, with at most two decimal places.";
   if (flat === null) errors.flatCommissionKsh = "Enter shillings with at most two decimal places, or leave it empty.";
-  if (deposit === null) errors.initialDepositKsh = "Enter shillings with at most two decimal places, or leave it empty.";
   if (slots === null || slots === 0) errors.slots = "Enter a whole number of activations.";
   if (Object.keys(errors).length > 0) return { parsed: null, errors };
   return {
-    parsed: { submissionValueCents: value!, commissionRateBps: rate!, flatCommissionCents: flat!, slots: slots!, initialDepositCents: deposit! },
+    parsed: { submissionValueCents: value!, commissionRateBps: rate!, flatCommissionCents: flat!, slots: slots! },
     errors,
   };
 }
@@ -62,8 +59,7 @@ function Preview({ terms, availableCents }: { terms: Terms; availableCents: numb
   try {
     const commission = computeCommission(parsed);
     const liability = maxLiability(parsed, parsed.slots);
-    const availableAfterDeposit = sumCents([availableCents, parsed.initialDepositCents]);
-    const short = liability.amountCents > availableAfterDeposit;
+    const short = liability.amountCents > availableCents;
     return (
       <div className="stack-sm">
         <div>
@@ -77,8 +73,8 @@ function Preview({ terms, availableCents }: { terms: Terms; availableCents: numb
           <span className="derivation">{liabilityDerivation(liability)}</span>
         </div>
         <div className={short ? "alert warn" : "small muted"}>
-          Available {parsed.initialDepositCents > 0 ? "after this deposit" : "now"}: {formatCents(availableAfterDeposit)}.
-          {short ? ` Publishing will be refused: deposit at least ${formatCents(differenceCents(liability.amountCents, availableAfterDeposit))} more.` : ""}
+          Available now: {formatCents(availableCents)}.
+          {short ? ` Publishing will be refused: fund your escrow with at least ${formatCents(differenceCents(liability.amountCents, availableCents))} more first.` : ""}
         </div>
       </div>
     );
@@ -88,14 +84,14 @@ function Preview({ terms, availableCents }: { terms: Terms; availableCents: numb
   }
 }
 
-/** Post a job: its area, its commission structure, how many activations, and an optional deposit. */
+/** Post a job: its area, its commission structure and how many activations. */
 export function PostJobForm({ availableCents }: { availableCents: number }) {
   const router = useRouter();
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [centre, setCentre] = useState({ lat: "", lon: "" });
-  const [terms, setTerms] = useState<Terms>({ value: "", rate: "10", flat: "", slots: "", deposit: "" });
+  const [terms, setTerms] = useState<Terms>({ value: "", rate: "10", flat: "", slots: "" });
   const [fields, setFields] = useState<EditorRow[]>([]);
 
   function useMyLocation() {
@@ -189,7 +185,6 @@ export function PostJobForm({ availableCents }: { availableCents: number }) {
         </div>
         <div className="grid-3">
           {termInput("slots", "slots", "Activations wanted")}
-          {termInput("deposit", "initialDepositKsh", "Deposit into escrow now (KSh, optional)")}
         </div>
         <Preview terms={terms} availableCents={availableCents} />
       </fieldset>

@@ -94,10 +94,9 @@ type EscrowView = {
 };
 
 async function postJobAndFund(client: Session): Promise<string> {
-  step("1. Client (client2@) deposits into escrow and publishes a job, locking its maximum liability");
-  await call(client, "POST", "/api/client/escrow/fund", { amountCents: 35_000 });
+  step("1. Client (client2@) publishes a job from its funded escrow, locking its maximum liability");
   // KSh 2,500.00 x 12.00% + KSh 50.00 flat = KSh 350.00 per approved submission; 2 slots lock KSh 700.00.
-  // The second half of the lock is deposited with the job itself.
+  // The seed funds this client. Real funding needs an M-Pesa prompt, so it is not rehearsed here.
   // The client's own evidence fields: the capture form is built from them.
   const evidenceFields = [
     { label: "ID document seen", type: "single_select", mandatory: true, help: null, format: { options: ["National ID", "Passport", "Alien ID"].map((v) => ({ value: v, label: v })) } },
@@ -107,7 +106,7 @@ async function postJobAndFund(client: Session): Promise<string> {
   const { jobId } = await call<{ jobId: string }>(client, "POST", "/api/client/jobs", {
     title: "Demo: wallet activations, Kibuye Market", description: "Sign up new wallet customers in person at the market.",
     areaName: "Kibuye Market, Kisumu", areaLat: -0.0995, areaLon: 34.768, areaRadiusM: 800,
-    submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 2, initialDepositCents: 35_000,
+    submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 2,
     deadline: nairobiDate(new Date(Date.now() + 30 * DAY)), evidenceFields,
   });
   const escrow = await call<EscrowView>(client, "GET", "/api/client/escrow");

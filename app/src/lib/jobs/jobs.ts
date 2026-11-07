@@ -5,7 +5,7 @@ import { ApiError, conflict, notFound } from "@/lib/http/errors";
 import { addConfigVersion } from "@/lib/evidence/config";
 import { evidenceConfigInputSchema, nairobiDate } from "@/lib/evidence/fields";
 import { recordAuditEvent } from "@/lib/activations/transition";
-import { availableDerivation, clientEscrow, lockClient, recordDeposit } from "@/lib/escrow/client";
+import { availableDerivation, clientEscrow, lockClient } from "@/lib/escrow/client";
 import { jobEscrow, lockJob, unspentDerivation, type JobEscrow } from "@/lib/escrow/holds";
 import { explainStatus } from "@/lib/agents/explain";
 import { differenceCents, formatCents, MoneyError, sumCents } from "@/lib/money/cents";
@@ -41,7 +41,6 @@ export const jobInputSchema = z
     commissionRateBps: rateBpsSchema,
     flatCommissionCents: centsSchema("The flat commission").default(0),
     slots: z.coerce.number().int().min(1).max(10_000),
-    initialDepositCents: centsSchema("The deposit").default(0),
     /** The last day work is accepted, YYYY-MM-DD in Kenya; the job closes to new work at the end of it (FR-04). */
     deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Give the deadline as a date, YYYY-MM-DD."),
     /** The evidence the agent must submit, in order (FR-05); version 1 of the job's configuration. */
@@ -71,10 +70,10 @@ export function jobTerms(job: Pick<Job, "submissionValueCents" | "commissionRate
 
 /**
  * Publishes a job (FR-07). In one transaction, with the client's balance
- * locked against concurrent publication: records the optional deposit,
- * checks the available balance covers the job's maximum liability, and
- * creates the job with that liability locked. If the balance falls short,
- * nothing is written, the deposit included.
+ * locked against concurrent publication: checks the available balance covers
+ * the job's maximum liability, and creates the job with that liability
+ * locked. If the balance falls short, nothing is written. Money reaches the
+ * balance only through M-Pesa funding, so it must be there before publishing.
  */
 export async function createJob(input: { clientId: string; actorId: string; job: JobInput; at?: Date }) {
   const { job } = input;
@@ -82,9 +81,6 @@ export async function createJob(input: { clientId: string; actorId: string; job:
   const deadlineAt = deadlineFor(job.deadline, input.at ?? new Date());
   return prisma.$transaction(async (tx) => {
     await lockClient(tx, input.clientId);
-    if (job.initialDepositCents > 0) {
-      await recordDeposit(tx, { clientId: input.clientId, amountCents: job.initialDepositCents, actorId: input.actorId, at: input.at });
-    }
     const escrow = await clientEscrow(tx, input.clientId);
     if (escrow.availableCents < terms.liability.amountCents) {
       const shortfallCents = differenceCents(terms.liability.amountCents, escrow.availableCents);

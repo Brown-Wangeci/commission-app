@@ -52,6 +52,13 @@ describe.runIf(up)("seed data (issue #16)", () => {
     const transitIn = await prisma.auditEvent.count({ where: { toState: { in: ["scored_t0", "scored_t7"] } } });
     expect(transitIn).toBeGreaterThan(0);
     expect(output).toContain("Every named case landed where intended.");
+    // G1: a funded client, a pending funding attempt and a failed disbursement.
+    expect(await prisma.fundingAttempt.count({ where: { status: "confirmed" } })).toBeGreaterThan(0);
+    expect(await prisma.fundingAttempt.count({ where: { status: "pending" } })).toBe(1);
+    expect(await prisma.fundingAttempt.count({ where: { status: "failed" } })).toBe(1);
+    expect(await prisma.disbursement.count({ where: { status: "failed", failureReason: { not: null } } })).toBeGreaterThan(0);
+    expect(await prisma.disbursement.count({ where: { status: "paid", receipt: { startsWith: "SIM" } } })).toBeGreaterThan(0);
+    expect(await prisma.disbursement.count({ where: { status: { in: ["queued", "sending", "sent", "unconfirmed"] } } })).toBe(0);
   }, 300_000);
 
   it("can be rerun and produces the same data", async () => {

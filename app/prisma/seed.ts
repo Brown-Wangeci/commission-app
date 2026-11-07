@@ -30,7 +30,6 @@ import { assertUtf8Database } from "@/lib/db-encoding";
 import { config } from "@/lib/config";
 import { hashPassword } from "@/lib/auth/password";
 import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
-import { fundEscrow } from "@/lib/escrow/client";
 import { createJob, jobInputSchema } from "@/lib/jobs/jobs";
 import { currentEvidenceConfig, updateEvidenceConfig } from "@/lib/evidence/config";
 import { nairobiDate, type FieldDefinition, type FieldInput } from "@/lib/evidence/fields";
@@ -42,7 +41,10 @@ import { approveActivation, refuseActivation, requestEvidence } from "@/lib/revi
 import { contestRefusal } from "@/lib/disputes/disputes";
 import { runScoringJob } from "@/lib/scoring/runner";
 import { cycleIndexFor, cycleRow } from "@/lib/payouts/calendar";
+import { newReference } from "@/lib/payments/callback-url";
+import { handleCallback } from "@/lib/payments/callbacks";
 import { placeholderPng } from "./seed-support/placeholder-png";
+import { b2cResultBody, simulateConfirmedFunding, simulatedReceipt, stkFailureBody } from "./seed-support/simulated-payments";
 
 const SEED_DOMAIN = "@ledgerfield.test";
 const PASSWORD = "ledgerfield-demo";
@@ -50,6 +52,8 @@ const MINUTE = 60 * 1000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 const NAIROBI_OFFSET = 3 * HOUR;
+/** Spare balance per client, so the rehearsal can publish a job (KSh 1,000.00). */
+const DEMO_HEADROOM_CENTS = 100_000;
 
 // ---------------------------------------------------------------- utilities
 
@@ -396,11 +400,13 @@ async function main(): Promise<void> {
       { label: "Matatu SACCO name", type: "text", mandatory: false, help: null, format: { pattern: "any", minLength: 2, maxLength: 60 } },
     ]),
   ];
-  // Each client deposits exactly what its jobs will lock, then publishes them.
+  // Each client funds what its jobs will lock, plus room for the demonstration
+  // to publish one more job, then publishes them. Funding is simulated, and
+  // still reaches the balance only through the callback path.
   for (const [client, owner] of [[mwanga, mwangaOwner], [tujenge, tujengeOwner]] as const) {
     const own = specs.filter((s) => s.clientId === client.id);
-    const amountCents = sumCents(own.map((s) => maxLiability(s.job, s.job.slots).amountCents));
-    await fundEscrow({ clientId: client.id, amountCents, actorId: owner.id, at: posted });
+    const amountCents = sumCents([...own.map((s) => maxLiability(s.job, s.job.slots).amountCents), DEMO_HEADROOM_CENTS]);
+    await simulateConfirmedFunding({ clientId: client.id, amountCents, actorId: owner.id, at: posted });
   }
   const owners = new Map([[mwanga.id, mwangaOwner.id], [tujenge.id, tujengeOwner.id]]);
   const published: Job[] = [];
@@ -545,10 +551,12 @@ async function main(): Promise<void> {
   }
   expected.push({ label: "Kevin, evidence returned", id: kevinReturned, want: "in_review" });
 
+  await seedPayments(tujenge.id, tujengeOwner.id, now);
+
   // Historical notifications are already read; only the live ones stay unread.
   await prisma.notification.updateMany({
     where: {
-      kind: { notIn: ["evidence_returned", "dispute"] },
+      kind: { notIn: ["evidence_returned", "dispute", "payment_attention"] },
       NOT: { activationId: mercyAsked, kind: "evidence_requested" },
     },
     data: { readAt: now },
@@ -556,10 +564,39 @@ async function main(): Promise<void> {
   await report(expected);
 }
 
+/**
+ * Gives the payment screens something to show: a pending and a failed funding
+ * attempt, and every payout settled. All of it is SIMULATED, with SIM receipts,
+ * and none of it is evidence. No row is left queued, so a worker started later
+ * with real credentials cannot send a seeded payout to Daraja.
+ */
+async function seedPayments(clientId: string, ownerId: string, now: Date): Promise<void> {
+  const pending = { clientId, requestedById: ownerId, payerMsisdn: "0700000000", status: "pending" as const, sendCount: 1, createdAt: now };
+  await prisma.fundingAttempt.create({
+    data: { ...pending, reference: newReference(), amountCents: 500_000, checkoutRequestId: `ws_CO_SIM_${newReference()}`, nextAttemptAt: new Date(now.getTime() + 365 * DAY) },
+  });
+  const cancelled = newReference();
+  const checkoutRequestId = `ws_CO_SIM_${cancelled}`;
+  await prisma.fundingAttempt.create({ data: { ...pending, reference: cancelled, amountCents: 250_000, checkoutRequestId, nextAttemptAt: now } });
+  await handleCallback({ kind: "stk", reference: cancelled, payload: stkFailureBody(checkoutRequestId, 1032, "Request cancelled by user"), at: now });
+
+  const queued = await prisma.disbursement.findMany({ where: { status: "queued" }, orderBy: { createdAt: "asc" } });
+  for (const [index, row] of queued.entries()) {
+    const failure = index === 0 ? { resultCode: 1, resultDesc: "The balance is insufficient for the transaction." } : {};
+    const payload = b2cResultBody({ reference: row.reference, amountCents: row.amountCents, receipt: simulatedReceipt(), ...failure });
+    await handleCallback({ kind: "b2c-result", reference: row.reference, payload, at: new Date(row.createdAt.getTime() + MINUTE) });
+  }
+}
+
 async function report(expected: Array<{ label: string; id: string; want: ActivationState }>): Promise<void> {
   const counts = await prisma.activation.groupBy({ by: ["state"], _count: { _all: true } });
   console.log("\nActivations by state:");
   for (const row of counts) console.log(`  ${row.state.padEnd(18)} ${row._count._all}`);
+  const payouts = await prisma.disbursement.groupBy({ by: ["status"], _count: { _all: true } });
+  const funding = await prisma.fundingAttempt.groupBy({ by: ["status"], _count: { _all: true } });
+  console.log("\nSimulated payments (no call was made to M-Pesa):");
+  for (const row of payouts) console.log(`  payout  ${row.status.padEnd(12)} ${row._count._all}`);
+  for (const row of funding) console.log(`  funding ${row.status.padEnd(12)} ${row._count._all}`);
   console.log("\nNamed cases (state as decided by the real scoring service):");
   let misses = 0;
   for (const item of expected) {

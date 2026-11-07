@@ -1,26 +1,22 @@
 import type { PayoutAuthorisation, Prisma } from "@prisma/client";
 import { recordAuditEvent } from "@/lib/activations/transition";
 import { formatCents } from "@/lib/money/cents";
-import { payoutAuthoriser, usePayoutAuthoriser, type PayoutAuthoriser } from "./boundary";
+import { payoutAuthoriser, usePayoutAuthoriser } from "./boundary";
 import { recordCommission, storedCommissionView } from "./commissions";
-import { NoopPayoutAuthoriser } from "./noop";
+import { DarajaPayoutAuthoriser } from "./daraja";
 
 /**
  * The single entry point upstream code uses, called on every path to
  * approval. It records the activation's commission (issue #41), checks the
  * escrow hold covers exactly that amount, and hands the commission's amount
  * and the agent's number to whichever `PayoutAuthoriser` is registered.
+ * Daraja is the default; there is deliberately no setting that turns payment off.
  */
-const IMPLEMENTATIONS: Record<string, () => PayoutAuthoriser> = { noop: () => new NoopPayoutAuthoriser() };
-
 function ensureRegistered(): void {
   try {
     payoutAuthoriser();
   } catch {
-    const name = process.env.PAYOUT_AUTHORISER ?? "noop";
-    const make = IMPLEMENTATIONS[name];
-    if (!make) throw new Error(`Unknown PAYOUT_AUTHORISER "${name}".`);
-    usePayoutAuthoriser(make());
+    usePayoutAuthoriser(new DarajaPayoutAuthoriser());
   }
 }
 

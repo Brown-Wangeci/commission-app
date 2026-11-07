@@ -1,5 +1,5 @@
 import type { Job, Prisma } from "@prisma/client";
-import { prisma, type Tx } from "@/lib/db";
+import type { Tx } from "@/lib/db";
 import { notFound } from "@/lib/http/errors";
 import { recordAuditEvent } from "@/lib/activations/transition";
 import { assertCents, differenceCents, formatCents, sumCents } from "@/lib/money/cents";
@@ -51,13 +51,17 @@ export async function lockClient(tx: Prisma.TransactionClient, clientId: string)
   if (rows.length === 0) throw notFound("Client");
 }
 
-export type DepositInput = { clientId: string; amountCents: number; actorId: string; at?: Date };
+export type DepositInput = { clientId: string; amountCents: number; actorId: string; fundingAttemptId: string; at?: Date };
 
-/** Records a deposit inside an existing transaction. */
+/**
+ * Records a deposit inside an existing transaction. The only caller is
+ * `confirmFunding`, reached from a verified M-Pesa callback; a database
+ * trigger refuses a deposit whose funding attempt is not confirmed.
+ */
 export async function recordDeposit(tx: Prisma.TransactionClient, input: DepositInput) {
   const amountCents = assertCents(input.amountCents, "The deposit");
   const deposit = await tx.escrowDeposit.create({
-    data: { clientId: input.clientId, amountCents, createdById: input.actorId, createdAt: input.at },
+    data: { clientId: input.clientId, amountCents, createdById: input.actorId, fundingAttemptId: input.fundingAttemptId, createdAt: input.at },
   });
   await recordAuditEvent(tx, {
     kind: "escrow_funded",
@@ -66,12 +70,4 @@ export async function recordDeposit(tx: Prisma.TransactionClient, input: Deposit
     at: input.at,
   });
   return deposit;
-}
-
-/** Adds money to a client's escrow balance. */
-export async function fundEscrow(input: DepositInput) {
-  return prisma.$transaction(async (tx) => {
-    await lockClient(tx, input.clientId);
-    return recordDeposit(tx, input);
-  });
 }
