@@ -101,10 +101,13 @@ week showed steady use. The History section lists both steps.
 
 This creates a new activation whose band changes between T0 and T7.
 
-1. **Client funds escrow and publishes a job.** Sign in as **client2@**
+1. **Client publishes a job from its escrow.** Sign in as **client2@**
    (Tujenge Pesa). The Jobs page shows the escrow balance: on fresh seed data
-   KSh 0.00 available, because every seeded job locked exactly what was
-   deposited. **Post a job**: title "Wallet activations, Kibuye Market
+   KSh 1,000.00 available. Under **Fund your escrow** it lists one confirmed,
+   one pending and one failed M-Pesa attempt; these are simulated seed data
+   with SIM receipts. Money reaches the balance only through a verified M-Pesa
+   callback, so funding live needs the tunnel described in README.md and a
+   phone to enter the PIN on. **Post a job**: title "Wallet activations, Kibuye Market
    (demo)"; description "Sign up new wallet customers at the market."; place
    "Kibuye Market, Kisumu"; centre `-0.0995`, `34.768`; radius `800`; value
    of one approved submission `2500`; commission rate `12`; flat amount `50`;
@@ -119,11 +122,11 @@ This creates a new activation whose band changes between T0 and T7.
      of the stall", 1 to 4. Each shows its expected format in words. These
      fields are for the client's checks and the reviewer's; they never reach
      the fraud model.
-   - To show the refusal first, leave the deposit empty and **Publish the
-     job**: it is refused, saying the available KSh 0.00 does not cover
-     KSh 700.00.
-   - Enter `700` in "Deposit into escrow now" and publish. You land on the job
-     page: KSh 700.00 locked at publication, KSh 700.00 unspent.
+   - To show the refusal first, set activations wanted to `3` and **Publish
+     the job**: it is refused, saying the available KSh 1,000.00 does not cover
+     KSh 1,050.00.
+   - Set it back to `2` and publish. You land on the job page: KSh 700.00
+     locked at publication, KSh 700.00 unspent.
 2. **Platform assigns an agent.** As **reviewer@**: **Clients**, then open the
    new job. Choose **Mercy Achieng (Kondele, Kisumu)** and **Assign**.
    KSh 350.00 is reserved from the job's lock in an escrow hold.
@@ -168,9 +171,11 @@ This creates a new activation whose band changes between T0 and T7.
    - If the hold-close model released or refused it automatically, that is
      the final decision; the History shows it, and a refusal carries a
      dispute record the agent can contest once.
-7. **See the outcome everywhere.** **Payouts** lists the authorisation
-   (KSh 350.00 to Mercy's number, with its derivation, by Amina Otieno, via
-   `noop`). As **client2@** the job shows the outcome and the reviewer's
+7. **See the outcome everywhere.** **Payouts** lists the payout (KSh 350.00 to
+   Mercy's number, with its derivation, by Amina Otieno) as Queued. With
+   M-Pesa configured and `npm run scheduler` running, it moves to Sent and then
+   Paid, with its receipt. **Needs attention**, at the top of that page, shows
+   the seeded payouts that failed and why. As **client2@** the job shows the outcome and the reviewer's
    reason, KSh 350.00 released and KSh 350.00 unspent. As **mercy@**, **My
    activations** shows "Approved by a reviewer" with the reason and the
    commission's derivation. The **Audit log** shows every step.

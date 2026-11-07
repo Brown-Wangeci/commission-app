@@ -136,7 +136,8 @@ background.
 ### The scheduler
 
 T7 scoring at hold-close, and retries after scoring failures, are rows in the
-`ScoringJob` table. `npm run scheduler` polls for due rows every
+`ScoringJob` table, and payment instructions are rows in `Disbursement` and
+`FundingAttempt`. `npm run scheduler` polls for due rows every
 `SCHEDULER_INTERVAL_SECONDS` and runs them. Nothing is kept in memory, so it
 can be stopped and restarted freely, and several copies can run at once. Two
 manual triggers exist for when it is not running:
@@ -164,8 +165,17 @@ every one with its default. Nothing secret is committed.
 | `SCORING_RETRY_BASE_SECONDS`, `SCORING_MAX_RUNS` | 60, 6 | Background retries after a failed run (doubling) |
 | `HOLD_WINDOW_SECONDS` | 604800 | Submission to hold-close |
 | `SCHEDULER_INTERVAL_SECONDS`, `SCHEDULER_LEASE_SECONDS` | 30, 120 | Scheduler polling and job lease |
-| `CRON_SECRET` | (unset = disabled) | Guards `POST /api/cron/scoring` |
-| `PAYOUT_AUTHORISER` | `noop` | Payout boundary implementation (only `noop` exists) |
+| `CRON_SECRET` | (unset = disabled) | Guards `POST /api/cron/scoring` and `POST /api/cron/payments` |
+| `MPESA_*` credentials | (unset = payments off) | See [M-Pesa](#m-pesa); set in the root `.env` |
+| `MPESA_TIMEOUT_MS` | 30000 | Wait for Daraja before a send counts as unknown (assumption) |
+| `MPESA_WHOLE_SHILLINGS_ONLY` | `true` | Refuse amounts with cents (assumption) |
+| `MPESA_STK_MIN_CENTS`, `MPESA_STK_MAX_CENTS` | 100, 25000000 | STK limits, from Daraja's documentation |
+| `MPESA_B2C_MIN_CENTS`, `MPESA_B2C_MAX_CENTS` | 1000, 25000000 | B2C limits, from Daraja's documentation |
+| `MPESA_CALLBACK_ALLOWED_IPS` | (empty = off) | Optional source check, on top of the signed URL |
+| `PAYMENT_RETRY_BASE_SECONDS`, `PAYMENT_MAX_SENDS` | 60, 6 | Payout retries, doubling (assumption) |
+| `PAYMENT_RESULT_WAIT_SECONDS`, `PAYMENT_MAX_STATUS_QUERIES` | 900, 3 | When to ask Daraja, and how often (assumption) |
+| `FUNDING_RETRY_BASE_SECONDS`, `FUNDING_MAX_SENDS` | 15, 3 | Funding retries, doubling (assumption) |
+| `FUNDING_RESULT_WAIT_SECONDS`, `FUNDING_MAX_STATUS_QUERIES` | 180, 3 | The same for funding (assumption) |
 | `MSISDN_HASH_SALT` | (required) | Salt for hashing customer numbers |
 | `EVIDENCE_STORAGE_DIR`, `EVIDENCE_MAX_BYTES` | `storage/evidence`, 8000000 | Where evidence files go, and the per-file limit |
 | `SCORING_PYTHON` | repo `.venv` | Python used by `npm run dev:all` |
@@ -233,7 +243,8 @@ hosting account, database and secrets. Issue #19 stays open for that.
   exactly that amount. Every computed amount on screen has a derivation line
   under it, and the APIs return it (`GET /api/admin/review/{id}`,
   `GET /api/client/escrow`).
-- **Escrow belongs to the client.** `POST /api/client/escrow/fund` deposits;
+- **Escrow belongs to the client.** `POST /api/client/escrow/fund` starts an
+  M-Pesa payment, and only a verified callback credits it (see [M-Pesa](#m-pesa));
   publishing a job (`POST /api/client/jobs`) locks slots x commission and is
   refused with a 409 when the available balance falls short; closing it
   (`POST /api/client/jobs/{id}/close`) returns the unspent remainder. Balances
@@ -242,6 +253,126 @@ hosting account, database and secrets. Issue #19 stays open for that.
   `20261029100000_money_in_cents`, which converts seeded data in place (each
   old flat payout becomes a structure that reproduces it to the cent) and
   checks every conversion as it runs.
+
+## M-Pesa
+
+Escrow is funded by STK Push and commissions are paid by B2C, through Daraja.
+All of it is in `src/lib/payments/`.
+
+- **Funding.** The client asks for an amount from a number on the Jobs page.
+  That sends a prompt and moves no money. The balance changes only when a
+  verified callback confirms the payment, and a database trigger refuses any
+  deposit without a confirmed attempt behind it. Pending, confirmed and failed
+  attempts are all listed on the same page.
+- **Payout.** Approval records the commission and queues one B2C instruction in
+  the same transaction, through the `PayoutAuthoriser` boundary. It makes no
+  call to Daraja, so an outage cannot undo an approval. A worker sends it after
+  the approval commits. The amount is the stored commission; cents become
+  shillings only in `src/lib/payments/amount.ts`, exactly, and an amount that
+  cannot be sent exactly is refused rather than rounded.
+- **Whole shillings.** `MPESA_WHOLE_SHILLINGS_ONLY` defaults to true, so a
+  commission with cents (the seed's KSh 279.99) fails visibly at approval. This
+  is an assumption: the documentation only calls the amount "Numeric". Set it to
+  false once a sandbox payment shows cents are paid exactly.
+
+### Credentials
+
+Set these in the `.env` at the repository root, which git ignores:
+`MPESA_ENV`, `MPESA_CONSUMER_KEY`, `MPESA_CONSUMER_SECRET`,
+`MPESA_STK_SHORTCODE`, `MPESA_STK_PASSKEY`, `MPESA_B2C_SHORTCODE`,
+`MPESA_B2C_INITIATOR_NAME`, `MPESA_B2C_SECURITY_CREDENTIAL` and
+`MPESA_CALLBACK_BASE_URL`. The app and the scripts read the `MPESA_` names from
+that file as well as `app/.env`; a value already set is never replaced. The test
+suite never reads them: `vitest.config.ts` replaces them with fakes and points
+Daraja at a closed port. Until they are all set the app runs, funding answers
+503, and queued payouts wait without using up a retry.
+
+### The callback URL, and tunnelling in development
+
+Daraja reports results by calling this app, so it needs an address Daraja can
+reach. **`localhost` will not work, and Daraja requires HTTPS.** Set
+`MPESA_CALLBACK_BASE_URL` to the public HTTPS origin, with no path. Every
+callback URL is built from it at the moment an instruction is sent; no host is
+fixed anywhere else.
+
+For local development, run a tunnel to the app. A Cloudflare quick tunnel needs
+no account:
+
+```sh
+cloudflared tunnel --url http://localhost:3000
+```
+
+It prints an `https://<random>.trycloudflare.com` address. Put that in
+`MPESA_CALLBACK_BASE_URL`, then start or restart the app. `npx localtunnel --port
+3000` is an alternative. Daraja's documentation says ngrok addresses are usually
+blocked.
+
+**The address changes every time the tunnel restarts.** Update the variable and
+restart the app each time. Daraja keeps the address it was given with each
+instruction, so a result still on its way when the tunnel stops is lost. A
+payout in that position is not resent: the worker asks Daraja for its status,
+and the answer goes to the current address.
+
+### How a callback is verified
+
+Daraja does not sign its callbacks. Each instruction is therefore given its own
+URL, `/api/payments/callback/<kind>/<reference>/<signature>`, where the signature
+is an HMAC of the kind and reference under a key derived from
+`MPESA_CONSUMER_SECRET`. A request with a wrong signature gets a 401 and is
+neither read nor recorded. The route has no `mpesa` in its path and references
+are hexadecimal because Daraja forbids words such as "mpesa", "exec" and "query"
+in URLs.
+
+`MPESA_CALLBACK_ALLOWED_IPS` adds an optional check of the source address. It is
+empty by default because Safaricom's addresses are not in the Daraja
+documentation, and it reads `X-Forwarded-For`, so it needs a proxy that sets that
+header. Rotating the consumer secret invalidates the URLs of instructions still
+in flight.
+
+Each distinct result is applied once: repeat deliveries raise a counter on the
+`PaymentCallback` row and change nothing else. A callback that contradicts a
+settled record, or names no known reference, changes nothing and is listed under
+**Needs attention** on the Payouts page.
+
+### Retries, and why a payout is never sent twice
+
+`npm run scheduler` also works this queue, as does `POST /api/cron/payments`
+with `CRON_SECRET`. Funding is sent at once by the request; payouts wait for the
+worker, so **no payout is sent unless one of those is running**.
+
+| Daraja's answer | What happens to a payout |
+|---|---|
+| Accepted | `sent`; waits for the result |
+| Could not be reached, 429, 503, or a documented busy or server error | `queued` again with doubling delay, same `OriginatorConversationID`; `failed` at the limit, raised to administrators |
+| Refused for good | `failed` with Daraja's reason, raised to administrators |
+| No answer, or anything unrecognised | `unconfirmed`: it may have arrived, so it is never sent again |
+| Duplicate `OriginatorConversationID` | `unconfirmed`: Daraja already holds it |
+
+An `unconfirmed` payout, or a `sent` one whose result is overdue, is resolved by
+Daraja's Transaction Status query. If that settles nothing within the limit, it
+is raised to administrators and stays unsent. A trigger stops any row Daraja may
+hold from returning to `queued`.
+
+### Capturing a real sandbox run
+
+The evidence in `docs/chapter5/evidence/mpesa/` comes from `npm run sandbox:run`,
+which refuses anything but the sandbox. It needs PostgreSQL, the scoring service
+and a tunnel, and a real Safaricom line in `MPESA_SANDBOX_PAYER_MSISDN`: Daraja's
+test number has no handset, so its prompt ends in `1037 No response from user`.
+
+```sh
+npm run db:create -- ledgerfield_sandbox
+export DATABASE_URL=postgresql://ledgerfield:ledgerfield@127.0.0.1:5433/ledgerfield_sandbox
+export MPESA_CAPTURE_DIR=$PWD/../docs/chapter5/evidence/mpesa/run-YYYY-MM-DD
+npm run db:migrate && npm run build
+npm start &
+npm run sandbox:run        # then enter the PIN when the phone prompts
+```
+
+`MPESA_CAPTURE_DIR` must be set for both the app and the script, because the app
+receives the callbacks. Everything is redacted before it is written. With
+`--b2c-leg` the script funds by a simulated callback and runs the real B2C leg
+alone; its summary says so, and it is not the end-to-end run.
 
 ## Evidence fields
 
@@ -293,6 +424,7 @@ app/
   src/lib/money/              integer cents, the commission calculation, the money-column check
   src/lib/evidence/           field definitions and validation, platform fields, configuration versions
   src/lib/escrow/, payouts/   client and job escrow, holds; commission records; the payout boundary
+  src/lib/payments/           Daraja client, funding, disbursement queue, callbacks, redaction
   tests/                      Vitest suites
 ```
 
@@ -303,8 +435,18 @@ app/
 - There is no geo-IP lookup. A web submission's network region defaults to
   the GPS fix's region unless set in the simulated-device panel.
 - Notifications are in-app only; no SMS or email is sent.
-- Settlement (issue #14) is not built: approving records a payout
-  authorisation and moves no money.
+- The real sandbox run is not complete: no successful STK Push or B2C payment
+  has been observed. See `docs/chapter5/evidence/mpesa/README.md`.
+- An administrator can see a failed payout but cannot retry it from the app. A
+  payout stopped by a long outage needs its cause fixed and a manual payment,
+  or a new action to requeue it, which this build does not add.
+- A job whose commission has cents can still be published, and its payouts fail
+  at approval while `MPESA_WHOLE_SHILLINGS_ONLY` is true. Publishing is left
+  unaware of Daraja on purpose.
+- Payouts authorised through the old no-op have no disbursement and were not
+  queued. Nothing was paid for them.
+- Funding that M-Pesa's status check reports as paid, but whose callback never
+  arrived, is not credited. It is raised to an administrator instead.
 - First-week customer activity is entered by the client by hand; a real
   integration would receive it from the client's systems.
 - One money row holds at most KSh 21,474,836.47 (a PostgreSQL INTEGER of

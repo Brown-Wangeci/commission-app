@@ -1,0 +1,27 @@
+{
+  "environment": "Daraja sandbox",
+  "simulated": false,
+  "result": "stopped: Funding did not succeed, so the run stops here. The failure is captured.",
+  "steps": [
+    {
+      "at": "2026-11-07T08:59:06.049Z",
+      "step": "0. Starting balance",
+      "detail": "KSh 0.00 available to the client."
+    },
+    {
+      "at": "2026-11-07T08:59:07.355Z",
+      "step": "1. STK Push initiated",
+      "detail": "KSh 50.00 to 07******149. Attempt status pending."
+    },
+    {
+      "at": "2026-11-07T08:59:07.401Z",
+      "step": "1a. Balance straight after the request",
+      "detail": "KSh 0.00: the initiating request credits nothing."
+    },
+    {
+      "at": "2026-11-07T08:59:34.504Z",
+      "step": "2. Callback received",
+      "detail": "Attempt failed. Result code 1037. Receipt none. No response from user."
+    }
+  ]
+}

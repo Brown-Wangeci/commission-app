@@ -1007,3 +1007,109 @@ the requirement's words:
   version 1, approval with the commission recorded.
 - 22 checks on the rendered pages passed: review grid and labels by version,
   two different capture forms, the client's editor and version history.
+
+## Build 3: M-Pesa Daraja sandbox integration (issues #54 to #60)
+
+Scope as instructed: funding by STK Push, disbursement by B2C, callbacks,
+failure handling, secrets and sandbox evidence. Blockchain was not touched.
+
+**Status: built and tested with Daraja mocked, and exercised against the real
+sandbox, but the real end-to-end run is not complete.** Both real legs reached
+Daraja and returned real callbacks, and both ended in failure, for reasons
+outside the code. Issue #59 stays open. See
+`docs/chapter5/evidence/mpesa/README.md`.
+
+### Reading the Daraja documentation
+Safaricom's portal timed out or returned 404, so the contract comes from a
+public copy of the v3 documentation in the mpesa-daraja-mcp repository, and the
+real sandbox then confirmed the STK and B2C request and callback shapes. Used
+from it: request and callback fields, the error tables, KSh 10 and KSh 250,000
+limits, `OriginatorConversationID` as the guard against double disbursement,
+the `Duplicate OriginatorConversationID` error, and the URL word rules. It does
+not say whether B2C takes cents, and it gives no callback source addresses.
+
+### Issue #54: configuration and secrets
+- `.gitignore` was fixed first, before any other commit: it missed
+  `.env.production`, `.env.sandbox` and the root `.env.local`.
+- **Found: the credentials are in the root `.env`, which Next.js and Prisma do
+  not read.** `scripts/mpesa-env.ts` copies only the `MPESA_` names from it and
+  never replaces a value already set. The test suite does not call it, and
+  `vitest.config.ts` forces fakes and a closed port, so tests can neither use
+  real credentials nor reach Daraja.
+- `redact.ts` is applied to stored reasons, logs and evidence, and reads secret
+  values straight from the environment so it still works while configuration is
+  incomplete. The request log skips callback URLs, which carry a signature.
+
+### Issues #55 to #58: funding, disbursement, callbacks, the queue
+- **Decision: an outbox.** `authorise` runs inside the approving transaction, so
+  it queues a row and calls nothing. An HTTP call there could pay for an approval
+  that then rolls back. This answers issue #14. The no-op is deleted, and
+  `PAYOUT_AUTHORISER` with it, so there is no setting that turns payment off.
+- **Decision: `initialDepositCents` is gone.** It credited escrow directly at
+  publication, which A2 forbids, so a client now funds first and publishes after.
+  `fundEscrow` is gone too; a trigger refuses a deposit with no confirmed attempt.
+- **Decision: anything uncertain is never resent.** A timeout, a dropped
+  connection or an unrecognised answer may have reached Daraja, so the row becomes
+  `unconfirmed` and is resolved by a Transaction Status query. A trigger stops it
+  returning to `queued`. Retries happen only where Daraja cannot have processed
+  it, and reuse one `OriginatorConversationID`.
+- **Decision: origin is a signed URL per instruction.** Nothing found describes a
+  Daraja signature. The HMAC key is derived from `MPESA_CONSUMER_SECRET`, so no
+  further variable is needed. The URL also identifies the instruction, which lets
+  a callback settle an attempt whose STK response never arrived.
+- **Decision: the source address list is off by default.** The third-party lists
+  disagree on whether they are official, and none is in the documentation, so none
+  is built in.
+- **Decision: only a callback credits.** If M-Pesa's status check reports a
+  payment with no callback, the attempt is raised to an administrator, not
+  credited, following A2 to the letter.
+- **Decision: a late success beats an inferred failure, not a reported one.** A
+  success after the system gave up credits, because money moved. A success after
+  M-Pesa itself reported failure changes nothing and is raised.
+- **Decision: exact amounts, whole shillings by default.** The conversion never
+  rounds. `MPESA_WHOLE_SHILLINGS_ONLY` defaults to true because whether B2C takes
+  cents is unknown, so a commission such as the seed's KSh 279.99 fails visibly at
+  approval. The approval stands. Publishing was left unaware of Daraja, following
+  B2, so such a job can still be published.
+- **Assumption: the retry numbers.** Six payout tries from 60 seconds, three
+  status checks from 15 minutes, three funding tries from 15 seconds, a 30 second
+  timeout. All are in configuration; none comes from Safaricom.
+- **No backfill.** Older no-op approvals were not queued, because that would pay
+  money for approvals recorded on the understanding nothing would be paid.
+- **Known consequence.** Escrow is released at approval, as before, so a payout
+  that fails has left the client's balance while the agent is unpaid. It is
+  visible to administrators, who cannot yet retry it from the app.
+
+### Issue #59: the real sandbox run
+Run on 2026-11-07 through a Cloudflare quick tunnel,
+`https://nebraska-walt-composer-contacts.trycloudflare.com`, since closed.
+- **STK Push:** accepted, then a real callback 26 seconds later, `1037 No response
+  from user`. Daraja's test number has no handset. Correctly not credited.
+- **B2C, with funding simulated:** accepted, then a real callback, `2001 The
+  initiator information is invalid`. The credential is well formed (it decodes to
+  256 bytes). `PartyA` was 174379, the same shortcode as STK Push, which may be
+  the cause; that is not established.
+- An unsigned request through the tunnel got a 401.
+- **Found by the real run: Daraja's `CheckoutRequestID` ends with the payer's
+  number.** A mock would never have shown this. It is now masked, with a test.
+
+### Issue #60: seed, tests, traceability
+- Seed: funded clients, one pending and one failed attempt, 44 paid and 5 failed
+  payouts, all simulated with SIM receipts and through the real callback handler.
+  No row is left queued, so a worker with real credentials cannot send a seeded
+  payout. Each client has KSh 1,000.00 spare for the rehearsal.
+- `npm run sandbox:run` drives the real run, and refuses anything but the sandbox.
+  `scripts/demo-client.ts` holds what it shares with the rehearsal.
+
+### Verification
+- `npm test`: 316 passed, 36 skipped because they need live services.
+- With the services running: the 36 live tests passed (API, scoring, seed).
+- `npm run demo:rehearse` passed against a freshly seeded database, with M-Pesa
+  switched off. The funding and payout screens were checked signed in.
+- `tsc`, `check:money` and `next build` pass. `prisma migrate diff` shows no drift.
+- **Mutation check.** Five guards were broken one at a time, and each was caught by
+  the test written for it: replay deduplication, the worker claim, holding an
+  unknown outcome, crediting only on callback, and the signature check. The first
+  attempt at this was invalid and was thrown away: a shell pipe in the test filter
+  made the runs fail for an unrelated reason, which read as caught.
+- No Python changed. `outputs/predictions.db` was backed up and restored.

@@ -1,0 +1,47 @@
+{
+  "environment": "Daraja sandbox",
+  "scope": "B2C leg only: funding was simulated, so this is not the end-to-end run",
+  "result": "stopped: The payout did not complete, so the run stops here. The failure is captured.",
+  "steps": [
+    {
+      "at": "2026-11-07T09:05:10.242Z",
+      "step": "0. Starting balance",
+      "detail": "KSh 0.00 available to the client."
+    },
+    {
+      "at": "2026-11-07T09:05:10.340Z",
+      "step": "1-2. Funding SIMULATED",
+      "detail": "No STK Push was sent. This run proves the B2C leg only, not funding."
+    },
+    {
+      "at": "2026-11-07T09:05:10.374Z",
+      "step": "3. Balance credited",
+      "detail": "KSh 50.00 available."
+    },
+    {
+      "at": "2026-11-07T09:05:11.207Z",
+      "step": "4. Submission",
+      "detail": "LF-000001 submitted and scored at T0. State held."
+    },
+    {
+      "at": "2026-11-07T09:05:11.512Z",
+      "step": "4a. Hold-close score",
+      "detail": "Forced instead of waiting seven days: scored. State approved."
+    },
+    {
+      "at": "2026-11-07T09:05:11.531Z",
+      "step": "5. Submission approved",
+      "detail": "State approved, by the hold-close decision."
+    },
+    {
+      "at": "2026-11-07T09:05:11.548Z",
+      "step": "6. B2C queued",
+      "detail": "KSh 50.00 to 07******149, from stored commission cmw66gyz7001bo8388wdt9swo. Status queued."
+    },
+    {
+      "at": "2026-11-07T09:05:15.965Z",
+      "step": "7. B2C result received",
+      "detail": "Status failed. Result code 2001. Receipt none. The initiator information is invalid."
+    }
+  ]
+}

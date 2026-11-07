@@ -1,0 +1,18 @@
+{
+  "capturedAt": "2026-11-07T08:59:06.860Z",
+  "direction": "request",
+  "label": "stk-push",
+  "payload": {
+    "BusinessShortCode": 174379,
+    "Password": "[redacted]",
+    "Timestamp": "20261107115906",
+    "TransactionType": "CustomerPayBillOnline",
+    "Amount": "50",
+    "PartyA": "2547******149",
+    "PartyB": "174379",
+    "PhoneNumber": "2547******149",
+    "CallBackURL": "https://nebraska-walt-composer-contacts.trycloudflare.com/api/payments/callback/stk/e725165e2f296ef4ea3efc0ef30fb7a6/[redacted]",
+    "AccountReference": "LFe725165e2f",
+    "TransactionDesc": "Escrow fund"
+  }
+}
