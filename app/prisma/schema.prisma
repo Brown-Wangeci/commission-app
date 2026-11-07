@@ -129,6 +129,38 @@ enum ScoringAttemptOutcome {
   failed
 }
 
+/// queued: retained, next send due. sending: claimed by one worker.
+/// pending: Daraja may have prompted the payer; the result is awaited.
+/// confirmed: a verified successful callback credited the escrow balance.
+enum FundingStatus {
+  queued
+  sending
+  pending
+  confirmed
+  failed
+}
+
+/// queued: retained, next send due. sending: claimed by one worker.
+/// sent: Daraja accepted the instruction; the result is awaited.
+/// unconfirmed: Daraja may hold the instruction but the outcome is not known.
+/// A row that has been sent or unconfirmed can never become sendable again.
+enum DisbursementStatus {
+  queued
+  sending
+  sent
+  unconfirmed
+  paid
+  failed
+}
+
+enum PaymentCallbackOutcome {
+  applied
+  duplicate
+  unknown_reference
+  conflict
+  ignored
+}
+
 model User {
   id               String            @id @default(cuid())
   email            String            @unique
@@ -158,13 +190,14 @@ model Notification {
 }
 
 model ClientBusiness {
-  id        String          @id @default(cuid())
-  userId    String          @unique
-  user      User            @relation(fields: [userId], references: [id], onDelete: Restrict)
-  name      String
-  createdAt DateTime        @default(now())
-  jobs      Job[]
-  deposits  EscrowDeposit[]
+  id              String           @id @default(cuid())
+  userId          String           @unique
+  user            User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  name            String
+  createdAt       DateTime         @default(now())
+  jobs            Job[]
+  deposits        EscrowDeposit[]
+  fundingAttempts FundingAttempt[]
 }
 
 model Agent {
@@ -186,9 +219,9 @@ model Agent {
 // later change, so every commission computed on the job uses the structure it
 // was published with. A job can be closed once and never reopened.
 model Job {
-  id                   String         @id @default(cuid())
+  id                   String           @id @default(cuid())
   clientId             String
-  client               ClientBusiness @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  client               ClientBusiness   @relation(fields: [clientId], references: [id], onDelete: Restrict)
   title                String
   description          String
   areaName             String
@@ -200,12 +233,12 @@ model Job {
   /// Commission rate in basis points (1 to 10000; 10000 is 100%).
   commissionRateBps    Int
   /// Paid on top of the rate component for each approved submission.
-  flatCommissionCents  Int            @default(0)
+  flatCommissionCents  Int              @default(0)
   slots                Int
   /// Maximum liability locked from the client's escrow at publication: slots x commission per submission.
   escrowLockedCents    Int
-  status               JobStatus      @default(open)
-  createdAt            DateTime       @default(now())
+  status               JobStatus        @default(open)
+  createdAt            DateTime         @default(now())
   closedAt             DateTime?
   /// After this the job takes no new assignments, acceptances or submissions (FR-04, issue #51).
   /// Null only on jobs published before deadlines existed.
@@ -237,14 +270,54 @@ model EvidenceConfig {
 }
 
 model EscrowDeposit {
-  id          String         @id @default(cuid())
-  clientId    String
-  client      ClientBusiness @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  amountCents Int
-  createdById String
-  createdAt   DateTime       @default(now())
+  id               String          @id @default(cuid())
+  clientId         String
+  client           ClientBusiness  @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  amountCents      Int
+  createdById      String
+  createdAt        DateTime        @default(now())
+  /// The confirmed attempt this deposit credits. Unique, so an attempt can
+  /// credit at most once; a trigger refuses any new deposit without one.
+  /// Null only on deposits made before M-Pesa funding existed.
+  fundingAttemptId String?         @unique
+  fundingAttempt   FundingAttempt? @relation(fields: [fundingAttemptId], references: [id], onDelete: Restrict)
 
   @@index([clientId])
+}
+
+/// One request to fund a client's escrow balance by STK Push. The balance
+/// moves only when a verified callback confirms it (see EscrowDeposit).
+model FundingAttempt {
+  id                String         @id @default(cuid())
+  /// Hexadecimal, generated once. Names this attempt in its callback URL.
+  reference         String         @unique
+  clientId          String
+  client            ClientBusiness @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  requestedById     String
+  amountCents       Int
+  payerMsisdn       String
+  status            FundingStatus  @default(queued)
+  sendCount         Int            @default(0)
+  queryCount        Int            @default(0)
+  nextAttemptAt     DateTime
+  lockedUntil       DateTime?
+  merchantRequestId String?
+  checkoutRequestId String?        @unique
+  /// M-Pesa receipt. Unique, so one payment cannot credit two attempts.
+  receipt           String?        @unique
+  /// Set only by a callback, never by a status query.
+  resultCode        String?
+  failureReason     String?
+  lastError         String?
+  /// When this attempt was raised to an administrator.
+  escalatedAt       DateTime?
+  resolvedAt        DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  deposit           EscrowDeposit?
+
+  @@index([status, nextAttemptAt])
+  @@index([clientId, createdAt])
 }
 
 model Assignment {
@@ -338,6 +411,7 @@ model Activation {
   dispute              Dispute?
   payout               PayoutAuthorisation?
   commission           Commission?
+  disbursement         Disbursement?
   activity             CustomerActivityDay[]
 
   @@unique([assignmentId, agentId, jobId])
@@ -518,20 +592,81 @@ model Commission {
   approvedById         String?
   recordedAt           DateTime             @default(now())
   payout               PayoutAuthorisation?
+  disbursement         Disbursement?
 }
 
 model PayoutAuthorisation {
-  id             String     @id @default(cuid())
-  activationId   String     @unique
-  activation     Activation @relation(fields: [activationId], references: [id], onDelete: Restrict)
-  commissionId   String     @unique
-  commission     Commission @relation(fields: [commissionId], references: [id], onDelete: Restrict)
+  id             String        @id @default(cuid())
+  activationId   String        @unique
+  activation     Activation    @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  commissionId   String        @unique
+  commission     Commission    @relation(fields: [commissionId], references: [id], onDelete: Restrict)
   amountCents    Int
   payoutMsisdn   String
   authorisedAt   DateTime
   authorisedById String?
   provider       String
   providerRef    String?
+  disbursement   Disbursement?
+}
+
+/// The B2C instruction for one approved activation. Unique on the activation,
+/// the commission and the authorisation, so a second cannot exist; triggers
+/// keep the instruction fixed and stop a row returning to a sendable state
+/// once Daraja may hold it.
+model Disbursement {
+  id              String              @id @default(cuid())
+  /// Hexadecimal, generated once. Sent as Daraja's OriginatorConversationID on
+  /// every attempt, which is Daraja's own guard against double disbursement.
+  reference       String              @unique
+  activationId    String              @unique
+  activation      Activation          @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  commissionId    String              @unique
+  commission      Commission          @relation(fields: [commissionId], references: [id], onDelete: Restrict)
+  authorisationId String              @unique
+  authorisation   PayoutAuthorisation @relation(fields: [authorisationId], references: [id], onDelete: Restrict)
+  amountCents     Int
+  payoutMsisdn    String
+  status          DisbursementStatus  @default(queued)
+  sendCount       Int                 @default(0)
+  queryCount      Int                 @default(0)
+  nextAttemptAt   DateTime
+  lockedUntil     DateTime?
+  conversationId  String?             @unique
+  /// M-Pesa receipt. Unique, so one payment cannot settle two instructions.
+  receipt         String?             @unique
+  resultCode      String?
+  failureReason   String?
+  lastError       String?
+  /// When this instruction was raised to an administrator.
+  escalatedAt     DateTime?
+  acceptedAt      DateTime?
+  resolvedAt      DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([status, nextAttemptAt])
+}
+
+/// Every callback that passed origin verification, one row per distinct
+/// result. A repeat delivery raises `deliveries` and changes nothing else.
+/// Holds no phone number or name: `summary` is reduced before it is stored.
+model PaymentCallback {
+  id              String                 @id @default(cuid())
+  kind            String
+  reference       String
+  /// Hash of kind, reference, result code and receipt.
+  dedupeKey       String                 @unique
+  outcome         PaymentCallbackOutcome
+  resultCode      String?
+  note            String?
+  summary         Json
+  deliveries      Int                    @default(1)
+  firstReceivedAt DateTime               @default(now())
+  lastReceivedAt  DateTime               @default(now())
+
+  @@index([outcome, lastReceivedAt])
+  @@index([reference])
 }
 
 model PayoutCycle {
