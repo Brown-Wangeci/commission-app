@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db";
 import { clientJob, clientJobs, createJob, jobInputSchema } from "@/lib/jobs/jobs";
 import { resetDatabase } from "./helpers/db";
+import { fundEscrow } from "./helpers/funding";
 import { createClient } from "./helpers/factories";
 
 beforeEach(resetDatabase);
@@ -18,13 +19,13 @@ const valid = {
   commissionRateBps: 1200,
   flatCommissionCents: 5_000,
   slots: "20",
-  initialDepositCents: 700_000,
   deadline: "2027-06-30",
 };
 
 describe("client jobs (issues #13, #41, #42)", () => {
   it("publishes a job with its commission structure, locking its maximum liability from the deposit", async () => {
     const client = await createClient();
+    await fundEscrow({ clientId: client.id, amountCents: 700_000, actorId: client.userId });
     const job = await createJob({ clientId: client.id, actorId: client.userId, job: jobInputSchema.parse(valid) });
     // KSh 2,500.00 x 12.00% = KSh 300.00 + KSh 50.00 flat = KSh 350.00; 20 x KSh 350.00 = KSh 7,000.00.
     expect(job).toMatchObject({ areaRadiusM: 800, submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 20, escrowLockedCents: 700_000 });
@@ -53,6 +54,7 @@ describe("client jobs (issues #13, #41, #42)", () => {
   it("shows a job only to the client that posted it", async () => {
     const owner = await createClient();
     const other = await createClient();
+    await fundEscrow({ clientId: owner.id, amountCents: 700_000, actorId: owner.userId });
     const job = await createJob({ clientId: owner.id, actorId: owner.userId, job: jobInputSchema.parse(valid) });
     await expect(clientJob(other.id, job.id)).rejects.toMatchObject({ status: 404 });
     expect((await clientJob(owner.id, job.id)).job.id).toBe(job.id);

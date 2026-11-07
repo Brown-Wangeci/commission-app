@@ -6,7 +6,7 @@ import { approveActivation, refuseActivation } from "@/lib/review/actions";
 import { reviewDetail } from "@/lib/review/detail";
 import { runDueScoringJobs } from "@/lib/scoring/runner";
 import { usePayoutAuthoriser } from "@/lib/payouts/boundary";
-import { NoopPayoutAuthoriser } from "@/lib/payouts/noop";
+import { DarajaPayoutAuthoriser } from "@/lib/payouts/daraja";
 import { addWeekOfActivity } from "./helpers/activity";
 import { resetDatabase } from "./helpers/db";
 import { replyWith, startFakeScoring, type FakeScoring } from "./helpers/fake-scoring";
@@ -25,7 +25,7 @@ afterAll(() => fake.close());
 beforeEach(async () => {
   await resetDatabase();
   fake.setHandler(replyWith("reject", 0.9));
-  usePayoutAuthoriser(new NoopPayoutAuthoriser());
+  usePayoutAuthoriser(new DarajaPayoutAuthoriser());
 });
 
 /**

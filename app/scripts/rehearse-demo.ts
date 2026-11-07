@@ -9,55 +9,15 @@
  * Usage: npm run demo:rehearse            (app at http://localhost:3000)
  *        APP_URL=http://host:port npm run demo:rehearse
  */
+import { acceptAndSubmit, call, DAY, DEMO_EVIDENCE_FIELDS, nairobiDate, signIn, week, type Json, type Session } from "./demo-client";
 import { loadEnv } from "./load-env";
 import { placeholderPng } from "../prisma/seed-support/placeholder-png";
 import { formatCents } from "../src/lib/money/cents";
 
 loadEnv();
 
-const APP = process.env.APP_URL ?? "http://localhost:3000";
-const PASSWORD = "ledgerfield-demo";
-const DAY = 24 * 60 * 60 * 1000;
-
-type Session = { email: string; cookie: string };
-type Json = Record<string, unknown>;
-
 function step(text: string): void {
   console.log(`\n== ${text}`);
-}
-
-function cookiesFrom(response: Response): string[] {
-  return response.headers.getSetCookie().map((cookie) => cookie.split(";")[0]);
-}
-
-async function signIn(email: string): Promise<Session> {
-  const csrf = await fetch(`${APP}/api/auth/csrf`);
-  const { csrfToken } = (await csrf.json()) as { csrfToken: string };
-  const response = await fetch(`${APP}/api/auth/callback/credentials`, {
-    method: "POST",
-    redirect: "manual",
-    headers: { "Content-Type": "application/x-www-form-urlencoded", cookie: cookiesFrom(csrf).join("; ") },
-    body: new URLSearchParams({ csrfToken, email, password: PASSWORD, json: "true" }),
-  });
-  const session = cookiesFrom(response).find((cookie) => cookie.includes("session-token="));
-  if (!session) throw new Error(`Could not sign in as ${email} (HTTP ${response.status}).`);
-  return { email, cookie: session };
-}
-
-async function call<T = Json>(session: Session, method: string, path: string, body?: Json | FormData): Promise<T> {
-  const isForm = body instanceof FormData;
-  const response = await fetch(`${APP}${path}`, {
-    method,
-    headers: { cookie: session.cookie, ...(body && !isForm ? { "Content-Type": "application/json" } : {}) },
-    body: body ? (isForm ? body : JSON.stringify(body)) : undefined,
-  });
-  const text = await response.text();
-  if (!response.ok) throw new Error(`${method} ${path} as ${session.email}: HTTP ${response.status} ${text}`);
-  return JSON.parse(text) as T;
-}
-
-function nairobiDate(date: Date): string {
-  return new Date(date.getTime() + 3 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
 
 type Decision = { mode: string; band: string; probability: number; releaseThreshold: number; rejectThreshold: number };
@@ -77,16 +37,6 @@ function describe(decision: Decision): string {
   return `${decision.mode.toUpperCase()} ${decision.band} at ${(decision.probability * 100).toFixed(1)}% (cut-offs ${(decision.releaseThreshold * 100).toFixed(1)}% / ${(decision.rejectThreshold * 100).toFixed(1)}%)`;
 }
 
-function week(kind: "engaged" | "dormant_lapsed"): Json[] {
-  return Array.from({ length: 8 }, (_, day) => {
-    const active = kind === "engaged";
-    return {
-      day, customerActive: active, transactionCount: active ? 3 : 0, topupCents: active ? 10_000 : 0, usageMinutes: active ? 25 : 0,
-      supportContact: false, complaintOrRefund: false, simActive: kind === "engaged" || day < 4,
-    };
-  });
-}
-
 type EscrowView = {
   availableCents: number;
   availableDerivation: string;
@@ -94,21 +44,14 @@ type EscrowView = {
 };
 
 async function postJobAndFund(client: Session): Promise<string> {
-  step("1. Client (client2@) deposits into escrow and publishes a job, locking its maximum liability");
-  await call(client, "POST", "/api/client/escrow/fund", { amountCents: 35_000 });
+  step("1. Client (client2@) publishes a job from its funded escrow, locking its maximum liability");
   // KSh 2,500.00 x 12.00% + KSh 50.00 flat = KSh 350.00 per approved submission; 2 slots lock KSh 700.00.
-  // The second half of the lock is deposited with the job itself.
-  // The client's own evidence fields: the capture form is built from them.
-  const evidenceFields = [
-    { label: "ID document seen", type: "single_select", mandatory: true, help: null, format: { options: ["National ID", "Passport", "Alien ID"].map((v) => ({ value: v, label: v })) } },
-    { label: "Market stall number", type: "text", mandatory: true, help: null, format: { pattern: "code", minLength: 2, maxLength: 10 } },
-    { label: "Photo of the stall", type: "photo", mandatory: true, help: null, format: { minCount: 1, maxCount: 4 } },
-  ];
+  // The seed funds this client. Real funding needs an M-Pesa prompt, so it is not rehearsed here.
   const { jobId } = await call<{ jobId: string }>(client, "POST", "/api/client/jobs", {
     title: "Demo: wallet activations, Kibuye Market", description: "Sign up new wallet customers in person at the market.",
     areaName: "Kibuye Market, Kisumu", areaLat: -0.0995, areaLon: 34.768, areaRadiusM: 800,
-    submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 2, initialDepositCents: 35_000,
-    deadline: nairobiDate(new Date(Date.now() + 30 * DAY)), evidenceFields,
+    submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 2,
+    deadline: nairobiDate(new Date(Date.now() + 30 * DAY)), evidenceFields: DEMO_EVIDENCE_FIELDS,
   });
   const escrow = await call<EscrowView>(client, "GET", "/api/client/escrow");
   const terms = escrow.jobs.find((row) => row.job.id === jobId)!.terms;
@@ -125,38 +68,6 @@ async function assignToMercy(admin: Session, jobId: string): Promise<string> {
   const { assignmentId, holdCents } = await call<{ assignmentId: string; holdCents: number }>(admin, "POST", `/api/admin/jobs/${jobId}/assign`, { agentId: mercy.id });
   console.log(`   assignment ${assignmentId}, ${formatCents(holdCents)} held`);
   return assignmentId;
-}
-
-async function acceptAndSubmit(agent: Session, assignmentId: string): Promise<string> {
-  step("3. Agent (mercy@) accepts and submits an activation; it is scored at T0");
-  await call(agent, "POST", `/api/agent/assignments/${assignmentId}/accept`);
-  // The form comes from the job's configuration; the submission names the version it was built from.
-  type FormField = { key: string; label: string; type: string };
-  const definition = await call<{ evidenceConfigId: string; version: number; jobFields: FormField[] }>(agent, "GET", `/api/agent/assignments/${assignmentId}/evidence-form`);
-  const keyOf = (label: string) => definition.jobFields.find((f) => f.label === label)!.key;
-  console.log(`   form built from evidence fields version ${definition.version}: ${definition.jobFields.map((f) => f.label).join("; ")}`);
-  const form = new FormData();
-  const context: Record<string, string> = {
-    assignmentId, evidenceConfigId: definition.evidenceConfigId, gpsLat: "-0.0991", gpsLon: "34.7684", gpsAccuracyM: "9",
-    deviceId: "dev-mercy-6120", deviceOs: "android", appVersion: "web-0.1.0", networkType: "cellular", ipRegion: "region_c",
-  };
-  const values: Record<string, string> = {
-    customerMsisdn: `07${String(Date.now()).slice(-8)}`, simRegisteredAt: nairobiDate(new Date(Date.now() - DAY)), activationMethod: "qr_scan",
-    agentNote: "Customer registered at her stall; no proof screenshot, her phone battery was flat.",
-    [keyOf("ID document seen")]: "National ID", [keyOf("Market stall number")]: "B-14",
-  };
-  for (const [key, value] of Object.entries(context)) form.set(key, value);
-  for (const [key, value] of Object.entries(values)) form.set(`field:${key}`, value);
-  const photoKey = keyOf("Photo of the stall");
-  const meta = [];
-  for (let i = 0; i < 3; i += 1) {
-    form.append(`photos:${photoKey}`, new File([placeholderPng(900 + i)], `demo-${i + 1}.png`, { type: "image/png" }));
-    meta.push({ capturedAt: new Date(Date.now() - (10 - i) * 60_000).toISOString(), gpsLat: -0.0992, gpsLon: 34.7683, gpsAccuracyM: 8, locationSource: "device" });
-  }
-  form.set(`photoMeta:${photoKey}`, JSON.stringify(meta));
-  const result = await call<{ activationId: string; reference: string; state: string }>(agent, "POST", "/api/agent/activations", form);
-  console.log(`   ${result.reference} submitted; state now ${result.state}`);
-  return result.activationId;
 }
 
 async function detail(admin: Session, id: string): Promise<Detail> {
@@ -209,7 +120,10 @@ async function main(): Promise<void> {
   const agent = await signIn("mercy@ledgerfield.test");
   const jobId = await postJobAndFund(client);
   const assignmentId = await assignToMercy(admin, jobId);
-  const id = await acceptAndSubmit(agent, assignmentId);
+  step("3. Agent (mercy@) accepts and submits an activation; it is scored at T0");
+  const submitted = await acceptAndSubmit(agent, assignmentId, "dev-mercy-6120");
+  console.log(`   ${submitted.reference} submitted; state now ${submitted.state}`);
+  const id = submitted.activationId;
   const t0 = (await detail(admin, id)).decisions[0];
   if (!t0) throw new Error("No T0 score was recorded; is the scoring service running?");
   console.log(`   ${describe(t0)}`);

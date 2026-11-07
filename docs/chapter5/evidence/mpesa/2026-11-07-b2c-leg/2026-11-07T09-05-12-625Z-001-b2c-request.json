@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-11-07T09:05:12.625Z",
+  "direction": "request",
+  "label": "b2c",
+  "payload": {
+    "OriginatorConversationID": "b07d98c43b8f7961dacaa42012a72e93",
+    "InitiatorName": "[redacted]",
+    "SecurityCredential": "[redacted]",
+    "CommandID": "BusinessPayment",
+    "Amount": "50",
+    "PartyA": "174379",
+    "PartyB": "2547******149",
+    "Remarks": "Commission LF-000001",
+    "QueueTimeOutURL": "https://nebraska-walt-composer-contacts.trycloudflare.com/api/payments/callback/b2c-timeout/b07d98c43b8f7961dacaa42012a72e93/[redacted]",
+    "ResultURL": "https://nebraska-walt-composer-contacts.trycloudflare.com/api/payments/callback/b2c-result/b07d98c43b8f7961dacaa42012a72e93/[redacted]"
+  }
+}

@@ -5,12 +5,14 @@ import type { PayoutAuthorisation, Prisma } from "@prisma/client";
  *
  * Everything upstream (reviewer approval, automatic release at hold-close)
  * calls `authorisePayout` and nothing else. How an authorised payout is
- * settled is deliberately unknown here: settlement is being redesigned
- * (issue #14). A real implementation replaces the no-op by implementing
- * `PayoutAuthoriser` and registering it; no upstream code changes.
+ * settled is deliberately unknown here. Today that is M-Pesa B2C
+ * (`DarajaPayoutAuthoriser`); another provider implements `PayoutAuthoriser`
+ * and registers it, and no upstream code changes.
  *
  * The call happens inside the database transaction that approves the
- * activation, so an authoriser that throws rolls the approval back.
+ * activation, so an authoriser that throws rolls the approval back, and it
+ * must not call an external service from there: it records what is to be
+ * done, and a worker does it after the approval commits.
  *
  * The amount is the activation's commission, computed and recorded at
  * approval (issue #41), in integer cents.
@@ -26,7 +28,7 @@ export type PayoutRequest = {
 };
 
 export interface PayoutAuthoriser {
-  /** Short provider name stored with each authorisation, e.g. "noop". */
+  /** Short provider name stored with each authorisation, e.g. "daraja". */
   readonly provider: string;
   authorise(tx: Prisma.TransactionClient, request: PayoutRequest): Promise<PayoutAuthorisation>;
 }

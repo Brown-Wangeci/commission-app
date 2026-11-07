@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
 import { submitActivation } from "@/lib/activations/submit";
 import { createJob, jobInputSchema } from "@/lib/jobs/jobs";
-import { fundEscrow } from "@/lib/escrow/client";
+import { fundEscrow } from "./helpers/funding";
 import { resetDatabase } from "./helpers/db";
 import { replyWith, startFakeScoring, type FakeScoring } from "./helpers/fake-scoring";
 import { createAgent, createClient, createUser } from "./helpers/factories";

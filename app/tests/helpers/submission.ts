@@ -1,12 +1,12 @@
 import type { Assignment, ClientBusiness, Job } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
-import { fundEscrow } from "@/lib/escrow/client";
 import { createJob, type JobInput } from "@/lib/jobs/jobs";
 import { maxLiability } from "@/lib/money/commission";
 import { submitActivation, type PhotoInput, type SubmissionInput, type SubmissionResult } from "@/lib/activations/submit";
 import { evidenceConfigInputSchema, nairobiDate, type FieldInput } from "@/lib/evidence/fields";
 import { createAgent, createClient, createUser, TEST_EVIDENCE_FIELDS, TEST_TERMS } from "./factories";
+import { fundEscrow } from "./funding";
 
 const PNG_BYTES = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -50,7 +50,6 @@ export function jobInput(overrides: JobOverrides = {}): JobInput {
     areaRadiusM: 1500,
     ...TEST_TERMS,
     slots: 10,
-    initialDepositCents: 0,
     deadline: daysFromNow(60),
     ...rest,
     // Parsed as the API parses it, so tests may write fields as a client sends them.

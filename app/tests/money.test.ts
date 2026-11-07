@@ -173,7 +173,12 @@ describe("integer-only money arithmetic (NFR-07, issue #40)", () => {
       "src/lib/payouts/authorise.ts",
       "src/lib/payouts/boundary.ts",
       "src/lib/payouts/commissions.ts",
-      "src/lib/payouts/noop.ts",
+      "src/lib/payouts/daraja.ts",
+      "src/lib/payments/amount.ts",
+      "src/lib/payments/callback-parse.ts",
+      "src/lib/payments/callbacks.ts",
+      "src/lib/payments/disbursement.ts",
+      "src/lib/payments/funding.ts",
     ];
     const forbidden = [
       /parseFloat/,

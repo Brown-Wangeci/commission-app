@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db";
 import { transitionActivation } from "@/lib/activations/transition";
-import { clientEscrow, fundEscrow } from "@/lib/escrow/client";
+import { clientEscrow } from "@/lib/escrow/client";
+import { startFunding } from "@/lib/payments/funding";
+import { fundEscrow } from "./helpers/funding";
 import { acceptAssignment, assignJob, holdStateFor, jobEscrow } from "@/lib/escrow/holds";
 import { closeJob, createJob } from "@/lib/jobs/jobs";
 import { resetDatabase } from "./helpers/db";
@@ -94,9 +96,10 @@ describe("escrow holds (issue #5)", () => {
 
   it("only lets a client fund its own escrow, in whole cents", async () => {
     const client = await createClient();
-    await expect(fundEscrow({ clientId: "missing", amountCents: 100, actorId: client.userId })).rejects.toMatchObject({ status: 404 });
-    await expect(fundEscrow({ clientId: client.id, amountCents: 100.5, actorId: client.userId })).rejects.toThrow(/whole number of cents/);
-    await expect(fundEscrow({ clientId: client.id, amountCents: -1, actorId: client.userId })).rejects.toThrow(/whole number of cents/);
+    const request = { actorId: client.userId, payerMsisdn: "0712345678" };
+    await expect(startFunding({ ...request, clientId: "missing", amountCents: 10_000 })).rejects.toMatchObject({ status: 404 });
+    await expect(startFunding({ ...request, clientId: client.id, amountCents: 100.5 })).rejects.toThrow(/whole number of cents/);
+    await expect(startFunding({ ...request, clientId: client.id, amountCents: -1 })).rejects.toMatchObject({ status: 422 });
   });
 });
 
@@ -122,10 +125,10 @@ describe("escrow locked at publication (FR-07, issue #42)", () => {
     expect(await clientEscrow(prisma, client.id)).toMatchObject({ depositedCents: 10 * COMMISSION, committedCents: 10 * COMMISSION, availableCents: 0 });
   });
 
-  it("rolls back a deposit made with a publication that is still refused", async () => {
+  it("never credits anything on publication: an unknown deposit field is ignored and an unfunded job refused", async () => {
     const client = await createClient();
-    const refused = createJob({ clientId: client.id, actorId: client.userId, job: jobInput({ slots: 10, initialDepositCents: 9 * COMMISSION }) });
-    await expect(refused).rejects.toMatchObject({ status: 409 });
+    const job = { ...jobInput({ slots: 10 }), initialDepositCents: 10 * COMMISSION };
+    await expect(createJob({ clientId: client.id, actorId: client.userId, job })).rejects.toMatchObject({ status: 409 });
     expect(await prisma.escrowDeposit.count()).toBe(0);
     expect(await prisma.job.count()).toBe(0);
   });

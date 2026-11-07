@@ -14,6 +14,16 @@ database must now be UTF8. The CSV is current (21 met, 15 partially met, 19
 not met, 4 not verifiable; 268 hours remaining). The ranking below is the
 original plan and has not been recomputed.
 
+**Status after Build 3 (issues #54 to #60):** WP1 is built and tested with
+Daraja mocked. NFR-04, IR-02 and IR-03 are met. FR-06, FR-19 and IR-01 are
+partially met and stay so until a real sandbox run succeeds: real STK Push and
+B2C calls were made and real callbacks received, but both ended in failures,
+1037 (no handset behind the test number) and 2001 (initiator refused). See
+`docs/chapter5/evidence/mpesa/README.md`. Issue #59 stays open for that run.
+Issue #14 is answered: settlement is an outbox behind the payout boundary. FR-23
+now notifies "paid". The CSV is current (24 met, 17 partially met, 14 not met,
+4 not verifiable; 209 hours remaining).
+
 Companion to `docs/chapter5/requirements_traceability.csv`. It groups the 48
 requirements that are not met (24), partially met (20) or not verifiable (4)
 into the work that would close them, and ranks that work by requirements

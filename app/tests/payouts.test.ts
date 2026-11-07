@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { approveActivation, refuseActivation } from "@/lib/review/actions";
 import { runDueScoringJobs } from "@/lib/scoring/runner";
 import { recordAuthorisation, usePayoutAuthoriser, type PayoutAuthoriser, type PayoutRequest } from "@/lib/payouts/boundary";
-import { NoopPayoutAuthoriser } from "@/lib/payouts/noop";
+import { DarajaPayoutAuthoriser } from "@/lib/payouts/daraja";
 import { addWeekOfActivity } from "./helpers/activity";
 import { resetDatabase } from "./helpers/db";
 import { replyWith, startFakeScoring, type FakeScoring } from "./helpers/fake-scoring";
@@ -21,9 +21,9 @@ afterAll(() => fake.close());
 beforeEach(async () => {
   await resetDatabase();
   fake.setHandler(replyWith("reject", 0.9));
-  usePayoutAuthoriser(new NoopPayoutAuthoriser());
+  usePayoutAuthoriser(new DarajaPayoutAuthoriser());
 });
-afterEach(() => usePayoutAuthoriser(new NoopPayoutAuthoriser()));
+afterEach(() => usePayoutAuthoriser(new DarajaPayoutAuthoriser()));
 
 /** A stand-in for a real settlement provider: records, and remembers what it was asked. */
 class RecordingAuthoriser implements PayoutAuthoriser {
@@ -36,12 +36,12 @@ class RecordingAuthoriser implements PayoutAuthoriser {
 }
 
 describe("payout authorisation boundary (issue #15)", () => {
-  it("records a no-op authorisation when a reviewer approves, with the hold's amount and the agent's number", async () => {
+  it("records an authorisation when a reviewer approves, with the hold's amount and the agent's number", async () => {
     const reviewer = await createUser("admin");
     const { activationId } = await submitReady();
     await approveActivation({ activationId, reviewerId: reviewer.id, reason: "Evidence checks out" });
     const payout = await prisma.payoutAuthorisation.findUniqueOrThrow({ where: { activationId } });
-    expect(payout).toMatchObject({ provider: "noop", amountCents: 30_000, payoutMsisdn: "0712000000", authorisedById: reviewer.id, providerRef: null });
+    expect(payout).toMatchObject({ provider: "daraja", amountCents: 30_000, payoutMsisdn: "0712000000", authorisedById: reviewer.id, providerRef: expect.stringMatching(/^[0-9a-f]{32}$/) });
   });
 
   it("records an automatic authorisation when the hold-close score releases", async () => {
@@ -61,7 +61,7 @@ describe("payout authorisation boundary (issue #15)", () => {
     expect(await prisma.payoutAuthorisation.count()).toBe(0);
   });
 
-  it("lets a different implementation replace the no-op with no upstream change", async () => {
+  it("lets a different implementation replace Daraja with no upstream change", async () => {
     const replacement = new RecordingAuthoriser();
     usePayoutAuthoriser(replacement);
     const reviewer = await createUser("admin");

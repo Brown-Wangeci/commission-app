@@ -19,6 +19,7 @@ export type ErrorCode =
   | "illegal_transition"
   | "payload_too_large"
   | "unsupported_media_type"
+  | "payments_unavailable"
   | "internal_error";
 
 export type ErrorBody = {
