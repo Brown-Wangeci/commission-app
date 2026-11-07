@@ -19,7 +19,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "scheduler": "tsx scripts/scheduler.ts",
     "scheduler:once": "tsx scripts/scheduler.ts --once",
-    "demo:rehearse": "tsx scripts/rehearse-demo.ts"
+    "demo:rehearse": "tsx scripts/rehearse-demo.ts",
+    "sandbox:run": "tsx scripts/sandbox-run.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

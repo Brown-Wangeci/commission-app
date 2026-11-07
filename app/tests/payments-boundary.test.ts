@@ -9,7 +9,7 @@ import { originVerified, sourceAllowed, sourceIpOf } from "@/lib/payments/callba
 import { callbackSignatureValid, callbackUrl, newReference } from "@/lib/payments/callback-url";
 import { missingCredentials, mpesaCredentials } from "@/lib/payments/credentials";
 import { classifyResponse, toDarajaMsisdn } from "@/lib/payments/daraja-client";
-import { maskCallbackUrl, maskPhone, redactPayload, redactText } from "@/lib/payments/redact";
+import { maskCallbackUrl, maskCheckoutId, maskPhone, redactPayload, redactText } from "@/lib/payments/redact";
 
 const original = { ...process.env };
 afterEach(() => {
@@ -180,6 +180,14 @@ describe("credentials stay out of everything (E1)", () => {
     for (const secret of ["test-initiator", "test-security-credential", "base64-password", "254712345678", "feedface"]) expect(safe).not.toContain(secret);
     expect(safe).toContain("600000");
     expect(safe).toContain('"Amount":"300"');
+  });
+
+  it("hides the payer's number inside a checkout id, as the real sandbox sends it", () => {
+    const id = "ws_CO_071120261159070712345678";
+    expect(maskCheckoutId(id)).toBe("ws_CO_07112026115907*******678");
+    const safe = JSON.stringify(redactPayload({ Body: { stkCallback: { CheckoutRequestID: id, MerchantRequestID: "135b-4679" } } }));
+    expect(safe).not.toContain("12345678");
+    expect(safe).toContain("135b-4679");
   });
 
   it("removes names and numbers held in Daraja's key and value lists", () => {

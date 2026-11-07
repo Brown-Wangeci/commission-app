@@ -9,6 +9,8 @@ const SECRET_KEY = /^(securitycredential|password|authorization|access_token|con
 const PHONE_KEY = /^(partya|partyb|phonenumber|msisdn|payermsisdn|payoutmsisdn)$/i;
 const NAME_KEY = /^(receiverpartypublicname|debitpartyname|creditpartyname)$/i;
 const URL_KEY = /^(callbackurl|resulturl|queuetimeouturl)$/i;
+/** Daraja's sandbox ends this id with the payer's number, as seen in a real run. */
+const CHECKOUT_KEY = /^checkoutrequestid$/i;
 
 const REDACTED = "[redacted]";
 
@@ -17,6 +19,11 @@ export function maskPhone(value: string): string {
   const digits = value.replace(/\D/g, "");
   if (digits.length < 9) return value;
   return `${digits.slice(0, digits.startsWith("254") ? 4 : 2)}${"*".repeat(6)}${digits.slice(-3)}`;
+}
+
+/** Hides the number at the end of a checkout id, keeping it recognisable across files. */
+export function maskCheckoutId(value: string): string {
+  return value.replace(/\d{7}(\d{3})$/, "*******$1");
 }
 
 /** Removes the signature from a callback URL, keeping the rest readable. */
@@ -43,6 +50,7 @@ function redactEntry(key: string, value: unknown): unknown {
     if (PHONE_KEY.test(key)) return maskPhone(String(value));
     if (NAME_KEY.test(key)) return redactNamed(String(value));
     if (URL_KEY.test(key)) return maskCallbackUrl(String(value));
+    if (CHECKOUT_KEY.test(key)) return maskCheckoutId(String(value));
   }
   return redactPayload(value);
 }
