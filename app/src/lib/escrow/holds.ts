@@ -11,18 +11,24 @@ export type HoldState = "reserved" | "held" | "released" | "returned";
 /**
  * One job's escrow, derived from its lock and the state of its holds (issue
  * #42). Nothing here is stored: the lock is fixed at publication and each
- * hold's state comes from its activation's state (issue #5).
+ * hold's state comes from its activation's state and, once approved, from its
+ * payout: a hold is released only when M-Pesa has confirmed the payment
+ * (Build 4). Until then, and after a failed payment, it stays held.
  */
 export type JobEscrow = {
   /** Locked from the client's balance at publication. */
   lockedCents: number;
   reservedCents: number;
+  /** Includes approved holds whose payout is not yet confirmed. */
   heldCents: number;
+  /** What left escrow: the whole-shilling commission of each paid payout. */
   releasedCents: number;
   returnedCents: number;
-  /** Locked money not reserved, held or released: free within the lock while the job is open, back with the client once it closes. */
+  /** The odd cents rounded off paid commissions: back with the client at once. */
+  roundedOffCents: number;
+  /** Locked money not reserved, held, released or rounded off: free within the lock while the job is open, back with the client once it closes. */
   unspentCents: number;
-  /** What the job takes from the client's balance: the whole lock while open; only reserved, held and released money once closed. */
+  /** What the job takes from the client's balance: the lock less anything rounded off while open; only reserved, held and released money once closed. */
   committedCents: number;
 };
 
@@ -37,9 +43,11 @@ function sumBy(holds: EscrowHoldState[], state: HoldState): number {
 }
 
 export function jobEscrowFrom(job: LockedJob, holds: EscrowHoldState[]): JobEscrow {
+  const released = holds.filter((hold) => hold.state === "released");
   const reservedCents = sumBy(holds, "reserved");
   const heldCents = sumBy(holds, "held");
-  const releasedCents = sumBy(holds, "released");
+  const releasedCents = sumCents(released.map((hold) => hold.paidCents ?? hold.amountCents));
+  const roundedOffCents = sumCents(released.map((hold) => hold.remainderCents));
   const spokenFor = sumCents([reservedCents, heldCents, releasedCents]);
   return {
     lockedCents: job.escrowLockedCents,
@@ -47,8 +55,9 @@ export function jobEscrowFrom(job: LockedJob, holds: EscrowHoldState[]): JobEscr
     heldCents,
     releasedCents,
     returnedCents: sumBy(holds, "returned"),
-    unspentCents: differenceCents(job.escrowLockedCents, spokenFor),
-    committedCents: job.status === "open" ? job.escrowLockedCents : spokenFor,
+    roundedOffCents,
+    unspentCents: differenceCents(job.escrowLockedCents, sumCents([spokenFor, roundedOffCents])),
+    committedCents: job.status === "open" ? differenceCents(job.escrowLockedCents, roundedOffCents) : spokenFor,
   };
 }
 
@@ -59,7 +68,8 @@ export async function jobEscrow(db: Tx, job: LockedJob & { id: string }): Promis
 /** "KSh 900.00 locked − KSh 300.00 in progress − KSh 300.00 released" */
 export function unspentDerivation(escrow: JobEscrow): string {
   const inProgress = sumCents([escrow.reservedCents, escrow.heldCents]);
-  return `${formatCents(escrow.lockedCents)} locked − ${formatCents(inProgress)} in progress − ${formatCents(escrow.releasedCents)} released`;
+  const base = `${formatCents(escrow.lockedCents)} locked − ${formatCents(inProgress)} in progress − ${formatCents(escrow.releasedCents)} paid out`;
+  return escrow.roundedOffCents > 0 ? `${base} − ${formatCents(escrow.roundedOffCents)} rounded off, already back with you` : base;
 }
 
 /** Serialises escrow changes on one job, so two assignments cannot overspend its lock. */
