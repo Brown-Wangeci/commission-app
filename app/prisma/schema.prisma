@@ -355,15 +355,23 @@ model EscrowHold {
 //   refused, withdrawn               -> returned (to the job's escrow balance)
 //   any other activation state       -> held
 view EscrowHoldState {
-  holdId          String           @unique
-  assignmentId    String           @unique
-  jobId           String
-  agentId         String
-  amountCents     Int
-  createdAt       DateTime
-  activationId    String?
-  activationState ActivationState?
-  state           String
+  holdId             String              @unique
+  assignmentId       String              @unique
+  jobId              String
+  agentId            String
+  amountCents        Int
+  createdAt          DateTime
+  activationId       String?
+  activationState    ActivationState?
+  /// Released only once M-Pesa has confirmed the payout (or, before payouts
+  /// existed, once approved through the old no-op).
+  state              String
+  /// The payout's state, when the activation has one.
+  disbursementStatus DisbursementStatus?
+  /// What was paid, once released: the commission in whole shillings.
+  paidCents          Int?
+  /// The cents rounded off the commission, back with the client once released.
+  remainderCents     Int
 }
 
 model Activation {
@@ -585,8 +593,11 @@ model Commission {
   /// floor(submissionValueCents x commissionRateBps / 10000)
   rateComponentCents   Int
   flatCommissionCents  Int
-  /// rateComponentCents + flatCommissionCents
+  /// What is paid: rateComponentCents + flatCommissionCents, rounded down to
+  /// whole shillings. Rows written before Build 4 were not rounded.
   amountCents          Int
+  /// The cents rounded off, returned to the client's balance once paid.
+  roundedOffCents      Int                  @default(0)
   computedAt           DateTime
   /// The reviewer who approved, or null for an automatic release.
   approvedById         String?
@@ -615,35 +626,40 @@ model PayoutAuthorisation {
 /// keep the instruction fixed and stop a row returning to a sendable state
 /// once Daraja may hold it.
 model Disbursement {
-  id              String              @id @default(cuid())
-  /// Hexadecimal, generated once. Sent as Daraja's OriginatorConversationID on
-  /// every attempt, which is Daraja's own guard against double disbursement.
-  reference       String              @unique
-  activationId    String              @unique
-  activation      Activation          @relation(fields: [activationId], references: [id], onDelete: Restrict)
-  commissionId    String              @unique
-  commission      Commission          @relation(fields: [commissionId], references: [id], onDelete: Restrict)
-  authorisationId String              @unique
-  authorisation   PayoutAuthorisation @relation(fields: [authorisationId], references: [id], onDelete: Restrict)
-  amountCents     Int
-  payoutMsisdn    String
-  status          DisbursementStatus  @default(queued)
-  sendCount       Int                 @default(0)
-  queryCount      Int                 @default(0)
-  nextAttemptAt   DateTime
-  lockedUntil     DateTime?
-  conversationId  String?             @unique
+  id                 String              @id @default(cuid())
+  /// Hexadecimal. Sent as Daraja's OriginatorConversationID on every send of
+  /// this generation, which is Daraja's own guard against double disbursement.
+  /// Replaced only when an administrator retries a definite failure.
+  reference          String              @unique
+  /// 1, then one more for each administrator retry after a definite failure.
+  generation         Int                 @default(1)
+  /// The references of earlier generations, so their late callbacks are known.
+  previousReferences String[]            @default([])
+  activationId       String              @unique
+  activation         Activation          @relation(fields: [activationId], references: [id], onDelete: Restrict)
+  commissionId       String              @unique
+  commission         Commission          @relation(fields: [commissionId], references: [id], onDelete: Restrict)
+  authorisationId    String              @unique
+  authorisation      PayoutAuthorisation @relation(fields: [authorisationId], references: [id], onDelete: Restrict)
+  amountCents        Int
+  payoutMsisdn       String
+  status             DisbursementStatus  @default(queued)
+  sendCount          Int                 @default(0)
+  queryCount         Int                 @default(0)
+  nextAttemptAt      DateTime
+  lockedUntil        DateTime?
+  conversationId     String?             @unique
   /// M-Pesa receipt. Unique, so one payment cannot settle two instructions.
-  receipt         String?             @unique
-  resultCode      String?
-  failureReason   String?
-  lastError       String?
+  receipt            String?             @unique
+  resultCode         String?
+  failureReason      String?
+  lastError          String?
   /// When this instruction was raised to an administrator.
-  escalatedAt     DateTime?
-  acceptedAt      DateTime?
-  resolvedAt      DateTime?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  escalatedAt        DateTime?
+  acceptedAt         DateTime?
+  resolvedAt         DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
   @@index([status, nextAttemptAt])
 }
@@ -719,7 +735,66 @@ model AuditEvent {
   actorId      String?
   detail       String?
   at           DateTime         @default(now())
+  /// Written by the database when the event's transaction commits, never by
+  /// the application. See docs/chapter5/audit-chain.md.
+  chain        AuditChain?
 
   @@index([at])
   @@index([activationId])
+}
+
+/// One link of the audit hash chain, one per event, written by a deferred
+/// trigger in the same transaction as the event. Neither table can be updated
+/// or deleted.
+model AuditChain {
+  eventId      BigInt     @id
+  event        AuditEvent @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  /// 1, 2, 3, ... in commit order, with no gaps.
+  sequence     BigInt     @unique
+  /// The previous link's hash; 64 zeros for the first event.
+  previousHash String
+  /// SHA-256 of the event's canonical form, which includes previousHash.
+  hash         String     @unique
+  sealedAt     DateTime   @default(now())
+}
+
+/// pending: root computed, nothing on chain yet. submitted: a transaction was
+/// sent and its result is awaited. confirmed: the root is on chain.
+enum AnchorStatus {
+  pending
+  submitted
+  confirmed
+}
+
+/// One Merkle root over a contiguous range of the audit chain, and where it
+/// was anchored. Ranges never overlap and leave no gaps (enforced by trigger).
+model AuditAnchor {
+  id              String       @id @default(cuid())
+  fromSequence    BigInt       @unique
+  toSequence      BigInt       @unique
+  leafCount       Int
+  /// RFC 6962 Merkle tree hash over the events' hashes, hexadecimal.
+  root            String       @unique
+  status          AnchorStatus @default(pending)
+  chainId         Int
+  contractAddress String
+  attempts        Int          @default(0)
+  nextAttemptAt   DateTime
+  lockedUntil     DateTime?
+  /// The block height when first sent, so the anchoring log can be found again.
+  searchFromBlock BigInt?
+  txHash          String?      @unique
+  blockNumber     BigInt?
+  /// The time the contract recorded, read back from the chain.
+  chainTimestamp  DateTime?
+  submitter       String?
+  lastError       String?
+  /// When this batch was raised to an administrator.
+  escalatedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  submittedAt     DateTime?
+  confirmedAt     DateTime?
+  updatedAt       DateTime     @updatedAt
+
+  @@index([status, nextAttemptAt])
 }
