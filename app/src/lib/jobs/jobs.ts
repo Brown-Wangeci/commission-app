@@ -48,8 +48,12 @@ export const jobInputSchema = z
   })
   .superRefine((job, ctx) => {
     try {
-      if (computeCommission(job).amountCents === 0) {
-        ctx.addIssue({ code: "custom", path: ["commissionRateBps"], message: "This structure pays nothing per approved submission. Raise the rate or add a flat amount." });
+      if (computeCommission(job).payableCents === 0) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["commissionRateBps"],
+          message: "This structure pays less than KSh 1.00 per approved submission, and commissions are paid in whole shillings. Raise the rate or add a flat amount.",
+        });
       }
       maxLiability(job, job.slots);
     } catch (error) {

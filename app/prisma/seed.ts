@@ -363,7 +363,8 @@ async function main(): Promise<void> {
 
   // Each job's commission structure. Gikomba and Thika Road Mall are a plain
   // rate; Kibuye adds a flat amount; Githurai's rate lands between cents, so
-  // its derivation line shows the floor (KSh 2,333.33 x 12.00% = KSh 279.99).
+  // its derivation line shows the floor (KSh 2,333.33 x 12.00% = KSh 279.99)
+  // and the whole-shilling payout (KSh 279.00, KSh 0.99 back to the client).
   type Terms = { submissionValueCents: number; commissionRateBps: number; flatCommissionCents: number; slots: number };
   const posted = new Date(now.getTime() - 160 * DAY);
   const deadline = nairobiDate(new Date(now.getTime() + 60 * DAY));

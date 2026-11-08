@@ -100,7 +100,12 @@ describe("commission calculation and rounding (FR-18, issue #41)", () => {
 
   it("writes the derivation line the design system requires", () => {
     expect(commissionDerivation(commission(300_000, 1000))).toBe("KSh 3,000.00 × 10.00% = KSh 300.00");
-    expect(commissionDerivation(commission(123_456, 825, 2_000))).toBe("KSh 1,234.56 × 8.25% = KSh 101.85 (rounded down to the cent) + KSh 20.00 flat");
+    expect(commissionDerivation(commission(123_456, 825, 2_000))).toBe(
+      "KSh 1,234.56 × 8.25% = KSh 101.85 (rounded down to the cent) + KSh 20.00 flat = KSh 121.85, paid as KSh 121.00 in whole shillings (KSh 0.85 back to the client)",
+    );
+    expect(commissionDerivation(commission(233_333, 1200))).toBe(
+      "KSh 2,333.33 × 12.00% = KSh 279.99 (rounded down to the cent), paid as KSh 279.00 in whole shillings (KSh 0.99 back to the client)",
+    );
   });
 });
 
