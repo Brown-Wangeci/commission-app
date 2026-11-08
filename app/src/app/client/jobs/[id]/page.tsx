@@ -101,6 +101,7 @@ export default async function ClientJobPage({ params }: { params: Promise<{ id: 
                     <td><StateChip state={activation.state} /></td>
                     <td className="small" style={{ maxWidth: 420 }}><strong>{explanation.headline}.</strong> {explanation.detail}</td>
                     <td className="small">
+                      <div><Link href={`/client/activations/${activation.id}/audit`}>Audit record</Link></div>
                       {activation._count.activity} of 8 days reported
                       {!isFinal(activation.state) && (
                         <div><Link href={`/client/activations/${activation.id}/activity`}>{activation._count.activity === 0 ? "Report activity" : "Update"}</Link></div>

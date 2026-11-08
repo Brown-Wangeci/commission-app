@@ -1,3 +1,4 @@
+import { AuditTrailPanel } from "@/components/audit/AuditTrailPanel";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { agentFor } from "@/lib/auth/actors";
@@ -87,6 +88,7 @@ export default async function AgentActivationPage({ params }: { params: Promise<
       <div className="stack-lg">
         <Status detail={detail} />
         <Actions detail={detail} />
+        <AuditTrailPanel apiBase={`/api/agent/activations/${activation.id}/audit`} disputed={activation.state === "disputed" || activation.state === "refused"} />
         {detail.fields.some((field) => field.type !== "photo") && (
           <section className="card card-pad">
             <h2 style={{ marginBottom: 8 }}>What you submitted for this job</h2>
