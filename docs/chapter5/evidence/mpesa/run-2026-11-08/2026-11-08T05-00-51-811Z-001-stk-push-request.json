@@ -1,0 +1,18 @@
+{
+  "capturedAt": "2026-11-08T05:00:51.811Z",
+  "direction": "request",
+  "label": "stk-push",
+  "payload": {
+    "BusinessShortCode": 174379,
+    "Password": "[redacted]",
+    "Timestamp": "20261108080051",
+    "TransactionType": "CustomerPayBillOnline",
+    "Amount": "10",
+    "PartyA": "2547******542",
+    "PartyB": "174379",
+    "PhoneNumber": "2547******542",
+    "CallBackURL": "https://tennessee-includes-defeat-integrity.trycloudflare.com/api/payments/callback/stk/1743fc2b6b1ee5c4af60a39f2624073b/[redacted]",
+    "AccountReference": "LF1743fc2b6b",
+    "TransactionDesc": "Escrow fund"
+  }
+}

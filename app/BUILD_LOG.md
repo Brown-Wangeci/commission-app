@@ -1113,3 +1113,33 @@ Run on 2026-11-07 through a Cloudflare quick tunnel,
   attempt at this was invalid and was thrown away: a shell pipe in the test filter
   made the runs fail for an unrelated reason, which read as caught.
 - No Python changed. `outputs/predictions.db` was backed up and restored.
+
+### Follow-up: completing the sandbox evidence (issue #59)
+The owner corrected the B2C shortcode, initiator name and security credential
+(the 2001 cause), gave a real phone number for both legs, and set an amount
+limit of KSh 1 to KSh 10 for every real call.
+
+- `scripts/sandbox-run.ts`: every real amount changed to exactly KSh 10.00
+  (the smallest value meeting both the KSh 1-10 limit and Daraja's documented
+  B2C minimum), and the payout number is normalised to the local 0-prefixed
+  form the rest of the app and `toDarajaMsisdn` expect; it had been stored
+  as given, in 254-prefixed form, which would have failed the B2C call.
+- A new tunnel, a fresh scratch database, and the app rebuilt with capture on.
+  **Result, told to the owner the moment it happened: the STK prompt reached a
+  real phone, the PIN was entered, and M-Pesa confirmed with a real receipt.**
+  The balance was credited by that callback alone. **FR-06 is met.**
+- The job published from that balance was assigned, submitted, scored by the
+  real service, and approved. The resulting B2C instruction was accepted by
+  Daraja, then refused by a real result callback: `ResultCode 2040`, "Credit
+  Party customer type (Unregistered or Registered Customer) can't be supported
+  by the service." This is a different, more specific refusal than 2001: the
+  credential fix worked, and the sandbox now refuses the recipient rather than
+  the initiator. As instructed, this was reported rather than retried with
+  different parameters. FR-19 and IR-01 stay partially met; issue #59 stays
+  open. See `docs/chapter5/evidence/mpesa/README.md` for what might resolve it.
+- Verified clean: the evidence tree holds no credential value and no form of
+  the real phone number, scanned directly against the `.env` values and the
+  number used, not by pattern alone.
+- Every service this follow-up started (tunnel, scoring, app, PostgreSQL) was
+  stopped afterward, the callback URL cleared, and the scratch database
+  dropped.

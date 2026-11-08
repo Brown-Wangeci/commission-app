@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-11-08T05:01:05.686Z",
+  "direction": "request",
+  "label": "b2c",
+  "payload": {
+    "OriginatorConversationID": "56722ef0e31a30cfb67f2c80a8f2fc31",
+    "InitiatorName": "[redacted]",
+    "SecurityCredential": "[redacted]",
+    "CommandID": "BusinessPayment",
+    "Amount": "10",
+    "PartyA": "600980",
+    "PartyB": "2547******542",
+    "Remarks": "Commission LF-000001",
+    "QueueTimeOutURL": "https://tennessee-includes-defeat-integrity.trycloudflare.com/api/payments/callback/b2c-timeout/56722ef0e31a30cfb67f2c80a8f2fc31/[redacted]",
+    "ResultURL": "https://tennessee-includes-defeat-integrity.trycloudflare.com/api/payments/callback/b2c-result/56722ef0e31a30cfb67f2c80a8f2fc31/[redacted]"
+  }
+}

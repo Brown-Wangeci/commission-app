@@ -1,0 +1,52 @@
+{
+  "environment": "Daraja sandbox",
+  "scope": "end to end, nothing simulated",
+  "result": "stopped: The payout did not complete, so the run stops here. The failure is captured.",
+  "steps": [
+    {
+      "at": "2026-11-08T05:00:50.999Z",
+      "step": "0. Starting balance",
+      "detail": "KSh 0.00 available to the client."
+    },
+    {
+      "at": "2026-11-08T05:00:52.319Z",
+      "step": "1. STK Push initiated",
+      "detail": "KSh 10.00 to 2547******542. Attempt status pending."
+    },
+    {
+      "at": "2026-11-08T05:00:52.354Z",
+      "step": "1a. Balance straight after the request",
+      "detail": "KSh 0.00: the initiating request credits nothing."
+    },
+    {
+      "at": "2026-11-08T05:01:04.396Z",
+      "step": "2. Callback received",
+      "detail": "Attempt confirmed. Result code 0. Receipt UK83J2S9JE."
+    },
+    {
+      "at": "2026-11-08T05:01:04.422Z",
+      "step": "3. Balance credited",
+      "detail": "KSh 10.00 available."
+    },
+    {
+      "at": "2026-11-08T05:01:04.908Z",
+      "step": "4. Submission",
+      "detail": "LF-000001 submitted and scored at T0. State in_review."
+    },
+    {
+      "at": "2026-11-08T05:01:04.982Z",
+      "step": "5. Submission approved",
+      "detail": "State approved, by a reviewer."
+    },
+    {
+      "at": "2026-11-08T05:01:04.993Z",
+      "step": "6. B2C queued",
+      "detail": "KSh 10.00 to 07******542, from stored commission cmw7d6wca000so8w8us8u2p0s. Status queued."
+    },
+    {
+      "at": "2026-11-08T05:01:09.085Z",
+      "step": "7. B2C result received",
+      "detail": "Status failed. Result code 2040. Receipt none. Credit Party customer type (Unregistered or Registered Customer) can't be supported by the service ."
+    }
+  ]
+}

@@ -15,14 +15,19 @@ not met, 4 not verifiable; 268 hours remaining). The ranking below is the
 original plan and has not been recomputed.
 
 **Status after Build 3 (issues #54 to #60):** WP1 is built and tested with
-Daraja mocked. NFR-04, IR-02 and IR-03 are met. FR-06, FR-19 and IR-01 are
-partially met and stay so until a real sandbox run succeeds: real STK Push and
-B2C calls were made and real callbacks received, but both ended in failures,
-1037 (no handset behind the test number) and 2001 (initiator refused). See
-`docs/chapter5/evidence/mpesa/README.md`. Issue #59 stays open for that run.
-Issue #14 is answered: settlement is an outbox behind the payout boundary. FR-23
-now notifies "paid". The CSV is current (24 met, 17 partially met, 14 not met,
-4 not verifiable; 209 hours remaining).
+Daraja mocked. NFR-04, IR-02 and IR-03 are met. Issue #14 is answered:
+settlement is an outbox behind the payout boundary. FR-23 now notifies "paid".
+
+A follow-up session, with the owner's own phone and corrected B2C credentials,
+completed a real end-to-end funding run: a real STK Push, a real callback
+crediting the balance, a job published and approved from it. **FR-06 is now
+met.** The B2C leg of that same run was accepted by Daraja and then refused
+with ResultCode 2040 ("Credit Party customer type ... can't be supported by
+the service"), a sandbox-side recipient restriction rather than a credential or
+code defect. **FR-19 and IR-01 stay partially met** until that is resolved and
+a payment succeeds; issue #59 stays open. See
+`docs/chapter5/evidence/mpesa/README.md`. The CSV is current (25 met, 16
+partially met, 14 not met, 4 not verifiable; 215 hours remaining).
 
 Companion to `docs/chapter5/requirements_traceability.csv`. It groups the 48
 requirements that are not met (24), partially met (20) or not verifiable (4)
