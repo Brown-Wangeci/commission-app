@@ -26,16 +26,22 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { normaliseMsisdn } from "@/lib/validation";
 import { acceptAndSubmit, call, DAY, DEMO_EVIDENCE_FIELDS, nairobiDate, PASSWORD, signIn, week, type Session } from "./demo-client";
 import { loadEnv } from "./load-env";
 
 loadEnv();
 
 const TEST_MSISDN = "0708374149";
-/** KSh 500.00 at 10.00% commissions KSh 50.00; one slot locks exactly what is funded. */
-const SUBMISSION_VALUE_CENTS = 50_000;
-const COMMISSION_BPS = 1000;
-const COMMISSION_CENTS = 5_000;
+/**
+ * Every real amount in this script is exactly KSh 10.00: the smallest value
+ * that is both within a KSh 1-10 instruction and at least Daraja's documented
+ * B2C minimum (KSh 10). Value KSh 10.00 at 100% commissions KSh 10.00; one
+ * slot locks exactly what is funded.
+ */
+const SUBMISSION_VALUE_CENTS = 1_000;
+const COMMISSION_BPS = 10_000;
+const COMMISSION_CENTS = 1_000;
 const WAIT_MS = 240_000;
 const POLL_MS = 3_000;
 
@@ -79,7 +85,8 @@ async function main(): Promise<void> {
   const captureDir = settings.MPESA_CAPTURE_DIR;
   if (!captureDir) throw new Error("Set MPESA_CAPTURE_DIR, here and on the running app, or nothing is captured.");
   const payer = process.env.MPESA_SANDBOX_PAYER_MSISDN ?? TEST_MSISDN;
-  const payout = process.env.MPESA_SANDBOX_PAYOUT_MSISDN ?? TEST_MSISDN;
+  // Stored in the local 0-prefixed form the rest of the app and toDarajaMsisdn expect.
+  const payout = normaliseMsisdn(process.env.MPESA_SANDBOX_PAYOUT_MSISDN ?? TEST_MSISDN);
 
   async function user(email: string, name: string, role: "admin" | "agent" | "client") {
     const passwordHash = await hashPassword(PASSWORD);
