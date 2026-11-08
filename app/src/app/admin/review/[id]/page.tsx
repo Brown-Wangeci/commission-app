@@ -15,6 +15,7 @@ import { ReviewTimeline } from "@/components/review/ReviewTimeline";
 import { AgentCard } from "@/components/review/AgentCard";
 import { ModelAssessment } from "@/components/review/ModelAssessment";
 import { PayoutPanel } from "@/components/review/PayoutPanel";
+import { AuditTrailPanel } from "@/components/audit/AuditTrailPanel";
 
 export const metadata: Metadata = { title: "Review submission | Ledgerfield" };
 
@@ -41,6 +42,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
           <SubmittedDetails detail={detail} />
           <LocationPlot detail={detail} />
           <ReviewTimeline detail={detail} />
+          <AuditTrailPanel apiBase={`/api/admin/activations/${detail.id}/audit`} disputed={detail.state === "disputed"} />
         </div>
         <aside className="stack-lg">
           <AgentCard agent={detail.agent} />

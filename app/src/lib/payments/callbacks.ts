@@ -58,9 +58,20 @@ async function lockedFunding(tx: Tx, reference: string): Promise<FundingAttempt 
   return tx.fundingAttempt.findUnique({ where: { reference } });
 }
 
+/** By its current reference, or by the reference of an earlier, retried generation. */
 async function lockedDisbursement(tx: Tx, reference: string): Promise<Disbursement | null> {
-  await tx.$queryRaw`SELECT "id" FROM "Disbursement" WHERE "reference" = ${reference} FOR UPDATE`;
-  return tx.disbursement.findUnique({ where: { reference } });
+  await tx.$queryRaw`SELECT "id" FROM "Disbursement" WHERE "reference" = ${reference} OR ${reference} = ANY("previousReferences") FOR UPDATE`;
+  return tx.disbursement.findFirst({ where: { OR: [{ reference }, { previousReferences: { has: reference } }] } });
+}
+
+/**
+ * A callback for a generation an administrator has since retried. That
+ * generation failed definitely, so a success for it contradicts the record
+ * and could mean the retry would pay twice: it is raised, never applied.
+ */
+async function supersededGeneration(tx: Tx, row: Disbursement, success: boolean): Promise<Applied> {
+  if (!success) return { outcome: "ignored", note: "A result for an earlier generation that was already handled." };
+  return contradiction(tx, "A success arrived for an earlier, failed attempt of a payout that has since been retried. Check the M-Pesa portal before the retry is paid.", row.activationId);
 }
 
 function amountMismatch(expectedCents: number, reportedCents: number | null): string | null {
@@ -130,6 +141,7 @@ async function applyPayoutFailure(tx: Tx, row: Disbursement, resultCode: string,
 async function applyB2c(tx: Tx, reference: string, result: ParsedResult, at: Date): Promise<Applied> {
   const row = await lockedDisbursement(tx, reference);
   if (!row) return { outcome: "unknown_reference", note: "No disbursement has this reference." };
+  if (row.reference !== reference) return supersededGeneration(tx, row, result.resultCode === "0");
   if (row.conversationId && result.conversationId && row.conversationId !== result.conversationId) {
     return contradiction(tx, "A payout callback named a different M-Pesa conversation. Nothing changed.", row.activationId);
   }
@@ -141,6 +153,7 @@ async function applyB2c(tx: Tx, reference: string, result: ParsedResult, at: Dat
 async function applyStatus(tx: Tx, reference: string, result: ParsedResult, at: Date): Promise<Applied> {
   const row = await lockedDisbursement(tx, reference);
   if (!row) return { outcome: "unknown_reference", note: "No disbursement has this reference." };
+  if (row.reference !== reference) return supersededGeneration(tx, row, result.resultCode === "0" && result.transactionStatus === "Completed");
   if (result.originalReference && result.originalReference !== reference) {
     return contradiction(tx, "A status result described a different payout. Nothing changed.", row.activationId);
   }
@@ -156,6 +169,7 @@ async function applyStatus(tx: Tx, reference: string, result: ParsedResult, at: 
 async function applyTimeout(tx: Tx, reference: string, at: Date): Promise<Applied> {
   const row = await lockedDisbursement(tx, reference);
   if (!row) return { outcome: "unknown_reference", note: "No disbursement has this reference." };
+  if (row.reference !== reference) return { outcome: "ignored", note: "A timeout for an earlier generation." };
   if (row.status !== "sending" && row.status !== "sent") return { outcome: "ignored", note: `Row was ${row.status}.` };
   await tx.disbursement.update({
     where: { id: row.id },

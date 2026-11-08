@@ -4,6 +4,7 @@ import { transitionActivation } from "@/lib/activations/transition";
 import { clientEscrow } from "@/lib/escrow/client";
 import { startFunding } from "@/lib/payments/funding";
 import { fundEscrow } from "./helpers/funding";
+import { authoriseAndPay } from "./helpers/payout";
 import { acceptAssignment, assignJob, holdStateFor, jobEscrow } from "@/lib/escrow/holds";
 import { closeJob, createJob } from "@/lib/jobs/jobs";
 import { resetDatabase } from "./helpers/db";
@@ -59,7 +60,8 @@ describe("escrow holds (issue #5)", () => {
       ["held", "scored_t7", "held"],
       ["scored_t7", "refused", "returned"],
       ["refused", "disputed", "held"],
-      ["disputed", "approved", "released"],
+      // Approval alone releases nothing: the hold waits for a confirmed payout (Build 4).
+      ["disputed", "approved", "held"],
     ] as const;
     for (const [from, to, expected] of steps) {
       await prisma.$transaction((tx) => transitionActivation(tx, { activationId: activation.id, from, to }));
@@ -164,7 +166,9 @@ describe("unspent remainder released at close (FR-20, issue #42)", () => {
   it("returns the lock less everything reserved, held or released, and keeps in-progress money committed", async () => {
     // 5 slots x KSh 300.00 = KSh 1,500.00 locked; one approved, one refused, one held, one reserved.
     const { client, job } = await publishFundedJob({ slots: 5 }, { extraDepositCents: 7_00 });
-    await walk((await createActivation(await assigned(job.id))).id, TO_APPROVED);
+    const approved = await createActivation(await assigned(job.id));
+    await walk(approved.id, TO_APPROVED);
+    await authoriseAndPay(approved.id);
     await walk((await createActivation(await assigned(job.id))).id, TO_REFUSED);
     const held = await createActivation(await assigned(job.id));
     await walk(held.id, TO_HELD);
@@ -175,7 +179,7 @@ describe("unspent remainder released at close (FR-20, issue #42)", () => {
     const closing = await closeJob({ jobId: job.id, clientId: client.id, actorId: client.userId });
     // KSh 1,500.00 locked - KSh 600.00 in progress (held + reserved) - KSh 300.00 released = KSh 600.00 back.
     expect(closing.returnedCents).toBe(2 * COMMISSION);
-    expect(closing.returnedDerivation).toBe("KSh 1,500.00 locked − KSh 600.00 in progress − KSh 300.00 released");
+    expect(closing.returnedDerivation).toBe("KSh 1,500.00 locked − KSh 600.00 in progress − KSh 300.00 paid out");
     expect(await clientEscrow(prisma, client.id)).toMatchObject({ committedCents: 3 * COMMISSION, availableCents: 2 * COMMISSION + 7_00 });
 
     // The held activation is refused after close: its money comes back too.

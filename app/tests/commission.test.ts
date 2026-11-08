@@ -31,10 +31,13 @@ beforeEach(async () => {
 /**
  * A submitted activation on a job with a rate that does not land on a whole
  * cent and a flat amount: KSh 1,234.56 x 8.25% = KSh 101.8512, floored to
- * KSh 101.85, plus KSh 20.00 flat = KSh 121.85.
+ * KSh 101.85, plus KSh 20.00 flat = KSh 121.85, paid as KSh 121.00 in whole
+ * shillings with KSh 0.85 back to the client (Build 4).
  */
 const TERMS = { submissionValueCents: 123_456, commissionRateBps: 825, flatCommissionCents: 2_000 };
-const EXPECTED = { rateComponentCents: 10_185, amountCents: 12_185 };
+const EXPECTED = { rateComponentCents: 10_185, amountCents: 12_100, roundedOffCents: 85 };
+const HOLD_CENTS = 12_185;
+const DERIVATION = "KSh 1,234.56 × 8.25% = KSh 101.85 (rounded down to the cent) + KSh 20.00 flat = KSh 121.85, paid as KSh 121.00 in whole shillings (KSh 0.85 back to the client)";
 
 async function submitted(): Promise<{ activationId: string; clientId: string }> {
   const { client, job } = await publishFundedJob({ ...TERMS, slots: 4 });
@@ -65,8 +68,9 @@ describe("commission at approval (FR-18, issue #41)", () => {
     const payout = await prisma.payoutAuthorisation.findUniqueOrThrow({ where: { activationId }, include: { commission: true } });
     expect(payout.amountCents).toBe(EXPECTED.amountCents);
     expect(payout.commission.activationId).toBe(activationId);
+    // The hold reserved the full commission; it stays held until M-Pesa confirms the payout.
     const hold = await prisma.escrowHoldState.findFirstOrThrow({ where: { activationId } });
-    expect(hold).toMatchObject({ amountCents: EXPECTED.amountCents, state: "released" });
+    expect(hold).toMatchObject({ amountCents: HOLD_CENTS, state: "held", disbursementStatus: "queued", paidCents: null, remainderCents: 0 });
   });
 
   it("records exactly one commission on automatic release at hold-close", async () => {
@@ -120,7 +124,7 @@ describe("commission at approval (FR-18, issue #41)", () => {
   it("exposes the commission and its derivation in the review API, before and after approval", async () => {
     const reviewer = await createUser("admin");
     const { activationId } = await submitted();
-    const derivation = "KSh 1,234.56 × 8.25% = KSh 101.85 (rounded down to the cent) + KSh 20.00 flat";
+    const derivation = DERIVATION;
     const before = await reviewDetail(prisma, activationId);
     expect(before.payout.amount).toMatchObject({ amountCents: EXPECTED.amountCents, basis: "job_terms", commission: { derivation, roundedDown: true } });
     await approveActivation({ activationId, reviewerId: reviewer.id, reason: "Customer confirmed by phone" });
@@ -132,10 +136,10 @@ describe("commission at approval (FR-18, issue #41)", () => {
     const { clientId } = await submitted();
     const view = await clientEscrowView(clientId);
     expect(view).toMatchObject({
-      depositedCents: 4 * EXPECTED.amountCents,
+      depositedCents: 4 * HOLD_CENTS,
       availableCents: 0,
       availableDerivation: "KSh 487.40 deposited − KSh 487.40 committed to 1 job",
     });
-    expect(view.jobs[0].terms.liability).toMatchObject({ amountCents: 4 * EXPECTED.amountCents, derivation: "4 × KSh 121.85 per approved submission" });
+    expect(view.jobs[0].terms.liability).toMatchObject({ amountCents: 4 * HOLD_CENTS, derivation: "4 × KSh 121.85 per approved submission" });
   });
 });

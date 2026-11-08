@@ -2,7 +2,7 @@
  * Scheduler. Every SCHEDULER_INTERVAL_SECONDS it asks the database for
  * scoring jobs that are due (T7 at hold-close, and retries after failures) and
  * payment instructions that are due (B2C sends, retries, status checks), and
- * runs them. Nothing is kept in memory between polls: the schedule is the
+ * anchoring batches that are due (audit roots to the blockchain), and runs them. Nothing is kept in memory between polls: the schedule is the
  * ScoringJob, Disbursement and FundingAttempt tables, so stopping and
  * restarting this process neither loses nor repeats a call. Several copies may
  * run at once; each row is claimed by exactly one.
@@ -19,6 +19,7 @@ async function main(): Promise<void> {
   const { config } = await import("../src/lib/config");
   const { runDueScoringJobs } = await import("../src/lib/scoring/runner");
   const { runDuePayments } = await import("../src/lib/payments/worker");
+  const { runDueAnchoring } = await import("../src/lib/anchoring/queue");
   const { prisma } = await import("../src/lib/db");
   const { assertUtf8Database } = await import("../src/lib/db-encoding");
   await assertUtf8Database(prisma);
@@ -31,6 +32,10 @@ async function main(): Promise<void> {
     const payments = await runDuePayments(new Date());
     if (once || payments.sends + payments.checks + payments.expired + payments.error > 0) {
       console.log(`[scheduler] payments ${JSON.stringify(payments)}`);
+    }
+    const anchoring = await runDueAnchoring(new Date());
+    if (once || anchoring.created + anchoring.confirmed + anchoring.failed > 0 || anchoring.waiting) {
+      console.log(`[scheduler] anchoring ${JSON.stringify(anchoring)}`);
     }
   };
 

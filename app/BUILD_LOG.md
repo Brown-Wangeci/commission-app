@@ -1166,3 +1166,147 @@ arbitrary real number, even one that had just paid by STK Push in another run.
   form and for every credential value; clean. All services started for this
   attempt were stopped, the callback URL cleared, and the scratch database
   dropped.
+
+## Build 4: audit hash chain, blockchain anchoring, two Build 3 defects (issues #64 to #71)
+
+**Status: built and tested; anchored on a local Anvil node, not Polygon Amoy.**
+The root `.env` had no `POLYGON_` settings at any point in the build, so, as
+instructed for that case, the evidence run used a local node with every
+interface unchanged. IR-04 stays partially met until the run is repeated on
+Amoy. See `docs/chapter5/evidence/blockchain/README.md`.
+
+### Issue #64: the hash chain and an immutable audit log (A, NFR-11, DR-09)
+- **Decision: hash at commit, not at insert.** State changes are written to
+  `AuditEvent` by a database trigger, so hashing has to happen in SQL. A
+  deferred constraint trigger chains each event when its transaction commits.
+  Hashing at insert would hold a global lock from the first audit event to
+  commit, and a transaction holding it could wait on a row another transaction
+  holds while that one waits for the lock: a deadlock. At commit every row lock
+  is already held, so the lock is held only while committing.
+- **Decision: the hashes live in a companion table, `AuditChain`.** The event
+  row is never updated, not even once, which keeps DR-09 exact; both tables
+  reject UPDATE and DELETE. An event in a rolled-back transaction is never
+  chained, so sequences have no gaps.
+- **Decision: the canonical form is JSON built by hand, not by a library.**
+  Eleven keys in code point order, every value a string or null, UTC
+  milliseconds. Written out in `docs/chapter5/audit-chain.md`, with published
+  vectors in `docs/chapter5/audit-chain-vectors.json`. PostgreSQL, TypeScript and
+  an independent Python implementation written from the document reproduce every
+  vector, including quotes, control characters, DEL, emoji and U+2028.
+- Existing events were chained by the migration, in id order.
+- The chain check recomputes every hash from stored fields and reports the first
+  divergence: a changed field, a broken link, a gap, or an unchained event.
+
+### Issues #65 and #66: the contract and the anchoring queue (B, FR-21, IR-04, IR-05)
+- `contracts/AuditAnchor.sol`: `anchor(bytes32)`, `anchoredAt(bytes32)`, an
+  `Anchored` event, and a custom error. No owner and no upgrade path.
+- **Decision: a root can be recorded once.** That keeps its timestamp honest,
+  and it makes resending safe: the queue asks the contract whether the root is
+  already there before every attempt, and a duplicate send simply reverts.
+- **Decision: anyone may call `anchor()`.** You asked for no ownership
+  ceremonies. A third party anchoring roots cannot make a forged record verify,
+  because verification asks whether the root Ledgerfield's own events produce
+  is on chain. The verifier reports who submitted it.
+- **Decision: RFC 6962 Merkle trees with SHA-256.** A published standard with
+  domain separation between leaves and nodes, so any language can recompute a
+  root and check a proof from the RFC.
+- **Decision: compiled for the paris EVM** with solc 0.8.37 (pinned, solc-js),
+  so the same bytecode runs on any current EVM chain. A test recompiles and
+  checks the committed artifact matches. viem 2.57.7 is the chain client.
+- **Decision: batches are fixed once cut, and one is in flight at a time,**
+  oldest first, so anchors cover the history in order. Batches are cut every
+  `ANCHOR_INTERVAL_SECONDS` (3600, an assumption), or at once while working off a
+  backlog, at most `ANCHOR_MAX_LEAVES` (5000, an assumption). The database
+  refuses a batch that skips, overlaps or overruns the chain.
+- **Decision: the transaction is stored against a batch's range of events**,
+  not copied onto every event. The range is contiguous and enforced, so each
+  event maps to exactly one anchor, and the event rows stay untouched.
+- The queue re-verifies a range before anchoring it, so a tampered log is never
+  given a fresh anchor; it raises to administrators instead.
+- Retries double from 60 seconds, six attempts, then escalation to every
+  administrator, with a retry on the Audit log page: the payout queue's
+  pattern. All of these are assumptions in configuration.
+- **Decision: the private key is read in exactly one place** (`chainWriter()`),
+  never printed, and scrubbed from every stored error and log along with the RPC
+  URL, which for hosted RPCs carries an API key. Verification needs no key.
+- **Decision: the root loader now copies `POLYGON_` names as well as `MPESA_`,**
+  so these settings live in the root `.env` with the others. The test suite
+  forces fakes and a closed port, so it can never anchor anything.
+
+### Issue #67: retrieval and verification (C, FR-22)
+- Routes for each role, `/api/{admin,agent,client}/activations/[id]/audit` and
+  `.../verify`, each letting in only the administrator, the submitting agent, or
+  the job's client; anyone else gets a 404.
+- **Decision: verification reads the chain twice**: the contract's own
+  `anchoredAt(root)` for the root recomputed from stored events, and the
+  `Anchored` event inside the stored transaction's receipt. A database whose
+  anchor rows were edited still fails, because the chain is asked directly.
+- **Decision: shown on the dispute flow** on the reviewer's review screen
+  (highlighted in a dispute), the agent's activation page (highlighted once
+  refused or disputed), and a client page linked from the job.
+- Found while testing: the summary named the first event in a failing batch
+  rather than the event that was changed. It now names the changed event.
+
+### Issue #68: the evidence (D)
+- `local-anvil-2026-11-08`: the contract deployed; one batch of 706 seeded
+  events anchored, with its root read back from the chain; disputed submission
+  LF-000049 verified; the same record failing after one event was changed; and
+  failing again after all 160 later hashes were rewritten to make the local chain
+  consistent, because the root on chain cannot change.
+- FR-22 demonstrated through the running app: administrator, agent and client
+  each retrieved and verified the record; an unrelated agent got a 404.
+- Anvil 1.8.6 was downloaded through the GitHub CLI and checked against
+  Foundry's published SHA-256 before running. The private key appears in no
+  evidence file; it was scanned for.
+- `npm run contract:deploy` and `npm run anchor:evidence` repeat the run on Amoy.
+
+### Issue #69: commissions in whole shillings (E)
+- **Decision, as you specified: round down when the commission record is
+  created.** The record stores the whole-shilling amount and the cents rounded
+  off; the authorisation and the B2C instruction carry the rounded amount, so
+  what is stored is what is paid. The derivation line shows the step: "KSh
+  2,333.33 x 12.00% = KSh 279.99 ..., paid as KSh 279.00 in whole shillings (KSh
+  0.99 back to the client)".
+- **Decision: the job's lock and each escrow hold keep the full amount,** so the
+  remainder is taken from what was locked. It returns to the client's available
+  balance at once, when the payout is paid, rather than waiting for the job to
+  close: no later slot can ever need it.
+- **Decision: a job that would pay less than KSh 1.00 cannot be published,**
+  since it would round to nothing.
+- Commission rows from before this build were not rounded and still verify.
+- The seed's Githurai job now pays KSh 279.00; its payouts no longer fail, which
+  leaves one deliberately failed payout in the seed instead of five.
+
+### Issue #70: escrow held until payment confirms (F)
+- **Decision: release is decided by the escrow view,** not by a new column: an
+  approved hold is released only when its disbursement is paid, which needs a
+  receipt from a verified result callback. Approved and queued, sent,
+  unconfirmed or failed, it stays held.
+- **Decision: approvals from the old no-op stay released,** as the old rule had
+  it, and the database now refuses any new no-op authorisation, so nothing
+  written from now on can release escrow without a paid payout.
+- **Decision: an administrator retry is allowed only for a definite failure.**
+  It becomes a new generation with a new reference, because Daraja refuses a
+  repeated OriginatorConversationID. The old reference is kept, so a late
+  callback for it is recognised: a late failure is ignored, a late success is
+  raised to administrators, never applied. An unconfirmed payout can never be
+  retried, because it may already have been paid. The database allows exactly
+  this one move from failed to queued.
+
+### Issue #71: traceability (G)
+- FR-21, FR-22, NFR-11, DR-09 and IR-05 met; IR-04 partially met. FR-18, FR-19,
+  FR-20 and NFR-04 stay met, with notes added for the rounding, the escrow hold
+  and the retry.
+
+### Verification
+- `npm test`: 382 passed, 38 skipped because they need live services.
+- With services running: the seed and scoring live tests (4), the live API tests
+  (32), and the live chain tests (2, against Anvil) passed. The rehearsal
+  completed; this time the hold-close model refused its submission, so no payout
+  was authorised in it.
+- `tsc`, `check:money` and `next build` pass; `prisma migrate diff` shows no
+  drift.
+- Every changed page was fetched signed in as its role and showed its new
+  content.
+- No Python in the ML component changed. `outputs/predictions.db` was backed up
+  and restored after the scoring service wrote to it.

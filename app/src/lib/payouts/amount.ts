@@ -6,7 +6,8 @@ import { storedCommissionView } from "./commissions";
  * What an activation pays, and why, for every screen and API that shows it.
  * Once approved, the amount and its derivation come from the stored
  * commission record. Before that, they are what approval would pay under the
- * job's commission structure, which is also what the escrow hold reserved.
+ * job's commission structure. Either way the amount is in whole shillings;
+ * the escrow hold reserves the full commission, odd cents included.
  */
 export type PayoutAmountView = {
   amountCents: number;
@@ -21,9 +22,9 @@ export function payoutAmountView(input: {
 }): PayoutAmountView | null {
   if (input.commission) {
     const recorded = storedCommissionView(input.commission);
-    return { amountCents: recorded.amountCents, commission: recorded, basis: "recorded" };
+    return { amountCents: recorded.payableCents, commission: recorded, basis: "recorded" };
   }
   if (!input.hold) return null;
   const terms = commissionView(computeCommission(input.job));
-  return { amountCents: terms.amountCents, commission: terms, basis: "job_terms" };
+  return { amountCents: terms.payableCents, commission: terms, basis: "job_terms" };
 }

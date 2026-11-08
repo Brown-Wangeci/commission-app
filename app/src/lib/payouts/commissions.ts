@@ -8,6 +8,10 @@ import { commissionView, computeCommission, type CommissionBreakdown, type Commi
  * alone. The database allows one per activation, only for an approved
  * activation, only with its job's structure, and rejects any later UPDATE
  * or DELETE.
+ *
+ * The amount stored is what is paid: the commission rounded down to whole
+ * shillings, with the odd cents recorded beside it (Build 4). The payout,
+ * the authorisation and the B2C instruction all carry this amount.
  */
 export async function recordCommission(
   tx: Prisma.TransactionClient,
@@ -26,7 +30,8 @@ export async function recordCommission(
       commissionRateBps: breakdown.commissionRateBps,
       rateComponentCents: breakdown.rateComponentCents,
       flatCommissionCents: breakdown.flatCommissionCents,
-      amountCents: breakdown.amountCents,
+      amountCents: breakdown.payableCents,
+      roundedOffCents: breakdown.roundedOffCents,
       computedAt: input.at,
       approvedById: input.approvedById,
     },
@@ -35,13 +40,15 @@ export async function recordCommission(
 
 /**
  * A stored commission with its derivation. The breakdown is recomputed from
- * the copied structure and must equal what was stored; a mismatch means the
- * record was not produced by this calculation and is reported, not hidden.
+ * the copied structure, and the amount paid plus what was rounded off must
+ * equal it; a mismatch means the record was not produced by this calculation
+ * and is reported, not hidden. Records from before Build 4 were not rounded:
+ * they show what they paid, with no rounding step.
  */
 export function storedCommissionView(record: Commission): CommissionView {
   const recomputed: CommissionBreakdown = computeCommission(record);
-  if (recomputed.amountCents !== record.amountCents || recomputed.rateComponentCents !== record.rateComponentCents) {
+  if (recomputed.rateComponentCents !== record.rateComponentCents || record.amountCents + record.roundedOffCents !== recomputed.amountCents) {
     throw new Error(`Commission ${record.id} does not match its own structure.`);
   }
-  return commissionView(recomputed);
+  return commissionView({ ...recomputed, payableCents: record.amountCents, roundedOffCents: record.roundedOffCents });
 }

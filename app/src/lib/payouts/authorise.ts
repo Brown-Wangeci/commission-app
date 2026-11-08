@@ -32,9 +32,9 @@ export async function authorisePayout(
   const hold = activation.assignment.hold;
   if (!hold) throw new Error(`Activation ${activation.reference} has no escrow hold to pay from.`);
   const commission = await recordCommission(tx, { activationId: activation.id, approvedById: input.authorisedById, at: input.at });
-  if (commission.amountCents !== hold.amountCents) {
+  if (commission.amountCents + commission.roundedOffCents !== hold.amountCents) {
     throw new Error(
-      `Activation ${activation.reference}: commission ${formatCents(commission.amountCents)} differs from its escrow hold ${formatCents(hold.amountCents)}.`,
+      `Activation ${activation.reference}: commission ${formatCents(commission.amountCents)} plus ${formatCents(commission.roundedOffCents)} rounded off differs from its escrow hold ${formatCents(hold.amountCents)}.`,
     );
   }
   const authorisation = await payoutAuthoriser().authorise(tx, {

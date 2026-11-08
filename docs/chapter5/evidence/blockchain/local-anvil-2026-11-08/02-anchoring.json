@@ -1,0 +1,24 @@
+{
+  "chainId": 31337,
+  "contractAddress": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+  "anchors": [
+    {
+      "events": "1 to 706",
+      "leafCount": 706,
+      "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+      "transactionHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+      "blockNumber": "516",
+      "transactionUrl": null,
+      "readFromChain": {
+        "anchoredAt": "1794133956",
+        "transactionLog": {
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "timestamp": "1794133956",
+          "submitter": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+        }
+      }
+    }
+  ]
+}

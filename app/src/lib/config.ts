@@ -39,6 +39,13 @@ const schema = z.object({
   FUNDING_MAX_SENDS: z.coerce.number().int().min(1).max(50).default(3),
   FUNDING_RESULT_WAIT_SECONDS: z.coerce.number().int().positive().default(180),
   FUNDING_MAX_STATUS_QUERIES: z.coerce.number().int().min(1).max(50).default(3),
+  ANCHOR_INTERVAL_SECONDS: z.coerce.number().int().positive().default(3600),
+  ANCHOR_MAX_LEAVES: z.coerce.number().int().min(1).max(100_000).default(5000),
+  ANCHOR_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(50).default(6),
+  ANCHOR_RETRY_BASE_SECONDS: z.coerce.number().int().positive().default(60),
+  ANCHOR_RECEIPT_TIMEOUT_MS: z.coerce.number().int().positive().default(120_000),
+  ANCHOR_RPC_TIMEOUT_MS: z.coerce.number().int().positive().default(20_000),
+  POLYGON_EXPLORER_URL: z.preprocess((value) => (value === "" ? undefined : value), z.string().url().optional()),
 });
 
 export type AppConfig = z.infer<typeof schema>;

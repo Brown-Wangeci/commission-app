@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { loadMpesaEnv } from "../scripts/mpesa-env";
+import { loadRootEnv } from "../scripts/root-env";
 import { b2cAmountProblem, centsToDarajaAmount, darajaAmountToCents, stkAmountProblem } from "@/lib/payments/amount";
 import { originVerified, sourceAllowed, sourceIpOf } from "@/lib/payments/callback-origin";
 import { callbackSignatureValid, callbackUrl, newReference } from "@/lib/payments/callback-url";
@@ -228,18 +228,28 @@ describe("loading the root .env", () => {
     return path.join(root, "app");
   }
 
-  it("takes only MPESA_ names and never replaces a value already set", () => {
+  it("takes only MPESA_ and POLYGON_ names and never replaces a value already set", () => {
     process.env.MPESA_ENV = "already-set";
     delete process.env.MPESA_STK_SHORTCODE;
+    delete process.env.POLYGON_CHAIN_ID;
     delete process.env.ROOT_ONLY_SETTING;
-    loadMpesaEnv(fixture("MPESA_ENV=sandbox\r\nMPESA_STK_SHORTCODE=174379\r\nROOT_ONLY_SETTING=leak\r\n"));
+    loadRootEnv(fixture("MPESA_ENV=sandbox\r\nMPESA_STK_SHORTCODE=174379\r\nPOLYGON_CHAIN_ID=80002\r\nROOT_ONLY_SETTING=leak\r\n"));
     expect(process.env.MPESA_ENV).toBe("already-set");
     expect(process.env.MPESA_STK_SHORTCODE).toBe("174379");
+    expect(process.env.POLYGON_CHAIN_ID).toBe("80002");
     expect(process.env.ROOT_ONLY_SETTING).toBeUndefined();
   });
 
+  it("lists the Polygon settings in .env.example as commented-out placeholders only", () => {
+    const example = fs.readFileSync(path.resolve(__dirname, "..", ".env.example"), "utf8");
+    for (const name of ["POLYGON_RPC_URL", "POLYGON_CHAIN_ID", "POLYGON_PRIVATE_KEY", "POLYGON_ANCHOR_CONTRACT_ADDRESS"]) {
+      expect(new RegExp(`^# ${name}="replace-with-your-value"$`, "m").test(example), name).toBe(true);
+      expect(new RegExp(`^${name}=`, "m").test(example), name).toBe(false);
+    }
+  });
+
   it("does nothing when there is no root .env", () => {
-    expect(() => loadMpesaEnv(path.join(os.tmpdir(), "no-such-root", "app"))).not.toThrow();
+    expect(() => loadRootEnv(path.join(os.tmpdir(), "no-such-root", "app"))).not.toThrow();
   });
 });
 

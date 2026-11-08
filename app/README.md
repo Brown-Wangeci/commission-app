@@ -168,7 +168,11 @@ every one with its default. Nothing secret is committed.
 | `CRON_SECRET` | (unset = disabled) | Guards `POST /api/cron/scoring` and `POST /api/cron/payments` |
 | `MPESA_*` credentials | (unset = payments off) | See [M-Pesa](#m-pesa); set in the root `.env` |
 | `MPESA_TIMEOUT_MS` | 30000 | Wait for Daraja before a send counts as unknown (assumption) |
-| `MPESA_WHOLE_SHILLINGS_ONLY` | `true` | Refuse amounts with cents (assumption) |
+| `MPESA_WHOLE_SHILLINGS_ONLY` | `true` | Refuse funding amounts with cents (assumption) |
+| `POLYGON_*` | (unset = anchoring waits) | See [Audit chain and anchoring](#audit-chain-and-anchoring); set in the root `.env` |
+| `ANCHOR_INTERVAL_SECONDS`, `ANCHOR_MAX_LEAVES` | 3600, 5000 | How often a batch is anchored, and its largest size (assumption) |
+| `ANCHOR_MAX_ATTEMPTS`, `ANCHOR_RETRY_BASE_SECONDS` | 6, 60 | Anchoring retries, doubling, then escalation (assumption) |
+| `ANCHOR_RECEIPT_TIMEOUT_MS`, `ANCHOR_RPC_TIMEOUT_MS` | 120000, 20000 | Waits on the chain (assumption) |
 | `MPESA_STK_MIN_CENTS`, `MPESA_STK_MAX_CENTS` | 100, 25000000 | STK limits, from Daraja's documentation |
 | `MPESA_B2C_MIN_CENTS`, `MPESA_B2C_MAX_CENTS` | 1000, 25000000 | B2C limits, from Daraja's documentation |
 | `MPESA_CALLBACK_ALLOWED_IPS` | (empty = off) | Optional source check, on top of the signed URL |
@@ -268,12 +272,22 @@ All of it is in `src/lib/payments/`.
   the same transaction, through the `PayoutAuthoriser` boundary. It makes no
   call to Daraja, so an outage cannot undo an approval. A worker sends it after
   the approval commits. The amount is the stored commission; cents become
-  shillings only in `src/lib/payments/amount.ts`, exactly, and an amount that
-  cannot be sent exactly is refused rather than rounded.
-- **Whole shillings.** `MPESA_WHOLE_SHILLINGS_ONLY` defaults to true, so a
-  commission with cents (the seed's KSh 279.99) fails visibly at approval. This
-  is an assumption: the documentation only calls the amount "Numeric". Set it to
-  false once a sandbox payment shows cents are paid exactly.
+  shillings only in `src/lib/payments/amount.ts`, exactly.
+- **Whole shillings.** A commission is rounded down to whole shillings when its
+  record is created, and the odd cents go back to the client once it is paid:
+  KSh 2,333.33 x 12.00% = KSh 279.99 is paid as KSh 279.00, with KSh 0.99 back,
+  and the derivation line says so. The job's lock and each escrow hold keep the
+  full amount, so the remainder comes out of what was locked. A job that would
+  pay less than KSh 1.00 cannot be published. `MPESA_WHOLE_SHILLINGS_ONLY` now
+  affects only funding amounts.
+- **Escrow is held until the payout is paid.** Approval does not release
+  escrow. The hold is released only when M-Pesa's result callback confirms the
+  payment; while the payout is queued, sent, unconfirmed or failed, the money
+  stays held, so a failed payout never leaves the client debited and the agent
+  unpaid. The **Payouts** page offers **Retry payout** on a payout that failed
+  definitely; it is sent again under a new reference, the old one kept so a late
+  callback for it is recognised. An unconfirmed payout cannot be retried, because
+  it may already have been paid.
 
 ### Credentials
 
@@ -374,6 +388,46 @@ receives the callbacks. Everything is redacted before it is written. With
 `--b2c-leg` the script funds by a simulated callback and runs the real B2C leg
 alone; its summary says so, and it is not the end-to-end run.
 
+## Audit chain and anchoring
+
+Every audit event is hashed into a chain, and the chain is anchored on a
+blockchain in batches. The full specification, with test vectors any language
+can check, is [docs/chapter5/audit-chain.md](../docs/chapter5/audit-chain.md).
+
+- **The chain.** When an event's transaction commits, a deferred trigger writes
+  its link in `AuditChain`: its position, the previous link's hash, and a SHA-256
+  hash of a canonical form that includes that previous hash. Changing any stored
+  event breaks its hash. Events and links can never be updated or deleted.
+- **Anchoring.** `npm run scheduler` (or `POST /api/cron/anchoring`) cuts a batch
+  of the events since the last one every `ANCHOR_INTERVAL_SECONDS`, computes its
+  RFC 6962 Merkle root, and records it on the `AuditAnchor` contract
+  (`contracts/AuditAnchor.sol`). The transaction, block and root are stored
+  against the batch's range of events. Nothing in a user action waits for this:
+  if the chain is unreachable, events keep being chained and wait for the next
+  successful run. Retries double from `ANCHOR_RETRY_BASE_SECONDS` up to
+  `ANCHOR_MAX_ATTEMPTS`, then the batch is raised to administrators, who can
+  retry it from the **Audit log** page.
+- **Verification.** The administrator, the submitting agent and the job's
+  client each see a submission's audit record, and **Verify against the
+  blockchain** recomputes every hash from the stored record, rebuilds the Merkle
+  proof, and asks the contract whether it holds that root. The dispute screens
+  show it first. `npm run audit:verify` checks the whole chain from the command
+  line, or one submission with its id.
+
+### Setting it up
+
+Set `POLYGON_RPC_URL`, `POLYGON_CHAIN_ID` (80002 for Polygon Amoy) and
+`POLYGON_PRIVATE_KEY` in the root `.env`, fund that wallet, then
+`npm run contract:deploy`, which deploys the contract and writes
+`POLYGON_ANCHOR_CONTRACT_ADDRESS` into the root `.env`. The key is read in one
+place, never printed or logged, and scrubbed from every error, as is the RPC URL.
+Verification needs only the first three settings and the address, no key.
+
+For a local chain, run Anvil (`anvil`) and use chain id 31337. The tests that
+need a real node run when `LIVE_CHAIN_RPC_URL` and `LIVE_CHAIN_PRIVATE_KEY` are
+set. The contract is compiled by `npm run contract:compile` with the pinned solc;
+a test recompiles it and checks the committed artifact matches.
+
 ## Evidence fields
 
 - **Each job has its own evidence fields**, set by the client when posting
@@ -425,6 +479,9 @@ app/
   src/lib/evidence/           field definitions and validation, platform fields, configuration versions
   src/lib/escrow/, payouts/   client and job escrow, holds; commission records; the payout boundary
   src/lib/payments/           Daraja client, funding, disbursement queue, callbacks, redaction
+  src/lib/audit/              canonical event hashing, the chain check, RFC 6962 Merkle trees, retrieval and verification
+  src/lib/anchoring/          the chain client (viem), the anchoring queue, credentials and status
+  contracts/                  AuditAnchor.sol and its compiled artifact
   tests/                      Vitest suites
 ```
 
@@ -439,12 +496,15 @@ app/
   captures, not one continuous run: the Daraja B2C sandbox only pays its own
   designated test customer, not an arbitrary real number. See
   `docs/chapter5/evidence/mpesa/README.md`.
-- An administrator can see a failed payout but cannot retry it from the app. A
-  payout stopped by a long outage needs its cause fixed and a manual payment,
-  or a new action to requeue it, which this build does not add.
-- A job whose commission has cents can still be published, and its payouts fail
-  at approval while `MPESA_WHOLE_SHILLINGS_ONLY` is true. Publishing is left
-  unaware of Daraja on purpose.
+- A retried payout is sent to the number on its original authorisation. If the
+  failure was the number itself, a retry fails the same way.
+- The anchoring evidence in `docs/chapter5/evidence/blockchain/` is from a local
+  Anvil node, not Polygon Amoy: no Amoy wallet was configured. The same
+  commands repeat it on Amoy.
+- An anchoring batch confirms on its first receipt; there is no wait for later
+  blocks.
+- Payouts approved before Build 4 whose holds were released at approval stay
+  released, as the old rule had it.
 - Payouts authorised through the old no-op have no disbursement and were not
   queued. Nothing was paid for them.
 - Funding that M-Pesa's status check reports as paid, but whose callback never

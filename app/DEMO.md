@@ -91,6 +91,11 @@ Sign in as **reviewer@**. The top bar shows the review queue count.
      (his short tenure), and the callout says so.
    - **LF-000047** (Samuel): refused automatically at hold-close (75.7%), then
      contested by the agent; "Ask for evidence" is disabled during a dispute.
+     Its **Audit record**, lower on the page, lists every event with its hash;
+     with a chain configured and the batch anchored, **Verify against the
+     blockchain** reports each event recomputed and its root found on chain.
+     The agent sees the same record on the activation, and the client from the
+     job's page.
 
 **The band-change case on seed data:** on the Agents page, open Mercy
 Achieng and then **LF-000048**. It was "review" at submission (49.4%), held,
@@ -174,9 +179,12 @@ This creates a new activation whose band changes between T0 and T7.
 7. **See the outcome everywhere.** **Payouts** lists the payout (KSh 350.00 to
    Mercy's number, with its derivation, by Amina Otieno) as Queued. With
    M-Pesa configured and `npm run scheduler` running, it moves to Sent and then
-   Paid, with its receipt. **Needs attention**, at the top of that page, shows
-   the seeded payouts that failed and why. As **client2@** the job shows the outcome and the reviewer's
-   reason, KSh 350.00 released and KSh 350.00 unspent. As **mercy@**, **My
+   Paid, with its receipt. Until it is paid, the escrow stays held: as
+   **client2@** the job shows KSh 350.00 still in progress, and it moves to paid
+   out only when M-Pesa confirms. **Needs attention**, at the top of the Payouts
+   page, shows the seeded payout that failed and why, with **Retry payout**
+   beside it. As **client2@** the job shows the outcome and the reviewer's
+   reason. As **mercy@**, **My
    activations** shows "Approved by a reviewer" with the reason and the
    commission's derivation. The **Audit log** shows every step.
 8. **The review screen shows the client's fields.** As **reviewer@**, open

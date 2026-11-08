@@ -30,6 +30,20 @@ are met.** Issue #59 is closed. See
 `docs/chapter5/evidence/mpesa/README.md`. The CSV is current (27 met, 14
 partially met, 14 not met, 4 not verifiable; 207 hours remaining).
 
+**Status after Build 4 (issues #64 to #71):** WP4 is built. Every audit event
+is hash-chained at commit and immutable (DR-09 met); the canonical form is
+specified with test vectors that SQL, TypeScript and Python all reproduce
+(NFR-11 met); events are anchored in RFC 6962 Merkle batches through a durable
+queue that never blocks a user action (FR-21 and IR-05 met); client, agent and
+administrator can retrieve and verify a record against the chain, on the
+dispute flow (FR-22 met). IR-04 is partially met: no Amoy wallet was
+configured, so the contract was deployed and anchored on a local Anvil node,
+labelled as such in docs/chapter5/evidence/blockchain/README.md. Two Build 3
+defects are fixed: commissions are paid in whole shillings with the remainder
+back to the client, and escrow is released only on a confirmed payout, with an
+administrator retry. The CSV is current (32 met, 15 partially met, 8 not met, 4
+not verifiable; 157 hours remaining).
+
 Companion to `docs/chapter5/requirements_traceability.csv`. It groups the 48
 requirements that are not met (24), partially met (20) or not verifiable (4)
 into the work that would close them, and ranks that work by requirements

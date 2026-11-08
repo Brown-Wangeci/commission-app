@@ -11,9 +11,15 @@ import { assertCents, formatBps, formatCents, MoneyError, multiplyCents } from "
  * the result is exact for any amount a record can hold, and integer division
  * of non-negative numbers is the floor. No floating point value appears
  * anywhere in the calculation.
+ *
+ * M-Pesa pays whole shillings, so what an agent is paid is the commission
+ * rounded down to the shilling (Build 4). The job's lock and each escrow hold
+ * keep the full amount; the odd cents go back to the client once the payout
+ * is paid. The derivation line shows the step.
  */
 
 export const BPS_PER_WHOLE = 10_000;
+const CENTS_PER_SHILLING = 100n;
 
 export type CommissionStructure = {
   /** What one approved submission is worth to the client: the base the rate applies to. */
@@ -29,8 +35,12 @@ export type CommissionBreakdown = CommissionStructure & {
   rateComponentCents: number;
   /** True when the floor dropped a fraction of a cent. */
   roundedDown: boolean;
-  /** rateComponentCents + flatCommissionCents */
+  /** rateComponentCents + flatCommissionCents: what the job locks and an escrow hold reserves. */
   amountCents: number;
+  /** amountCents rounded down to whole shillings: what the agent is paid. */
+  payableCents: number;
+  /** amountCents - payableCents, 0 to 99: back with the client once paid. */
+  roundedOffCents: number;
 };
 
 export function assertRateBps(bps: number): number {
@@ -46,7 +56,9 @@ export function computeCommission(structure: CommissionStructure): CommissionBre
   const flat = BigInt(assertCents(structure.flatCommissionCents, "The flat commission"));
   const product = value * bps;
   const rateComponent = product / BigInt(BPS_PER_WHOLE);
-  const amount = assertCents(Number(rateComponent + flat), "The commission");
+  const total = rateComponent + flat;
+  const amount = assertCents(Number(total), "The commission");
+  const roundedOff = total % CENTS_PER_SHILLING;
   return {
     submissionValueCents: structure.submissionValueCents,
     commissionRateBps: structure.commissionRateBps,
@@ -54,17 +66,24 @@ export function computeCommission(structure: CommissionStructure): CommissionBre
     rateComponentCents: Number(rateComponent),
     roundedDown: product % BigInt(BPS_PER_WHOLE) !== 0n,
     amountCents: amount,
+    payableCents: Number(total - roundedOff),
+    roundedOffCents: Number(roundedOff),
   };
 }
 
 /**
  * The derivation line the design system requires under every computed
- * amount, e.g. "KSh 3,000.00 x 10.00% = KSh 300.00 + KSh 20.00 flat".
+ * amount, e.g. "KSh 3,000.00 x 10.00% = KSh 300.00 + KSh 20.00 flat", and,
+ * when the total has odd cents, "..., paid as KSh 279.00 in whole shillings
+ * (KSh 0.99 back to the client)".
  */
 export function commissionDerivation(breakdown: CommissionBreakdown): string {
   const rounding = breakdown.roundedDown ? " (rounded down to the cent)" : "";
   const rate = `${formatCents(breakdown.submissionValueCents)} × ${formatBps(breakdown.commissionRateBps)} = ${formatCents(breakdown.rateComponentCents)}${rounding}`;
-  return breakdown.flatCommissionCents > 0 ? `${rate} + ${formatCents(breakdown.flatCommissionCents)} flat` : rate;
+  const sum = breakdown.flatCommissionCents > 0 ? `${rate} + ${formatCents(breakdown.flatCommissionCents)} flat` : rate;
+  if (breakdown.roundedOffCents === 0) return sum;
+  const total = breakdown.flatCommissionCents > 0 ? ` = ${formatCents(breakdown.amountCents)}` : "";
+  return `${sum}${total}, paid as ${formatCents(breakdown.payableCents)} in whole shillings (${formatCents(breakdown.roundedOffCents)} back to the client)`;
 }
 
 export type Liability = { slots: number; perSubmissionCents: number; amountCents: number };

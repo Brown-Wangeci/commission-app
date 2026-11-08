@@ -1,0 +1,524 @@
+{
+  "activation": "LF-000049",
+  "tamperedEvent": {
+    "id": "548",
+    "sequence": "548",
+    "originalDetail": "Contested by the agent: The customer was there in person; her phone was off for the week while she travelled.",
+    "newDetail": "Changed after the fact: the reviewer approved this."
+  },
+  "wholeChain": {
+    "ok": false,
+    "checked": 547,
+    "head": "25443eafe26d0a6e90b224601e2f7cfe693a7fe821a37109ecb91c3ce95990b8",
+    "firstDivergence": {
+      "sequence": "548",
+      "eventId": "548",
+      "reason": "hash_mismatch",
+      "detail": "Stored 61eccd333163aac23e23896946f3accd1afce8dc2f2249a3d7dda531ca128d22, recomputed 5fabceca0e77098c4c4ecacec5dfd0a5fbcda2ea96a87b32c5a3822522b6ac2d from the stored fields."
+    }
+  },
+  "verification": {
+    "status": "failed",
+    "summary": "Verification failed at event 548 (sequence 548): its stored fields no longer produce its recorded hash.",
+    "checkedAt": "2026-11-08T10:32:39.338Z",
+    "chainId": 31337,
+    "contractAddress": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+    "events": [
+      {
+        "eventId": "538",
+        "sequence": "538",
+        "kind": "transition",
+        "storedHash": "a489cc7a4299a85dabc901533089c96645fc9628094fd1cb8ecdb65680fb6bf1",
+        "recomputedHash": "a489cc7a4299a85dabc901533089c96645fc9628094fd1cb8ecdb65680fb6bf1",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "6aec82f8e68c45e85fe559dbbfd2768aed750c5826146bbbbc1ed63fe1b38149",
+          "2736984f0e97230bb0bae04a03492ce58aa73ef27e5ef3df1fb6f33726cb964f",
+          "8adc152845a2c828ff296740909d97f6ae5e92da24bf28a2eafe7c679734445f",
+          "d274201938dcf6666eb1583dbbc7212aa57363d743cb73c7f53ecc396f51cfea",
+          "6140476aca941057c80e80b4253cf4676db82d8a15d5042408ce07e8e238b267",
+          "51d043ac96122e3463057566dfac09df9e9b51a4229392e1b7163ae797c99abe",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "539",
+        "sequence": "539",
+        "kind": "activation_submitted",
+        "storedHash": "558b808203595c64ef7d669826ab17da063f464feecb195a1bc51abdb524596c",
+        "recomputedHash": "558b808203595c64ef7d669826ab17da063f464feecb195a1bc51abdb524596c",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "378e8fe22063344c1ea6b2eb944059b8e3ba5cf481155a5072d562fd71759c26",
+          "4e8b5912aa06811b32e0d0a508bbcc789a64e403dc1b1a422844ad5a66f2c820",
+          "8adc152845a2c828ff296740909d97f6ae5e92da24bf28a2eafe7c679734445f",
+          "d274201938dcf6666eb1583dbbc7212aa57363d743cb73c7f53ecc396f51cfea",
+          "6140476aca941057c80e80b4253cf4676db82d8a15d5042408ce07e8e238b267",
+          "51d043ac96122e3463057566dfac09df9e9b51a4229392e1b7163ae797c99abe",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "540",
+        "sequence": "540",
+        "kind": "transition",
+        "storedHash": "4a3853a05ec414571fbc8bfce8689d378706d5facd630c55a989f4f1ded5f644",
+        "recomputedHash": "4a3853a05ec414571fbc8bfce8689d378706d5facd630c55a989f4f1ded5f644",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "87a5bb9cf9b7ea5d4a76913fa4c8a9bd370f725cd5a76551e62f962da0f44e60",
+          "4e8b5912aa06811b32e0d0a508bbcc789a64e403dc1b1a422844ad5a66f2c820",
+          "8adc152845a2c828ff296740909d97f6ae5e92da24bf28a2eafe7c679734445f",
+          "d274201938dcf6666eb1583dbbc7212aa57363d743cb73c7f53ecc396f51cfea",
+          "6140476aca941057c80e80b4253cf4676db82d8a15d5042408ce07e8e238b267",
+          "51d043ac96122e3463057566dfac09df9e9b51a4229392e1b7163ae797c99abe",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "541",
+        "sequence": "541",
+        "kind": "transition",
+        "storedHash": "995e0419ec90c1898e9f3717440ddb38835de3b584342abb18f82120e5769d9f",
+        "recomputedHash": "995e0419ec90c1898e9f3717440ddb38835de3b584342abb18f82120e5769d9f",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "555be2ad3d4f8e4d7b2bee40a708fbb9903a3c3468e913a7f471a5f591b73880",
+          "f8da3f68af25263a64675d0ee57729c92fcc420684f6847b1fc3efe95f0acee1",
+          "fcb1d4a81bf31d646b585ab576fd1b09bfd57d68eecc5a51885f14a9dde8c034",
+          "d274201938dcf6666eb1583dbbc7212aa57363d743cb73c7f53ecc396f51cfea",
+          "6140476aca941057c80e80b4253cf4676db82d8a15d5042408ce07e8e238b267",
+          "51d043ac96122e3463057566dfac09df9e9b51a4229392e1b7163ae797c99abe",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "542",
+        "sequence": "542",
+        "kind": "scoring_decision",
+        "storedHash": "a2e291ea8e18dc297a3e93be256ea017b4c44cdaa332c8fc115dbf83fdbf279a",
+        "recomputedHash": "a2e291ea8e18dc297a3e93be256ea017b4c44cdaa332c8fc115dbf83fdbf279a",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "31743b5a71fe8672e3571126792a2c98b8d1059e5a55241f9188f9b551bb2b5c",
+          "f8da3f68af25263a64675d0ee57729c92fcc420684f6847b1fc3efe95f0acee1",
+          "fcb1d4a81bf31d646b585ab576fd1b09bfd57d68eecc5a51885f14a9dde8c034",
+          "d274201938dcf6666eb1583dbbc7212aa57363d743cb73c7f53ecc396f51cfea",
+          "6140476aca941057c80e80b4253cf4676db82d8a15d5042408ce07e8e238b267",
+          "51d043ac96122e3463057566dfac09df9e9b51a4229392e1b7163ae797c99abe",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "543",
+        "sequence": "543",
+        "kind": "transition",
+        "storedHash": "1e33882b7f089110a25c69b569ec663573bffb3aedfd6d35249a890383f28809",
+        "recomputedHash": "1e33882b7f089110a25c69b569ec663573bffb3aedfd6d35249a890383f28809",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "12543815820b552a3ca37216fc94e2a225a1b2d1d1e2fd09b3cc0eb8c6d89a66",
+          "3a855d93e31133067d4b8be94eed4e5dc2185ae64125f79d18b1876b06b1c18b",
+          "fcb1d4a81bf31d646b585ab576fd1b09bfd57d68eecc5a51885f14a9dde8c034",
+          "d274201938dcf6666eb1583dbbc7212aa57363d743cb73c7f53ecc396f51cfea",
+          "6140476aca941057c80e80b4253cf4676db82d8a15d5042408ce07e8e238b267",
+          "51d043ac96122e3463057566dfac09df9e9b51a4229392e1b7163ae797c99abe",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "544",
+        "sequence": "544",
+        "kind": "transition",
+        "storedHash": "7f0dc75034d36bab13aaaad3dea5f5b2697cd910470a42be2fce400467194527",
+        "recomputedHash": "7f0dc75034d36bab13aaaad3dea5f5b2697cd910470a42be2fce400467194527",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "2a923b3c5af810fa0c5c9593cd647c5daec4d8d30672acf19d07d6898d97b069",
+          "3a855d93e31133067d4b8be94eed4e5dc2185ae64125f79d18b1876b06b1c18b",
+          "fcb1d4a81bf31d646b585ab576fd1b09bfd57d68eecc5a51885f14a9dde8c034",
+          "d274201938dcf6666eb1583dbbc7212aa57363d743cb73c7f53ecc396f51cfea",
+          "6140476aca941057c80e80b4253cf4676db82d8a15d5042408ce07e8e238b267",
+          "51d043ac96122e3463057566dfac09df9e9b51a4229392e1b7163ae797c99abe",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "545",
+        "sequence": "545",
+        "kind": "scoring_decision",
+        "storedHash": "de3c66e85d0448b914510e6f49450f1da24532232b04c30c757fc9e76c7d40b7",
+        "recomputedHash": "de3c66e85d0448b914510e6f49450f1da24532232b04c30c757fc9e76c7d40b7",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "09f3c5189be82593a2c32ac2078c54b4034f7252fe129aa257b43f6bb5fe3c6b",
+          "fc50f1b5b535fc5c66ff77c8ff65183d377006804101a5557c5dd6a6fa9d535b",
+          "7391e6305c360e229bd5c5a51572e5ed0295ff1dffa6c7afac785235c79cf19a",
+          "d01a4cdcd777b4cd4d0e16c153ab39acbf37c4b92255fb1c7ab8cd315e6c604f",
+          "010ce710bc1512c569dec1d5d51860a678d89314b03b1ea588743be619921e4e",
+          "93a19f48a497bb31e2a742b91f1ac7c93afe0fa7e496b9dd9a472e7691595e59",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "546",
+        "sequence": "546",
+        "kind": "transition",
+        "storedHash": "bd297a8fff5d5cf29203f22c50a29b328d9a7b8859ef5a0f8ef189af43edfb36",
+        "recomputedHash": "bd297a8fff5d5cf29203f22c50a29b328d9a7b8859ef5a0f8ef189af43edfb36",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "ed5f2fab7a61ef04f2c891633321fbb0ab632729d43196a6aff3266f12750a03",
+          "fc50f1b5b535fc5c66ff77c8ff65183d377006804101a5557c5dd6a6fa9d535b",
+          "7391e6305c360e229bd5c5a51572e5ed0295ff1dffa6c7afac785235c79cf19a",
+          "d01a4cdcd777b4cd4d0e16c153ab39acbf37c4b92255fb1c7ab8cd315e6c604f",
+          "010ce710bc1512c569dec1d5d51860a678d89314b03b1ea588743be619921e4e",
+          "93a19f48a497bb31e2a742b91f1ac7c93afe0fa7e496b9dd9a472e7691595e59",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "547",
+        "sequence": "547",
+        "kind": "dispute_opened",
+        "storedHash": "25443eafe26d0a6e90b224601e2f7cfe693a7fe821a37109ecb91c3ce95990b8",
+        "recomputedHash": "25443eafe26d0a6e90b224601e2f7cfe693a7fe821a37109ecb91c3ce95990b8",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "3fccc59bdaec5c0f771c862974661c1ce91c8611d26f0a2f51903aa4e059bdec",
+          "bce4d030af2e32618d4d60915570c8c15d194e5ec9ddd4385171db5990aead64",
+          "7391e6305c360e229bd5c5a51572e5ed0295ff1dffa6c7afac785235c79cf19a",
+          "d01a4cdcd777b4cd4d0e16c153ab39acbf37c4b92255fb1c7ab8cd315e6c604f",
+          "010ce710bc1512c569dec1d5d51860a678d89314b03b1ea588743be619921e4e",
+          "93a19f48a497bb31e2a742b91f1ac7c93afe0fa7e496b9dd9a472e7691595e59",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      },
+      {
+        "eventId": "548",
+        "sequence": "548",
+        "kind": "transition",
+        "storedHash": "61eccd333163aac23e23896946f3accd1afce8dc2f2249a3d7dda531ca128d22",
+        "recomputedHash": "5fabceca0e77098c4c4ecacec5dfd0a5fbcda2ea96a87b32c5a3822522b6ac2d",
+        "hashMatches": false,
+        "linkMatches": true,
+        "proof": [
+          "595660ce5d7e23063e54a7794ace9268804bd45e31ae2134224386ee2e48a49a",
+          "bce4d030af2e32618d4d60915570c8c15d194e5ec9ddd4385171db5990aead64",
+          "7391e6305c360e229bd5c5a51572e5ed0295ff1dffa6c7afac785235c79cf19a",
+          "d01a4cdcd777b4cd4d0e16c153ab39acbf37c4b92255fb1c7ab8cd315e6c604f",
+          "010ce710bc1512c569dec1d5d51860a678d89314b03b1ea588743be619921e4e",
+          "93a19f48a497bb31e2a742b91f1ac7c93afe0fa7e496b9dd9a472e7691595e59",
+          "cbfdab9f0db3a461164256e2a9de142aeb3e786d60b85bc19341e1b5d4016829",
+          "5d34866a2dc7087547365799c5e001eacb65b0b1959f585f083554a7da4c5a80",
+          "e908590a56d9ffa73f2f9ddf3583ebac77331641f0d0068baf5d9430d9c8a644"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmw7p17l00000o8n0vfbgoqjs",
+          "root": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "chainId": 31337,
+          "txHash": "0x9183a633833959e551775f07bd3014296fb57da33892e6669e18529ab744167e",
+          "blockNumber": "516",
+          "anchoredAt": "2026-11-08T10:32:36.000Z",
+          "txUrl": null
+        },
+        "batch": {
+          "storedRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+          "recomputedRoot": "2a1d57870188f29e0bb2471f3eb4a2e052dd5d092e368ba4f2802b86cd2fe288",
+          "rootMatches": false,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": null,
+            "transactionRoot": "79e03c03dca554a19282e66328e674dbdb83993d110f43e70a70bf41e285a960",
+            "transactionBlock": "516",
+            "rootOnChain": false,
+            "matchesTransaction": false
+          }
+        },
+        "ok": false
+      }
+    ]
+  }
+}

@@ -6,6 +6,7 @@ import { formatCents, sumCents } from "@/lib/money/cents";
 import { DISBURSEMENT_DISPLAY, paymentAttention, type PaymentAttention } from "@/lib/payments/admin";
 import { storedCommissionView } from "@/lib/payouts/commissions";
 import { Money } from "@/components/Money";
+import { RetryPayoutButton } from "@/components/admin/RetryPayoutButton";
 
 function needsPerson(row: Disbursement): boolean {
   return row.status === "failed" || row.escalatedAt !== null;
@@ -22,6 +23,9 @@ function DisbursementCell({ row }: { row: Disbursement | null }) {
       {row.receipt && <div className="tiny muted mono">{row.receipt}</div>}
       {row.status !== "paid" && <div className="tiny">{row.failureReason ?? row.lastError ?? display.detail}</div>}
       {waiting && <div className="tiny muted">Try {row.sendCount} failed. Next try {formatDateTime(row.nextAttemptAt)}.</div>}
+      {row.generation > 1 && <div className="tiny muted">Retry {row.generation - 1} by an administrator.</div>}
+      {row.status !== "paid" && <div className="tiny muted">The escrow stays held until M-Pesa confirms payment.</div>}
+      {row.status === "failed" && <RetryPayoutButton disbursementId={row.id} />}
     </>
   );
 }
