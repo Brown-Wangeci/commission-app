@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-11-08T05:01:06.041Z",
+  "direction": "response",
+  "label": "b2c",
+  "status": 200,
+  "payload": {
+    "ConversationID": "AG_20261108_010010430h5top6vsg1f",
+    "OriginatorConversationID": "56722ef0e31a30cfb67f2c80a8f2fc31",
+    "ResponseCode": "0",
+    "ResponseDescription": "Accept the service request successfully."
+  }
+}

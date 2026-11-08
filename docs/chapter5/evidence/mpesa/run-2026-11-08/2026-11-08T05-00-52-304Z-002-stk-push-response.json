@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-11-08T05:00:52.304Z",
+  "direction": "response",
+  "label": "stk-push",
+  "status": 200,
+  "payload": {
+    "MerchantRequestID": "3197-4224-a7b4-26167e300ff8357262",
+    "CheckoutRequestID": "ws_CO_08112026080052*******542",
+    "ResponseCode": "0",
+    "ResponseDescription": "Success. Request accepted for processing",
+    "CustomerMessage": "Success. Request accepted for processing"
+  }
+}

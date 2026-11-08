@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-11-08T05:01:06.409Z",
+  "direction": "callback",
+  "label": "b2c-result",
+  "payload": {
+    "Result": {
+      "ResultType": 0,
+      "ResultCode": 2040,
+      "ResultDesc": "Credit Party customer type (Unregistered or Registered Customer) can't be supported by the service .",
+      "OriginatorConversationID": "56722ef0e31a30cfb67f2c80a8f2fc31",
+      "ConversationID": "AG_20261108_010010430h5top6vsg1f",
+      "TransactionID": "UK80000000",
+      "ReferenceData": {
+        "ReferenceItem": {
+          "Key": "QueueTimeoutURL",
+          "Value": "https://internalsandbox.safaricom.co.ke/mpesa/b2cresults/v1/submit"
+        }
+      }
+    }
+  }
+}
