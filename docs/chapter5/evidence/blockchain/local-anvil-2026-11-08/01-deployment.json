@@ -1,0 +1,11 @@
+{
+  "chainId": 31337,
+  "compiler": "0.8.37+commit.f401782d.Emscripten.clang",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "contractAddress": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+  "transactionHash": "0x9b3e25b77854a59bb80d572ab950b325d60a8a896b9c0c9ee7b569a9b4885a84",
+  "blockNumber": "504",
+  "gasUsed": "128073",
+  "transactionUrl": null,
+  "contractUrl": null
+}
