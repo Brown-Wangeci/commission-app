@@ -20,14 +20,15 @@ settlement is an outbox behind the payout boundary. FR-23 now notifies "paid".
 
 A follow-up session, with the owner's own phone and corrected B2C credentials,
 completed a real end-to-end funding run: a real STK Push, a real callback
-crediting the balance, a job published and approved from it. **FR-06 is now
-met.** The B2C leg of that same run was accepted by Daraja and then refused
-with ResultCode 2040 ("Credit Party customer type ... can't be supported by
-the service"), a sandbox-side recipient restriction rather than a credential or
-code defect. **FR-19 and IR-01 stay partially met** until that is resolved and
-a payment succeeds; issue #59 stays open. See
-`docs/chapter5/evidence/mpesa/README.md`. The CSV is current (25 met, 16
-partially met, 14 not met, 4 not verifiable; 215 hours remaining).
+crediting the balance, a job published and approved from it. **FR-06 is met.**
+That run's B2C leg was accepted by Daraja and then refused with ResultCode
+2040 ("Credit Party customer type ... can't be supported by the service"), a
+sandbox-side recipient restriction. A second follow-up, paying the Daraja
+sandbox app's own designated test customer number instead of the real STK
+payer, succeeded for real: ResultCode 0, receipt recorded. **FR-19 and IR-01
+are met.** Issue #59 is closed. See
+`docs/chapter5/evidence/mpesa/README.md`. The CSV is current (27 met, 14
+partially met, 14 not met, 4 not verifiable; 207 hours remaining).
 
 Companion to `docs/chapter5/requirements_traceability.csv`. It groups the 48
 requirements that are not met (24), partially met (20) or not verifiable (4)

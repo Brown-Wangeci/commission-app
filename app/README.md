@@ -435,8 +435,10 @@ app/
 - There is no geo-IP lookup. A web submission's network region defaults to
   the GPS fix's region unless set in the simulated-device panel.
 - Notifications are in-app only; no SMS or email is sent.
-- The real sandbox run is not complete: no successful STK Push or B2C payment
-  has been observed. See `docs/chapter5/evidence/mpesa/README.md`.
+- The real sandbox STK Push and B2C payment were each proven in separate
+  captures, not one continuous run: the Daraja B2C sandbox only pays its own
+  designated test customer, not an arbitrary real number. See
+  `docs/chapter5/evidence/mpesa/README.md`.
 - An administrator can see a failed payout but cannot retry it from the app. A
   payout stopped by a long outage needs its cause fixed and a manual payment,
   or a new action to requeue it, which this build does not add.
