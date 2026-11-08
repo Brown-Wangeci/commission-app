@@ -1143,3 +1143,26 @@ limit of KSh 1 to KSh 10 for every real call.
 - Every service this follow-up started (tunnel, scoring, app, PostgreSQL) was
   stopped afterward, the callback URL cleared, and the scratch database
   dropped.
+
+### Second follow-up: the B2C sandbox needs its own test customer (closes issue #59)
+The owner correctly diagnosed 2040: STK Push rings a real handset, so it needs
+a real Safaricom number; B2C sandbox pays a designated test customer, not an
+arbitrary real number, even one that had just paid by STK Push in another run.
+- **Checked first, before any real call.** A standalone script confirmed
+  `normaliseMsisdn` then `toDarajaMsisdn` round-trips exactly back to the
+  international value given, for both the first payout number and the new
+  one, and confirmed that skipping normalisation would have thrown locally
+  before ever reaching Daraja. Not a regression; the first 2040 run's own
+  capture already showed `PartyB` on the wire in international form.
+- `MPESA_SANDBOX_PAYOUT_MSISDN` set to the Phone No on the sandbox app's own
+  Test Credentials page, `CommandID` left at `BusinessPayment`, nothing else
+  changed; `--b2c-leg` run again (funding simulated, as before, to isolate the
+  one change).
+- **Result: a real B2C payment succeeded.** `ResultCode 0`, receipt
+  `UK8030FWVE`, `B2CRecipientIsRegisteredCustomer: Y`. FR-19 and IR-01 are now
+  met. This was the last B2C attempt, as instructed; no further changes were
+  tried after it succeeded.
+- The evidence tree was scanned again for both real phone numbers in every
+  form and for every credential value; clean. All services started for this
+  attempt were stopped, the callback URL cleared, and the scratch database
+  dropped.

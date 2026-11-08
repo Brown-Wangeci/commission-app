@@ -1,0 +1,42 @@
+{
+  "environment": "Daraja sandbox",
+  "scope": "B2C leg only: funding was simulated, so this is not the end-to-end run",
+  "result": "completed",
+  "steps": [
+    {
+      "at": "2026-11-08T05:43:43.610Z",
+      "step": "0. Starting balance",
+      "detail": "KSh 0.00 available to the client."
+    },
+    {
+      "at": "2026-11-08T05:43:43.881Z",
+      "step": "1-2. Funding SIMULATED",
+      "detail": "No STK Push was sent. This run proves the B2C leg only, not funding."
+    },
+    {
+      "at": "2026-11-08T05:43:43.907Z",
+      "step": "3. Balance credited",
+      "detail": "KSh 10.00 available."
+    },
+    {
+      "at": "2026-11-08T05:43:44.577Z",
+      "step": "4. Submission",
+      "detail": "LF-000001 submitted and scored at T0. State in_review."
+    },
+    {
+      "at": "2026-11-08T05:43:44.640Z",
+      "step": "5. Submission approved",
+      "detail": "State approved, by a reviewer."
+    },
+    {
+      "at": "2026-11-08T05:43:44.652Z",
+      "step": "6. B2C queued",
+      "detail": "KSh 10.00 to 07******149, from stored commission cmw7eprdy000mo830l27qu0nu. Status queued."
+    },
+    {
+      "at": "2026-11-08T05:43:48.940Z",
+      "step": "7. B2C result received",
+      "detail": "Status paid. Result code 0. Receipt UK8030FWVE."
+    }
+  ]
+}

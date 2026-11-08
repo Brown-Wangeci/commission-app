@@ -1,0 +1,57 @@
+{
+  "capturedAt": "2026-11-08T05:43:47.503Z",
+  "direction": "callback",
+  "label": "b2c-result",
+  "payload": {
+    "Result": {
+      "ResultType": 0,
+      "ResultCode": 0,
+      "ResultDesc": "The service request is processed successfully.",
+      "OriginatorConversationID": "2c4bea0a3c615399394fd5eec8d0b7c7",
+      "ConversationID": "AG_20261108_010010030ioot7h5u14a",
+      "TransactionID": "UK8030FWVE",
+      "ResultParameters": {
+        "ResultParameter": [
+          {
+            "Key": "TransactionAmount",
+            "Value": 10
+          },
+          {
+            "Key": "TransactionReceipt",
+            "Value": "UK8030FWVE"
+          },
+          {
+            "Key": "ReceiverPartyPublicName",
+            "Value": "2547******149 - [redacted]"
+          },
+          {
+            "Key": "TransactionCompletedDateTime",
+            "Value": "08.11.2026 08:43:05"
+          },
+          {
+            "Key": "B2CUtilityAccountAvailableFunds",
+            "Value": 4292925.39
+          },
+          {
+            "Key": "B2CWorkingAccountAvailableFunds",
+            "Value": 3111879.02
+          },
+          {
+            "Key": "B2CRecipientIsRegisteredCustomer",
+            "Value": "Y"
+          },
+          {
+            "Key": "B2CChargesPaidAccountAvailableFunds",
+            "Value": -1540
+          }
+        ]
+      },
+      "ReferenceData": {
+        "ReferenceItem": {
+          "Key": "QueueTimeoutURL",
+          "Value": "https://internalsandbox.safaricom.co.ke/mpesa/b2cresults/v1/submit"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-11-08T05:43:45.558Z",
+  "direction": "request",
+  "label": "b2c",
+  "payload": {
+    "OriginatorConversationID": "2c4bea0a3c615399394fd5eec8d0b7c7",
+    "InitiatorName": "[redacted]",
+    "SecurityCredential": "[redacted]",
+    "CommandID": "BusinessPayment",
+    "Amount": "10",
+    "PartyA": "600980",
+    "PartyB": "2547******149",
+    "Remarks": "Commission LF-000001",
+    "QueueTimeOutURL": "https://workers-handling-meyer-subtle.trycloudflare.com/api/payments/callback/b2c-timeout/2c4bea0a3c615399394fd5eec8d0b7c7/[redacted]",
+    "ResultURL": "https://workers-handling-meyer-subtle.trycloudflare.com/api/payments/callback/b2c-result/2c4bea0a3c615399394fd5eec8d0b7c7/[redacted]"
+  }
+}
