@@ -1,0 +1,164 @@
+{
+  "version": "ledgerfield-audit-v1",
+  "genesisHash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "events": [
+    {
+      "input": {
+        "id": "1",
+        "kind": "transition",
+        "activationId": "act_001",
+        "fromState": null,
+        "toState": "submitted",
+        "actorId": "user_agent_1",
+        "detail": null,
+        "at": "2026-11-08T05:43:45.558Z",
+        "sequence": "1",
+        "previousHash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "canonical": "{\"activationId\":\"act_001\",\"actorId\":\"user_agent_1\",\"at\":\"2026-11-08T05:43:45.558Z\",\"detail\":null,\"fromState\":null,\"id\":\"1\",\"kind\":\"transition\",\"previousHash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"sequence\":\"1\",\"toState\":\"submitted\",\"version\":\"ledgerfield-audit-v1\"}",
+      "hash": "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6"
+    },
+    {
+      "input": {
+        "id": "2",
+        "kind": "scoring_decision",
+        "activationId": "act_001",
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "T0 review at 41.0%",
+        "at": "2026-11-08T05:43:46.001Z",
+        "sequence": "2",
+        "previousHash": "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6"
+      },
+      "canonical": "{\"activationId\":\"act_001\",\"actorId\":null,\"at\":\"2026-11-08T05:43:46.001Z\",\"detail\":\"T0 review at 41.0%\",\"fromState\":null,\"id\":\"2\",\"kind\":\"scoring_decision\",\"previousHash\":\"1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6\",\"sequence\":\"2\",\"toState\":null,\"version\":\"ledgerfield-audit-v1\"}",
+      "hash": "18382ed4ea04278cf2bb0087817ea0bae32ec51d87a21c0f15a11041d2882121"
+    },
+    {
+      "input": {
+        "id": "3",
+        "kind": "transition",
+        "activationId": "act_001",
+        "fromState": "submitted",
+        "toState": "held",
+        "actorId": null,
+        "detail": "quote \" backslash \\ newline \n tab \t",
+        "at": "2026-11-08T05:43:46.002Z",
+        "sequence": "3",
+        "previousHash": "18382ed4ea04278cf2bb0087817ea0bae32ec51d87a21c0f15a11041d2882121"
+      },
+      "canonical": "{\"activationId\":\"act_001\",\"actorId\":null,\"at\":\"2026-11-08T05:43:46.002Z\",\"detail\":\"quote \\\" backslash \\\\ newline \\n tab \\t\",\"fromState\":\"submitted\",\"id\":\"3\",\"kind\":\"transition\",\"previousHash\":\"18382ed4ea04278cf2bb0087817ea0bae32ec51d87a21c0f15a11041d2882121\",\"sequence\":\"3\",\"toState\":\"held\",\"version\":\"ledgerfield-audit-v1\"}",
+      "hash": "0c1f283caf2a3d317196ad6deea07df62384fd245181d61f1d559f4fc5a60435"
+    },
+    {
+      "input": {
+        "id": "4",
+        "kind": "payout_authorised",
+        "activationId": "act_001",
+        "fromState": null,
+        "toState": null,
+        "actorId": "user_admin_1",
+        "detail": "KSh 279.00 × 1 — unicode é 中文 😀 control \u0001 end",
+        "at": "2026-11-08T06:00:00.000Z",
+        "sequence": "4",
+        "previousHash": "0c1f283caf2a3d317196ad6deea07df62384fd245181d61f1d559f4fc5a60435"
+      },
+      "canonical": "{\"activationId\":\"act_001\",\"actorId\":\"user_admin_1\",\"at\":\"2026-11-08T06:00:00.000Z\",\"detail\":\"KSh 279.00 × 1 — unicode é 中文 😀 control \\u0001 end\",\"fromState\":null,\"id\":\"4\",\"kind\":\"payout_authorised\",\"previousHash\":\"0c1f283caf2a3d317196ad6deea07df62384fd245181d61f1d559f4fc5a60435\",\"sequence\":\"4\",\"toState\":null,\"version\":\"ledgerfield-audit-v1\"}",
+      "hash": "4fae7dc364c70265a4f503e60dd48d8de83a0c723765c3ece9b710e168e4940a"
+    },
+    {
+      "input": {
+        "id": "5",
+        "kind": "audit_anchored",
+        "activationId": null,
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "",
+        "at": "2026-11-08T07:00:00.999Z",
+        "sequence": "5",
+        "previousHash": "4fae7dc364c70265a4f503e60dd48d8de83a0c723765c3ece9b710e168e4940a"
+      },
+      "canonical": "{\"activationId\":null,\"actorId\":null,\"at\":\"2026-11-08T07:00:00.999Z\",\"detail\":\"\",\"fromState\":null,\"id\":\"5\",\"kind\":\"audit_anchored\",\"previousHash\":\"4fae7dc364c70265a4f503e60dd48d8de83a0c723765c3ece9b710e168e4940a\",\"sequence\":\"5\",\"toState\":null,\"version\":\"ledgerfield-audit-v1\"}",
+      "hash": "e7b5989031c748f62ac4d536560c9d7521024abaa71f0228da845f5708d52251"
+    }
+  ],
+  "merkle": {
+    "leafHashOfFirst": "1a485086f801f0840b92166739eff060c950cb3a78bf8af7866208ca369f857b",
+    "trees": [
+      {
+        "leaves": [
+          "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6"
+        ],
+        "root": "1a485086f801f0840b92166739eff060c950cb3a78bf8af7866208ca369f857b"
+      },
+      {
+        "leaves": [
+          "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6",
+          "18382ed4ea04278cf2bb0087817ea0bae32ec51d87a21c0f15a11041d2882121"
+        ],
+        "root": "88c03951510e52d7a707cde24dbc5094613c29b51a7ebbd852607fab7bc718a9"
+      },
+      {
+        "leaves": [
+          "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6",
+          "18382ed4ea04278cf2bb0087817ea0bae32ec51d87a21c0f15a11041d2882121",
+          "0c1f283caf2a3d317196ad6deea07df62384fd245181d61f1d559f4fc5a60435"
+        ],
+        "root": "40377878651e3a76f2774c7afa7448b1ec5f1b13284a3bc2c703abc2cae934d7"
+      },
+      {
+        "leaves": [
+          "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6",
+          "18382ed4ea04278cf2bb0087817ea0bae32ec51d87a21c0f15a11041d2882121",
+          "0c1f283caf2a3d317196ad6deea07df62384fd245181d61f1d559f4fc5a60435",
+          "4fae7dc364c70265a4f503e60dd48d8de83a0c723765c3ece9b710e168e4940a"
+        ],
+        "root": "db4b595657ad1c23f4371c889890709b262f911fa8fd6adde7af67d4bf054e68"
+      },
+      {
+        "leaves": [
+          "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6",
+          "18382ed4ea04278cf2bb0087817ea0bae32ec51d87a21c0f15a11041d2882121",
+          "0c1f283caf2a3d317196ad6deea07df62384fd245181d61f1d559f4fc5a60435",
+          "4fae7dc364c70265a4f503e60dd48d8de83a0c723765c3ece9b710e168e4940a",
+          "e7b5989031c748f62ac4d536560c9d7521024abaa71f0228da845f5708d52251"
+        ],
+        "root": "dc1b6bfb888ab273131810a6c08120ca0b4c253f8899ae827454093d8ae77338"
+      }
+    ],
+    "proofs": [
+      {
+        "size": 5,
+        "index": 0,
+        "leaf": "1e7afba6a5473872a9fe11374ee7342f439421bef15b18c91a4f80400ba9cab6",
+        "proof": [
+          "d40ce537757bc79a39f829b96a98adfbb8ef2e324065a4e1f4851439d4dad71f",
+          "1c807b7ffc3f0a306cd7d0ea92ae16ad3f0d1f6470553ce8d44729b07a21cb16",
+          "1944d36a2479692e9511dd8e59d9fd80dfa28098de235d25cd3085adbbfdb785"
+        ],
+        "root": "dc1b6bfb888ab273131810a6c08120ca0b4c253f8899ae827454093d8ae77338"
+      },
+      {
+        "size": 5,
+        "index": 2,
+        "leaf": "0c1f283caf2a3d317196ad6deea07df62384fd245181d61f1d559f4fc5a60435",
+        "proof": [
+          "b3d7d097d9712445ee0b41c6b4c376ccd8180bc0775495466bdb87fde4163810",
+          "88c03951510e52d7a707cde24dbc5094613c29b51a7ebbd852607fab7bc718a9",
+          "1944d36a2479692e9511dd8e59d9fd80dfa28098de235d25cd3085adbbfdb785"
+        ],
+        "root": "dc1b6bfb888ab273131810a6c08120ca0b4c253f8899ae827454093d8ae77338"
+      },
+      {
+        "size": 5,
+        "index": 4,
+        "leaf": "e7b5989031c748f62ac4d536560c9d7521024abaa71f0228da845f5708d52251",
+        "proof": [
+          "db4b595657ad1c23f4371c889890709b262f911fa8fd6adde7af67d4bf054e68"
+        ],
+        "root": "dc1b6bfb888ab273131810a6c08120ca0b4c253f8899ae827454093d8ae77338"
+      }
+    ]
+  }
+}
