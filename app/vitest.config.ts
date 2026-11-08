@@ -22,7 +22,7 @@ function throwawayDatabaseUrl(baseUrl: string): string {
  * reaching Daraja. Tests that need Daraja point MPESA_BASE_URL at the mock in
  * tests/helpers/fake-daraja.ts.
  */
-const FAKE_MPESA = {
+const FAKE_SERVICES = {
   MPESA_ENV: "sandbox",
   MPESA_BASE_URL: "http://127.0.0.1:9",
   MPESA_CONSUMER_KEY: "test-consumer-key",
@@ -34,6 +34,13 @@ const FAKE_MPESA = {
   MPESA_B2C_SECURITY_CREDENTIAL: "test-security-credential",
   MPESA_CALLBACK_BASE_URL: "https://callbacks.test",
   MPESA_CAPTURE_DIR: "",
+  // Reads go to a closed port and there is no key, so the suite can never
+  // anchor anything; tests that need a chain inject a fake with useChain().
+  POLYGON_RPC_URL: "http://127.0.0.1:9",
+  POLYGON_CHAIN_ID: "31337",
+  POLYGON_PRIVATE_KEY: "",
+  POLYGON_ANCHOR_CONTRACT_ADDRESS: "0x00000000000000000000000000000000000000a1",
+  POLYGON_EXPLORER_URL: "",
 };
 
 export default defineConfig(({ mode }) => {
@@ -58,7 +65,7 @@ export default defineConfig(({ mode }) => {
         ...env,
         DATABASE_URL: runUrl,
         EVIDENCE_STORAGE_DIR: "storage/test-evidence",
-        ...FAKE_MPESA,
+        ...FAKE_SERVICES,
       },
     },
   };

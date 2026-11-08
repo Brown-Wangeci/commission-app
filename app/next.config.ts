@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
-import { loadMpesaEnv } from "./scripts/mpesa-env";
+import { loadRootEnv } from "./scripts/root-env";
 
-// app/.env is loaded by Next.js itself; the M-Pesa credentials are in the root .env.
-loadMpesaEnv(__dirname);
+// app/.env is loaded by Next.js itself; the M-Pesa and Polygon credentials are in the root .env.
+loadRootEnv(__dirname);
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
