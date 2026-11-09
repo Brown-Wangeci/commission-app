@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1135 2474" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="1135" height="2474" fill="white"/>
+<text x="550.0" y="38" font-size="16" font-weight="700" text-anchor="middle" fill="#111">Figure 4.1a  Submission to decision (accept through T0/T7 banding)</text>
+<rect x="52" y="54" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="120" y="74" font-size="11.5" text-anchor="middle" fill="#222">Agent</text>
+<text x="120" y="92" font-size="11.5" text-anchor="middle" fill="#222">(PWA/browser)</text>
+<line x1="120" y1="128" x2="120" y2="2414" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="52" y="2414" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="120" y="2434" font-size="11.5" text-anchor="middle" fill="#222">Agent</text>
+<text x="120" y="2452" font-size="11.5" text-anchor="middle" fill="#222">(PWA/browser)</text>
+<rect x="267" y="54" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="335" y="74" font-size="11.5" text-anchor="middle" fill="#222">Next.js app</text>
+<line x1="335" y1="128" x2="335" y2="2414" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="267" y="2414" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="335" y="2434" font-size="11.5" text-anchor="middle" fill="#222">Next.js app</text>
+<rect x="482" y="54" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="550" y="74" font-size="11.5" text-anchor="middle" fill="#222">PostgreSQL (incl.</text>
+<text x="550" y="92" font-size="11.5" text-anchor="middle" fill="#222">triggers)</text>
+<line x1="550" y1="128" x2="550" y2="2414" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="482" y="2414" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="550" y="2434" font-size="11.5" text-anchor="middle" fill="#222">PostgreSQL (incl.</text>
+<text x="550" y="2452" font-size="11.5" text-anchor="middle" fill="#222">triggers)</text>
+<rect x="697" y="54" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="765" y="74" font-size="11.5" text-anchor="middle" fill="#222">FastAPI scoring</text>
+<text x="765" y="92" font-size="11.5" text-anchor="middle" fill="#222">service</text>
+<line x1="765" y1="128" x2="765" y2="2414" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="697" y="2414" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="765" y="2434" font-size="11.5" text-anchor="middle" fill="#222">FastAPI scoring</text>
+<text x="765" y="2452" font-size="11.5" text-anchor="middle" fill="#222">service</text>
+<rect x="912" y="54" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="980" y="74" font-size="11.5" text-anchor="middle" fill="#222">T7 scheduler /</text>
+<text x="980" y="92" font-size="11.5" text-anchor="middle" fill="#222">job table</text>
+<line x1="980" y1="128" x2="980" y2="2414" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="912" y="2414" width="136" height="54" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="980" y="2434" font-size="11.5" text-anchor="middle" fill="#222">T7 scheduler /</text>
+<text x="980" y="2452" font-size="11.5" text-anchor="middle" fill="#222">job table</text>
+<line x1="120" y1="168" x2="325" y2="168" stroke="#222" stroke-width="1.3" />
+<path d="M326,164 L335,168 L326,172 Z" fill="#222"/>
+<text x="227.5" y="145" font-size="12" text-anchor="middle" fill="#111">1. POST /api/agent/assignments/{</text>
+<text x="227.5" y="160" font-size="12" text-anchor="middle" fill="#111">id}/accept</text>
+<line x1="335" y1="222" x2="540" y2="222" stroke="#222" stroke-width="1.3" />
+<path d="M541,218 L550,222 L541,226 Z" fill="#222"/>
+<text x="442.5" y="199" font-size="12" text-anchor="middle" fill="#111">2. acceptAssignment(): tx update</text>
+<text x="442.5" y="214" font-size="12" text-anchor="middle" fill="#111">Assignment.acceptedAt</text>
+<line x1="335" y1="276" x2="130" y2="276" stroke="#222" stroke-width="1.3" />
+<path d="M129,272 L120,276 L129,280 Z" fill="#222"/>
+<text x="227.5" y="253" font-size="12" text-anchor="middle" fill="#111">3. 200 {assignmentId,</text>
+<text x="227.5" y="268" font-size="12" text-anchor="middle" fill="#111">acceptedAt}</text>
+<line x1="120" y1="330" x2="325" y2="330" stroke="#222" stroke-width="1.3" />
+<path d="M326,326 L335,330 L326,334 Z" fill="#222"/>
+<text x="227.5" y="307" font-size="12" text-anchor="middle" fill="#111">4. GET /api/agent/assignments/{i</text>
+<text x="227.5" y="322" font-size="12" text-anchor="middle" fill="#111">d}/evidence-form</text>
+<line x1="335" y1="369" x2="540" y2="369" stroke="#222" stroke-width="1.3" />
+<path d="M541,365 L550,369 L541,373 Z" fill="#222"/>
+<text x="442.5" y="361" font-size="12" text-anchor="middle" fill="#111">5. currentEvidenceConfig(jobId)</text>
+<line x1="335" y1="423" x2="130" y2="423" stroke="#222" stroke-width="1.3" />
+<path d="M129,419 L120,423 L129,427 Z" fill="#222"/>
+<text x="227.5" y="400" font-size="12" text-anchor="middle" fill="#111">6. platform + job fields,</text>
+<text x="227.5" y="415" font-size="12" text-anchor="middle" fill="#111">evidenceConfigId, version</text>
+<line x1="120" y1="477" x2="325" y2="477" stroke="#222" stroke-width="1.3" />
+<path d="M326,473 L335,477 L326,481 Z" fill="#222"/>
+<text x="227.5" y="454" font-size="12" text-anchor="middle" fill="#111">7. POST /api/agent/activations</text>
+<text x="227.5" y="469" font-size="12" text-anchor="middle" fill="#111">(multipart evidence)</text>
+<line x1="335" y1="531" x2="540" y2="531" stroke="#222" stroke-width="1.3" />
+<path d="M541,527 L550,531 L541,535 Z" fill="#222"/>
+<text x="442.5" y="508" font-size="12" text-anchor="middle" fill="#111">8. configInForce(): refuse if</text>
+<text x="442.5" y="523" font-size="12" text-anchor="middle" fill="#111">config version changed</text>
+<path d="M335,551 L383,551 L383,585 L335,585" fill="none" stroke="#222" stroke-width="1.3"/>
+<path d="M344,581 L335,585 L344,589 Z" fill="#222"/>
+<text x="389" y="563" font-size="12" text-anchor="start" fill="#111">9. validateSubmission() vs</text>
+<text x="389" y="578" font-size="12" text-anchor="start" fill="#111">platform + job fields</text>
+<line x1="335" y1="669" x2="540" y2="669" stroke="#222" stroke-width="1.3" />
+<path d="M541,665 L550,669 L541,673 Z" fill="#222"/>
+<text x="442.5" y="616" font-size="12" text-anchor="middle" fill="#111">10. tx: create Activation +</text>
+<text x="442.5" y="631" font-size="12" text-anchor="middle" fill="#111">EvidenceItem rows,</text>
+<text x="442.5" y="646" font-size="12" text-anchor="middle" fill="#111">enqueueScoring(t0), audit</text>
+<text x="442.5" y="661" font-size="12" text-anchor="middle" fill="#111">"activation_submitted"</text>
+<line x1="335" y1="723" x2="540" y2="723" stroke="#222" stroke-width="1.3" />
+<path d="M541,719 L550,723 L541,727 Z" fill="#222"/>
+<text x="442.5" y="700" font-size="12" text-anchor="middle" fill="#111">11. buildScoreRequest(): recent</text>
+<text x="442.5" y="715" font-size="12" text-anchor="middle" fill="#111">activations, agent history</text>
+<line x1="335" y1="762" x2="755" y2="762" stroke="#222" stroke-width="1.3" />
+<path d="M756,758 L765,762 L756,766 Z" fill="#222"/>
+<text x="550.0" y="754" font-size="12" text-anchor="middle" fill="#111">12. POST /score  mode=t0</text>
+<line x1="765" y1="854" x2="345" y2="854" stroke="#222" stroke-width="1.3" />
+<path d="M344,850 L335,854 L344,858 Z" fill="#222"/>
+<text x="550.0" y="831" font-size="12" text-anchor="middle" fill="#111">13. 200 {probability, band,</text>
+<text x="550.0" y="846" font-size="12" text-anchor="middle" fill="#111">reasons, thresholds}</text>
+<line x1="335" y1="908" x2="540" y2="908" stroke="#222" stroke-width="1.3" />
+<path d="M541,904 L550,908 L541,912 Z" fill="#222"/>
+<text x="442.5" y="885" font-size="12" text-anchor="middle" fill="#111">14. scoringAttempt "succeeded";</text>
+<text x="442.5" y="900" font-size="12" text-anchor="middle" fill="#111">recordDecision()</text>
+<line x1="765" y1="990" x2="345" y2="990" stroke="#222" stroke-width="1.3" stroke-dasharray="6,4"/>
+<path d="M344,986 L335,990 L344,994 Z" fill="#222"/>
+<text x="550.0" y="967" font-size="12" text-anchor="middle" fill="#111">15. no response</text>
+<text x="550.0" y="982" font-size="12" text-anchor="middle" fill="#111">(timeout/refused)</text>
+<line x1="335" y1="1074" x2="540" y2="1074" stroke="#222" stroke-width="1.3" />
+<path d="M541,1070 L550,1074 L541,1078 Z" fill="#222"/>
+<text x="442.5" y="1021" font-size="12" text-anchor="middle" fill="#111">16. scoringAttempt "failed";</text>
+<text x="442.5" y="1036" font-size="12" text-anchor="middle" fill="#111">transition submitted→in_review;</text>
+<text x="442.5" y="1051" font-size="12" text-anchor="middle" fill="#111">openReviewItem("could_not_be_sco</text>
+<text x="442.5" y="1066" font-size="12" text-anchor="middle" fill="#111">red"); audit "scoring_failed"</text>
+<rect x="265" y="1094" width="140" height="44" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="335.0" y="1110" font-size="11.5" text-anchor="middle" fill="#3a3310">T0 could not be scored: sent to a reviewer, never auto-released. Diagram</text>
+<text x="335.0" y="1125" font-size="11.5" text-anchor="middle" fill="#3a3310">continues in 4.1b's review path.</text>
+<rect x="25" y="792" width="1050" height="376" fill="none" stroke="#555" stroke-width="1.4"/>
+<path d="M25,792 L115,792 L115,810 L103,814 L25,814 Z" fill="#eef1f6" stroke="#555"/>
+<text x="31" y="807" font-size="11.5" font-weight="700" fill="#222">alt</text>
+<text x="123" y="807" font-size="11.5" fill="#222">scoring service responds</text>
+<line x1="25" y1="928" x2="1075" y2="928" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="31" y="943" font-size="11.5" fill="#222">[timeout / connection refused]</text>
+<line x1="335" y1="1275" x2="540" y2="1275" stroke="#222" stroke-width="1.3" />
+<path d="M541,1271 L550,1275 L541,1279 Z" fill="#222"/>
+<text x="442.5" y="1237" font-size="12" text-anchor="middle" fill="#111">17. transition</text>
+<text x="442.5" y="1252" font-size="12" text-anchor="middle" fill="#111">scored_t0→in_review; openReviewI</text>
+<text x="442.5" y="1267" font-size="12" text-anchor="middle" fill="#111">tem("t0_reject_escalation")</text>
+<rect x="265" y="1295" width="355" height="44" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="442.5" y="1311" font-size="11.5" text-anchor="middle" fill="#3a3310">T0 reject does not refuse automatically -- it escalates to a reviewer before</text>
+<text x="442.5" y="1326" font-size="11.5" text-anchor="middle" fill="#3a3310">the hold window even opens (BUILD_LOG issue #6).</text>
+<line x1="335" y1="1466" x2="540" y2="1466" stroke="#222" stroke-width="1.3" />
+<path d="M541,1462 L550,1466 L541,1470 Z" fill="#222"/>
+<text x="442.5" y="1398" font-size="12" text-anchor="middle" fill="#111">18. transition scored_t0→held;</text>
+<text x="442.5" y="1413" font-size="12" text-anchor="middle" fill="#111">holdClosesAt = now +</text>
+<text x="442.5" y="1428" font-size="12" text-anchor="middle" fill="#111">HOLD_WINDOW_SECONDS;</text>
+<text x="442.5" y="1443" font-size="12" text-anchor="middle" fill="#111">enqueueScoring(t7,</text>
+<text x="442.5" y="1458" font-size="12" text-anchor="middle" fill="#111">dueAt=holdClosesAt)</text>
+<rect x="25" y="1198" width="1050" height="298" fill="none" stroke="#555" stroke-width="1.4"/>
+<path d="M25,1198 L115,1198 L115,1216 L103,1220 L25,1220 Z" fill="#eef1f6" stroke="#555"/>
+<text x="31" y="1213" font-size="11.5" font-weight="700" fill="#222">alt</text>
+<text x="123" y="1213" font-size="11.5" fill="#222">band = reject</text>
+<line x1="25" y1="1359" x2="1075" y2="1359" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="31" y="1374" font-size="11.5" fill="#222">[band = auto_release or review]</text>
+<line x1="335" y1="1550" x2="130" y2="1550" stroke="#222" stroke-width="1.3" />
+<path d="M129,1546 L120,1550 L129,1554 Z" fill="#222"/>
+<text x="227.5" y="1527" font-size="12" text-anchor="middle" fill="#111">19. 201 {activationId,</text>
+<text x="227.5" y="1542" font-size="12" text-anchor="middle" fill="#111">reference, state, scoring}</text>
+<line x1="25" y1="1580" x2="1075" y2="1580" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="346.15999999999997" y="1567" width="407.68" height="24" fill="white" stroke="#555"/>
+<text x="550.0" y="1584" font-size="12" font-weight="600" text-anchor="middle" fill="#333">hold window elapses (HOLD_WINDOW_SECONDS, config)</text>
+<line x1="980" y1="1647" x2="560" y2="1647" stroke="#222" stroke-width="1.3" />
+<path d="M559,1643 L550,1647 L559,1651 Z" fill="#222"/>
+<text x="765.0" y="1624" font-size="12" text-anchor="middle" fill="#111">20. dueJobIds(now): due</text>
+<text x="765.0" y="1639" font-size="12" text-anchor="middle" fill="#111">ScoringJob rows</text>
+<line x1="980" y1="1716" x2="560" y2="1716" stroke="#222" stroke-width="1.3" />
+<path d="M559,1712 L550,1716 L559,1720 Z" fill="#222"/>
+<text x="765.0" y="1678" font-size="12" text-anchor="middle" fill="#111">21. claimJob(): lease-based</text>
+<text x="765.0" y="1693" font-size="12" text-anchor="middle" fill="#111">claim, safe for concurrent</text>
+<text x="765.0" y="1708" font-size="12" text-anchor="middle" fill="#111">workers</text>
+<line x1="980" y1="1770" x2="560" y2="1770" stroke="#222" stroke-width="1.3" />
+<path d="M559,1766 L550,1770 L559,1774 Z" fill="#222"/>
+<text x="765.0" y="1747" font-size="12" text-anchor="middle" fill="#111">22. buildScoreRequest(t7): +</text>
+<text x="765.0" y="1762" font-size="12" text-anchor="middle" fill="#111">first-week customer activity</text>
+<line x1="980" y1="1809" x2="775" y2="1809" stroke="#222" stroke-width="1.3" />
+<path d="M774,1805 L765,1809 L774,1813 Z" fill="#222"/>
+<text x="872.5" y="1801" font-size="12" text-anchor="middle" fill="#111">23. POST /score  mode=t7</text>
+<line x1="765" y1="1863" x2="970" y2="1863" stroke="#222" stroke-width="1.3" />
+<path d="M971,1859 L980,1863 L971,1867 Z" fill="#222"/>
+<text x="872.5" y="1840" font-size="12" text-anchor="middle" fill="#111">24. 200 {probability, band,</text>
+<text x="872.5" y="1855" font-size="12" text-anchor="middle" fill="#111">reasons, thresholds}</text>
+<line x1="980" y1="1917" x2="560" y2="1917" stroke="#222" stroke-width="1.3" />
+<path d="M559,1913 L550,1917 L559,1921 Z" fill="#222"/>
+<text x="765.0" y="1894" font-size="12" text-anchor="middle" fill="#111">25. recordDecision();</text>
+<text x="765.0" y="1909" font-size="12" text-anchor="middle" fill="#111">applyT7Decision()</text>
+<line x1="980" y1="2009" x2="560" y2="2009" stroke="#222" stroke-width="1.3" />
+<path d="M559,2005 L550,2009 L559,2013 Z" fill="#222"/>
+<text x="765.0" y="1986" font-size="12" text-anchor="middle" fill="#111">26. transition</text>
+<text x="765.0" y="2001" font-size="12" text-anchor="middle" fill="#111">scored_t7→approved</text>
+<rect x="480" y="2029" width="570" height="29" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="765.0" y="2045" font-size="11.5" text-anchor="middle" fill="#3a3310">Continues at Figure 4.1b, step B1 (authorisePayout).</text>
+<line x1="980" y1="2155" x2="560" y2="2155" stroke="#222" stroke-width="1.3" />
+<path d="M559,2151 L550,2155 L559,2159 Z" fill="#222"/>
+<text x="765.0" y="2117" font-size="12" text-anchor="middle" fill="#111">27. transition</text>
+<text x="765.0" y="2132" font-size="12" text-anchor="middle" fill="#111">scored_t7→in_review;</text>
+<text x="765.0" y="2147" font-size="12" text-anchor="middle" fill="#111">openReviewItem("band_review")</text>
+<rect x="480" y="2175" width="570" height="29" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="765.0" y="2191" font-size="11.5" text-anchor="middle" fill="#3a3310">Continues at Figure 4.1b, step B5 (admin decision).</text>
+<line x1="980" y1="2286" x2="560" y2="2286" stroke="#222" stroke-width="1.3" />
+<path d="M559,2282 L550,2286 L559,2290 Z" fill="#222"/>
+<text x="765.0" y="2263" font-size="12" text-anchor="middle" fill="#111">28. transition</text>
+<text x="765.0" y="2278" font-size="12" text-anchor="middle" fill="#111">scored_t7→refused; openDispute()</text>
+<rect x="480" y="2306" width="570" height="44" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="765.0" y="2322" font-size="11.5" text-anchor="middle" fill="#3a3310">Automatic refusal, not a person's decision. Continues at Figure 4.1b, step B9</text>
+<text x="765.0" y="2337" font-size="11.5" text-anchor="middle" fill="#3a3310">(agent may contest once).</text>
+<rect x="25" y="1947" width="1050" height="433" fill="none" stroke="#555" stroke-width="1.4"/>
+<path d="M25,1947 L115,1947 L115,1965 L103,1969 L25,1969 Z" fill="#eef1f6" stroke="#555"/>
+<text x="31" y="1962" font-size="11.5" font-weight="700" fill="#222">alt</text>
+<text x="123" y="1962" font-size="11.5" fill="#222">band = auto_release</text>
+<line x1="25" y1="2078" x2="1075" y2="2078" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="31" y="2093" font-size="11.5" fill="#222">[band = review]</text>
+<line x1="25" y1="2224" x2="1075" y2="2224" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="31" y="2239" font-size="11.5" fill="#222">[band = reject]</text>
+</svg>

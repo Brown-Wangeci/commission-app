@@ -1,0 +1,270 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1832 2210" font-family="Helvetica, Arial, sans-serif"><rect x="0" y="0" width="1832" height="2210" fill="#fafafa"/><text x="916.0" y="20" font-size="15" font-weight="700" text-anchor="middle">Figure 4.2-4.7  Wireframes (low fidelity, derived from the real components)</text><g transform="translate(24,24)"><rect x="0" y="0" width="380" height="520" fill="white" stroke="#ccc"/><rect x="0" y="0" width="380" height="44" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
+<text x="16" y="27" font-size="13" font-weight="700" text-anchor="start" fill="white">Ledgerfield</text>
+<text x="364" y="27" font-size="10" font-weight="400" text-anchor="end" fill="#cfd8d2">Sign out</text>
+<text x="16" y="68" font-size="16" font-weight="700" text-anchor="start" fill="#333333">My jobs</text>
+<text x="16" y="84" font-size="9.5" font-weight="400" text-anchor="start" fill="#777">Accept a job, then submit with evidence.</text>
+<rect x="300" y="58" width="64" height="22" rx="3" fill="white" stroke="#aaa"/>
+<text x="332.0" y="74" font-size="8.5" text-anchor="middle" fill="#333333">My</text>
+<text x="332.0" y="88" font-size="8.5" text-anchor="middle" fill="#333333">activations</text>
+<rect x="16" y="96" width="348" height="24" rx="3" fill="#eef2ee" stroke="#9ab89a"/>
+<text x="24" y="112" font-size="9.5" text-anchor="start" fill="#333333">Notifications (NotificationsPanel)</text>
+<text x="16" y="142" font-size="11" font-weight="700" text-anchor="start" fill="#333333">Waiting for you to accept (2)</text>
+<rect x="16" y="150" width="348" height="56" rx="3" fill="white" stroke="#ccc"/>
+<text x="24" y="168" font-size="10" font-weight="600" text-anchor="start" fill="#333333">SIM registration drive, Gikomba Market</text>
+<text x="24" y="183" font-size="9" font-weight="400" text-anchor="start" fill="#777">Mwanga Mobile · within 800 m · pays KSh 300.00</text>
+<rect x="270" y="160" width="82" height="30" rx="4" fill="#d9d9d9" stroke="#777"/>
+<text x="311.0" y="179.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Accept job</text>
+<text x="311.0" y="202" font-size="9" font-weight="400" text-anchor="middle" fill="#b84a4a">30px &lt; 48px</text>
+<rect x="16" y="214" width="348" height="56" rx="3" fill="white" stroke="#ccc"/>
+<text x="24" y="232" font-size="10" font-weight="600" text-anchor="start" fill="#333333">Wallet activations, Kibuye Market</text>
+<text x="24" y="247" font-size="9" font-weight="400" text-anchor="start" fill="#777">Tujenge Pesa · within 800 m · pays KSh 350.00</text>
+<rect x="270" y="224" width="82" height="30" rx="4" fill="#d9d9d9" stroke="#777"/>
+<text x="311.0" y="243.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Accept job</text>
+<text x="16" y="294" font-size="11" font-weight="700" text-anchor="start" fill="#333333">Ready to submit (1)</text>
+<rect x="16" y="302" width="348" height="44" rx="3" fill="white" stroke="#ccc"/>
+<text x="24" y="320" font-size="10" font-weight="600" text-anchor="start" fill="#333333">Data bundle sign-ups, Thika Road Mall</text>
+<text x="24" y="335" font-size="9" font-weight="400" text-anchor="start" fill="#777">Grace Njoroge · accepted 2h ago</text>
+<rect x="270" y="310" width="82" height="28" rx="3" fill="white" stroke="#aaa"/>
+<text x="311.0" y="326" font-size="8.5" text-anchor="middle" fill="#333333">Submit activation</text>
+<text x="16" y="372" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">JobLine + ActionButton, app/src/app/agent/page.tsx</text></g>
+<g transform="translate(928,24)"><rect x="0" y="0" width="360" height="860" fill="white" stroke="#ccc"/><rect x="0" y="0" width="360" height="44" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
+<text x="14" y="27" font-size="12" font-weight="700" text-anchor="start" fill="white">Ledgerfield</text>
+<text x="16" y="66" font-size="14" font-weight="700" text-anchor="start" fill="#333333">Submit an activation</text>
+<text x="16" y="80" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">Wallet activations, Kibuye Market · pays KSh 350.00</text>
+<rect x="14" y="92" width="332" height="26" rx="3" fill="#fde9e9" stroke="#b84a4a"/>
+<text x="22" y="108" font-size="8.5" text-anchor="start" fill="#333333">Your location is not available. Enter it by hand below.</text>
+<text x="14" y="140" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Every activation</text>
+<text x="14" y="159" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Customer's phone number</text>
+<rect x="14" y="164" width="332" height="32" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="207" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">SIM registration date</text>
+<rect x="14" y="212" width="332" height="32" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="255" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">How did you capture the customer's details?</text>
+<text x="14" y="261" font-size="9.5" font-weight="400" text-anchor="start" fill="#555"></text>
+<circle cx="21" cy="275" r="6" fill="white" stroke="#9a9a9a"/>
+<circle cx="111" cy="275" r="6" fill="white" stroke="#9a9a9a"/>
+<text x="28" y="273" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Scanned</text>
+<text x="118" y="273" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Typed by hand</text>
+<text x="14" y="291" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Proof of activation (optional)</text>
+<rect x="14" y="296" width="90" height="26" rx="4" fill="#ececec" stroke="#777"/>
+<text x="59.0" y="313.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Choose file</text>
+<text x="14" y="335" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Note for the reviewer (optional)</text>
+<rect x="14" y="340" width="332" height="48" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="404" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Evidence for this job (version 1)</text>
+<text x="14" y="420" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">Set by the client for this job.</text>
+<text x="14" y="435" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">ID document seen</text>
+<text x="28" y="453" font-size="9" font-weight="400" text-anchor="start" fill="#333333">National ID</text>
+<text x="110" y="453" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Passport</text>
+<text x="180" y="453" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Alien ID</text>
+<text x="14" y="465" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Market stall number</text>
+<rect x="14" y="470" width="332" height="32" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="513" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Photo of the stall (1 to 4 photos)</text>
+<rect x="14" y="518" width="60" height="60" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="14" y1="518" x2="74" y2="578" stroke="#bbb"/>
+<line x1="74" y1="518" x2="14" y2="578" stroke="#bbb"/>
+<rect x="86" y="518" width="60" height="60" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="86" y1="518" x2="146" y2="578" stroke="#bbb"/>
+<line x1="146" y1="518" x2="86" y2="578" stroke="#bbb"/>
+<rect x="158" y="518" width="60" height="60" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="158" y1="518" x2="218" y2="578" stroke="#bbb"/>
+<line x1="218" y1="518" x2="158" y2="578" stroke="#bbb"/>
+<text x="14" y="598" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Captured by your device</text>
+<text x="14" y="617" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Latitude</text>
+<rect x="14" y="622" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="126" y="617" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Longitude</text>
+<rect x="126" y="622" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="238" y="617" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Accuracy (m)</text>
+<rect x="238" y="622" width="108" height="30" rx="3" fill="white" stroke="#aaa"/>
+<rect x="14" y="670" width="160" height="30" rx="4" fill="#ececec" stroke="#777"/>
+<text x="94.0" y="689.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Use my current location</text>
+<rect x="14" y="716" width="332" height="38" rx="4" fill="#d9d9d9" stroke="#777"/>
+<text x="180.0" y="739.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Submit activation</text>
+<text x="180.0" y="766" font-size="9" font-weight="400" text-anchor="middle" fill="#b84a4a">38px tall -- below the 48px NFR-12 minimum</text>
+<text x="14" y="786" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">SubmitActivationForm.tsx, EvidenceFieldInputs.tsx</text></g>
+<g transform="translate(24,908)"><rect x="0" y="0" width="880" height="620" fill="white" stroke="#ccc"/><rect x="0" y="0" width="880" height="40" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
+<text x="16" y="25" font-size="12" font-weight="700" text-anchor="start" fill="white">Ledgerfield · Review queue</text>
+<text x="16" y="60" font-size="12" font-weight="700" text-anchor="start" fill="#333333">LF-000052 · In review</text>
+<text x="16" y="76" font-size="9.5" font-weight="400" text-anchor="start" fill="#777">SIM registration drive, Gikomba Market · Grace Wanjiku</text>
+<text x="16" y="96" font-size="10" font-weight="700" text-anchor="start" fill="#333333">What the agent submitted (EvidenceStrip.tsx)</text>
+<rect x="16" y="104" width="80" height="80" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="16" y1="104" x2="96" y2="184" stroke="#bbb"/>
+<line x1="96" y1="104" x2="16" y2="184" stroke="#bbb"/>
+<text x="56.0" y="197" font-size="9.5" font-weight="400" text-anchor="middle" fill="#777">1</text>
+<rect x="108" y="104" width="80" height="80" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="108" y1="104" x2="188" y2="184" stroke="#bbb"/>
+<line x1="188" y1="104" x2="108" y2="184" stroke="#bbb"/>
+<text x="148.0" y="197" font-size="9.5" font-weight="400" text-anchor="middle" fill="#777">2</text>
+<rect x="200" y="104" width="80" height="80" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="200" y1="104" x2="280" y2="184" stroke="#bbb"/>
+<line x1="280" y1="104" x2="200" y2="184" stroke="#bbb"/>
+<text x="240.0" y="197" font-size="9.5" font-weight="400" text-anchor="middle" fill="#777">3</text>
+<rect x="292" y="104" width="80" height="80" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="292" y1="104" x2="372" y2="184" stroke="#bbb"/>
+<line x1="372" y1="104" x2="292" y2="184" stroke="#bbb"/>
+<text x="332.0" y="197" font-size="9.5" font-weight="400" text-anchor="middle" fill="#777">4</text>
+<rect x="16" y="196" width="360" height="40" rx="3" fill="#fde9e9" stroke="#b84a4a"/>
+<text x="24" y="212" font-size="9" text-anchor="start" fill="#333333">No proof of activation was attached (ConcernCallout.tsx)</text>
+<text x="16" y="256" font-size="10" font-weight="700" text-anchor="start" fill="#333333">Submitted details (SubmittedDetails.tsx)</text>
+<text x="16" y="276" font-size="9" font-weight="400" text-anchor="start" fill="#444">SIM serial number</text>
+<line x1="16" y1="280" x2="376" y2="280" stroke="#e3e3e3"/>
+<text x="16" y="294" font-size="9" font-weight="400" text-anchor="start" fill="#444">Customer type</text>
+<line x1="16" y1="298" x2="376" y2="298" stroke="#e3e3e3"/>
+<text x="16" y="312" font-size="9" font-weight="400" text-anchor="start" fill="#444">GPS location · inside job area</text>
+<line x1="16" y1="316" x2="376" y2="316" stroke="#e3e3e3"/>
+<text x="16" y="330" font-size="9" font-weight="400" text-anchor="start" fill="#444">Device · android, app 3.4.0</text>
+<line x1="16" y1="334" x2="376" y2="334" stroke="#e3e3e3"/>
+<text x="16" y="360" font-size="10" font-weight="700" text-anchor="start" fill="#333333">Where it happened (LocationPlot.tsx)</text>
+<rect x="16" y="368" width="360" height="110" rx="3" fill="#eef0ee" stroke="#bbb"/>
+<text x="400" y="96" font-size="10" font-weight="700" text-anchor="start" fill="#333333">Model assessment (ModelAssessment.tsx)</text>
+<rect x="400" y="104" width="300" height="70" rx="3" fill="#f3f3f3" stroke="#9a9a9a"/>
+<text x="410" y="128" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">FRAUD PROBABILITY</text>
+<text x="410" y="158" font-size="22" font-weight="700" text-anchor="start" fill="#333333">50.9%</text>
+<text x="400" y="192" font-size="9.5" font-weight="700" text-anchor="start" fill="#333333">What moved the score (ReasonList.tsx, top 3)</text>
+<rect x="400" y="200" width="92" height="16" rx="3" fill="#e4e4e4" stroke="#9a9a9a"/>
+<text x="446.0" y="216" font-size="7.5" text-anchor="middle" fill="#333333">About this submission</text>
+<text x="498" y="212" font-size="8.5" font-weight="400" text-anchor="start" fill="#333333">No proof of activation was attached</text>
+<text x="690" y="212" font-size="9" font-weight="700" text-anchor="end" fill="#333333">+1.03</text>
+<rect x="400" y="224" width="92" height="16" rx="3" fill="#e4e4e4" stroke="#9a9a9a"/>
+<text x="446.0" y="240" font-size="7.5" text-anchor="middle" fill="#333333">About the agent</text>
+<text x="498" y="236" font-size="8.5" font-weight="400" text-anchor="start" fill="#333333">On the platform 533 days</text>
+<text x="690" y="236" font-size="9" font-weight="700" text-anchor="end" fill="#333333">-1.01</text>
+<rect x="400" y="248" width="92" height="16" rx="3" fill="#e4e4e4" stroke="#9a9a9a"/>
+<text x="446.0" y="264" font-size="7.5" text-anchor="middle" fill="#333333">About this submission</text>
+<text x="498" y="260" font-size="8.5" font-weight="400" text-anchor="start" fill="#333333">Active 0 of the first 8 days</text>
+<text x="690" y="260" font-size="9" font-weight="700" text-anchor="end" fill="#333333">+0.95</text>
+<rect x="400" y="282" width="300" height="40" rx="3" fill="#f3f3f3" stroke="#9a9a9a"/>
+<text x="408" y="298" font-size="8" text-anchor="start" fill="#333333">RiskScale.tsx: auto-approve 26.7% | this score | auto-reject 66.7%</text>
+<text x="400" y="342" font-size="10" font-weight="700" text-anchor="start" fill="#333333">Decide (QueueRowActions.tsx)</text>
+<text x="400" y="363" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Reason (required, min 5 characters)</text>
+<rect x="400" y="368" width="300" height="44" rx="3" fill="white" stroke="#aaa"/>
+<rect x="400" y="420" width="90" height="30" rx="4" fill="#d9d9d9" stroke="#777"/>
+<text x="445.0" y="439.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Approve and pay</text>
+<rect x="498" y="420" width="80" height="30" rx="4" fill="#ececec" stroke="#777"/>
+<text x="538.0" y="439.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Reject</text>
+<text x="400" y="468" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">ReviewHeader.tsx, AgentCard.tsx, PayoutPanel.tsx not shown</text></g>
+<g transform="translate(928,908)"><rect x="0" y="0" width="760" height="650" fill="white" stroke="#ccc"/><rect x="0" y="0" width="760" height="40" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
+<text x="16" y="25" font-size="12" font-weight="700" text-anchor="start" fill="white">Ledgerfield · Post a job</text>
+<text x="16" y="62" font-size="14" font-weight="700" text-anchor="start" fill="#333333">Post a job (PostJobForm.tsx)</text>
+<text x="16" y="78" font-size="9" font-weight="400" text-anchor="start" fill="#777">Publishing locks the job's maximum liability from your escrow.</text>
+<text x="16" y="91" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Title</text>
+<rect x="16" y="96" width="340" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="16" y="133" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">What agents should do</text>
+<rect x="16" y="138" width="340" height="50" rx="3" fill="white" stroke="#aaa"/>
+<text x="16" y="195" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Deadline</text>
+<rect x="16" y="200" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="380" y="92" font-size="10" font-weight="700" text-anchor="start" fill="#333333">Evidence fields (EvidenceFieldsEditor.tsx)</text>
+<rect x="380" y="104" width="360" height="24" rx="3" fill="white" stroke="#ccc"/>
+<text x="388" y="120" font-size="8.5" text-anchor="start" fill="#333333">ID document seen  ·  single_select  ·  mandatory</text>
+<rect x="380" y="134" width="360" height="24" rx="3" fill="white" stroke="#ccc"/>
+<text x="388" y="150" font-size="8.5" text-anchor="start" fill="#333333">Market stall number  ·  text  ·  mandatory</text>
+<rect x="380" y="164" width="360" height="24" rx="3" fill="white" stroke="#ccc"/>
+<text x="388" y="180" font-size="8.5" text-anchor="start" fill="#333333">Photo of the stall  ·  photo  ·  mandatory</text>
+<rect x="380" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
+<text x="408.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Text</text>
+<rect x="442" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
+<text x="470.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Number</text>
+<rect x="504" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
+<text x="532.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Date</text>
+<rect x="566" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
+<text x="594.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Choice</text>
+<rect x="628" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
+<text x="656.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Phone</text>
+<rect x="690" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
+<text x="718.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Photo</text>
+<text x="16" y="256" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Job area</text>
+<text x="16" y="277" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Place name</text>
+<rect x="16" y="282" width="220" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="16" y="323" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Centre latitude</text>
+<rect x="16" y="328" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="126" y="323" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Centre longitude</text>
+<rect x="126" y="328" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="236" y="323" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Radius (m)</text>
+<rect x="236" y="328" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
+<rect x="16" y="374" width="220" height="26" rx="4" fill="#ececec" stroke="#777"/>
+<text x="126.0" y="391.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Use my current location as the centre</text>
+<text x="16" y="426" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Commission</text>
+<text x="16" y="447" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Value per approved submission (KSh)</text>
+<rect x="16" y="452" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="190" y="447" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Commission rate (%)</text>
+<rect x="190" y="452" width="120" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="324" y="447" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Flat amount (KSh, optional)</text>
+<rect x="324" y="452" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="16" y="493" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Activations wanted</text>
+<rect x="16" y="498" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
+<rect x="16" y="552" width="160" height="38" rx="4" fill="#d9d9d9" stroke="#777"/>
+<text x="96.0" y="575.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Publish the job</text>
+<text x="16" y="608" font-size="8.5" font-weight="400" text-anchor="start" fill="#b84a4a">38px tall -- below the 48px NFR-12 minimum (NFR-12 is scoped to the agent app, but this control shares the same CSS)</text>
+<text x="16" y="622" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">PostJobForm.tsx, EvidenceFieldsEditor.tsx</text></g>
+<g transform="translate(24,1582)"><rect x="0" y="0" width="760" height="560" fill="white" stroke="#ccc"/><rect x="0" y="0" width="760" height="40" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
+<text x="16" y="25" font-size="12" font-weight="700" text-anchor="start" fill="white">Ledgerfield · Jobs</text>
+<text x="16" y="62" font-size="14" font-weight="700" text-anchor="start" fill="#333333">Jobs</text>
+<rect x="16" y="76" width="230" height="70" rx="3" fill="#f3f3f3" stroke="#9a9a9a"/>
+<text x="28" y="96" font-size="9" font-weight="400" text-anchor="start" fill="#777">Deposited</text>
+<text x="28" y="124" font-size="14" font-weight="700" text-anchor="start" fill="#333333">KSh 26,199.60</text>
+<rect x="266" y="76" width="230" height="70" rx="3" fill="#f3f3f3" stroke="#9a9a9a"/>
+<text x="278" y="96" font-size="9" font-weight="400" text-anchor="start" fill="#777">Committed to jobs</text>
+<text x="278" y="124" font-size="14" font-weight="700" text-anchor="start" fill="#333333">KSh 25,195.64</text>
+<rect x="516" y="76" width="230" height="70" rx="3" fill="#f3f3f3" stroke="#9a9a9a"/>
+<text x="528" y="96" font-size="9" font-weight="400" text-anchor="start" fill="#777">Available</text>
+<text x="528" y="124" font-size="14" font-weight="700" text-anchor="start" fill="#333333">KSh 1,003.96</text>
+<text x="16" y="172" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Fund your escrow (FundForm.tsx)</text>
+<text x="16" y="193" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Amount (KSh)</text>
+<rect x="16" y="198" width="140" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="170" y="193" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">M-Pesa number to pay from</text>
+<rect x="170" y="198" width="180" height="30" rx="3" fill="white" stroke="#aaa"/>
+<rect x="364" y="198" width="130" height="30" rx="4" fill="#d9d9d9" stroke="#777"/>
+<text x="429.0" y="217.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Pay with M-Pesa</text>
+<text x="16" y="238" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Funding history (FundingList.tsx)</text>
+<rect x="16" y="246" width="728" height="22" rx="3" fill="#efefef" stroke="#9a9a9a"/>
+<text x="24" y="261" font-size="8" font-weight="700" text-anchor="start" fill="#777">REQUESTED</text>
+<text x="204" y="261" font-size="8" font-weight="700" text-anchor="start" fill="#777">AMOUNT</text>
+<text x="384" y="261" font-size="8" font-weight="700" text-anchor="start" fill="#777">STATUS</text>
+<text x="564" y="261" font-size="8" font-weight="700" text-anchor="start" fill="#777">DETAIL</text>
+<rect x="16" y="268" width="728" height="30" rx="3" fill="white" stroke="#e3e3e3"/>
+<text x="24" y="287" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Failed</text>
+<text x="204" y="287" font-size="9" font-weight="400" text-anchor="start" fill="#555">Request cancelled by user</text>
+<rect x="16" y="298" width="728" height="30" rx="3" fill="white" stroke="#e3e3e3"/>
+<text x="24" y="317" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Pending</text>
+<text x="204" y="317" font-size="9" font-weight="400" text-anchor="start" fill="#555">Waiting for M-Pesa to confirm</text>
+<rect x="16" y="328" width="728" height="30" rx="3" fill="white" stroke="#e3e3e3"/>
+<text x="24" y="347" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Confirmed</text>
+<text x="204" y="347" font-size="9" font-weight="400" text-anchor="start" fill="#555">Added to your escrow</text>
+<text x="16" y="400" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Jobs funded from this escrow</text>
+<rect x="16" y="408" width="728" height="110" rx="3" fill="white" stroke="#ccc"/>
+<text x="24" y="428" font-size="9.5" font-weight="400" text-anchor="start" fill="#333333">Wallet activations, Kibuye Market · 12/40 slots used</text>
+<text x="24" y="446" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">Locked KSh 14,000.00 · Released KSh 3,150.00 · Unspent KSh 10,150.00</text>
+<text x="16" y="540" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">/client/page.tsx, FundForm.tsx, FundingList.tsx</text></g>
+<g transform="translate(928,1582)"><rect x="0" y="0" width="820" height="560" fill="white" stroke="#ccc"/><rect x="0" y="0" width="820" height="40" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
+<text x="16" y="25" font-size="12" font-weight="700" text-anchor="start" fill="white">Ledgerfield · Audit record</text>
+<text x="16" y="62" font-size="13" font-weight="700" text-anchor="start" fill="#333333">Audit record (AuditTrailPanel.tsx)</text>
+<rect x="584" y="50" width="220" height="28" rx="4" fill="#ececec" stroke="#777"/>
+<text x="694.0" y="68.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Verify against the blockchain</text>
+<rect x="16" y="76" width="788" height="70" rx="3" fill="#eef2fb" stroke="#8aa"/>
+<text x="26" y="94" font-size="11" font-weight="700" text-anchor="start" fill="#333333">Partly verified</text>
+<text x="26" y="110" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Every hash recomputes and links. 11 of 11 event(s) could not be checked on chain yet.</text>
+<rect x="16" y="156" width="788" height="22" rx="3" fill="#efefef" stroke="#9a9a9a"/>
+<text x="24" y="171" font-size="8" font-weight="700" text-anchor="start" fill="#777">#</text>
+<text x="174" y="171" font-size="8" font-weight="700" text-anchor="start" fill="#777">WHEN</text>
+<text x="324" y="171" font-size="8" font-weight="700" text-anchor="start" fill="#777">EVENT</text>
+<text x="474" y="171" font-size="8" font-weight="700" text-anchor="start" fill="#777">HASH</text>
+<text x="624" y="171" font-size="8" font-weight="700" text-anchor="start" fill="#777">ON CHAIN</text>
+<rect x="16" y="178" width="788" height="30" rx="3" fill="white" stroke="#e3e3e3"/>
+<text x="24" y="197" font-size="9" font-weight="400" text-anchor="start" fill="#333333">539</text>
+<text x="174" y="197" font-size="9" font-weight="400" text-anchor="start" fill="#333333">new → submitted</text>
+<text x="324" y="197" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">c5213f5d…f38275</text>
+<rect x="620" y="184" width="160" height="18" rx="3" fill="#f2f2f2" stroke="#9a9a9a"/>
+<text x="700.0" y="200" font-size="7.5" text-anchor="middle" fill="#333333">Waiting for the next batch</text>
+<rect x="16" y="208" width="788" height="30" rx="3" fill="white" stroke="#e3e3e3"/>
+<text x="24" y="227" font-size="9" font-weight="400" text-anchor="start" fill="#333333">545</text>
+<text x="174" y="227" font-size="9" font-weight="400" text-anchor="start" fill="#333333">scored_t7 → in_review</text>
+<text x="324" y="227" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">c5213f5d…f38275</text>
+<rect x="620" y="214" width="160" height="18" rx="3" fill="#f2f2f2" stroke="#9a9a9a"/>
+<text x="700.0" y="230" font-size="7.5" text-anchor="middle" fill="#333333">Waiting for the next batch</text>
+<rect x="16" y="238" width="788" height="30" rx="3" fill="white" stroke="#e3e3e3"/>
+<text x="24" y="257" font-size="9" font-weight="400" text-anchor="start" fill="#333333">549</text>
+<text x="174" y="257" font-size="9" font-weight="400" text-anchor="start" fill="#333333">refused → disputed</text>
+<text x="324" y="257" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">c5213f5d…f38275</text>
+<rect x="620" y="244" width="160" height="18" rx="3" fill="#f2f2f2" stroke="#9a9a9a"/>
+<text x="700.0" y="260" font-size="7.5" text-anchor="middle" fill="#333333">Waiting for the next batch</text>
+<text x="16" y="300" font-size="9.5" font-weight="700" text-anchor="start" fill="#333333">Per-event check (CheckLine, in audit/verify.ts)</text>
+<text x="16" y="318" font-size="8.5" font-weight="400" text-anchor="start" fill="#444">Passes, event 539 (sequence 539): hash recomputes, link holds</text>
+<text x="16" y="540" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">AuditTrailPanel.tsx; AnchorCell, CheckLine</text></g></svg>
