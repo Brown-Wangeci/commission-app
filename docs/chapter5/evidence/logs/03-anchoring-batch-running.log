@@ -1,0 +1,25 @@
+{"skipped":false,"created":1,"confirmed":1,"failed":0,"waiting":null}
+{
+  "id": "cmw92hsff0000o8d82whep9u7",
+  "fromSequence": "1",
+  "toSequence": "742",
+  "leafCount": 742,
+  "root": "73b4d1f983300118040c54bb7c5cc6fee196f1933c58f82b50c696a91a809a5a",
+  "status": "confirmed",
+  "chainId": 31337,
+  "contractAddress": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+  "attempts": 1,
+  "nextAttemptAt": "2026-11-09T09:37:11.524Z",
+  "lockedUntil": null,
+  "searchFromBlock": "1",
+  "txHash": "0x1e996750da332a4593eaa7ce89a32bfbf90456834f2658f4fe4920b2c0caf96f",
+  "blockNumber": "2",
+  "chainTimestamp": "2026-11-09T09:37:09.000Z",
+  "submitter": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "lastError": null,
+  "escalatedAt": null,
+  "createdAt": "2026-11-09T09:37:11.524Z",
+  "submittedAt": "2026-11-09T09:37:11.524Z",
+  "confirmedAt": "2026-11-09T09:37:11.524Z",
+  "updatedAt": "2026-11-09T09:37:09.769Z"
+}

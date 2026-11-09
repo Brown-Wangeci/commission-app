@@ -1,0 +1,14 @@
+Deployer 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 on chain 31337, balance 10000000000000000000000 wei.
+Deployment transaction 0x5e0cb5e3ab842ebd50cfd286a74e850e6f1336d8be7af71cd82e76843bb9ed88; waiting for the receipt.
+{
+  "chainId": 31337,
+  "compiler": "0.8.37+commit.f401782d.Emscripten.clang",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "contractAddress": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+  "transactionHash": "0x5e0cb5e3ab842ebd50cfd286a74e850e6f1336d8be7af71cd82e76843bb9ed88",
+  "blockNumber": "1",
+  "gasUsed": "128073",
+  "transactionUrl": null,
+  "contractUrl": null
+}
+The root .env was left unchanged (--no-env-write).

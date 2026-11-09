@@ -1,0 +1,586 @@
+{
+  "detail": {
+    "id": "2b8c432a-fa3f-455d-8a65-470f173a4a8e",
+    "reference": "LF-000065",
+    "state": "approved",
+    "unscoredStage": null,
+    "submittedAt": "2026-11-09T09:30:16.559Z",
+    "heldAt": "2026-11-09T09:30:16.559Z",
+    "holdClosesAt": "2026-11-09T09:30:31.559Z",
+    "job": {
+      "id": "cmw928xju000mo8b4hr00vj2w",
+      "title": "Chapter 5 log capture (t7submit)",
+      "areaName": "Kibuye Market, Kisumu",
+      "areaLat": -0.0995,
+      "areaLon": 34.768,
+      "areaRadiusM": 800,
+      "clientName": "Tujenge Pesa"
+    },
+    "agent": {
+      "id": "cmw91qz7j000ao8sof43p0fly",
+      "name": "Grace Wanjiku",
+      "registeredAt": "2025-05-08T09:16:18.255Z",
+      "payoutMsisdn": "0712345678",
+      "homeAreaName": "Kariobangi North",
+      "homeLat": -1.257,
+      "homeLon": 36.886,
+      "stats": {
+        "total": 25,
+        "approved": 21,
+        "rejected": 0,
+        "withdrawn": 1,
+        "pending": 3,
+        "approvalRate": 1
+      }
+    },
+    "submission": {
+      "gpsLat": -0.0991,
+      "gpsLon": 34.7684,
+      "gpsAccuracyM": 9,
+      "kmOutsideArea": 0,
+      "deviceId": "dev-ch5-t7submit",
+      "deviceOs": "android",
+      "appVersion": "web-0.1.0",
+      "networkType": "cellular",
+      "ipRegion": "region_c",
+      "ipRegionName": "Mombasa",
+      "gpsRegionName": "Kisumu",
+      "activationMethod": "qr_scan",
+      "customerMsisdnMasked": "07** *** 486",
+      "simRegisteredAt": "2026-11-07T21:00:00.000Z",
+      "agentNote": "Customer registered at her stall; no proof screenshot, her phone battery was flat."
+    },
+    "evidence": {
+      "configId": "cmw928xk1000oo8b4d2v5l0ta",
+      "version": 1,
+      "currentVersion": 1,
+      "fields": [
+        {
+          "key": "field_1",
+          "label": "ID document seen",
+          "type": "single_select",
+          "mandatory": true,
+          "format": "One of: National ID, Passport, Alien ID",
+          "value": "National ID",
+          "photoSequences": null
+        },
+        {
+          "key": "field_2",
+          "label": "Market stall number",
+          "type": "text",
+          "mandatory": true,
+          "format": "Letters, digits and hyphens, 2 to 10 characters",
+          "value": "B-14",
+          "photoSequences": null
+        },
+        {
+          "key": "field_3",
+          "label": "Photo of the stall",
+          "type": "photo",
+          "mandatory": true,
+          "format": "1 to 4 photos",
+          "value": null,
+          "photoSequences": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "photoGroups": [
+        {
+          "key": "field_3",
+          "label": "Photo of the stall",
+          "format": "1 to 4 photos",
+          "photos": [
+            {
+              "id": "cmw928xoh000so8b4yxa5qxsk",
+              "sequence": 1,
+              "kind": "photo",
+              "fieldKey": "field_3",
+              "capturedAt": "2026-11-09T09:20:16.512Z",
+              "gpsLat": -0.0992,
+              "gpsLon": 34.7683,
+              "gpsAccuracyM": 8,
+              "locationSource": "device",
+              "kmOutsideArea": 0,
+              "flag": null,
+              "fromRequestId": null,
+              "url": "/api/evidence/cmw928xoh000so8b4yxa5qxsk"
+            },
+            {
+              "id": "cmw928xoh000to8b4pi068t74",
+              "sequence": 2,
+              "kind": "photo",
+              "fieldKey": "field_3",
+              "capturedAt": "2026-11-09T09:21:16.531Z",
+              "gpsLat": -0.0992,
+              "gpsLon": 34.7683,
+              "gpsAccuracyM": 8,
+              "locationSource": "device",
+              "kmOutsideArea": 0,
+              "flag": null,
+              "fromRequestId": null,
+              "url": "/api/evidence/cmw928xoh000to8b4pi068t74"
+            },
+            {
+              "id": "cmw928xoh000uo8b4ftc6cub2",
+              "sequence": 3,
+              "kind": "photo",
+              "fieldKey": "field_3",
+              "capturedAt": "2026-11-09T09:22:16.549Z",
+              "gpsLat": -0.0992,
+              "gpsLon": 34.7683,
+              "gpsAccuracyM": 8,
+              "locationSource": "device",
+              "kmOutsideArea": 0,
+              "flag": null,
+              "fromRequestId": null,
+              "url": "/api/evidence/cmw928xoh000uo8b4ftc6cub2"
+            }
+          ]
+        }
+      ]
+    },
+    "photos": [
+      {
+        "id": "cmw928xoh000so8b4yxa5qxsk",
+        "sequence": 1,
+        "kind": "photo",
+        "fieldKey": "field_3",
+        "capturedAt": "2026-11-09T09:20:16.512Z",
+        "gpsLat": -0.0992,
+        "gpsLon": 34.7683,
+        "gpsAccuracyM": 8,
+        "locationSource": "device",
+        "kmOutsideArea": 0,
+        "flag": null,
+        "fromRequestId": null,
+        "url": "/api/evidence/cmw928xoh000so8b4yxa5qxsk"
+      },
+      {
+        "id": "cmw928xoh000to8b4pi068t74",
+        "sequence": 2,
+        "kind": "photo",
+        "fieldKey": "field_3",
+        "capturedAt": "2026-11-09T09:21:16.531Z",
+        "gpsLat": -0.0992,
+        "gpsLon": 34.7683,
+        "gpsAccuracyM": 8,
+        "locationSource": "device",
+        "kmOutsideArea": 0,
+        "flag": null,
+        "fromRequestId": null,
+        "url": "/api/evidence/cmw928xoh000to8b4pi068t74"
+      },
+      {
+        "id": "cmw928xoh000uo8b4ftc6cub2",
+        "sequence": 3,
+        "kind": "photo",
+        "fieldKey": "field_3",
+        "capturedAt": "2026-11-09T09:22:16.549Z",
+        "gpsLat": -0.0992,
+        "gpsLon": 34.7683,
+        "gpsAccuracyM": 8,
+        "locationSource": "device",
+        "kmOutsideArea": 0,
+        "flag": null,
+        "fromRequestId": null,
+        "url": "/api/evidence/cmw928xoh000uo8b4ftc6cub2"
+      }
+    ],
+    "proof": null,
+    "evidenceSummary": {
+      "photoCount": 3,
+      "proofAttached": false,
+      "captureStart": "2026-11-09T09:20:16.512Z",
+      "captureEnd": "2026-11-09T09:22:16.549Z",
+      "accuracyMin": 8,
+      "accuracyMax": 8,
+      "withoutLocation": 0,
+      "outside": []
+    },
+    "previous": {
+      "id": "c75cfdd6-a598-43b4-bf45-2ff53dca9606",
+      "reference": "LF-000064",
+      "submittedAt": "2026-11-09T09:28:47.584Z",
+      "gapMs": 88975,
+      "distanceKm": 0,
+      "gpsLat": -0.0991,
+      "gpsLon": 34.7684
+    },
+    "decisions": [
+      {
+        "id": "cmw928xsd0010o8b4ic591r29",
+        "mode": "t0",
+        "modelVersion": "t0_none-isotonic-v1",
+        "probability": 0.02224123105406761,
+        "band": "auto_release",
+        "releaseThreshold": 0.301471,
+        "rejectThreshold": 0.729167,
+        "scoredAt": "2026-11-09T09:30:16.705Z",
+        "trigger": "submission",
+        "reasons": [
+          {
+            "rank": 1,
+            "feature": "agent_tenure_days",
+            "description": "the agent has been on the platform 550 days",
+            "contribution": -1.071216106414795,
+            "raisesRisk": false,
+            "isAgentLevel": true
+          },
+          {
+            "rank": 2,
+            "feature": "proof_of_activation_missing_flag",
+            "description": "no proof of activation was attached",
+            "contribution": 0.9336138367652893,
+            "raisesRisk": true,
+            "isAgentLevel": false
+          },
+          {
+            "rank": 3,
+            "feature": "ip_location_mismatch_flag",
+            "description": "the network location disagreed with the device's GPS location",
+            "contribution": 0.9025884866714478,
+            "raisesRisk": true,
+            "isAgentLevel": false
+          }
+        ]
+      },
+      {
+        "id": "cmw929ioh0005o8p4vlbnthrc",
+        "mode": "t7",
+        "modelVersion": "t7_none-isotonic-v1",
+        "probability": 0.001,
+        "band": "auto_release",
+        "releaseThreshold": 0.266667,
+        "rejectThreshold": 0.666667,
+        "scoredAt": "2026-11-09T09:30:43.776Z",
+        "trigger": "hold_close",
+        "reasons": [
+          {
+            "rank": 1,
+            "feature": "agent_tenure_days",
+            "description": "the agent has been on the platform 550 days",
+            "contribution": -1.520828008651733,
+            "raisesRisk": false,
+            "isAgentLevel": true
+          },
+          {
+            "rank": 2,
+            "feature": "customer_active_days_7d",
+            "description": "the customer used the service on 8 of the first 8 days",
+            "contribution": -1.375867486000061,
+            "raisesRisk": false,
+            "isAgentLevel": false
+          },
+          {
+            "rank": 3,
+            "feature": "device_activations_7d",
+            "description": "this device was used for 2 activations in the last 7 days",
+            "contribution": -0.9891865849494934,
+            "raisesRisk": false,
+            "isAgentLevel": true
+          }
+        ]
+      }
+    ],
+    "latest": {
+      "id": "cmw929ioh0005o8p4vlbnthrc",
+      "mode": "t7",
+      "modelVersion": "t7_none-isotonic-v1",
+      "probability": 0.001,
+      "band": "auto_release",
+      "releaseThreshold": 0.266667,
+      "rejectThreshold": 0.666667,
+      "scoredAt": "2026-11-09T09:30:43.776Z",
+      "trigger": "hold_close",
+      "reasons": [
+        {
+          "rank": 1,
+          "feature": "agent_tenure_days",
+          "description": "the agent has been on the platform 550 days",
+          "contribution": -1.520828008651733,
+          "raisesRisk": false,
+          "isAgentLevel": true
+        },
+        {
+          "rank": 2,
+          "feature": "customer_active_days_7d",
+          "description": "the customer used the service on 8 of the first 8 days",
+          "contribution": -1.375867486000061,
+          "raisesRisk": false,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 3,
+          "feature": "device_activations_7d",
+          "description": "this device was used for 2 activations in the last 7 days",
+          "contribution": -0.9891865849494934,
+          "raisesRisk": false,
+          "isAgentLevel": true
+        }
+      ]
+    },
+    "concern": null,
+    "health": {
+      "unscoredStage": null,
+      "failedAttempts": 0,
+      "lastFailure": null,
+      "pendingRetry": null,
+      "gaveUp": false
+    },
+    "reviewHistory": [],
+    "evidenceRequests": [],
+    "dispute": null,
+    "payout": {
+      "amount": {
+        "amountCents": 1000,
+        "commission": {
+          "submissionValueCents": 10000,
+          "commissionRateBps": 1000,
+          "flatCommissionCents": 0,
+          "rateComponentCents": 1000,
+          "roundedDown": false,
+          "amountCents": 1000,
+          "payableCents": 1000,
+          "roundedOffCents": 0,
+          "derivation": "KSh 100.00 × 10.00% = KSh 10.00"
+        },
+        "basis": "recorded"
+      },
+      "payoutMsisdn": "0712345678",
+      "authorisation": {
+        "id": "cmw929iqc000co8p4qy3lfetn",
+        "activationId": "2b8c432a-fa3f-455d-8a65-470f173a4a8e",
+        "commissionId": "cmw929iq8000ao8p46n1qarat",
+        "amountCents": 1000,
+        "payoutMsisdn": "0712345678",
+        "authorisedAt": "2026-11-09T09:30:43.572Z",
+        "authorisedById": null,
+        "provider": "daraja",
+        "providerRef": "905dbd54948d2674c11a507b71155643"
+      }
+    },
+    "actions": {
+      "canApprove": false,
+      "canRefuse": false,
+      "canRequestEvidence": false,
+      "canForceT7": false
+    },
+    "position": null,
+    "audit": [
+      {
+        "at": "2026-11-09T09:30:16.559Z",
+        "kind": "transition",
+        "fromState": null,
+        "toState": "submitted",
+        "actorName": "Grace Wanjiku",
+        "detail": "Submitted with 3 photo(s) against evidence configuration version 1."
+      },
+      {
+        "at": "2026-11-09T09:30:16.559Z",
+        "kind": "transition",
+        "fromState": "submitted",
+        "toState": "scored_t0",
+        "actorName": null,
+        "detail": "T0 t0_none-isotonic-v1: 2.2%, band auto_release"
+      },
+      {
+        "at": "2026-11-09T09:30:16.559Z",
+        "kind": "transition",
+        "fromState": "scored_t0",
+        "toState": "held",
+        "actorName": null,
+        "detail": "Held for the hold window; scored again by the hold-close model when it closes."
+      },
+      {
+        "at": "2026-11-09T09:30:16.781Z",
+        "kind": "activity_reported",
+        "fromState": null,
+        "toState": null,
+        "actorName": "Peter Ochieng",
+        "detail": "First-week activity reported for 8 day(s)."
+      },
+      {
+        "at": "2026-11-09T09:30:43.572Z",
+        "kind": "transition",
+        "fromState": "held",
+        "toState": "scored_t7",
+        "actorName": null,
+        "detail": "T7 t7_none-isotonic-v1: 0.1%, band auto_release"
+      },
+      {
+        "at": "2026-11-09T09:30:43.572Z",
+        "kind": "transition",
+        "fromState": "scored_t7",
+        "toState": "approved",
+        "actorName": null,
+        "detail": "At or below the hold-close release cut-off: released automatically."
+      },
+      {
+        "at": "2026-11-09T09:30:43.572Z",
+        "kind": "payout_authorised",
+        "fromState": null,
+        "toState": null,
+        "actorName": null,
+        "detail": "KSh 10.00 to 0712345678 authorised via daraja: KSh 100.00 × 10.00% = KSh 10.00."
+      }
+    ]
+  },
+  "audit": {
+    "activationId": "2b8c432a-fa3f-455d-8a65-470f173a4a8e",
+    "events": [
+      {
+        "eventId": "732",
+        "sequence": "732",
+        "kind": "transition",
+        "at": "2026-11-09T09:30:16.559Z",
+        "fromState": null,
+        "toState": "submitted",
+        "actorId": "cmw91qz7d0008o8sogxzq3908",
+        "detail": "Submitted with 3 photo(s) against evidence configuration version 1.",
+        "hash": "6cc7bf4cf4342ed4ca818af0873c6a087a738d086e1fa9a03d813107de01f08f",
+        "previousHash": "b698278c8bf56b66f7893251603718a2ba599be3f9e31b273360e1aef3529f19",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "733",
+        "sequence": "733",
+        "kind": "activation_submitted",
+        "at": "2026-11-09T09:30:16.559Z",
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "LF-000065 submitted for job \"Chapter 5 log capture (t7submit)\" with 3 photo(s), against evidence configuration version 1.",
+        "hash": "973e9c5c0780f54b32ed257a86520c3ec30c13bf0bdd61c907e07bde644fbf29",
+        "previousHash": "6cc7bf4cf4342ed4ca818af0873c6a087a738d086e1fa9a03d813107de01f08f",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "734",
+        "sequence": "734",
+        "kind": "transition",
+        "at": "2026-11-09T09:30:16.559Z",
+        "fromState": "submitted",
+        "toState": "scored_t0",
+        "actorId": null,
+        "detail": "T0 t0_none-isotonic-v1: 2.2%, band auto_release",
+        "hash": "4fa6aeb3cb70f04363f3944315488b5577c4c2370a2f3c7f53fa10935196c459",
+        "previousHash": "973e9c5c0780f54b32ed257a86520c3ec30c13bf0bdd61c907e07bde644fbf29",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "735",
+        "sequence": "735",
+        "kind": "transition",
+        "at": "2026-11-09T09:30:16.559Z",
+        "fromState": "scored_t0",
+        "toState": "held",
+        "actorId": null,
+        "detail": "Held for the hold window; scored again by the hold-close model when it closes.",
+        "hash": "9bae140e79d568b0970443efed550ab78f82db4807d725f609259ee732846d21",
+        "previousHash": "4fa6aeb3cb70f04363f3944315488b5577c4c2370a2f3c7f53fa10935196c459",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "736",
+        "sequence": "736",
+        "kind": "scoring_decision",
+        "at": "2026-11-09T09:30:16.559Z",
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "T0 scored (primary): band auto_release, probability 0.022, thresholds 0.301 / 0.729.",
+        "hash": "22a5e08900d8aa1010af60ab98ed49aff754302969257698cf1187f58ee203fc",
+        "previousHash": "9bae140e79d568b0970443efed550ab78f82db4807d725f609259ee732846d21",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "737",
+        "sequence": "737",
+        "kind": "activity_reported",
+        "at": "2026-11-09T09:30:16.781Z",
+        "fromState": null,
+        "toState": null,
+        "actorId": "cmw91qz4s0003o8so9lyh5w2l",
+        "detail": "First-week activity reported for 8 day(s).",
+        "hash": "f0697229a01629344f94b004adbf52ab4cca60dbeb8ae522a470a83bdf78dbda",
+        "previousHash": "22a5e08900d8aa1010af60ab98ed49aff754302969257698cf1187f58ee203fc",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "739",
+        "sequence": "739",
+        "kind": "transition",
+        "at": "2026-11-09T09:30:43.572Z",
+        "fromState": "held",
+        "toState": "scored_t7",
+        "actorId": null,
+        "detail": "T7 t7_none-isotonic-v1: 0.1%, band auto_release",
+        "hash": "429065fd9414f01310ab364b61a60ccb50f6e9d98de66c8d4c727500578e6ae6",
+        "previousHash": "9dda93a35807c785b89535a5ab18ae1d935d11652895bac5d8ce96f46f7fe54f",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "740",
+        "sequence": "740",
+        "kind": "transition",
+        "at": "2026-11-09T09:30:43.572Z",
+        "fromState": "scored_t7",
+        "toState": "approved",
+        "actorId": null,
+        "detail": "At or below the hold-close release cut-off: released automatically.",
+        "hash": "e91062b944f7348c933014f8c9186ad125643ffdea2ae171658af8292ec5434a",
+        "previousHash": "429065fd9414f01310ab364b61a60ccb50f6e9d98de66c8d4c727500578e6ae6",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "741",
+        "sequence": "741",
+        "kind": "payout_authorised",
+        "at": "2026-11-09T09:30:43.572Z",
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "KSh 10.00 to 0712345678 authorised via daraja: KSh 100.00 × 10.00% = KSh 10.00.",
+        "hash": "ee9796c8e0acfc41e3852f943d908f75919b57ea5776c0d360a9befc5a6200c6",
+        "previousHash": "e91062b944f7348c933014f8c9186ad125643ffdea2ae171658af8292ec5434a",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "742",
+        "sequence": "742",
+        "kind": "scoring_decision",
+        "at": "2026-11-09T09:30:43.572Z",
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "T7 scored (primary): band auto_release, probability 0.001, thresholds 0.267 / 0.667.",
+        "hash": "c524a747926df4410a0a2f25422bb983f09c694aa98923637f68cdb7a65d4694",
+        "previousHash": "ee9796c8e0acfc41e3852f943d908f75919b57ea5776c0d360a9befc5a6200c6",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      }
+    ]
+  }
+}
