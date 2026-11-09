@@ -1,0 +1,51 @@
+{
+  "description": "Five real activations from the seed-42 dataset, chosen because each shows one behaviour of the scoring service worth protecting from regression. Only identifiers, true labels and expected bands are stored; the request payloads are rebuilt from data/ by src.serve.testing.build_request_payload, which is deterministic for a given dataset. The true labels are hidden generator variables and are never sent to the service. Expected bands are for the artifacts t0_none-isotonic-v1 and t7_none-isotonic-v1 at their thresholds in outputs/band_operating_point_t0.csv and outputs/band_operating_point.csv; if those artifacts are retrained or the thresholds change, this file must be re-checked deliberately.",
+  "source": {"generator_config_hash": "e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251", "seed": 42},
+  "records": [
+    {
+      "activation_id": "act_0000005",
+      "agent_id": "agent_0328",
+      "honesty_type": "honest",
+      "is_fraudulent": false,
+      "fraud_typology": "none",
+      "expected_band": {"t0": "auto_release", "t7": "auto_release"},
+      "why_kept": "Baseline: an ordinary genuine activation is released at both decision points."
+    },
+    {
+      "activation_id": "act_0001064",
+      "agent_id": "agent_0181",
+      "honesty_type": "systematic",
+      "is_fraudulent": true,
+      "fraud_typology": "sim_farming",
+      "expected_band": {"t0": "reject", "t7": "reject"},
+      "why_kept": "SIM farming, the fraud pattern the model catches best, is refused at both decision points."
+    },
+    {
+      "activation_id": "act_0001185",
+      "agent_id": "agent_0181",
+      "honesty_type": "systematic",
+      "is_fraudulent": true,
+      "fraud_typology": "sim_farming",
+      "expected_band": {"t0": "auto_release", "t7": "review"},
+      "why_kept": "The two decision points disagree: fraud released at submission is only queued for review at hold-close, after the payout has already been made."
+    },
+    {
+      "activation_id": "act_0014085",
+      "agent_id": "agent_0308",
+      "honesty_type": "opportunistic",
+      "is_fraudulent": true,
+      "fraud_typology": "collusion",
+      "expected_band": {"t0": "auto_release", "t7": "auto_release"},
+      "why_kept": "Known miss: collusion looks like honest work at submission and is released at both decision points."
+    },
+    {
+      "activation_id": "act_0005258",
+      "agent_id": "agent_0230",
+      "honesty_type": "systematic",
+      "is_fraudulent": false,
+      "fraud_typology": "none",
+      "expected_band": {"t0": "review", "t7": "review"},
+      "why_kept": "Fairness gap: genuine work by a high-volume agent is held at both decision points."
+    }
+  ]
+}

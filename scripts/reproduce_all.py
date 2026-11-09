@@ -27,9 +27,11 @@ reproduce the committed numbers up to floating-point noise from parallel
 tree building, which is what the tolerance is for.
 
 `--stage` selects a subset; stages always run in the dependency order below,
-regardless of the order given on the command line. A stage's prerequisites
-must already be on disk (either from an earlier full run, or from an earlier
-invocation of this script) -- this script does not check that for you.
+regardless of the order given on the command line. Some stages read files that
+are not committed to git (the generated dataset, the four-seed predictions).
+Before running anything, the script checks for those, and if one is missing and
+no earlier selected stage will produce it, it exits with status 2 naming the
+file and the command that creates it.
 """
 
 from __future__ import annotations
@@ -94,6 +96,34 @@ STAGES: Dict[str, List[str]] = {
         "src.eval.disagreement",
     ],
     "figures": ["src.eval.figures"],
+}
+
+DATA_DIR = REPO_ROOT / "data"
+
+
+@dataclass(frozen=True)
+class Prerequisite:
+    """A file a stage reads that git does not carry, and the stage that writes it."""
+
+    path: Path
+    producer: str
+
+
+# Only uncommitted inputs are listed. Results CSVs and manifests are committed,
+# so a fresh clone already has them.
+PREREQUISITES: Dict[str, List[Prerequisite]] = {
+    "train": [
+        Prerequisite(DATA_DIR / "features.parquet", "generate"),
+        Prerequisite(DATA_DIR / "internal_labels.parquet", "generate"),
+    ],
+    "calibrate": [
+        Prerequisite(OUTPUT_DIR / "multiseed_predictions.parquet", "multiseed"),
+    ],
+    "bands": [
+        Prerequisite(OUTPUT_DIR / "multiseed_predictions.parquet", "multiseed"),
+        Prerequisite(OUTPUT_DIR / "multiseed_row_context.parquet", "multiseed"),
+        Prerequisite(OUTPUT_DIR / "multiseed_shap.parquet", "multiseed"),
+    ],
 }
 
 # label, path, key columns, value columns to check for B3's headline report.
@@ -197,6 +227,30 @@ def plan(stage_names: Sequence[str]) -> List[str]:
     return modules
 
 
+def missing_prerequisites(stage_names: Sequence[str]) -> List[tuple[str, Prerequisite]]:
+    """Prerequisites absent from disk that no earlier selected stage will write."""
+    scheduled: set[str] = set()
+    missing: List[tuple[str, Prerequisite]] = []
+    for stage in stage_names:
+        for need in PREREQUISITES.get(stage, []):
+            if need.producer not in scheduled and not need.path.exists():
+                missing.append((stage, need))
+        scheduled.add(stage)
+    return missing
+
+
+def report_missing(missing: List[tuple[str, Prerequisite]]) -> None:
+    print("Cannot start: a selected stage needs a file that is not on disk.\n", file=sys.stderr)
+    for stage, need in missing:
+        print(f"  stage {stage!r} needs {need.path.relative_to(REPO_ROOT)} "
+              f"(not committed to git; written by stage {need.producer!r})", file=sys.stderr)
+    producers = sorted({need.producer for _, need in missing}, key=list(STAGES).index)
+    print("\nCreate the missing file(s) first with:", file=sys.stderr)
+    for producer in producers:
+        print(f"  python scripts/reproduce_all.py --stage {producer}", file=sys.stderr)
+    print("or add those stages to this command.", file=sys.stderr)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--stage", action="append", choices=list(STAGES), default=None,
@@ -217,6 +271,11 @@ def main() -> None:
     requested = set(args.stage) if args.stage else set(STAGES)
     stage_names = [name for name in STAGES if name in requested]  # canonical order, not CLI order
     modules = plan(stage_names)
+
+    missing = missing_prerequisites(stage_names)
+    if missing:
+        report_missing(missing)
+        sys.exit(2)
 
     if args.dry_run:
         print(f"stages: {', '.join(stage_names)}")
