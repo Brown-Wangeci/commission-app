@@ -41,6 +41,37 @@ pointer to the complete CSV for the rest.
 | Shuffled-label control, XGBoost PR-AUC (3 repeats, fold 0) | real labels: T0 0.661, T7 0.748; shuffled labels (5 shuffles each): T0 0.092 (sd 0.035), T7 0.087 (sd 0.013) -- both near the ~0.089 test prevalence, as the pipeline check requires | `outputs/investigation_permutation_control.csv` | 3 |
 | Isolation Forest baseline (unsupervised, no labels), PR-AUC (3 repeats, fold 0) | T0 0.436, T7 0.368 -- above prevalence (plain outlyingness carries some signal) but well below the supervised real-label result | `outputs/investigation_permutation_control.csv` | 3 |
 
+**Provenance of the row above** (traced 2026-11-09, since its own file carries
+no manifest): produced by `permutation_control()` in `src/eval/investigations.py`,
+run as `python -m src.eval.investigations` (after `python -m src.train.run`),
+written 2026-09-17 03:22. It loads the one committed dataset on disk
+(`data/features.parquet`, `data/internal_labels.parquet`; `src/train/data.py::load_dataset`
+takes no seed argument -- there is only ever one dataset on disk at a time),
+which `outputs/run_manifest.json` records as seed 42, generated 2026-09-16
+19:27 UTC, `generator_config_hash e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251`
+-- the same hash `docs/model_card.md` cites for the deployed dataset.
+**This is post-fix.** `config/generator.yaml` was last edited in commit
+`9f921d8` (2026-09-16 09:50), which already added the `batch_acceptance` and
+`event_backlog` honest counterparts that defect B1's fix in
+`docs/change_log_phase4.md` describes (confirmed: both parameters are in the
+file today, and `git log -- config/generator.yaml` shows no edit since); the
+"Phase 4: fix both generator defects" commit (`1711987`, 2026-09-16 10:31)
+only reran the pipeline and updated the training manifest, 41 minutes later
+and still well before the dataset's own 19:27 generation. CV setup: time-ordered,
+`cv_seed` 7, `StratifiedGroupKFold` grouped by `agent_id`, 3 repeats x 5 folds
+(`config/model.yaml::cross_validation`), only fold 0 of each repeat used
+("First fold of each repeat" per the function's own docstring). Test window:
+activations submitted on or after day 90 of the 180-day simulation (2025-04-06,
+`test_start_fraction` 0.5 from a 2025-01-06 start), with an 8-day embargo
+(`t7_window_days` 7, plus 1) on training rows. **Why its prevalence (~0.089)
+differs from the deployed seed 42's realised rate (7.350%, dataset-wide,
+`outputs/run_manifest.json`):** CLAUDE.md's own standing caveat applies --
+`StratifiedGroupKFold` orders groups by size, so fold 0 always carries the
+heaviest agents and is not a representative, exchangeable sample of the whole
+dataset. This is the same reason fold-level spread is reported as secondary
+to seed-level spread throughout this project; it is not a different dataset,
+a different seed, or a pre-fix artifact.
+
 ## Full model comparison table (Phase 3/4, single-seed CV, seed 42)
 
 | Model | PR-AUC (sd across folds) | ROC-AUC | Recall@P90 | Recall@P95 | File |
@@ -214,6 +245,26 @@ correcting the cost model took the systematic agent's genuine-activation
 reject share from 5.71% to 1.47% -- a fall to about a quarter of its
 earlier value (relative change -74.3%, not "roughly halved" as an earlier
 version of this row said; corrected 2026-11-09).
+
+**Held rate by lookalike situation, honest agents' genuine activations**
+(added 2026-11-09). "Held (review)" here means landed in the review or
+reject band, i.e. not auto-released -- it is not the same thing as
+"refused," which is the reject band alone (already reported above). No
+ratio is given; these are the raw committed rates only.
+
+| Situation | Held (review) share | File |
+|---|---|---|
+| No lookalike situation | 0.073% | `outputs/fairness_bands_by_situation.csv` |
+| Any lookalike situation | 1.005% | same |
+| Shared team device | 3.039% | same |
+| Dormant (then burst of activity) | 2.874% | same |
+| Batch acceptance | 2.743% | same |
+| End-of-cycle push | 1.905% | same |
+| Repeat customer MSISDN | 1.618% | same |
+| Same-day SIM registration | 1.513% | same |
+| Fixed site | 1.437% | same |
+| Burst-day working pattern | 1.079% | same |
+| Multi-day event backlog | 0.324% | same |
 
 ## SHAP importance breakdown
 
