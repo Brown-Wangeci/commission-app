@@ -130,11 +130,21 @@ itself since the API call was made directly rather than through the page);
 the screenshot is the client's own `/client` page, included to show what
 that session can see instead.
 
-## Not captured
+## figure-5-15-agent-submission-form.png / figure-5-16-agent-submission-form-mobile.png
 
-- **Agent submission form.** The seed data has no unsubmitted accepted
-  assignment at capture time (every assignment in the fresh seed is either
-  unaccepted or already submitted), so there was no in-progress submission
-  form to screenshot without performing a new submission outside the seed's
-  own data. Recorded here rather than staged separately. See
-  `docs/chapter5/gaps.md`.
+Captured 2026-11-09, separately from the main capture run above. The fresh
+seed has no unsubmitted accepted assignment (every seeded assignment is
+either unaccepted or already submitted), so one assignment was created for
+this capture (a job posted by client2@ and assigned to Mercy Achieng,
+through the real `/api/client/jobs` and `/api/admin/jobs/{id}/assign`
+routes) and then **accepted through the real UI**: signed in as
+mercy@ledgerfield.test at `/login`, clicked "Accept job" on the agent home
+page, and navigated to the resulting submission form -- nothing was
+submitted. figure-5-15 is the form at 1360x900; figure-5-16 is the same
+form at 360px width, showing it reflows to one column without clipping
+(the top nav's "My activations" label truncates to "M..." at this width,
+a minor cosmetic detail, not a functional defect). Both show the form built
+entirely from the job's evidence field configuration (version 1: ID
+document, market stall number, stall photo) plus the platform's own fields,
+and the real "Your location is not available" state (no geolocation in a
+headless browser).

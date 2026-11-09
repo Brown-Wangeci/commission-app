@@ -59,15 +59,14 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
 
 ## Test traceability (D)
 
-- **FR-09 ("render the agent form from the configuration") has no dedicated
-  automated test in either committed suite.** `app/tests/evidence-fields.test.ts`
-  thoroughly tests validation *against* a configuration, and
-  `app/tests/layer-boundary.test.ts` tests what reaches the model, but
-  nothing in the committed suites renders `EvidenceFieldInputs.tsx` and
-  asserts on its output. `docs/chapter5/test_cases.csv` therefore has no row
-  for FR-09, and this is the one "met" requirement that instruction D's
-  "every requirement marked met must appear at least once" rule cannot be
-  satisfied for honestly.
+- **Correction (2026-11-09): FR-09 was wrongly recorded as untested.**
+  `app/tests/capture-form.test.tsx` (existing since 2026-10-29, cited all
+  along in `docs/chapter5/requirements_traceability.csv`'s own FR-09 row) was
+  missed when `docs/chapter5/test_cases.csv` was first built; it renders
+  `EvidenceFieldInputs.tsx` from two different job configurations and asserts
+  on the output, exactly what this gap previously said was missing. Now
+  TC-108 in `test_cases.csv`; re-run and confirmed passing (4/4) this
+  session. No requirement marked "met" is without a test row.
 - **A handful of committed tests have no numbered Chapter 4 requirement to
   cite.** `test_config.py` (config-hash integrity), most of
   `test_phase5.py` (the cost-model and calibration mechanics that produce
@@ -84,12 +83,13 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
 
 ## Screenshots (F)
 
-- **Agent submission form was not captured.** The fresh seed's assignments
-  are each either unaccepted or already submitted, so there was no
-  in-progress submission to screenshot without performing a new submission
-  outside the seed's own data (which would not be "seeded data" in the sense
-  the brief asked for). 13 of the 14 requested figures were captured; this
-  one is listed, not faked. See `docs/chapter5/evidence/screenshots/captions.md`.
+- **Correction (2026-11-09): the agent submission form is now captured.**
+  (figure-5-15, figure-5-16). The fresh seed has no unsubmitted accepted
+  assignment, so one assignment was created through the real API and then
+  accepted through the real UI for this capture; see
+  `docs/chapter5/evidence/screenshots/captions.md` for exactly what was done.
+  All 14 requested figures (plus one extra mobile-width capture) are now
+  present.
 - **A real rendering issue was found, not fixed.** In
   `figure-5-02-admin-review-queue.png`, the payout-breakdown text for one row
   (LF-000049) wraps one character per line at the 1360x900 viewport used for
@@ -117,3 +117,24 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   (`docs/chapter5/evidence/blockchain/local-anvil-2026-11-08`) remains what
   IR-04 cites, and IR-04 stays "partially met" for the reason already given
   above.
+
+## Follow-up corrections (2026-11-09, second pass)
+
+- **No committed "~45x" honest-with-lookalike-vs-no-lookalike refusal
+  ratio was found.** Searched `outputs/`, `notebooks/`, and `docs/model_card.md`.
+  The closest committed numbers are in `outputs/fairness_bands_by_situation.csv`:
+  honest agents with no lookalike situation are held (review + reject) 0.073%
+  of the time, against roughly 2.7-3.0% for agents in the `dormant`,
+  `shared_device` or `batch_acceptance` situations -- which a reader could
+  divide to get a ratio in the high-30s to low-40s depending on which
+  situation is chosen, but no single committed figure states "~45x," and
+  this session computed no new ratio to fill that gap, per instruction.
+  `docs/model_card.md` and the Part E4 notebook cell both instead cite the
+  agent-type ratio (~11.6x, systematic vs. honest, already in table 9 /
+  the Fairness section above) and describe the post-correction change in
+  prose ("fell by about three quarters"), not a lookalike-situation ratio.
+- **FR-09 test coverage, the agent-submission-form screenshot, two
+  mislabeled table-8 figures, the "roughly halved" fairness claim, and
+  NFR-08's F1 evidence were all corrected this pass** -- see the inline
+  "Correction" notes above and in `docs/chapter5/results_tables.md` /
+  `docs/results_index.md` for what changed and why.

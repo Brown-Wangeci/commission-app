@@ -148,8 +148,17 @@ figure (`outputs/figures/f3_sensitivity_tornado.png`) built from this table.
 | Number | Value |
 |---|---|
 | Current assumed commission value | KSh 81.34 |
-| Review band collapses to zero at or below | KSh 50 |
-| Highest value with the review band still empty | KSh 40 |
+| Review band empty (collapsed) at or below | KSh 40 |
+| Review band open (non-empty) at or above | KSh 50 |
+
+The exact collapse point lies somewhere between KSh 40 and KSh 50 (the scan
+is not finer than that); `outputs/commission_sweep_scan.csv`'s own
+`review_share` column is 0 at commission values 30 and 40, then 0.0125 at
+50. The assumed value (KSh 81.34) sits less than twice the KSh 50 point
+where the band is confirmed open -- see `docs/model_card.md` limitation 1.
+An earlier version of this table mislabeled the KSh 50 point itself as
+where the band "collapses to zero," which the data contradicts (the band is
+open, not empty, at exactly KSh 50); corrected 2026-11-09.
 
 Source: `outputs/commission_collapse_point.csv`, `config/costs.yaml`; full
 sweep (KSh 50/100/200/350/500) and finer collapse scan in
@@ -157,7 +166,11 @@ sweep (KSh 50/100/200/350/500) and finer collapse scan in
 
 ## 9. Fairness
 
-| Agent type | Auto-released share | Reject share | Review share |
+Genuine activations only (`src/eval/fairness.py::genuine_rows` filters to
+`label == 0` before computing band shares; this table says nothing about
+how fraudulent activations from each agent type are banded).
+
+| Agent type | Auto-released share (genuine) | Reject share (genuine) | Review share (genuine) |
 |---|---|---|---|
 | Honest | 99.14% | 0.127% | 0.731% |
 | Opportunistic | 98.51% | 0.227% | 1.262% |
@@ -170,8 +183,11 @@ Source: `outputs/fairness_bands_by_honesty.csv`. By-situation breakdown in
 `outputs/fairness_bands_by_situation.csv`; queueing delay (mean wait for a
 reviewed activation, M/D/1 approximation: 0.0076 days) in
 `outputs/fairness_expected_delay.csv`, `outputs/fairness_queue.csv`.
-Phase 5-to-6 comparison (correcting the cost model roughly halved the
-systematic reject share, 5.71% to 1.47%) in `outputs/comparison_*.csv`.
+Phase 5-to-6 comparison in `outputs/comparison_fairness_by_honesty.csv`:
+correcting the cost model took the systematic agent's genuine-activation
+reject share from 5.71% to 1.47% -- a fall to about a quarter of its
+earlier value (relative change -74.3%, not "roughly halved" as an earlier
+version of this table said; corrected 2026-11-09).
 
 ## 10. SHAP importance
 
@@ -258,3 +274,32 @@ per-call samples in `nfr02-scoring-latency-samples.csv`. Sample, not the full
 ~90,000-row dataset -- see the script's own docstring and
 `docs/chapter5/environment.md` for why. Measured on the same hardware as
 table 12; there is no hosted deployment.
+
+## 14. NFR-08: F1 score
+
+`src/eval/metrics.py` reports PR-AUC, ROC-AUC and recall at fixed precision
+only; F1 is not among the model's own committed metrics. `scripts/compute_f1.py`
+computes it from the same committed, isotonic-calibrated out-of-fold
+predictions the multiseed results table already uses. Mean (sd) across
+seeds 7/42/101/2024:
+
+| Model | Best-achievable F1 | at precision / recall | Recall@P90 | Precision@R90 | F1@R90 |
+|---|---|---|---|---|---|
+| `t0_none` (deployed T0) | 0.579 (0.035) | 0.648 (0.073) / 0.525 (0.024) | 0.328 (0.058) | 0.176 (0.029) | 0.294 (0.040) |
+| `t7_none` (deployed T7) | 0.652 (0.026) | 0.686 (0.050) / 0.622 (0.022) | 0.424 (0.055) | 0.243 (0.040) | 0.382 (0.049) |
+
+**Target NOT met for either model.** NFR-08 requires F1 >= 0.85 with recall
+>= 0.90 on the test set, which needs precision >= 0.805 at that recall. The
+measured precision at 90% recall is 0.243 (T7) and 0.176 (T0) -- nowhere
+near 0.805. Best-achievable F1 (0.652 / 0.579) is also well under 0.85, and
+is itself an upper bound: its threshold is fitted on the same predictions it
+is scored against, unlike the deployed bands, which are set from the cost
+model, not from maximising F1. There is also no single held-out test set in
+this evaluation (it is agent-grouped, time-ordered cross-validation across
+four seeds), so NFR-08 as worded cannot be evaluated exactly as specified
+even before the numeric gap.
+
+Source: `scripts/compute_f1.py` (committed); `outputs/f1_summary.csv`,
+per-seed detail in `outputs/f1_summary_by_seed.csv`. Reproduces the
+previously-recorded values in
+`docs/chapter5/requirements_traceability.csv`'s NFR-08 row exactly.
