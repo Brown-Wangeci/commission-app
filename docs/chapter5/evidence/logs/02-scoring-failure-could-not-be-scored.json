@@ -1,0 +1,366 @@
+{
+  "detail": {
+    "id": "442133dc-cb00-471a-b6c3-f6090b796d7e",
+    "reference": "LF-000063",
+    "state": "in_review",
+    "unscoredStage": "t0",
+    "submittedAt": "2026-11-09T09:27:35.489Z",
+    "heldAt": null,
+    "holdClosesAt": null,
+    "job": {
+      "id": "cmw925h5f0001o8jki0cykc18",
+      "title": "Chapter 5 log capture (fail)",
+      "areaName": "Kibuye Market, Kisumu",
+      "areaLat": -0.0995,
+      "areaLon": 34.768,
+      "areaRadiusM": 800,
+      "clientName": "Tujenge Pesa"
+    },
+    "agent": {
+      "id": "cmw91qz9z000do8soc424v8j2",
+      "name": "Faith Chebet",
+      "registeredAt": "2024-08-11T09:16:18.255Z",
+      "payoutMsisdn": "0722118844",
+      "homeAreaName": "Pangani",
+      "homeLat": -1.262,
+      "homeLon": 36.84,
+      "stats": {
+        "total": 18,
+        "approved": 15,
+        "rejected": 0,
+        "withdrawn": 0,
+        "pending": 3,
+        "approvalRate": 1
+      }
+    },
+    "submission": {
+      "gpsLat": -0.0991,
+      "gpsLon": 34.7684,
+      "gpsAccuracyM": 9,
+      "kmOutsideArea": 0,
+      "deviceId": "dev-ch5-fail",
+      "deviceOs": "android",
+      "appVersion": "web-0.1.0",
+      "networkType": "cellular",
+      "ipRegion": "region_c",
+      "ipRegionName": "Mombasa",
+      "gpsRegionName": "Kisumu",
+      "activationMethod": "qr_scan",
+      "customerMsisdnMasked": "07** *** 396",
+      "simRegisteredAt": "2026-11-07T21:00:00.000Z",
+      "agentNote": "Customer registered at her stall; no proof screenshot, her phone battery was flat."
+    },
+    "evidence": {
+      "configId": "cmw925h5o0003o8jkp08v330r",
+      "version": 1,
+      "currentVersion": 1,
+      "fields": [
+        {
+          "key": "field_1",
+          "label": "ID document seen",
+          "type": "single_select",
+          "mandatory": true,
+          "format": "One of: National ID, Passport, Alien ID",
+          "value": "National ID",
+          "photoSequences": null
+        },
+        {
+          "key": "field_2",
+          "label": "Market stall number",
+          "type": "text",
+          "mandatory": true,
+          "format": "Letters, digits and hyphens, 2 to 10 characters",
+          "value": "B-14",
+          "photoSequences": null
+        },
+        {
+          "key": "field_3",
+          "label": "Photo of the stall",
+          "type": "photo",
+          "mandatory": true,
+          "format": "1 to 4 photos",
+          "value": null,
+          "photoSequences": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "photoGroups": [
+        {
+          "key": "field_3",
+          "label": "Photo of the stall",
+          "format": "1 to 4 photos",
+          "photos": [
+            {
+              "id": "cmw925hej0007o8jkj9x9gpw4",
+              "sequence": 1,
+              "kind": "photo",
+              "fieldKey": "field_3",
+              "capturedAt": "2026-11-09T09:17:35.439Z",
+              "gpsLat": -0.0992,
+              "gpsLon": 34.7683,
+              "gpsAccuracyM": 8,
+              "locationSource": "device",
+              "kmOutsideArea": 0,
+              "flag": null,
+              "fromRequestId": null,
+              "url": "/api/evidence/cmw925hej0007o8jkj9x9gpw4"
+            },
+            {
+              "id": "cmw925hej0008o8jk2lui2cj0",
+              "sequence": 2,
+              "kind": "photo",
+              "fieldKey": "field_3",
+              "capturedAt": "2026-11-09T09:18:35.455Z",
+              "gpsLat": -0.0992,
+              "gpsLon": 34.7683,
+              "gpsAccuracyM": 8,
+              "locationSource": "device",
+              "kmOutsideArea": 0,
+              "flag": null,
+              "fromRequestId": null,
+              "url": "/api/evidence/cmw925hej0008o8jk2lui2cj0"
+            },
+            {
+              "id": "cmw925hej0009o8jkhrfmvom5",
+              "sequence": 3,
+              "kind": "photo",
+              "fieldKey": "field_3",
+              "capturedAt": "2026-11-09T09:19:35.472Z",
+              "gpsLat": -0.0992,
+              "gpsLon": 34.7683,
+              "gpsAccuracyM": 8,
+              "locationSource": "device",
+              "kmOutsideArea": 0,
+              "flag": null,
+              "fromRequestId": null,
+              "url": "/api/evidence/cmw925hej0009o8jkhrfmvom5"
+            }
+          ]
+        }
+      ]
+    },
+    "photos": [
+      {
+        "id": "cmw925hej0007o8jkj9x9gpw4",
+        "sequence": 1,
+        "kind": "photo",
+        "fieldKey": "field_3",
+        "capturedAt": "2026-11-09T09:17:35.439Z",
+        "gpsLat": -0.0992,
+        "gpsLon": 34.7683,
+        "gpsAccuracyM": 8,
+        "locationSource": "device",
+        "kmOutsideArea": 0,
+        "flag": null,
+        "fromRequestId": null,
+        "url": "/api/evidence/cmw925hej0007o8jkj9x9gpw4"
+      },
+      {
+        "id": "cmw925hej0008o8jk2lui2cj0",
+        "sequence": 2,
+        "kind": "photo",
+        "fieldKey": "field_3",
+        "capturedAt": "2026-11-09T09:18:35.455Z",
+        "gpsLat": -0.0992,
+        "gpsLon": 34.7683,
+        "gpsAccuracyM": 8,
+        "locationSource": "device",
+        "kmOutsideArea": 0,
+        "flag": null,
+        "fromRequestId": null,
+        "url": "/api/evidence/cmw925hej0008o8jk2lui2cj0"
+      },
+      {
+        "id": "cmw925hej0009o8jkhrfmvom5",
+        "sequence": 3,
+        "kind": "photo",
+        "fieldKey": "field_3",
+        "capturedAt": "2026-11-09T09:19:35.472Z",
+        "gpsLat": -0.0992,
+        "gpsLon": 34.7683,
+        "gpsAccuracyM": 8,
+        "locationSource": "device",
+        "kmOutsideArea": 0,
+        "flag": null,
+        "fromRequestId": null,
+        "url": "/api/evidence/cmw925hej0009o8jkhrfmvom5"
+      }
+    ],
+    "proof": null,
+    "evidenceSummary": {
+      "photoCount": 3,
+      "proofAttached": false,
+      "captureStart": "2026-11-09T09:17:35.439Z",
+      "captureEnd": "2026-11-09T09:19:35.472Z",
+      "accuracyMin": 8,
+      "accuracyMax": 8,
+      "withoutLocation": 0,
+      "outside": []
+    },
+    "previous": {
+      "id": "3f7ec6b8-ec8c-4544-9827-06c630869b13",
+      "reference": "LF-000055",
+      "submittedAt": "2026-11-09T06:05:00.000Z",
+      "gapMs": 12155489,
+      "distanceKm": 264.628393895979,
+      "gpsLat": -1.282934536793338,
+      "gpsLon": 36.83310993719044
+    },
+    "decisions": [],
+    "latest": null,
+    "concern": null,
+    "health": {
+      "unscoredStage": "t0",
+      "failedAttempts": 3,
+      "lastFailure": {
+        "mode": "t0",
+        "kind": "unavailable",
+        "message": "could not reach the scoring service: bad port",
+        "at": "2026-11-09T09:27:37.097Z"
+      },
+      "pendingRetry": {
+        "mode": "t0",
+        "dueAt": "2026-11-09T09:28:35.489Z"
+      },
+      "gaveUp": false
+    },
+    "reviewHistory": [
+      {
+        "id": "cmw925imx000jo8jktpwf9xey",
+        "openedAt": "2026-11-09T09:27:35.489Z",
+        "openReason": "could_not_be_scored",
+        "closedAt": null,
+        "action": null,
+        "reviewerName": null,
+        "reason": null
+      }
+    ],
+    "evidenceRequests": [],
+    "dispute": null,
+    "payout": {
+      "amount": {
+        "amountCents": 35000,
+        "commission": {
+          "submissionValueCents": 250000,
+          "commissionRateBps": 1200,
+          "flatCommissionCents": 5000,
+          "rateComponentCents": 30000,
+          "roundedDown": false,
+          "amountCents": 35000,
+          "payableCents": 35000,
+          "roundedOffCents": 0,
+          "derivation": "KSh 2,500.00 × 12.00% = KSh 300.00 + KSh 50.00 flat"
+        },
+        "basis": "job_terms"
+      },
+      "payoutMsisdn": "0722118844",
+      "authorisation": null
+    },
+    "actions": {
+      "canApprove": true,
+      "canRefuse": true,
+      "canRequestEvidence": true,
+      "canForceT7": true
+    },
+    "position": {
+      "index": 6,
+      "total": 6,
+      "previousId": "3f7ec6b8-ec8c-4544-9827-06c630869b13",
+      "nextId": null
+    },
+    "audit": [
+      {
+        "at": "2026-11-09T09:27:35.489Z",
+        "kind": "transition",
+        "fromState": null,
+        "toState": "submitted",
+        "actorName": "Faith Chebet",
+        "detail": "Submitted with 3 photo(s) against evidence configuration version 1."
+      },
+      {
+        "at": "2026-11-09T09:27:35.489Z",
+        "kind": "transition",
+        "fromState": "submitted",
+        "toState": "in_review",
+        "actorName": null,
+        "detail": "Could not be scored at submission (T0) (unavailable). Sent to a reviewer; never auto-released."
+      },
+      {
+        "at": "2026-11-09T09:27:35.489Z",
+        "kind": "scoring_failed",
+        "fromState": null,
+        "toState": null,
+        "actorName": null,
+        "detail": "T0 could not be scored (unavailable: could not reach the scoring service: bad port). Next automatic retry 9 Nov 2026 at 12:28."
+      }
+    ]
+  },
+  "audit": {
+    "activationId": "442133dc-cb00-471a-b6c3-f6090b796d7e",
+    "events": [
+      {
+        "eventId": "710",
+        "sequence": "710",
+        "kind": "transition",
+        "at": "2026-11-09T09:27:35.489Z",
+        "fromState": null,
+        "toState": "submitted",
+        "actorId": "cmw91qz9y000bo8so9p0rx8xy",
+        "detail": "Submitted with 3 photo(s) against evidence configuration version 1.",
+        "hash": "ff272c69a676d903d9e24c26fc7c1706814c588813b3232cbeef3dc1e91bb1dc",
+        "previousHash": "aa6eaa9b34d885f27ef85d891d4f4b768d71e7725155f8b3a5e46e714b9d09cf",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "711",
+        "sequence": "711",
+        "kind": "activation_submitted",
+        "at": "2026-11-09T09:27:35.489Z",
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "LF-000063 submitted for job \"Chapter 5 log capture (fail)\" with 3 photo(s), against evidence configuration version 1.",
+        "hash": "9640b201361ab544dff6b9285a0d237e85c69e0446d5347c992d6070f304295f",
+        "previousHash": "ff272c69a676d903d9e24c26fc7c1706814c588813b3232cbeef3dc1e91bb1dc",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "712",
+        "sequence": "712",
+        "kind": "transition",
+        "at": "2026-11-09T09:27:35.489Z",
+        "fromState": "submitted",
+        "toState": "in_review",
+        "actorId": null,
+        "detail": "Could not be scored at submission (T0) (unavailable). Sent to a reviewer; never auto-released.",
+        "hash": "1230156c8c484b3dc89a77c635804fc72b0331e5671b999cfdc3758c8f0380a7",
+        "previousHash": "9640b201361ab544dff6b9285a0d237e85c69e0446d5347c992d6070f304295f",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      },
+      {
+        "eventId": "713",
+        "sequence": "713",
+        "kind": "scoring_failed",
+        "at": "2026-11-09T09:27:35.489Z",
+        "fromState": null,
+        "toState": null,
+        "actorId": null,
+        "detail": "T0 could not be scored (unavailable: could not reach the scoring service: bad port). Next automatic retry 9 Nov 2026 at 12:28.",
+        "hash": "201ffbc55248ab0fa9a126914c2c5f3dfdebff21ffa5f519822045be949f5a53",
+        "previousHash": "1230156c8c484b3dc89a77c635804fc72b0331e5671b999cfdc3758c8f0380a7",
+        "anchor": {
+          "state": "awaiting_batch"
+        }
+      }
+    ]
+  }
+}

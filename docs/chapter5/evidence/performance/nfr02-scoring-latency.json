@@ -1,0 +1,46 @@
+{
+  "measured_at": "2026-11-09",
+  "sample_size_per_mode": 200,
+  "dataset_total_activations": 90533,
+  "sampling": "uniform random sample, random_state=20261109, not the full dataset (see script docstring for why)",
+  "history_days_sent": 90,
+  "target_seconds": 1.0,
+  "overall": {
+    "n": 400,
+    "mean_s": 1.6618319947521376,
+    "p50_s": 1.422966499987524,
+    "p95_s": 4.026087999984156,
+    "p99_s": 5.005036199989263,
+    "max_s": 7.110545500006992,
+    "min_s": 0.058207000023685396,
+    "within_1s": 115,
+    "within_1s_share": 0.2875,
+    "errors": 0
+  },
+  "by_mode": {
+    "t0": {
+      "n": 200,
+      "mean_s": 1.6844817160037928,
+      "p50_s": 1.4392131000058725,
+      "p95_s": 4.2234073000145145,
+      "p99_s": 6.041823600011412,
+      "max_s": 7.110545500006992,
+      "min_s": 0.11166160000720993,
+      "within_1s": 57,
+      "within_1s_share": 0.285,
+      "errors": 0
+    },
+    "t7": {
+      "n": 200,
+      "mean_s": 1.6391822735004826,
+      "p50_s": 1.4013156999717467,
+      "p95_s": 4.007932799984701,
+      "p99_s": 5.005036199989263,
+      "max_s": 6.594497300044168,
+      "min_s": 0.058207000023685396,
+      "within_1s": 58,
+      "within_1s_share": 0.29,
+      "errors": 0
+    }
+  }
+}
