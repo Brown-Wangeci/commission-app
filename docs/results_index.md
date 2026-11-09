@@ -246,13 +246,13 @@ reject share from 5.71% to 1.47% -- a fall to about a quarter of its
 earlier value (relative change -74.3%, not "roughly halved" as an earlier
 version of this row said; corrected 2026-11-09).
 
-**Held rate by lookalike situation, honest agents' genuine activations**
-(added 2026-11-09). "Held (review)" here means landed in the review or
-reject band, i.e. not auto-released -- it is not the same thing as
+**Not-auto-released rate by lookalike situation, honest agents' genuine
+activations** (added 2026-11-09). "Not auto-released (review + reject)"
+means landed in the review or reject band -- it is not the same thing as
 "refused," which is the reject band alone (already reported above). No
 ratio is given; these are the raw committed rates only.
 
-| Situation | Held (review) share | File |
+| Situation | Not auto-released (review + reject) share | File |
 |---|---|---|
 | No lookalike situation | 0.073% | `outputs/fairness_bands_by_situation.csv` |
 | Any lookalike situation | 1.005% | same |

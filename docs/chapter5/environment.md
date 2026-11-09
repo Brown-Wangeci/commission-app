@@ -71,6 +71,30 @@ which is a real file in this working tree but is not committed (the user's
 own uncommitted work), so CI -- which only sees committed files -- never
 runs it; a local run that includes it reports more than 150.
 
+**The 12 pytest tests that pass locally but do not run in CI** are every
+test in `tests/test_curated_records.py` (collected and confirmed passing in
+this session's local run, 2026-11-09). The reason is the same for all
+twelve: neither the test file nor its fixture (`tests/fixtures/curated_records.json`)
+is committed, so a fresh checkout -- which is what CI runs against -- does
+not have them, and `pytest`'s own test discovery never finds a file that
+is not there.
+
+- `test_service_assigns_the_recorded_band` (10 of the 12: parametrized over
+  5 curated activation records x 2 modes, `[activation_id-mode]`) -- the
+  service still assigns the exact band recorded in the fixture for each of
+  5 hand-picked real activations (a clean release, a caught fraud, a
+  decision revised between submission and hold-close, a known miss, and a
+  fairness-gap hold), at both T0 and T7.
+- `test_fixture_labels_match_the_generated_dataset` -- the fixture's stored
+  true labels (fraud status, typology, honesty type, agent id) still match
+  what `data/internal_labels.parquet` actually holds for those activation
+  ids, so a regenerated dataset with different activations under the same
+  ids would fail here rather than silently changing what the bands above
+  mean.
+- `test_the_fixture_still_exercises_a_revised_decision` -- at least one of
+  the 5 curated records still changes band between T0 and T7, so the
+  fixture has not lost the one case it exists specifically to protect.
+
 **The 38 Vitest tests skipped without a live server**, all behind a
 `describe.runIf(up)` or `describe.runIf(live)` guard that checks for a
 running app (`http://localhost:3000` by default), a running scoring service,
