@@ -50,6 +50,66 @@ machine, because no other exists.
 | pytest | 9.1.1 | The ML test suite | Per `requirements.txt`; used for all 150 committed Python tests |
 | httpx | 0.28.1 | The scoring-latency measurement script's real HTTP client | Already a transitive dependency (FastAPI's recommended test client); reused here to make a genuine network round trip rather than an in-process call |
 
+## Test suite results (CI, not this machine)
+
+The counts below are from the project's own GitHub Actions CI
+(`.github/workflows/ci.yml`), not a local run, on branch
+`chapter5-evidence-collection`, run 42612670984, 2026-11-09. CI runs on
+`ubuntu-latest` with no live app, scoring service, or blockchain node
+available, so every test that needs one skips itself (each file's own
+`describe.runIf(up)` / `describe.runIf(live)` guard, not a CI-specific
+flag).
+
+| Suite | Passed | Skipped | Failed |
+|---|---|---|---|
+| pytest (`ML tests (pytest)` job) | 150 | 0 | 0 |
+| Vitest (`App tests (Vitest)` job) | 383 | 38 | 0 |
+
+Vitest also ran the production build and `npm run typecheck` in the same
+job; both passed. pytest's 150 does not include `tests/test_curated_records.py`,
+which is a real file in this working tree but is not committed (the user's
+own uncommitted work), so CI -- which only sees committed files -- never
+runs it; a local run that includes it reports more than 150.
+
+**The 38 Vitest tests skipped without a live server**, all behind a
+`describe.runIf(up)` or `describe.runIf(live)` guard that checks for a
+running app (`http://localhost:3000` by default), a running scoring service,
+or a live chain:
+
+- `tests/api-live.test.ts` (32 tests, one `describe.runIf(up)` block,
+  `it.each` over 32 named cases) -- every API route rejects bad input
+  cleanly (issue #18): anonymous admin route, agent on admin route, client
+  on agent route, agent on client route, signup malformed JSON, signup
+  invalid fields, signup as admin, queue with a bad tab, review detail for
+  a missing activation, approve without a reason, refuse a missing
+  activation, ask for evidence with malformed JSON, force T7 on a missing
+  activation, assign without an agent, assign to a missing job, submit
+  without multipart, submit with missing fields, accept a missing
+  assignment, evidence reply without multipart, withdraw without a reason,
+  contest a missing activation, post a job with no fields, fund with a
+  negative amount, fund with shillings as text, fund with a fraction of a
+  cent, close a missing job, report an empty week, report a day out of
+  range, mark no notifications, evidence file that does not exist, cron
+  without a secret, unknown API path.
+- `tests/chain-live.test.ts` (2 tests, `describe.runIf(live)`, "the anchor
+  contract and client on a live chain (B1, B4, C2)") -- records a root
+  once, with its time, and refuses it a second time; anchors the audit
+  chain through the real client, and verification reads it back from the
+  chain.
+- `tests/scoring-live.test.ts` (1 test, `describe.runIf(up)`, "live scoring
+  service") -- accepts a T0 request built by the app and returns the T0
+  model's thresholds.
+- `tests/seed-live.test.ts` (3 tests, `describe.runIf(up)`, "seed data
+  (issue #16)") -- seeds an empty database with every resting state, three
+  roles, and payouts; can be rerun and produces the same data; refuses to
+  clear a database holding accounts it did not create.
+
+All 38 were run for real, against live services, at various points earlier
+in this project's build sessions (see `app/BUILD_LOG.md` and this
+document's own measurement sections above, several of which started the
+same services these tests need); they are not untested code, only not
+exercised inside CI's own environment.
+
 ## What this environment does and does not establish
 
 - **NFR-01 and NFR-02's numbers are specific to this one mobile-class laptop,
