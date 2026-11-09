@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 860" font-family="Helvetica, Arial, sans-serif"><rect x="0" y="0" width="360" height="860" fill="white" stroke="#ccc"/>
+<rect x="0" y="0" width="360" height="44" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
+<text x="14" y="27" font-size="12" font-weight="700" text-anchor="start" fill="white">Ledgerfield</text>
+<text x="16" y="66" font-size="14" font-weight="700" text-anchor="start" fill="#333333">Submit an activation</text>
+<text x="16" y="80" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">Wallet activations, Kibuye Market · pays KSh 350.00</text>
+<rect x="14" y="92" width="332" height="26" rx="3" fill="#fde9e9" stroke="#b84a4a"/>
+<text x="22" y="108" font-size="8.5" text-anchor="start" fill="#333333">Your location is not available. Enter it by hand below.</text>
+<text x="14" y="140" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Every activation</text>
+<text x="14" y="159" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Customer's phone number</text>
+<rect x="14" y="164" width="332" height="32" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="207" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">SIM registration date</text>
+<rect x="14" y="212" width="332" height="32" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="255" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">How did you capture the customer's details?</text>
+<text x="14" y="261" font-size="9.5" font-weight="400" text-anchor="start" fill="#555"></text>
+<circle cx="21" cy="275" r="6" fill="white" stroke="#9a9a9a"/>
+<circle cx="111" cy="275" r="6" fill="white" stroke="#9a9a9a"/>
+<text x="28" y="273" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Scanned</text>
+<text x="118" y="273" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Typed by hand</text>
+<text x="14" y="291" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Proof of activation (optional)</text>
+<rect x="14" y="296" width="90" height="26" rx="4" fill="#ececec" stroke="#777"/>
+<text x="59.0" y="313.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Choose file</text>
+<text x="14" y="335" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Note for the reviewer (optional)</text>
+<rect x="14" y="340" width="332" height="48" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="404" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Evidence for this job (version 1)</text>
+<text x="14" y="420" font-size="8.5" font-weight="400" text-anchor="start" fill="#777">Set by the client for this job.</text>
+<text x="14" y="435" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">ID document seen</text>
+<text x="28" y="453" font-size="9" font-weight="400" text-anchor="start" fill="#333333">National ID</text>
+<text x="110" y="453" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Passport</text>
+<text x="180" y="453" font-size="9" font-weight="400" text-anchor="start" fill="#333333">Alien ID</text>
+<text x="14" y="465" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Market stall number</text>
+<rect x="14" y="470" width="332" height="32" rx="3" fill="white" stroke="#aaa"/>
+<text x="14" y="513" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Photo of the stall (1 to 4 photos)</text>
+<rect x="14" y="518" width="60" height="60" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="14" y1="518" x2="74" y2="578" stroke="#bbb"/>
+<line x1="74" y1="518" x2="14" y2="578" stroke="#bbb"/>
+<rect x="86" y="518" width="60" height="60" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="86" y1="518" x2="146" y2="578" stroke="#bbb"/>
+<line x1="146" y1="518" x2="86" y2="578" stroke="#bbb"/>
+<rect x="158" y="518" width="60" height="60" rx="3" fill="#ebebeb" stroke="#9a9a9a"/>
+<line x1="158" y1="518" x2="218" y2="578" stroke="#bbb"/>
+<line x1="218" y1="518" x2="158" y2="578" stroke="#bbb"/>
+<text x="14" y="598" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Captured by your device</text>
+<text x="14" y="617" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Latitude</text>
+<rect x="14" y="622" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="126" y="617" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Longitude</text>
+<rect x="126" y="622" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
+<text x="238" y="617" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Accuracy (m)</text>
+<rect x="238" y="622" width="108" height="30" rx="3" fill="white" stroke="#aaa"/>
+<rect x="14" y="670" width="160" height="30" rx="4" fill="#ececec" stroke="#777"/>
+<text x="94.0" y="689.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Use my current location</text>
+<rect x="14" y="716" width="332" height="38" rx="4" fill="#d9d9d9" stroke="#777"/>
+<text x="180.0" y="739.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Submit activation</text>
+<text x="180.0" y="766" font-size="9" font-weight="400" text-anchor="middle" fill="#b84a4a">38px tall -- below the 48px NFR-12 minimum</text>
+<text x="14" y="786" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">SubmitActivationForm.tsx, EvidenceFieldInputs.tsx</text></svg>

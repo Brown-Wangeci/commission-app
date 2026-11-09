@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1780 2674" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="1780" height="2674" fill="white"/>
+<text x="872.5" y="38" font-size="16" font-weight="700" text-anchor="middle" fill="#111">Figure 4.1b  Decision to payout and anchoring (continues from Figure 4.1a)</text>
+<rect x="52" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="120" y="74" font-size="11.5" text-anchor="middle" fill="#222">Agent</text>
+<text x="120" y="92" font-size="11.5" text-anchor="middle" fill="#222">(PWA/browser)</text>
+<line x1="120" y1="146" x2="120" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="52" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="120" y="2616" font-size="11.5" text-anchor="middle" fill="#222">Agent</text>
+<text x="120" y="2634" font-size="11.5" text-anchor="middle" fill="#222">(PWA/browser)</text>
+<rect x="267" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="335" y="74" font-size="11.5" text-anchor="middle" fill="#222">Admin (browser)</text>
+<line x1="335" y1="146" x2="335" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="267" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="335" y="2616" font-size="11.5" text-anchor="middle" fill="#222">Admin (browser)</text>
+<rect x="482" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="550" y="74" font-size="11.5" text-anchor="middle" fill="#222">Next.js app</text>
+<line x1="550" y1="146" x2="550" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="482" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="550" y="2616" font-size="11.5" text-anchor="middle" fill="#222">Next.js app</text>
+<rect x="697" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="765" y="74" font-size="11.5" text-anchor="middle" fill="#222">PostgreSQL (incl.</text>
+<text x="765" y="92" font-size="11.5" text-anchor="middle" fill="#222">triggers)</text>
+<line x1="765" y1="146" x2="765" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="697" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="765" y="2616" font-size="11.5" text-anchor="middle" fill="#222">PostgreSQL (incl.</text>
+<text x="765" y="2634" font-size="11.5" text-anchor="middle" fill="#222">triggers)</text>
+<rect x="912" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="980" y="74" font-size="11.5" text-anchor="middle" fill="#222">Scheduler</text>
+<text x="980" y="92" font-size="11.5" text-anchor="middle" fill="#222">(payments + T7</text>
+<text x="980" y="110" font-size="11.5" text-anchor="middle" fill="#222">job table)</text>
+<line x1="980" y1="146" x2="980" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="912" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="980" y="2616" font-size="11.5" text-anchor="middle" fill="#222">Scheduler</text>
+<text x="980" y="2634" font-size="11.5" text-anchor="middle" fill="#222">(payments + T7</text>
+<text x="980" y="2652" font-size="11.5" text-anchor="middle" fill="#222">job table)</text>
+<rect x="1127" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="1195" y="74" font-size="11.5" text-anchor="middle" fill="#222">Daraja (B2C +</text>
+<text x="1195" y="92" font-size="11.5" text-anchor="middle" fill="#222">callback)</text>
+<line x1="1195" y1="146" x2="1195" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="1127" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="1195" y="2616" font-size="11.5" text-anchor="middle" fill="#222">Daraja (B2C +</text>
+<text x="1195" y="2634" font-size="11.5" text-anchor="middle" fill="#222">callback)</text>
+<rect x="1342" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="1410" y="74" font-size="11.5" text-anchor="middle" fill="#222">Anchoring queue</text>
+<line x1="1410" y1="146" x2="1410" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="1342" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="1410" y="2616" font-size="11.5" text-anchor="middle" fill="#222">Anchoring queue</text>
+<rect x="1557" y="54" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="1625" y="74" font-size="11.5" text-anchor="middle" fill="#222">AuditAnchor</text>
+<text x="1625" y="92" font-size="11.5" text-anchor="middle" fill="#222">contract</text>
+<line x1="1625" y1="146" x2="1625" y2="2596" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="1557" y="2596" width="136" height="72" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="1625" y="2616" font-size="11.5" text-anchor="middle" fill="#222">AuditAnchor</text>
+<text x="1625" y="2634" font-size="11.5" text-anchor="middle" fill="#222">contract</text>
+<line x1="25" y1="162" x2="1720" y2="162" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="693.62" y="149" width="357.76" height="24" fill="white" stroke="#555"/>
+<text x="872.5" y="166" font-size="12" font-weight="600" text-anchor="middle" fill="#333">Entry B1: auto-released at T7 (Figure 4.1a)</text>
+<line x1="550" y1="259" x2="755" y2="259" stroke="#222" stroke-width="1.3" />
+<path d="M756,255 L765,259 L756,263 Z" fill="#222"/>
+<text x="657.5" y="206" font-size="12" text-anchor="middle" fill="#111">1. authorisePayout():</text>
+<text x="657.5" y="221" font-size="12" text-anchor="middle" fill="#111">recordCommission() -- whole-</text>
+<text x="657.5" y="236" font-size="12" text-anchor="middle" fill="#111">shilling rounding, remainder</text>
+<text x="657.5" y="251" font-size="12" text-anchor="middle" fill="#111">back to client</text>
+<line x1="550" y1="343" x2="755" y2="343" stroke="#222" stroke-width="1.3" />
+<path d="M756,339 L765,343 L756,347 Z" fill="#222"/>
+<text x="657.5" y="290" font-size="12" text-anchor="middle" fill="#111">2. recordAuthorisation() +</text>
+<text x="657.5" y="305" font-size="12" text-anchor="middle" fill="#111">queueDisbursement() -- same tx</text>
+<text x="657.5" y="320" font-size="12" text-anchor="middle" fill="#111">as approval; never calls Daraja</text>
+<text x="657.5" y="335" font-size="12" text-anchor="middle" fill="#111">synchronously</text>
+<line x1="550" y1="382" x2="755" y2="382" stroke="#222" stroke-width="1.3" />
+<path d="M756,378 L765,382 L756,386 Z" fill="#222"/>
+<text x="657.5" y="374" font-size="12" text-anchor="middle" fill="#111">3. audit "payout_authorised"</text>
+<line x1="25" y1="412" x2="1720" y2="412" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="743.54" y="399" width="257.92" height="24" fill="white" stroke="#555"/>
+<text x="872.5" y="416" font-size="12" font-weight="600" text-anchor="middle" fill="#333">scheduler tick: payments worker</text>
+<line x1="980" y1="479" x2="775" y2="479" stroke="#222" stroke-width="1.3" />
+<path d="M774,475 L765,479 L774,483 Z" fill="#222"/>
+<text x="872.5" y="456" font-size="12" text-anchor="middle" fill="#111">4. runDuePayments(): dueIds()</text>
+<text x="872.5" y="471" font-size="12" text-anchor="middle" fill="#111">finds a queued Disbursement</text>
+<line x1="980" y1="518" x2="775" y2="518" stroke="#222" stroke-width="1.3" />
+<path d="M774,514 L765,518 L774,522 Z" fill="#222"/>
+<text x="872.5" y="510" font-size="12" text-anchor="middle" fill="#111">5. claimDisbursement()</text>
+<line x1="980" y1="572" x2="1185" y2="572" stroke="#222" stroke-width="1.3" />
+<path d="M1186,568 L1195,572 L1186,576 Z" fill="#222"/>
+<text x="1087.5" y="549" font-size="12" text-anchor="middle" fill="#111">6. B2C payment request</text>
+<text x="1087.5" y="564" font-size="12" text-anchor="middle" fill="#111">(b2cPayment())</text>
+<line x1="1195" y1="626" x2="990" y2="626" stroke="#222" stroke-width="1.3" />
+<path d="M989,622 L980,626 L989,630 Z" fill="#222"/>
+<text x="1087.5" y="603" font-size="12" text-anchor="middle" fill="#111">7. accepted {ConversationID};</text>
+<text x="1087.5" y="618" font-size="12" text-anchor="middle" fill="#111">status=sent</text>
+<line x1="25" y1="656" x2="1720" y2="656" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="735.22" y="643" width="274.56" height="24" fill="white" stroke="#555"/>
+<text x="872.5" y="660" font-size="12" font-weight="600" text-anchor="middle" fill="#333">async: Daraja delivers the result</text>
+<line x1="1195" y1="723" x2="560" y2="723" stroke="#222" stroke-width="1.3" />
+<path d="M559,719 L550,723 L559,727 Z" fill="#222"/>
+<text x="872.5" y="700" font-size="12" text-anchor="middle" fill="#111">8. POST /api/payments/callback/b</text>
+<text x="872.5" y="715" font-size="12" text-anchor="middle" fill="#111">2c-result/{ref}/{sig}</text>
+<path d="M550,743 L598,743 L598,777 L550,777" fill="none" stroke="#222" stroke-width="1.3"/>
+<path d="M559,773 L550,777 L559,781 Z" fill="#222"/>
+<text x="604" y="755" font-size="12" text-anchor="start" fill="#111">9. originVerified(): refuse 401</text>
+<text x="604" y="770" font-size="12" text-anchor="start" fill="#111">if not verified</text>
+<line x1="550" y1="861" x2="755" y2="861" stroke="#222" stroke-width="1.3" />
+<path d="M756,857 L765,861 L756,865 Z" fill="#222"/>
+<text x="657.5" y="808" font-size="12" text-anchor="middle" fill="#111">10. registerDelivery(): INSERT</text>
+<text x="657.5" y="823" font-size="12" text-anchor="middle" fill="#111">... ON CONFLICT DO UPDATE</text>
+<text x="657.5" y="838" font-size="12" text-anchor="middle" fill="#111">deliveries+1 RETURNING</text>
+<text x="657.5" y="853" font-size="12" text-anchor="middle" fill="#111">deliveries</text>
+<line x1="550" y1="983" x2="755" y2="983" stroke="#222" stroke-width="1.3" />
+<path d="M756,979 L765,983 L756,987 Z" fill="#222"/>
+<text x="657.5" y="930" font-size="12" text-anchor="middle" fill="#111">11.</text>
+<text x="657.5" y="945" font-size="12" text-anchor="middle" fill="#111">applyPayoutSuccess()→markPaid():</text>
+<text x="657.5" y="960" font-size="12" text-anchor="middle" fill="#111">status=paid, receipt stored;</text>
+<text x="657.5" y="975" font-size="12" text-anchor="middle" fill="#111">audit "payout_paid"</text>
+<line x1="550" y1="1022" x2="755" y2="1022" stroke="#222" stroke-width="1.3" />
+<path d="M756,1018 L765,1022 L756,1026 Z" fill="#222"/>
+<text x="657.5" y="1014" font-size="12" text-anchor="middle" fill="#111">12. notify(agent, "payout_paid")</text>
+<rect x="480" y="1070" width="355" height="44" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="657.5" y="1086" font-size="11.5" text-anchor="middle" fill="#3a3310">outcome "duplicate": nothing re-applied. The unique dedupeKey makes even a</text>
+<text x="657.5" y="1101" font-size="11.5" text-anchor="middle" fill="#3a3310">concurrent replay idempotent (payments/callbacks.ts::registerDelivery).</text>
+<rect x="25" y="891" width="1695" height="253" fill="none" stroke="#555" stroke-width="1.4"/>
+<path d="M25,891 L115,891 L115,909 L103,913 L25,913 Z" fill="#eef1f6" stroke="#555"/>
+<text x="31" y="906" font-size="11.5" font-weight="700" fill="#222">alt</text>
+<text x="123" y="906" font-size="11.5" fill="#222">deliveries = 1 (first delivery)</text>
+<line x1="25" y1="1042" x2="1720" y2="1042" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="31" y="1057" font-size="11.5" fill="#222">[deliveries &gt; 1 (replay / duplicate)]</text>
+<line x1="550" y1="1198" x2="1185" y2="1198" stroke="#222" stroke-width="1.3" />
+<path d="M1186,1194 L1195,1198 L1186,1202 Z" fill="#222"/>
+<text x="872.5" y="1175" font-size="12" text-anchor="middle" fill="#111">13. 200 {ResultCode:0,</text>
+<text x="872.5" y="1190" font-size="12" text-anchor="middle" fill="#111">ResultDesc:"Accepted"}</text>
+<rect x="695" y="1218" width="140" height="59" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="765.0" y="1234" font-size="11.5" text-anchor="middle" fill="#3a3310">EscrowHoldState view now derives state="released": activation.state=approved</text>
+<text x="765.0" y="1249" font-size="11.5" text-anchor="middle" fill="#3a3310">AND disbursement.status=paid. No explicit write -- migration</text>
+<text x="765.0" y="1264" font-size="11.5" text-anchor="middle" fill="#3a3310">20261108090000_audit_chain_and_payout_hold.</text>
+<rect x="695" y="1297" width="140" height="59" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="765.0" y="1313" font-size="11.5" text-anchor="middle" fill="#3a3310">Every recordAuditEvent() insert is sealed by the AuditEvent_chain constraint</text>
+<text x="765.0" y="1328" font-size="11.5" text-anchor="middle" fill="#3a3310">trigger (DEFERRABLE INITIALLY DEFERRED) at COMMIT: computes sequence,</text>
+<text x="765.0" y="1343" font-size="11.5" text-anchor="middle" fill="#3a3310">previousHash and hash (ledgerfield_audit_chain_seal()).</text>
+<line x1="25" y1="1386" x2="1720" y2="1386" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="635.38" y="1373" width="474.24" height="24" fill="white" stroke="#555"/>
+<text x="872.5" y="1390" font-size="12" font-weight="600" text-anchor="middle" fill="#333">async, independent of any request: anchoring never blocks</text>
+<line x1="1410" y1="1468" x2="775" y2="1468" stroke="#222" stroke-width="1.3" />
+<path d="M774,1464 L765,1468 L774,1472 Z" fill="#222"/>
+<text x="1087.5" y="1430" font-size="12" text-anchor="middle" fill="#111">14. createBatch(): contiguous</text>
+<text x="1087.5" y="1445" font-size="12" text-anchor="middle" fill="#111">unanchored AuditChain range,</text>
+<text x="1087.5" y="1460" font-size="12" text-anchor="middle" fill="#111">verifiedRange(), merkleRoot()</text>
+<line x1="1410" y1="1522" x2="1615" y2="1522" stroke="#222" stroke-width="1.3" />
+<path d="M1616,1518 L1625,1522 L1616,1526 Z" fill="#222"/>
+<text x="1517.5" y="1499" font-size="12" text-anchor="middle" fill="#111">15. anchor(root)  (viem</text>
+<text x="1517.5" y="1514" font-size="12" text-anchor="middle" fill="#111">writeContract, chain.submit())</text>
+<line x1="1625" y1="1561" x2="1420" y2="1561" stroke="#222" stroke-width="1.3" />
+<path d="M1419,1557 L1410,1561 L1419,1565 Z" fill="#222"/>
+<text x="1517.5" y="1553" font-size="12" text-anchor="middle" fill="#111">16. txHash</text>
+<line x1="1410" y1="1600" x2="1615" y2="1600" stroke="#222" stroke-width="1.3" />
+<path d="M1616,1596 L1625,1600 L1616,1604 Z" fill="#222"/>
+<text x="1517.5" y="1592" font-size="12" text-anchor="middle" fill="#111">17. waitForReceipt()</text>
+<line x1="1625" y1="1654" x2="1420" y2="1654" stroke="#222" stroke-width="1.3" />
+<path d="M1419,1650 L1410,1654 L1419,1658 Z" fill="#222"/>
+<text x="1517.5" y="1631" font-size="12" text-anchor="middle" fill="#111">18. receipt {status: success,</text>
+<text x="1517.5" y="1646" font-size="12" text-anchor="middle" fill="#111">Anchored event}</text>
+<line x1="1410" y1="1723" x2="775" y2="1723" stroke="#222" stroke-width="1.3" />
+<path d="M774,1719 L765,1723 L774,1727 Z" fill="#222"/>
+<text x="1087.5" y="1685" font-size="12" text-anchor="middle" fill="#111">19. confirm():</text>
+<text x="1087.5" y="1700" font-size="12" text-anchor="middle" fill="#111">AuditAnchor.status=confirmed;</text>
+<text x="1087.5" y="1715" font-size="12" text-anchor="middle" fill="#111">audit "audit_anchored"</text>
+<line x1="25" y1="1753" x2="1720" y2="1753" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="610.4200000000001" y="1740" width="524.16" height="24" fill="white" stroke="#555"/>
+<text x="872.5" y="1757" font-size="12" font-weight="600" text-anchor="middle" fill="#333">Entry B5: admin decides a reviewed item (in_review or disputed)</text>
+<line x1="335" y1="1835" x2="540" y2="1835" stroke="#222" stroke-width="1.3" />
+<path d="M541,1831 L550,1835 L541,1839 Z" fill="#222"/>
+<text x="442.5" y="1797" font-size="12" text-anchor="middle" fill="#111">20. POST</text>
+<text x="442.5" y="1812" font-size="12" text-anchor="middle" fill="#111">/api/admin/review/{id}/approve |</text>
+<text x="442.5" y="1827" font-size="12" text-anchor="middle" fill="#111">refuse {reason}</text>
+<path d="M550,1855 L598,1855 L598,1889 L550,1889" fill="none" stroke="#222" stroke-width="1.3"/>
+<path d="M559,1885 L550,1889 L559,1893 Z" fill="#222"/>
+<text x="604" y="1867" font-size="12" text-anchor="start" fill="#111">21. requireState(in_review |</text>
+<text x="604" y="1882" font-size="12" text-anchor="start" fill="#111">disputed)</text>
+<line x1="550" y1="1958" x2="755" y2="1958" stroke="#222" stroke-width="1.3" />
+<path d="M756,1954 L765,1958 L756,1962 Z" fill="#222"/>
+<text x="657.5" y="1920" font-size="12" text-anchor="middle" fill="#111">22. tx: transition → approved |</text>
+<text x="657.5" y="1935" font-size="12" text-anchor="middle" fill="#111">refused; closeReviewItem();</text>
+<text x="657.5" y="1950" font-size="12" text-anchor="middle" fill="#111">recordDisputeEffect()</text>
+<rect x="480" y="2016" width="355" height="29" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="657.5" y="2032" font-size="11.5" text-anchor="middle" fill="#3a3310">authorisePayout() runs here too — continues at entry B1 above.</text>
+<line x1="550" y1="2142" x2="755" y2="2142" stroke="#222" stroke-width="1.3" />
+<path d="M756,2138 L765,2142 L756,2146 Z" fill="#222"/>
+<text x="657.5" y="2104" font-size="12" text-anchor="middle" fill="#111">23. openDispute(): a fresh</text>
+<text x="657.5" y="2119" font-size="12" text-anchor="middle" fill="#111">refusal always opens a dispute</text>
+<text x="657.5" y="2134" font-size="12" text-anchor="middle" fill="#111">record</text>
+<line x1="550" y1="2224" x2="755" y2="2224" stroke="#222" stroke-width="1.3" />
+<path d="M756,2220 L765,2224 L756,2228 Z" fill="#222"/>
+<text x="657.5" y="2201" font-size="12" text-anchor="middle" fill="#111">24. resolveDispute(outcome:</text>
+<text x="657.5" y="2216" font-size="12" text-anchor="middle" fill="#111">upheld | overturned)</text>
+<rect x="25" y="1988" width="1695" height="266" fill="none" stroke="#555" stroke-width="1.4"/>
+<path d="M25,1988 L115,1988 L115,2006 L103,2010 L25,2010 Z" fill="#eef1f6" stroke="#555"/>
+<text x="31" y="2003" font-size="11.5" font-weight="700" fill="#222">alt</text>
+<text x="123" y="2003" font-size="11.5" fill="#222">to = approved</text>
+<line x1="25" y1="2065" x2="1720" y2="2065" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="31" y="2080" font-size="11.5" fill="#222">[to = refused, from in_review]</text>
+<line x1="25" y1="2162" x2="1720" y2="2162" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="31" y="2177" font-size="11.5" fill="#222">[to = refused, from disputed]</text>
+<line x1="550" y1="2308" x2="755" y2="2308" stroke="#222" stroke-width="1.3" />
+<path d="M756,2304 L765,2308 L756,2312 Z" fill="#222"/>
+<text x="657.5" y="2285" font-size="12" text-anchor="middle" fill="#111">25. notify(agent,</text>
+<text x="657.5" y="2300" font-size="12" text-anchor="middle" fill="#111">"approved"/"refused": reason)</text>
+<line x1="550" y1="2347" x2="345" y2="2347" stroke="#222" stroke-width="1.3" />
+<path d="M344,2343 L335,2347 L344,2351 Z" fill="#222"/>
+<text x="442.5" y="2339" font-size="12" text-anchor="middle" fill="#111">26. 200 {activationId, action}</text>
+<line x1="25" y1="2377" x2="1720" y2="2377" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="701.94" y="2364" width="341.12" height="24" fill="white" stroke="#555"/>
+<text x="872.5" y="2381" font-size="12" font-weight="600" text-anchor="middle" fill="#333">Entry B9: agent contests a refusal (once)</text>
+<line x1="120" y1="2444" x2="540" y2="2444" stroke="#222" stroke-width="1.3" />
+<path d="M541,2440 L550,2444 L541,2448 Z" fill="#222"/>
+<text x="335.0" y="2421" font-size="12" text-anchor="middle" fill="#111">27. POST /api/agent/activations/</text>
+<text x="335.0" y="2436" font-size="12" text-anchor="middle" fill="#111">{id}/contest {note}</text>
+<line x1="550" y1="2498" x2="755" y2="2498" stroke="#222" stroke-width="1.3" />
+<path d="M756,2494 L765,2498 L756,2502 Z" fill="#222"/>
+<text x="657.5" y="2475" font-size="12" text-anchor="middle" fill="#111">28. contestRefusal(): transition</text>
+<text x="657.5" y="2490" font-size="12" text-anchor="middle" fill="#111">refused→disputed</text>
+<rect x="480" y="2518" width="355" height="44" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="657.5" y="2534" font-size="11.5" text-anchor="middle" fill="#3a3310">Back to the admin queue for one more decision (entry B5). Allowed once; a</text>
+<text x="657.5" y="2549" font-size="11.5" text-anchor="middle" fill="#3a3310">refusal upheld after a contest is final (lib/disputes/disputes.ts).</text>
+</svg>
