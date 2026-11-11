@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 825.0 1403" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="825.0" height="1403" fill="white"/>
+<rect x="40.0" y="24" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="115.0" y="46" font-size="15" text-anchor="middle" fill="#222">Agent</text>
+<text x="115.0" y="66" font-size="15" text-anchor="middle" fill="#222">(PWA/browser)</text>
+<line x1="115.0" y1="122" x2="115.0" y2="1319" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="40.0" y="1319" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="115.0" y="1341" font-size="15" text-anchor="middle" fill="#222">Agent</text>
+<text x="115.0" y="1361" font-size="15" text-anchor="middle" fill="#222">(PWA/browser)</text>
+<rect x="230.0" y="24" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="305.0" y="46" font-size="15" text-anchor="middle" fill="#222">Admin</text>
+<text x="305.0" y="66" font-size="15" text-anchor="middle" fill="#222">(browser)</text>
+<line x1="305.0" y1="122" x2="305.0" y2="1319" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="230.0" y="1319" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="305.0" y="1341" font-size="15" text-anchor="middle" fill="#222">Admin</text>
+<text x="305.0" y="1361" font-size="15" text-anchor="middle" fill="#222">(browser)</text>
+<rect x="420.0" y="24" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="495.0" y="46" font-size="15" text-anchor="middle" fill="#222">Next.js app</text>
+<line x1="495.0" y1="122" x2="495.0" y2="1319" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="420.0" y="1319" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="495.0" y="1341" font-size="15" text-anchor="middle" fill="#222">Next.js app</text>
+<rect x="610.0" y="24" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="685.0" y="46" font-size="15" text-anchor="middle" fill="#222">PostgreSQL</text>
+<text x="685.0" y="66" font-size="15" text-anchor="middle" fill="#222">(incl.</text>
+<text x="685.0" y="86" font-size="15" text-anchor="middle" fill="#222">triggers)</text>
+<line x1="685.0" y1="122" x2="685.0" y2="1319" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3"/>
+<rect x="610.0" y="1319" width="150" height="78" rx="4" fill="#f2f2f2" stroke="#999"/>
+<text x="685.0" y="1341" font-size="15" text-anchor="middle" fill="#222">PostgreSQL</text>
+<text x="685.0" y="1361" font-size="15" text-anchor="middle" fill="#222">(incl.</text>
+<text x="685.0" y="1381" font-size="15" text-anchor="middle" fill="#222">triggers)</text>
+<line x1="15.0" y1="138" x2="785.0" y2="138" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="110.20000000000005" y="123" width="579.5999999999999" height="28" fill="white" stroke="#555"/>
+<text x="400.0" y="143" font-size="15" font-weight="600" text-anchor="middle" fill="#333">Entry B5: admin decides a reviewed item (in_review or disputed)</text>
+<line x1="305.0" y1="239" x2="484.0" y2="239" stroke="#222" stroke-width="1.4" />
+<path d="M485.0,234 L495.0,239 L485.0,244 Z" fill="#222"/>
+<text x="400.0" y="191" font-size="15" text-anchor="middle" fill="#111">20. POST /api/admin/review</text>
+<text x="400.0" y="210" font-size="15" text-anchor="middle" fill="#111">/{id}/approve | refuse</text>
+<text x="400.0" y="229" font-size="15" text-anchor="middle" fill="#111">{reason}</text>
+<path d="M495.0,263 L547.0,263 L547.0,305 L495.0,305" fill="none" stroke="#222" stroke-width="1.4"/>
+<path d="M505.0,300 L495.0,305 L505.0,310 Z" fill="#222"/>
+<text x="553.0" y="278" font-size="15" text-anchor="start" fill="#111">21. requireState(in_review</text>
+<text x="553.0" y="297" font-size="15" text-anchor="start" fill="#111">| disputed)</text>
+<line x1="495.0" y1="410" x2="674.0" y2="410" stroke="#222" stroke-width="1.4" />
+<path d="M675.0,405 L685.0,410 L675.0,415 Z" fill="#222"/>
+<text x="590.0" y="343" font-size="15" text-anchor="middle" fill="#111">22. tx: transition →</text>
+<text x="590.0" y="362" font-size="15" text-anchor="middle" fill="#111">approved | refused;</text>
+<text x="590.0" y="381" font-size="15" text-anchor="middle" fill="#111">closeReviewItem();</text>
+<text x="590.0" y="400" font-size="15" text-anchor="middle" fill="#111">recordDisputeEffect()</text>
+<rect x="405.0" y="480" width="370.0" height="54" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="590.0" y="499" font-size="15" text-anchor="middle" fill="#3a3310">authorisePayout() runs here too -- continues</text>
+<text x="590.0" y="518" font-size="15" text-anchor="middle" fill="#3a3310">at Figure 4.4 (b1), entry B1.</text>
+<line x1="495.0" y1="654" x2="674.0" y2="654" stroke="#222" stroke-width="1.4" />
+<path d="M675.0,649 L685.0,654 L675.0,659 Z" fill="#222"/>
+<text x="590.0" y="606" font-size="15" text-anchor="middle" fill="#111">23. openDispute(): a fresh</text>
+<text x="590.0" y="625" font-size="15" text-anchor="middle" fill="#111">refusal always opens a</text>
+<text x="590.0" y="644" font-size="15" text-anchor="middle" fill="#111">dispute record</text>
+<line x1="495.0" y1="774" x2="674.0" y2="774" stroke="#222" stroke-width="1.4" />
+<path d="M675.0,769 L685.0,774 L675.0,779 Z" fill="#222"/>
+<text x="590.0" y="726" font-size="15" text-anchor="middle" fill="#111">24.</text>
+<text x="590.0" y="745" font-size="15" text-anchor="middle" fill="#111">resolveDispute(outcome:</text>
+<text x="590.0" y="764" font-size="15" text-anchor="middle" fill="#111">upheld | overturned)</text>
+<rect x="15.0" y="446" width="770.0" height="364" fill="none" stroke="#555" stroke-width="1.4"/>
+<path d="M15.0,446 L111.0,446 L111.0,468 L97.0,472 L15.0,472 Z" fill="#eef1f6" stroke="#555"/>
+<text x="21.0" y="465" font-size="15" font-weight="700" fill="#222">alt</text>
+<text x="119.0" y="465" font-size="15" fill="#222">to = approved</text>
+<line x1="15.0" y1="558" x2="785.0" y2="558" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="21.0" y="577" font-size="15" fill="#222">[to = refused, from in_review]</text>
+<line x1="15.0" y1="678" x2="785.0" y2="678" stroke="#555" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="21.0" y="697" font-size="15" fill="#222">[to = refused, from disputed]</text>
+<line x1="495.0" y1="896" x2="674.0" y2="896" stroke="#222" stroke-width="1.4" />
+<path d="M675.0,891 L685.0,896 L675.0,901 Z" fill="#222"/>
+<text x="590.0" y="848" font-size="15" text-anchor="middle" fill="#111">25. notify(agent,</text>
+<text x="590.0" y="867" font-size="15" text-anchor="middle" fill="#111">"approved"/"refused":</text>
+<text x="590.0" y="886" font-size="15" text-anchor="middle" fill="#111">reason)</text>
+<line x1="495.0" y1="963" x2="316.0" y2="963" stroke="#222" stroke-width="1.4" />
+<path d="M315.0,958 L305.0,963 L315.0,968 Z" fill="#222"/>
+<text x="400.0" y="934" font-size="15" text-anchor="middle" fill="#111">26. 200 {activationId,</text>
+<text x="400.0" y="953" font-size="15" text-anchor="middle" fill="#111">action}</text>
+<line x1="15.0" y1="997" x2="785.0" y2="997" stroke="#555" stroke-width="1" stroke-dasharray="2,3"/>
+<rect x="211.4" y="982" width="377.2" height="28" fill="white" stroke="#555"/>
+<text x="400.0" y="1002" font-size="15" font-weight="600" text-anchor="middle" fill="#333">Entry B9: agent contests a refusal (once)</text>
+<line x1="115.0" y1="1079" x2="484.0" y2="1079" stroke="#222" stroke-width="1.4" />
+<path d="M485.0,1074 L495.0,1079 L485.0,1084 Z" fill="#222"/>
+<text x="305.0" y="1050" font-size="15" text-anchor="middle" fill="#111">27. POST /api/agent/activa</text>
+<text x="305.0" y="1069" font-size="15" text-anchor="middle" fill="#111">tions/{id}/contest {note}</text>
+<line x1="495.0" y1="1165" x2="674.0" y2="1165" stroke="#222" stroke-width="1.4" />
+<path d="M675.0,1160 L685.0,1165 L675.0,1170 Z" fill="#222"/>
+<text x="590.0" y="1117" font-size="15" text-anchor="middle" fill="#111">28. contestRefusal():</text>
+<text x="590.0" y="1136" font-size="15" text-anchor="middle" fill="#111">transition</text>
+<text x="590.0" y="1155" font-size="15" text-anchor="middle" fill="#111">refused→disputed</text>
+<rect x="405.0" y="1189" width="370.0" height="92" fill="#fff8db" stroke="#c9b037" stroke-width="1"/>
+<text x="590.0" y="1208" font-size="15" text-anchor="middle" fill="#3a3310">Back to the admin queue for one more decision</text>
+<text x="590.0" y="1227" font-size="15" text-anchor="middle" fill="#3a3310">(entry B5, this figure). Allowed once; a</text>
+<text x="590.0" y="1246" font-size="15" text-anchor="middle" fill="#3a3310">refusal upheld after a contest is final</text>
+<text x="590.0" y="1265" font-size="15" text-anchor="middle" fill="#3a3310">(lib/disputes/disputes.ts).</text>
+</svg>
