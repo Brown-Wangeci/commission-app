@@ -73,7 +73,7 @@ function Row({ row, tab }: { row: QueueRow; tab: QueueTab }) {
           <p className="small muted">No score yet: the model could not be reached{row.unscoredStage ? ` ${row.unscoredStage === "t0" ? "at submission" : "at hold-close"}` : ""}. Retries continue; any later score is advice only.</p>
         )}
       </td>
-      <td className="right small">{row.amount === null ? "Unavailable" : <Money cents={row.amount.amountCents} derivation={row.amount.commission.derivation} />}</td>
+      <td className="right small col-payout">{row.amount === null ? "Unavailable" : <Money cents={row.amount.amountCents} derivation={row.amount.commission.derivation} />}</td>
       <td className="right">
         {tab === "waiting" ? <QueueRowActions activationId={row.id} reference={row.reference} /> : <Link className="btn small" href={`/admin/review/${row.id}`}>Open</Link>}
       </td>
@@ -108,11 +108,11 @@ export default async function ReviewQueuePage({ searchParams }: { searchParams: 
               <thead>
                 <tr>
                   <th style={{ width: 150 }}>Submission</th>
-                  <th style={{ minWidth: 200 }}>Agent and job</th>
-                  <th style={{ minWidth: 140 }}>Why it is here</th>
-                  <th style={{ minWidth: 130 }}>Score</th>
+                  <th style={{ minWidth: 170 }}>Agent and job</th>
+                  <th style={{ minWidth: 120 }}>Why it is here</th>
+                  <th style={{ minWidth: 100 }}>Score</th>
                   <th>What moved the score</th>
-                  <th className="right">Payout</th>
+                  <th className="right col-payout">Payout</th>
                   <th style={{ width: 170 }}></th>
                 </tr>
               </thead>

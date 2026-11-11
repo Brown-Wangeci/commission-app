@@ -1,0 +1,331 @@
+{
+  "requirement": "NFR-12: operable at 360 px width; every interactive control at least 48 x 48 px",
+  "measuredAt": "2026-11-11T12:07:21.295Z",
+  "app": "http://localhost:3000",
+  "viewport": {
+    "width": 360,
+    "height": 800,
+    "deviceScaleFactor": 2,
+    "isMobile": true
+  },
+  "minimumPx": 48,
+  "selector": "a[href], button, input:not([type=\"hidden\"]), select, textarea, summary, [role=\"button\"], [tabindex]:not([tabindex=\"-1\"])",
+  "setup": {
+    "waitingAssignmentId": "cmwc2qk2z000eo870gdq1c8rp",
+    "acceptedAssignmentId": "cmwc2qk7d000lo870i2ohhjzg",
+    "note": "two jobs posted by client2 and assigned to Mercy through the API; the second accepted through the API"
+  },
+  "allControlsMeet48": true,
+  "noHorizontalScrollOnEitherPage": true,
+  "contrastNote": "Measures size and width only. Colour contrast (IR-10, WCAG 2.1 AA) is not audited here.",
+  "pages": [
+    {
+      "page": "Agent job list",
+      "path": "/agent",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 10,
+      "meeting48x48": 10,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 136,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Mark all read",
+          "width": 125.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "A reviewer needs more evidence for LF-000056: Please send a clear photo of the c",
+          "width": 286,
+          "height": 84,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Accept job",
+          "width": 109.5,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent submission form (device details opened)",
+      "path": "/agent/submit/cmwc2qk7d000lo870i2ohhjzg",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 25,
+      "meeting48x48": 25,
+      "belowMinimum": [],
+      "smallestWidth": 48,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "← My jobs",
+          "width": 68.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Customer's phone number",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "date",
+          "name": "SIM registration date",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Scanned the code on the SIM pack",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Typed them in by hand",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Proof of activation (optional)",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "textarea",
+          "type": null,
+          "name": "Note for the reviewer (optional)",
+          "width": 260,
+          "height": 96,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "National ID",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Passport",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Alien ID",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Market stall number",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Photo of the stall",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Latitude",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Longitude",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Accuracy (m)",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Use my current location",
+          "width": 199.8,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "summary",
+          "type": null,
+          "name": "Simulated device details (demonstration only)",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "select",
+          "type": null,
+          "name": "Network",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "select",
+          "type": null,
+          "name": "Region reported by the network",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Use the job area centre as my location (demo)",
+          "width": 294,
+          "height": 60,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "submit",
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        }
+      ]
+    }
+  ]
+}

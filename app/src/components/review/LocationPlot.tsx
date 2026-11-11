@@ -71,7 +71,7 @@ export function LocationPlot({ detail }: { detail: ReviewDetail }) {
         <a className="small" href={osm} target="_blank" rel="noreferrer">Open in OpenStreetMap</a>
       </div>
       <svg className="plot" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="Plot of the job area, the submission, the photos and the agent's base">
-        <circle cx={area.x} cy={area.y} r={radiusKm * scale} fill="rgba(29,90,70,0.08)" stroke="var(--accent)" strokeDasharray="5 4" strokeWidth="1.5" />
+        <circle cx={area.x} cy={area.y} r={radiusKm * scale} fill="var(--accent-soft)" stroke="var(--accent)" strokeDasharray="5 4" strokeWidth="1.5" />
         <text x={area.x} y={area.y + radiusKm * scale + 14} textAnchor="middle" fontSize="11" fill="var(--accent)">{detail.job.areaName} (job area)</text>
         {prev && <line x1={prev.x} y1={prev.y} x2={sub.x} y2={sub.y} stroke="var(--lower)" strokeDasharray="4 4" strokeWidth="1.5" />}
         {near.map((m) => {
@@ -80,7 +80,7 @@ export function LocationPlot({ detail }: { detail: ReviewDetail }) {
           if (m.kind === "previous") return <g key={m.key}><circle cx={p.x} cy={p.y} r="7" fill="var(--surface)" stroke="var(--lower)" strokeWidth="2" /><text x={p.x + 10} y={p.y + 4} fontSize="11" fill="var(--lower)">Previous ({m.label})</text></g>;
           if (m.kind === "submission") return <g key={m.key}><circle cx={p.x} cy={p.y} r="7" fill="var(--ink)" /><text x={p.x - 12} y={p.y + 4} textAnchor="end" fontSize="11" fill="var(--ink)">Submission</text></g>;
           const out = m.kind === "photo-out";
-          return <g key={m.key}><circle cx={p.x} cy={p.y} r="8" fill={out ? "var(--raise)" : "var(--surface)"} stroke={out ? "var(--raise)" : "var(--ink-2)"} /><text x={p.x} y={p.y + 3.5} textAnchor="middle" fontSize="9" fontWeight="700" fill={out ? "#fff" : "var(--ink)"}>{m.label}</text></g>;
+          return <g key={m.key}><circle cx={p.x} cy={p.y} r="8" fill={out ? "var(--raise)" : "var(--surface)"} stroke={out ? "var(--raise)" : "var(--ink-2)"} /><text x={p.x} y={p.y + 3.5} textAnchor="middle" fontSize="9" fontWeight="700" fill={out ? "var(--on-accent)" : "var(--ink)"}>{m.label}</text></g>;
         })}
         <g transform={`translate(${PAD}, ${HEIGHT - 14})`}>
           <line x1="0" y1="0" x2={barKm * scale} y2="0" stroke="var(--ink-2)" strokeWidth="2" />
