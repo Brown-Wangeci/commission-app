@@ -1,8 +1,8 @@
 /**
  * NFR-12: measures, with Playwright at 360 px wide, the rendered width and
- * height of every interactive control on the agent job list and the agent
- * submission form, and whether either page scrolls sideways. Writes
- * docs/chapter5/evidence/nfr12-touch-targets.json.
+ * height of every interactive control on the four agent pages (job list,
+ * submission form, activations list, activation detail), and whether any
+ * page scrolls sideways. Writes docs/chapter5/evidence/nfr12-touch-targets.json.
  *
  * So that the job list shows both of its control types, the script first
  * makes two assignments for Mercy through the app's own API (client2 posts
@@ -11,6 +11,12 @@
  * button and a "Submit activation" link. The submission form is the accepted
  * one's, with the "Simulated device details" section opened so the controls
  * inside it are measured too.
+ *
+ * The activation detail page shows different controls in different states,
+ * so it is measured for three of Mercy's seeded activations, found from the
+ * activations list by status: awaiting evidence (the evidence response
+ * form), refused (the contest form) and approved. Every closed <details>
+ * on those pages is opened first so nothing is left unmeasured.
  *
  * Usage: npx tsx scripts/measure-touch-targets.ts [out_file]
  * Prerequisites: the app running against a seeded database (APP_URL,
@@ -103,6 +109,23 @@ function summarise(name: string, urlPath: string, result: Awaited<ReturnType<typ
   };
 }
 
+type Row = { href: string | null; ref: string; status: string };
+
+async function listRows(page: Page): Promise<Row[]> {
+  return (await page.evaluate(
+    `Array.from(document.querySelectorAll("tbody tr")).map((tr) => ({
+      href: tr.querySelector('a[href^="/agent/activations/"]')?.getAttribute("href") ?? null,
+      ref: tr.querySelector("a")?.textContent?.trim() ?? "",
+      status: tr.querySelector(".chip")?.textContent?.trim() ?? "",
+    }))`,
+  )) as Row[];
+}
+
+async function openAllDetails(page: Page): Promise<void> {
+  await page.evaluate('document.querySelectorAll("details").forEach((d) => { d.open = true; })');
+  await page.waitForTimeout(200);
+}
+
 async function main(): Promise<void> {
   const outFile = process.argv[2] ?? "../docs/chapter5/evidence/nfr12-touch-targets.json";
   const { waiting, accepted } = await assignTwo();
@@ -122,7 +145,31 @@ async function main(): Promise<void> {
     await page.waitForTimeout(200);
     const form = summarise("Agent submission form (device details opened)", `/agent/submit/${accepted}`, await measure(page));
 
-    const pages = [jobList, form];
+    await page.goto(`${APP}/agent/activations`, { waitUntil: "networkidle" });
+    const rows = await listRows(page);
+    const activationsList = summarise("Agent activations list", "/agent/activations", await measure(page));
+
+    const details = [];
+    for (const status of ["Awaiting evidence", "Refused", "Approved"]) {
+      const row = rows.find((r) => r.status.toLowerCase() === status.toLowerCase() && r.href);
+      if (!row?.href) throw new Error(`No ${status} activation in the list for ${AGENT_EMAIL}; seed the database first.`);
+      await page.goto(`${APP}${row.href}`, { waitUntil: "networkidle" });
+      await page.waitForTimeout(400);
+      await openAllDetails(page);
+      details.push(summarise(`Agent activation detail, ${status.toLowerCase()} (${row.ref})`, row.href, await measure(page)));
+      // "Contest the refusal" and "Withdraw activation" each open a reason form
+      // (textarea, submit, Cancel). Open them, without sending anything, and
+      // measure the controls that appear.
+      const openers = page.getByRole("button", { name: /^(Contest the refusal|Withdraw activation)$/ });
+      const count = await openers.count();
+      if (count > 0) {
+        for (let i = 0; i < count; i++) await openers.first().click();
+        await page.waitForTimeout(200);
+        details.push(summarise(`Agent activation detail, ${status.toLowerCase()} (${row.ref}), reason forms opened`, row.href, await measure(page)));
+      }
+    }
+
+    const pages = [jobList, form, activationsList, ...details];
     const out = {
       requirement: "NFR-12: operable at 360 px width; every interactive control at least 48 x 48 px",
       measuredAt: new Date().toISOString(),
@@ -130,18 +177,25 @@ async function main(): Promise<void> {
       viewport: { width: WIDTH, height: HEIGHT, deviceScaleFactor: 2, isMobile: true },
       minimumPx: MINIMUM,
       selector: INTERACTIVE,
-      setup: { waitingAssignmentId: waiting, acceptedAssignmentId: accepted, note: "two jobs posted by client2 and assigned to Mercy through the API; the second accepted through the API" },
+      setup: {
+        waitingAssignmentId: waiting,
+        acceptedAssignmentId: accepted,
+        note: "two jobs posted by client2 and assigned to Mercy through the API; the second accepted through the API. The activation detail pages are three of Mercy's seeded activations, picked by status from the activations list; every <details> on them was opened before measuring, and the Contest and Withdraw reason forms were opened (not submitted) and measured as a second entry.",
+      },
+      pagesMeasured: ["Agent job list", "Agent submission form", "Agent activations list", "Agent activation detail (three states, with the reason forms opened where they exist)"],
       allControlsMeet48: pages.every((p) => p.belowMinimum.length === 0),
-      noHorizontalScrollOnEitherPage: pages.every((p) => p.noHorizontalScroll),
+      noHorizontalScrollOnAnyPage: pages.every((p) => p.noHorizontalScroll),
       contrastNote: "Measures size and width only. Colour contrast (IR-10, WCAG 2.1 AA) is not audited here.",
       pages,
     };
     fs.mkdirSync(path.dirname(outFile), { recursive: true });
-    fs.writeFileSync(outFile, `${JSON.stringify(out, null, 2)}\n`);
+    fs.writeFileSync(outFile, `${JSON.stringify(out, null, 2)}
+`);
     for (const p of pages) {
       console.log(`${p.page}: ${p.meeting48x48}/${p.controls} controls at least ${MINIMUM}x${MINIMUM}; smallest ${p.smallestWidth} x ${p.smallestHeight}; horizontal scroll: ${p.noHorizontalScroll ? "none" : `${p.scrollWidth} > ${p.clientWidth}`}`);
       for (const c of p.belowMinimum) console.log(`  BELOW  ${c.tag}${c.type ? `[${c.type}]` : ""} "${c.name}" ${c.width} x ${c.height}`);
     }
+    console.log(`All controls at least ${MINIMUM}x${MINIMUM}: ${out.allControlsMeet48}; no sideways scroll on any page: ${out.noHorizontalScrollOnAnyPage}`);
     console.log(`Wrote ${outFile}`);
   } finally {
     await browser.close();
