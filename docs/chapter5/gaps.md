@@ -77,11 +77,14 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   do not actually test.
 - **Grouping.** 383 passing vitest `it()` blocks (plus 38 skipped without a
   live server -- see `docs/chapter5/environment.md` for the full list) and
-  150 pytest test functions, confirmed by the CI run on this branch
-  (`.github/workflows/ci.yml`, run 42612670984, 2026-11-09), are represented
-  as 108 rows, grouped by describe-block or by tight thematic similarity,
-  each row's `count` column stating how many individual checks it stands
-  for. A reviewer wanting the individual assertion should read the cited
+  162 pytest test functions, confirmed by the CI run on this branch
+  (`.github/workflows/ci.yml`, runs 43040371977 and 43040381579 on commit
+  976b5ef, 2026-11-11), are represented as 109 rows, grouped by
+  describe-block or by tight thematic similarity, each row's `count` column
+  stating how many individual checks it stands for. The 109th row, TC-109,
+  is the 12 tests in `tests/test_curated_records.py`, which were not
+  committed when the earlier 150-test run was recorded. A reviewer wanting
+  the individual assertion should read the cited
   test file at the stated name.
 
 ## Screenshots (F)
@@ -92,12 +95,16 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   accepted through the real UI for this capture; see
   `docs/chapter5/evidence/screenshots/captions.md` for exactly what was done.
   All 14 requested figures (plus one extra mobile-width capture) are now
-  present.
-- **A real rendering issue was found, not fixed.** In
-  `figure-5-02-admin-review-queue.png`, the payout-breakdown text for one row
-  (LF-000049) wraps one character per line at the 1360x900 viewport used for
-  capture. This is collection and measurement only, so it is reported here
-  rather than patched.
+  present; all 16 were recaptured on a fresh seed on 2026-11-11 after the
+  restyle.
+- **Fixed (2026-11-11, branch `accrue-restyle`): the payout-column wrap.**
+  In the 2026-11-09 `figure-5-02-admin-review-queue.png`, the payout-breakdown
+  text for one row (LF-000049) wrapped one character per line at the
+  1360x900 capture viewport. The restyle gives the payout column a minimum
+  width, keeps each amount on one line, and lets the working wrap only
+  between words; the recaptured figure-5-02 shows it over six readable lines,
+  with the whole queue table fitting the viewport. Presentation only: no
+  change to how the payout is computed.
 - **The blockchain-dependent figures (audit log, dispute verification) show
   an unconfigured chain**, because this capture ran without
   `POLYGON_RPC_URL`/`ANCHOR_CONTRACT_ADDRESS` set, consistent with the rest of

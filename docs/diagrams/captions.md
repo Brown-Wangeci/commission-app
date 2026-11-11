@@ -24,7 +24,7 @@ in that file's messages) and a rendered width at or under 1800px at 2x.
 Every message/self-call/note label is now >=15px at 1x (up from ~11.5-12px).
 
 **Numbering collision, not resolved here:** Figures 4.2-4.7 below (the
-wireframes, unchanged from the previous revision) already use 4.3 and 4.4
+wireframes, regenerated in `accrue-restyle`) already use 4.3 and 4.4
 for the agent evidence form and the admin review item. Renaming the
 sequence diagrams to 4.3 and 4.4 as instructed makes two different figures
 share each of those numbers. This is flagged, not silently fixed, because
@@ -137,72 +137,92 @@ the T7 band was `auto_release` or an admin approved a reviewed item here in
 (b2) -- the diagram notes this with "continues at Figure 4.4 (b1), entry
 B1" rather than drawing the commission/B2C chain a second time in this file.
 
+## Wireframes 4.2-4.7 (revision `accrue-restyle`)
+
+The six wireframes were regenerated on 2026-11-11 from the restyled
+components (branch `accrue-restyle`, Accrue design system): same six
+screens, same file names, still low-fidelity greyscale. They now show the
+Accrue structure -- white cards on a light page, uppercase mono eyebrow
+labels, mono money right-aligned to the cent with its working beneath,
+square mono status badges with a glyph, and a 3px left rule (no fill) for
+the one thing that needs attention. Every size label in square brackets is
+a measured value, not an estimate: agent screens from
+`docs/chapter5/evidence/nfr12-touch-targets.json` (Playwright, 360x800,
+`app/scripts/measure-touch-targets.ts`), admin and client screens from
+Playwright bounding boxes at 1360x900 on the same build. NFR-12 (48 x 48
+px) applies to the agent app only; admin and client screens keep Accrue's
+native 36px buttons (30px for small ones), and the labels say so rather
+than marking them as failures.
+
 ## Figure 4.2 -- Agent job list and assignment
 
-`figure-4-02-agent-job-list.svg` / `.png`. Traced from
-`app/src/app/agent/page.tsx` (`AgentHomePage`, `JobLine`) and
-`app/src/components/ActionButton.tsx`. Shows the "waiting to accept" and
-"ready to submit" sections and the real "Accept job" button, whose
-rendered height (`.btn.small`, `app/src/app/globals.css`) is 30px --
-below the 48px NFR-12 minimum, labelled on the figure rather than hidden.
+`figure-4-02-agent-job-list.svg` / `.png`, drawn at 360px. Traced from
+`app/src/app/agent/page.tsx` (`AgentHomePage`, `JobLine`),
+`app/src/app/agent/layout.tsx` and `app/src/components/ActionButton.tsx`.
+Shows the two-row top bar used at phone width, the notifications card,
+and the "waiting to accept" and "ready to submit" sections. Measured:
+"Accept job" 109.5 x 48, "Submit activation" (a link) 156.6 x 48, "Mark
+all read" 125.6 x 48, nav links and "Sign out" 48 tall; 10 of 10 controls
+at least 48 x 48, no sideways scroll.
 
 ## Figure 4.3 -- Agent evidence form, 360px width
 
 `figure-4-03-agent-evidence-form-360px.svg` / `.png`. Traced from
 `app/src/components/agent/SubmitActivationForm.tsx` and
-`EvidenceFieldInputs.tsx`, at the exact 360px width NFR-12 specifies.
-Every field shown (customer phone, SIM date, capture method, proof,
-note, then the job's own configured fields) matches a real field in
-those components, not an invented one. The "Submit activation" button
-(`.btn`, `globals.css`, 38px tall) and the plain `.input`/`.select`
-elements (~39px tall: 14px font, 1.5 line-height, 8px padding) are both
-below the 48px NFR-12 minimum, labelled on the figure. Radio buttons use
-the browser default size, also far under 48px, not separately labelled
-to avoid cluttering the figure -- noted here instead.
+`EvidenceFieldInputs.tsx`, at the 360px width NFR-12 specifies. Every
+field shown (customer phone, SIM date, capture method, proof, note, then
+the job's own configured fields, then the device-captured location) is a
+real field in those components; controls are drawn at their measured
+height. Measured: text, date and file inputs 260 x 48, the note textarea
+260 x 96, each radio a 48 x 48 target (dashed outline on the figure), "Use
+my current location" 199.8 x 48, the device-details summary 294 x 48 (its
+two selects 294 x 48 and demo button 294 x 60 when opened), "Submit
+activation" 156.6 x 48; 25 of 25 controls at least 48 x 48 with the device
+details opened, no sideways scroll.
 
 ## Figure 4.4 -- Admin review item
 
 `figure-4-04-admin-review-item.svg` / `.png`. Traced from
-`app/src/components/review/EvidenceStrip.tsx`, `ConcernCallout.tsx`,
-`SubmittedDetails.tsx`, `LocationPlot.tsx`, `ModelAssessment.tsx`,
-`ReasonList.tsx`, `RiskScale.tsx` and `QueueRowActions.tsx`. The real
-screen also has `ReviewHeader.tsx`, `AgentCard.tsx` and `PayoutPanel.tsx`
-(agent history, payout amount) in its right column; these are named on
-the figure as "not shown" rather than invented, to keep the wireframe to
-one page. The decision form (reason required, minimum 5 characters,
-Approve/Reject) matches `QueueRowActions.tsx` exactly, including its
-`.btn.small` (30px) buttons, which also fall under NFR-12's 48px target
-even though NFR-12 is scoped to the agent app, not the admin screens.
+`app/src/components/review/ReviewHeader.tsx`, `EvidenceStrip.tsx`,
+`ConcernCallout.tsx`, `SubmittedDetails.tsx`, `LocationPlot.tsx`,
+`ModelAssessment.tsx`, `ReasonList.tsx`, `RiskScale.tsx` and
+`PayoutPanel.tsx`. Values are the seeded LF-000052 case (50.9%, factors
++1.03 / -1.01 / +0.95, cut-offs 26.7% and 66.7%). `AgentCard.tsx` (agent
+history) is left out to keep the figure to one page. The decision buttons
+("Approve & pay", "Ask for evidence", "Reject") each measure 330 x 36 at
+1360px; the queue rows' own Approve and Reject buttons measure 76.6 x 30
+and 65.1 x 30.
 
 ## Figure 4.5 -- Client job creation with evidence-field editor
 
 `figure-4-05-client-job-creation.svg` / `.png`. Traced from
 `app/src/components/client/PostJobForm.tsx` and
-`EvidenceFieldsEditor.tsx`. The six "+Text/+Number/+Date/+Choice/+Phone/
-+Photo" buttons are the real field-type picker in `EvidenceFieldsEditor.tsx`.
-The "Publish the job" button is `.btn` (38px), again under the 48px
-figure used elsewhere, labelled for consistency even though this is a
-desktop screen, not the agent app NFR-12 actually targets.
+`EvidenceFieldsEditor.tsx`. The six "+ Text / + Number / + Date / + Choice
+from a list / + Phone number / + Photo" buttons are the real field-type
+picker. Measured at 1360px: "Publish the job" 131.2 x 36, "+ Text" 62.2 x
+30, "Use my current location as the centre" 252.7 x 30.
 
 ## Figure 4.6 -- Client escrow and funding
 
 `figure-4-06-client-escrow-funding.svg` / `.png`. Traced from
 `app/src/components/client/FundForm.tsx` and `FundingList.tsx`, and the
 deposited/committed/available stat cards and per-job lock/release/unspent
-line from `app/src/app/client/page.tsx`. The three funding-history
-statuses shown (failed, pending, confirmed) are the real
-`FundingAttempt.status` values this component renders.
+row from `app/src/app/client/page.tsx`. The three funding-history statuses
+shown (failed, pending, confirmed) are the real `FundingAttempt.status`
+values this component renders. Measured at 1360px: "Pay with M-Pesa" 143.8
+x 36, "Post a job" (a link) 88.9 x 56.
 
 ## Figure 4.7 -- Audit trail panel with verify result
 
 `figure-4-07-audit-trail-panel.svg` / `.png`. Traced from
 `app/src/components/audit/AuditTrailPanel.tsx`, including its
 `AnchorCell` (on-chain status per event) and `CheckLine` (per-event
-verification result) sub-components. The "Partly verified" banner and
-"11 of 11 event(s) could not be checked on chain yet" wording match
-`AuditTrailPanel.tsx`'s own `STATUS_TEXT` table and
+verification result) sub-components. The "Partly verified" result and
+"10 of 10 event(s) could not be checked on chain yet" wording match
 `docs/chapter5/evidence/screenshots/figure-5-10-dispute-verification-result.png`
-(captured for Chapter 5, same component, same unconfigured-chain state).
+(recaptured 2026-11-11 after the restyle, same component, same
+unconfigured-chain state). "Verify against the blockchain" measures 224.1
+x 36 at 1360px.
 
 ## Combined sheet
 

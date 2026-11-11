@@ -35,7 +35,7 @@ machine, because no other exists.
 | NextAuth | 4.24.15 | Session-based authentication and role routing | Established at project start; integrates with the Next.js middleware used for route protection |
 | zod | 3.25.76 | Request and config validation | Used throughout the API layer for schema validation with typed output |
 | bcryptjs | 2.4.3 | Password hashing (NFR-05) | Pure-JavaScript bcrypt, cost factor 10, avoiding a native build dependency |
-| Vitest | 3.2.4 | The application test suite | Fast, native ESM/TypeScript support, used for all 383 app-level tests |
+| Vitest | 3.2.4 | The application test suite | Fast, native ESM/TypeScript support, used for all 421 app-level tests (383 run in CI; 38 need a live service, see below) |
 | viem | 2.57.7 | The blockchain client (reads and writes the audit-anchor contract) | Pinned at least two weeks old per this session's own versioning rule; typed, actively maintained Ethereum/EVM client |
 | solc (solc-js) | 0.8.37 | Compiles `contracts/AuditAnchor.sol` | Pinned, reproducible compilation (a test recompiles and checks the committed artifact matches byte for byte); targets the `paris` EVM version so the bytecode runs on any current EVM chain |
 | Anvil (Foundry) | 1.8.6 | Local EVM node for the blockchain anchoring evidence and the live chain test | Downloaded via the GitHub CLI and checked against Foundry's published SHA-256 before use; no funded Polygon Amoy wallet was available, so this stands in as the project's documented fallback (see `docs/chapter5/evidence/blockchain/README.md`) |
@@ -47,14 +47,15 @@ machine, because no other exists.
 | imbalanced-learn | 0.14.2 | SMOTE / SMOTENC resampling (training split only, DR-04) | Per `requirements.txt` |
 | SHAP | 0.52.0 | Feature attribution (FR-14) | Per `requirements.txt` |
 | FastAPI / uvicorn / pydantic | 0.141.1 / 0.53.0 / 2.13.5 | The inference service (Phase 7) | Per `requirements.txt`; pydantic's `extra="forbid"` is what rejects malformed requests in IR-06's contract tests |
-| pytest | 9.1.1 | The ML test suite | Per `requirements.txt`; used for all 150 committed Python tests |
+| pytest | 9.1.1 | The ML test suite | Per `requirements.txt`; used for all 162 committed Python tests |
 | httpx | 0.28.1 | The scoring-latency measurement script's real HTTP client | Already a transitive dependency (FastAPI's recommended test client); reused here to make a genuine network round trip rather than an in-process call |
 
 ## Test suite results (CI, not this machine)
 
 The counts below are from the project's own GitHub Actions CI
-(`.github/workflows/ci.yml`), not a local run, on branch
-`chapter5-evidence-collection`, run 42612670984, 2026-11-09. CI runs on
+(`.github/workflows/ci.yml`), not a local run, on branch `accrue-restyle`
+at commit `976b5ef` (PR #79), 2026-11-11: the `push` run 43040371977 and the
+`pull_request` run 43040381579, which report identical counts. CI runs on
 `ubuntu-latest` with no live app, scoring service, or blockchain node
 available, so every test that needs one skips itself (each file's own
 `describe.runIf(up)` / `describe.runIf(live)` guard, not a CI-specific
@@ -62,22 +63,19 @@ flag).
 
 | Suite | Passed | Skipped | Failed |
 |---|---|---|---|
-| pytest (`ML tests (pytest)` job) | 150 | 0 | 0 |
+| pytest (`ML tests (pytest)` job) | 162 | 0 | 0 |
 | Vitest (`App tests (Vitest)` job) | 383 | 38 | 0 |
 
-Vitest also ran the production build and `npm run typecheck` in the same
-job; both passed. pytest's 150 does not include `tests/test_curated_records.py`,
-which is a real file in this working tree but is not committed (the user's
-own uncommitted work), so CI -- which only sees committed files -- never
-runs it; a local run that includes it reports more than 150.
+Vitest reports 39 test files (35 passed, 4 skipped) and 421 tests. It also
+ran the production build and `npm run typecheck` in the same job; both
+passed. pytest's 162 (4 warnings) includes `tests/test_curated_records.py`.
 
-**The 12 pytest tests that pass locally but do not run in CI** are every
-test in `tests/test_curated_records.py` (collected and confirmed passing in
-this session's local run, 2026-11-09). The reason is the same for all
-twelve: neither the test file nor its fixture (`tests/fixtures/curated_records.json`)
-is committed, so a fresh checkout -- which is what CI runs against -- does
-not have them, and `pytest`'s own test discovery never finds a file that
-is not there.
+**The 12 pytest tests in `tests/test_curated_records.py`.** The earlier CI
+run recorded here (42612670984, 2026-11-09) reported 150 because neither the
+test file nor its fixture (`tests/fixtures/curated_records.json`) was
+committed, so CI never found them and a local run reported 162. Both are
+committed now (commit `8b9ead5`), so CI's 162 includes them and the local
+and CI pytest counts agree. What the 12 tests check:
 
 - `test_service_assigns_the_recorded_band` (10 of the 12: parametrized over
   5 curated activation records x 2 modes, `[activation_id-mode]`) -- the

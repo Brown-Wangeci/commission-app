@@ -1,0 +1,1141 @@
+{
+  "requirement": "NFR-12: operable at 360 px width; every interactive control at least 48 x 48 px",
+  "measuredAt": "2026-11-11T14:36:59.084Z",
+  "app": "http://localhost:3000",
+  "viewport": {
+    "width": 360,
+    "height": 800,
+    "deviceScaleFactor": 2,
+    "isMobile": true
+  },
+  "minimumPx": 48,
+  "selector": "a[href], button, input:not([type=\"hidden\"]), select, textarea, summary, [role=\"button\"], [tabindex]:not([tabindex=\"-1\"])",
+  "setup": {
+    "waitingAssignmentId": "cmwc82wmy000jo8msfplsktwu",
+    "acceptedAssignmentId": "cmwc82wnz000qo8ms9lkbtxtv",
+    "note": "two jobs posted by client2 and assigned to Mercy through the API; the second accepted through the API. The activation detail pages are three of Mercy's seeded activations, picked by status from the activations list; every <details> on them was opened before measuring, and the Contest and Withdraw reason forms were opened (not submitted) and measured as a second entry."
+  },
+  "pagesMeasured": [
+    "Agent job list",
+    "Agent submission form",
+    "Agent activations list",
+    "Agent activation detail (three states, with the reason forms opened where they exist)"
+  ],
+  "allControlsMeet48": true,
+  "noHorizontalScrollOnAnyPage": true,
+  "contrastNote": "Measures size and width only. Colour contrast (IR-10, WCAG 2.1 AA) is not audited here.",
+  "pages": [
+    {
+      "page": "Agent job list",
+      "path": "/agent",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 14,
+      "meeting48x48": 14,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 136,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Mark all read",
+          "width": 125.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "A reviewer needs more evidence for LF-000056: Please send a clear photo of the c",
+          "width": 286,
+          "height": 84,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Accept job",
+          "width": 109.5,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Accept job",
+          "width": 109.5,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Accept job",
+          "width": 109.5,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent submission form (device details opened)",
+      "path": "/agent/submit/cmwc82wnz000qo8ms9lkbtxtv",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 25,
+      "meeting48x48": 25,
+      "belowMinimum": [],
+      "smallestWidth": 48,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "← My jobs",
+          "width": 68.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Customer's phone number",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "date",
+          "name": "SIM registration date",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Scanned the code on the SIM pack",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Typed them in by hand",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Proof of activation (optional)",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "textarea",
+          "type": null,
+          "name": "Note for the reviewer (optional)",
+          "width": 260,
+          "height": 96,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "National ID",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Passport",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Alien ID",
+          "width": 48,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Market stall number",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Photo of the stall",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Latitude",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Longitude",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": null,
+          "name": "Accuracy (m)",
+          "width": 260,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Use my current location",
+          "width": 199.8,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "summary",
+          "type": null,
+          "name": "Simulated device details (demonstration only)",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "select",
+          "type": null,
+          "name": "Network",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "select",
+          "type": null,
+          "name": "Region reported by the network",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Use the job area centre as my location (demo)",
+          "width": 294,
+          "height": 60,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "submit",
+          "name": "Submit activation",
+          "width": 156.6,
+          "height": 48,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent activations list",
+      "path": "/agent/activations",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 16,
+      "meeting48x48": 16,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000059",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000056",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000050",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000041",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000040",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000039",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000038",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000037",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000036",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000035",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000034",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "LF-000033",
+          "width": 70.2,
+          "height": 48,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent activation detail, awaiting evidence (LF-000056)",
+      "path": "/agent/activations/108e3644-0cd7-403d-ac1b-a297ff0a2965",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 16,
+      "meeting48x48": 16,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "← My activations",
+          "width": 110.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "textarea",
+          "type": null,
+          "name": "Your reply",
+          "width": 294,
+          "height": 96,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Photos (0)",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "submit",
+          "name": "Send to the reviewer",
+          "width": 179.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Withdraw activation",
+          "width": 173.7,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Verify against the blockchain",
+          "width": 237.7,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "1",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "2",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "3",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "4",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "5",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "6",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent activation detail, awaiting evidence (LF-000056), reason forms opened",
+      "path": "/agent/activations/108e3644-0cd7-403d-ac1b-a297ff0a2965",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 18,
+      "meeting48x48": 18,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "← My activations",
+          "width": 110.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "textarea",
+          "type": null,
+          "name": "Your reply",
+          "width": 294,
+          "height": 96,
+          "meets": true
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Photos (0)",
+          "width": 294,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "submit",
+          "name": "Send to the reviewer",
+          "width": 179.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "textarea",
+          "type": null,
+          "name": "Why are you withdrawing it?",
+          "width": 294,
+          "height": 96,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "submit",
+          "name": "Withdraw",
+          "width": 101.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Cancel",
+          "width": 82.8,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Verify against the blockchain",
+          "width": 237.7,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "1",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "2",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "3",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "4",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "5",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "6",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent activation detail, refused (LF-000041)",
+      "path": "/agent/activations/0639cc40-9454-40ba-bbce-80cb45b51b92",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 11,
+      "meeting48x48": 11,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "← My activations",
+          "width": 110.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Contest the refusal",
+          "width": 169.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Verify against the blockchain",
+          "width": 237.7,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "1",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "2",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "3",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "4",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent activation detail, refused (LF-000041), reason forms opened",
+      "path": "/agent/activations/0639cc40-9454-40ba-bbce-80cb45b51b92",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 13,
+      "meeting48x48": 13,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "← My activations",
+          "width": 110.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "textarea",
+          "type": null,
+          "name": "Why should the refusal be reconsidered?",
+          "width": 294,
+          "height": 96,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "submit",
+          "name": "Send my contest",
+          "width": 152.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Cancel",
+          "width": 82.8,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Verify against the blockchain",
+          "width": 237.7,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "1",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "2",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "3",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "4",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        }
+      ]
+    },
+    {
+      "page": "Agent activation detail, approved (LF-000050)",
+      "path": "/agent/activations/117401e0-dc1a-4a5c-b77c-013ac2ae6e53",
+      "noHorizontalScroll": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "controls": 12,
+      "meeting48x48": 12,
+      "belowMinimum": [],
+      "smallestWidth": 69.4,
+      "smallestHeight": 48,
+      "all": [
+        {
+          "tag": "a",
+          "type": null,
+          "name": "Ledgerfield home",
+          "width": 112.1,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My jobs",
+          "width": 75.3,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "My activations",
+          "width": 119.2,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Sign out",
+          "width": 69.4,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "← My activations",
+          "width": 110.6,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "button",
+          "type": "button",
+          "name": "Verify against the blockchain",
+          "width": 237.7,
+          "height": 48,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "1",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "2",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "3",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "4",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "5",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        },
+        {
+          "tag": "a",
+          "type": null,
+          "name": "6",
+          "width": 104,
+          "height": 78,
+          "meets": true
+        }
+      ]
+    }
+  ]
+}

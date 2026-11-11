@@ -1,54 +1,75 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 650" font-family="Helvetica, Arial, sans-serif"><rect x="0" y="0" width="760" height="650" fill="white" stroke="#ccc"/>
-<rect x="0" y="0" width="760" height="40" rx="3" fill="#2f3a33" stroke="#9a9a9a"/>
-<text x="16" y="25" font-size="12" font-weight="700" text-anchor="start" fill="white">Ledgerfield · Post a job</text>
-<text x="16" y="62" font-size="14" font-weight="700" text-anchor="start" fill="#333333">Post a job (PostJobForm.tsx)</text>
-<text x="16" y="78" font-size="9" font-weight="400" text-anchor="start" fill="#777">Publishing locks the job's maximum liability from your escrow.</text>
-<text x="16" y="91" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Title</text>
-<rect x="16" y="96" width="340" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="16" y="133" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">What agents should do</text>
-<rect x="16" y="138" width="340" height="50" rx="3" fill="white" stroke="#aaa"/>
-<text x="16" y="195" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Deadline</text>
-<rect x="16" y="200" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="380" y="92" font-size="10" font-weight="700" text-anchor="start" fill="#333333">Evidence fields (EvidenceFieldsEditor.tsx)</text>
-<rect x="380" y="104" width="360" height="24" rx="3" fill="white" stroke="#ccc"/>
-<text x="388" y="120" font-size="8.5" text-anchor="start" fill="#333333">ID document seen  ·  single_select  ·  mandatory</text>
-<rect x="380" y="134" width="360" height="24" rx="3" fill="white" stroke="#ccc"/>
-<text x="388" y="150" font-size="8.5" text-anchor="start" fill="#333333">Market stall number  ·  text  ·  mandatory</text>
-<rect x="380" y="164" width="360" height="24" rx="3" fill="white" stroke="#ccc"/>
-<text x="388" y="180" font-size="8.5" text-anchor="start" fill="#333333">Photo of the stall  ·  photo  ·  mandatory</text>
-<rect x="380" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
-<text x="408.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Text</text>
-<rect x="442" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
-<text x="470.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Number</text>
-<rect x="504" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
-<text x="532.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Date</text>
-<rect x="566" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
-<text x="594.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Choice</text>
-<rect x="628" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
-<text x="656.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Phone</text>
-<rect x="690" y="198" width="56" height="24" rx="4" fill="#ececec" stroke="#777"/>
-<text x="718.0" y="214.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">+Photo</text>
-<text x="16" y="256" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Job area</text>
-<text x="16" y="277" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Place name</text>
-<rect x="16" y="282" width="220" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="16" y="323" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Centre latitude</text>
-<rect x="16" y="328" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="126" y="323" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Centre longitude</text>
-<rect x="126" y="328" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="236" y="323" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Radius (m)</text>
-<rect x="236" y="328" width="100" height="30" rx="3" fill="white" stroke="#aaa"/>
-<rect x="16" y="374" width="220" height="26" rx="4" fill="#ececec" stroke="#777"/>
-<text x="126.0" y="391.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Use my current location as the centre</text>
-<text x="16" y="426" font-size="10.5" font-weight="700" text-anchor="start" fill="#333333">Commission</text>
-<text x="16" y="447" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Value per approved submission (KSh)</text>
-<rect x="16" y="452" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="190" y="447" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Commission rate (%)</text>
-<rect x="190" y="452" width="120" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="324" y="447" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Flat amount (KSh, optional)</text>
-<rect x="324" y="452" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
-<text x="16" y="493" font-size="9.5" font-weight="400" text-anchor="start" fill="#555">Activations wanted</text>
-<rect x="16" y="498" width="160" height="30" rx="3" fill="white" stroke="#aaa"/>
-<rect x="16" y="552" width="160" height="38" rx="4" fill="#d9d9d9" stroke="#777"/>
-<text x="96.0" y="575.0" font-size="10.5" font-weight="600" text-anchor="middle" fill="#333333">Publish the job</text>
-<text x="16" y="608" font-size="8.5" font-weight="400" text-anchor="start" fill="#b84a4a">38px tall -- below the 48px NFR-12 minimum (NFR-12 is scoped to the agent app, but this control shares the same CSS)</text>
-<text x="16" y="622" font-size="8.5" font-weight="400" text-anchor="start" fill="#999">PostJobForm.tsx, EvidenceFieldsEditor.tsx</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 700" font-family="Helvetica, Arial, sans-serif"><rect x="0" y="0" width="760" height="700" fill="white" stroke="#bbb"/>
+<rect x="0" y="0" width="760" height="52" rx="0" fill="white" stroke="#c8c8c8"/>
+<rect x="14" y="14" width="24" height="24" rx="4" fill="#5a5a5a" stroke="#5a5a5a"/>
+<text x="26" y="31" font-family="Consolas, 'Courier New', monospace" font-size="12" font-weight="400" text-anchor="middle" fill="white">L</text>
+<text x="46" y="31" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" text-anchor="start" fill="#2b2b2b">Ledgerfield</text>
+<text x="162" y="31" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" text-anchor="start" fill="#666666">Jobs</text>
+<text x="216.4" y="31" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" text-anchor="start" fill="#2b2b2b">Post a job</text>
+<line x1="204.4" y1="50" x2="294.4" y2="50" stroke="#2b2b2b" stroke-width="2"/>
+<circle cx="640" cy="26" r="13" fill="#e2e2e2" stroke="#bbb"/>
+<text x="640" y="29" font-family="Consolas, 'Courier New', monospace" font-size="8" font-weight="400" text-anchor="middle" fill="#2b2b2b">PO</text>
+<text x="744" y="30" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" text-anchor="end" fill="#666666">Sign out</text>
+<text x="16" y="84" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" text-anchor="start" fill="#2b2b2b">Post a job</text>
+<text x="16" y="101" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" text-anchor="start" fill="#666666">Publishing locks the job's maximum liability from your escrow.</text>
+<rect x="16" y="114" width="350" height="230" rx="6" fill="none" stroke="#c8c8c8"/>
+<text x="28" y="132" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">THE JOB</text>
+<text x="28" y="150" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">TITLE</text>
+<rect x="28" y="156" width="326" height="30" rx="4" fill="white" stroke="#999"/>
+<text x="28" y="204" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">WHAT AGENTS SHOULD DO</text>
+<rect x="28" y="210" width="326" height="50" rx="4" fill="white" stroke="#999"/>
+<text x="28" y="278" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">DEADLINE</text>
+<rect x="28" y="284" width="160" height="30" rx="4" fill="white" stroke="#999"/>
+<text x="36" y="303.0" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#666666">mm/dd/yyyy</text>
+<rect x="382" y="114" width="362" height="230" rx="6" fill="none" stroke="#c8c8c8"/>
+<text x="394" y="132" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">EVIDENCE THE AGENT MUST SUBMIT</text>
+<rect x="394" y="144" width="338" height="26" rx="4" fill="white" stroke="#ccc"/>
+<text x="402" y="161" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="400" text-anchor="start" fill="#2b2b2b">ID document seen . choice from a list . mandatory</text>
+<rect x="394" y="176" width="338" height="26" rx="4" fill="white" stroke="#ccc"/>
+<text x="402" y="193" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="400" text-anchor="start" fill="#2b2b2b">Market stall number . text . mandatory</text>
+<rect x="394" y="208" width="338" height="26" rx="4" fill="white" stroke="#ccc"/>
+<text x="402" y="225" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="400" text-anchor="start" fill="#2b2b2b">Photo of the stall . photo . mandatory</text>
+<rect x="394" y="246" width="47.599999999999994" height="24" rx="4" fill="white" stroke="#888"/>
+<text x="417.8" y="262.0" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle" fill="#2b2b2b">+ Text</text>
+<rect x="447.6" y="246" width="58.8" height="24" rx="4" fill="white" stroke="#888"/>
+<text x="477.0" y="262.0" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle" fill="#2b2b2b">+ Number</text>
+<rect x="512.4" y="246" width="47.599999999999994" height="24" rx="4" fill="white" stroke="#888"/>
+<text x="536.1999999999999" y="262.0" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle" fill="#2b2b2b">+ Date</text>
+<rect x="566.0" y="246" width="126.0" height="24" rx="4" fill="white" stroke="#888"/>
+<text x="629.0" y="262.0" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle" fill="#2b2b2b">+ Choice from a list</text>
+<rect x="394" y="278" width="92.39999999999999" height="24" rx="4" fill="white" stroke="#888"/>
+<text x="440.2" y="294.0" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle" fill="#2b2b2b">+ Phone number</text>
+<rect x="492.4" y="278" width="53.199999999999996" height="24" rx="4" fill="white" stroke="#888"/>
+<text x="519.0" y="294.0" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle" fill="#2b2b2b">+ Photo</text>
+<text x="394" y="324" font-family="Consolas, 'Courier New', monospace" font-size="8" font-weight="700" text-anchor="start" fill="#222">[+ Text 62.2 x 30]</text>
+<rect x="16" y="356" width="728" height="112" rx="6" fill="none" stroke="#c8c8c8"/>
+<text x="28" y="374" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">JOB AREA</text>
+<text x="28" y="392" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">PLACE NAME</text>
+<rect x="28" y="398" width="220" height="28" rx="4" fill="white" stroke="#999"/>
+<text x="262" y="392" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">CENTRE LATITUDE</text>
+<rect x="262" y="398" width="140" height="28" rx="4" fill="white" stroke="#999"/>
+<text x="414" y="392" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">CENTRE LONGITUDE</text>
+<rect x="414" y="398" width="140" height="28" rx="4" fill="white" stroke="#999"/>
+<text x="566" y="392" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">RADIUS (METRES)</text>
+<rect x="566" y="398" width="166" height="28" rx="4" fill="white" stroke="#999"/>
+<text x="574" y="416.0" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#666666">700</text>
+<rect x="28" y="434" width="230" height="24" rx="4" fill="white" stroke="#888"/>
+<text x="143.0" y="450.0" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle" fill="#2b2b2b">Use my current location as the centre</text>
+<text x="270" y="450" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666">Photos taken outside this circle are flagged to the reviewer.</text>
+<text x="732" y="462" font-family="Consolas, 'Courier New', monospace" font-size="8" font-weight="700" text-anchor="end" fill="#222">[252.7 x 30]</text>
+<rect x="16" y="480" width="728" height="110" rx="6" fill="none" stroke="#c8c8c8"/>
+<text x="28" y="498" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">COMMISSION</text>
+<text x="28" y="516" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">VALUE OF ONE SUBMISSION (KSH)</text>
+<rect x="28" y="522" width="200" height="28" rx="4" fill="white" stroke="#999"/>
+<text x="240" y="516" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">COMMISSION RATE (%)</text>
+<rect x="240" y="522" width="130" height="28" rx="4" fill="white" stroke="#999"/>
+<text x="248" y="540.0" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#666666">10</text>
+<text x="382" y="516" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">FLAT AMOUNT (KSH, OPTIONAL)</text>
+<rect x="382" y="522" width="180" height="28" rx="4" fill="white" stroke="#999"/>
+<text x="574" y="516" font-family="Consolas, 'Courier New', monospace" font-size="8.5" font-weight="400" text-anchor="start" fill="#666666" letter-spacing="1.2">ACTIVATIONS WANTED</text>
+<rect x="574" y="522" width="158" height="28" rx="4" fill="white" stroke="#999"/>
+<rect x="16" y="606" width="130" height="36" rx="4" fill="#5a5a5a" stroke="#5a5a5a"/>
+<text x="81.0" y="628.0" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" text-anchor="middle" fill="white">Publish the job</text>
+<text x="154" y="628" font-family="Consolas, 'Courier New', monospace" font-size="8" font-weight="700" text-anchor="start" fill="#222">[131.2 x 36 measured at 1360 px]</text>
+<text x="16" y="664" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="700" text-anchor="start" fill="#3a3a3a">Desktop client screen: Accrue's native 36/30 px controls. NFR-12 (48 px) applies to the agent app</text>
+<text x="16" y="676" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="400" text-anchor="start" fill="#3a3a3a">only.</text>
+<text x="16" y="690" font-family="Consolas, 'Courier New', monospace" font-size="8" font-weight="400" text-anchor="start" fill="#888">PostJobForm.tsx . EvidenceFieldsEditor.tsx</text></svg>

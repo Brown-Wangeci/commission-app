@@ -8,7 +8,7 @@ import { formatCents } from "@/lib/money/cents";
 export function Money({ cents, derivation }: { cents: number; derivation?: string | null }) {
   return (
     <>
-      <span className="num">{formatCents(cents)}</span>
+      <span className="num money">{formatCents(cents)}</span>
       {derivation && <span className="derivation">{derivation}</span>}
     </>
   );
