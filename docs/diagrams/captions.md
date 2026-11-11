@@ -1,14 +1,37 @@
 # Chapter 4 diagram captions
 
 All diagrams and wireframes are traced from the committed code on `main`
-(after PR #73), not from memory or from the design handoff bundle in
-`design/`. Every arrow in the two sequence diagrams is numbered on the
-diagram and cited below by file and function. SVGs are hand-generated
+(after PR #74), not from memory or from the design handoff bundle in
+`design/`. Every arrow in the sequence diagrams is numbered on the diagram
+and cited below by file and function. SVGs are hand-generated
 (`seqgen.py`/`wireframe_kit.py`, not committed -- scratch tooling for this
 PR only) and rendered to PNG at 2x with Playwright for the render check;
 nothing here was drawn in a GUI tool.
 
-## Figure 4.1a -- Submission to decision
+**Revision (`chapter4-diagram-fix`):** the two sequence diagrams were
+regenerated from the same traced flow, same arrows, same citations. No
+title text is drawn inside any of the three images below (the figure
+number lives in the write-up/caption, not the image). Every in-diagram
+cross-reference that said "Figure 4.1a" now says "Figure 4.3", and every
+one that said "Figure 4.1b" now says "Figure 4.4" (with "(b1)"/"(b2)"
+added where the step being pointed to is specifically in one of the two
+new files, so the reference stays unambiguous across a 2-file split).
+Message numbers are unchanged from the previous revision. Part B is now
+two files -- `sequence-diagram-b1-payout-and-anchoring` (messages 1-19)
+and `sequence-diagram-b2-admin-decision-and-contest` (messages 20-28) --
+each with its own trimmed lifeline header (no lifeline that never appears
+in that file's messages) and a rendered width at or under 1800px at 2x.
+Every message/self-call/note label is now >=15px at 1x (up from ~11.5-12px).
+
+**Numbering collision, not resolved here:** Figures 4.2-4.7 below (the
+wireframes, unchanged from the previous revision) already use 4.3 and 4.4
+for the agent evidence form and the admin review item. Renaming the
+sequence diagrams to 4.3 and 4.4 as instructed makes two different figures
+share each of those numbers. This is flagged, not silently fixed, because
+resolving it means renumbering one set or the other across the whole
+write-up, which this PR's instructions did not ask for.
+
+## Figure 4.3 -- Submission to decision
 
 `sequence-diagram-a-submission-to-decision.svg` / `.png`. Lifelines: Agent
 (PWA/browser), Next.js app, PostgreSQL (incl. triggers), FastAPI scoring
@@ -50,17 +73,16 @@ service, T7 scheduler/job table.
 one function (`applyT0Decision`/`applyT7Decision`); this keeps the diagram
 to the shape of a single decision rather than three unrelated diagrams.
 
-## Figure 4.1b -- Decision to payout and anchoring
+## Figure 4.4 (b1) -- Decision to payout and anchoring
 
-`sequence-diagram-b-decision-to-payout-and-anchoring.svg` / `.png`.
-Continues from 4.1a. Lifelines: Agent, **Admin (browser)** (added --
-not in the brief's list of 8, but "review (admin decision + reason)"
-cannot be shown without an actor for it), Next.js app, PostgreSQL,
-Scheduler (labelled "T7 scheduler/job table" in the brief; in the real
-code `scripts/scheduler.ts`'s one process tick also runs the payments
-worker and the anchoring queue -- drawn as separate lifelines per the
-brief, with this noted here rather than silently merged or split),
-Daraja, Anchoring queue, AuditAnchor contract.
+`sequence-diagram-b1-payout-and-anchoring.svg` / `.png`. Messages 1-19 of
+the old single "Figure 4.1b". Continues from Figure 4.3. Lifelines: Next.js
+app, PostgreSQL, Scheduler (labelled "T7 scheduler/job table" in the
+original brief; in the real code `scripts/scheduler.ts`'s one process tick
+also runs the payments worker and the anchoring queue -- drawn as separate
+lifelines per the brief, noted here rather than silently merged or split),
+Daraja, Anchoring queue, AuditAnchor contract. (Agent and Admin are not
+used by messages 1-19, so they are not drawn here -- see Figure 4.4 (b2).)
 
 | # | What it shows | File : function |
 |---|---|---|
@@ -86,6 +108,19 @@ Daraja, Anchoring queue, AuditAnchor contract.
 | 17 | Waits for the receipt | `app/src/lib/anchoring/chain.ts::waitForReceipt` |
 | 18 | Receipt confirms success | `AuditAnchor.sol`'s `Anchored` event |
 | 19 | Batch confirmed, audited | `app/src/lib/anchoring/queue.ts::confirm` |
+
+## Figure 4.4 (b2) -- Admin decision and contest
+
+`sequence-diagram-b2-admin-decision-and-contest.svg` / `.png`. Messages
+20-28 of the old single "Figure 4.1b". Lifelines: Agent (PWA/browser),
+Admin (browser) (added -- not in the original brief's list of 8, but
+"review (admin decision + reason)" cannot be shown without an actor for
+it), Next.js app, PostgreSQL. (Scheduler, Daraja, Anchoring queue and
+AuditAnchor contract are not used by messages 20-28, so they are not drawn
+here -- see Figure 4.4 (b1).)
+
+| # | What it shows | File : function |
+|---|---|---|
 | 20 | Admin approves or refuses a reviewed item, with a reason | `app/src/app/api/admin/review/[id]/approve/route.ts`, `refuse/route.ts` |
 | 21 | Only `in_review`/`disputed` items can be decided | `app/src/lib/review/actions.ts::requireState` |
 | 22 | Transition + review-item close + dispute effect, in one transaction | `app/src/lib/review/actions.ts::decide` |
@@ -96,11 +131,11 @@ Daraja, Anchoring queue, AuditAnchor contract.
 | 27 | Agent contests a refusal | `app/src/app/api/agent/activations/[id]/contest/route.ts` (POST) |
 | 28 | Refused -> disputed, back to the admin queue, allowed once | `app/src/lib/disputes/disputes.ts::contestRefusal` |
 
-**Simplification:** "Entry B1" (auto-release) is shown once; in the real
-code the same `authorisePayout()` call happens whether the T7 band was
-`auto_release` or an admin approved a reviewed item -- the diagram notes
-this with "continues at entry B1" rather than drawing the commission/B2C
-chain twice.
+**Simplification:** "Entry B1" (auto-release) is shown once, in Figure 4.4
+(b1); in the real code the same `authorisePayout()` call happens whether
+the T7 band was `auto_release` or an admin approved a reviewed item here in
+(b2) -- the diagram notes this with "continues at Figure 4.4 (b1), entry
+B1" rather than drawing the commission/B2C chain a second time in this file.
 
 ## Figure 4.2 -- Agent job list and assignment
 
@@ -177,10 +212,13 @@ are the per-screen originals meant for individual placement in the write-up.
 
 ## On "one A4 page"
 
-Even split into (a) and (b), each sequence diagram is taller than one A4
-page at a font size that stays legible (the traced flow has 28 real
-arrows and several `alt` branches per diagram -- shortening further would
-mean dropping steps, not simplifying their presentation). Both are built
-to be placed as a single tall image spanning two to three pages in the
-write-up, or printed landscape at reduced text size; this is disclosed
-rather than solved by omitting steps the code actually takes.
+Even split into three files (4.3, 4.4(b1), 4.4(b2)), each is taller than
+one A4 page at a font size that stays legible, now more so than the
+previous revision since every label grew to >=15px at 1x -- the traced
+flow is still 28 real arrows across the three files with several `alt`
+branches, and shortening further would mean dropping steps, not
+simplifying their presentation. All three are built to be placed as a
+single tall image spanning two or more pages in the write-up, or printed
+landscape at reduced text size; this is disclosed rather than solved by
+omitting steps the code actually takes. 4.4(b1) and 4.4(b2) are each at
+or under 1800px wide at 2x, as specified.
