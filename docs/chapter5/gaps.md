@@ -77,11 +77,14 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   do not actually test.
 - **Grouping.** 383 passing vitest `it()` blocks (plus 38 skipped without a
   live server -- see `docs/chapter5/environment.md` for the full list) and
-  150 pytest test functions, confirmed by the CI run on this branch
-  (`.github/workflows/ci.yml`, run 42612670984, 2026-11-09), are represented
-  as 108 rows, grouped by describe-block or by tight thematic similarity,
-  each row's `count` column stating how many individual checks it stands
-  for. A reviewer wanting the individual assertion should read the cited
+  162 pytest test functions, confirmed by the CI run on this branch
+  (`.github/workflows/ci.yml`, runs 43040371977 and 43040381579 on commit
+  976b5ef, 2026-11-11), are represented as 109 rows, grouped by
+  describe-block or by tight thematic similarity, each row's `count` column
+  stating how many individual checks it stands for. The 109th row, TC-109,
+  is the 12 tests in `tests/test_curated_records.py`, which were not
+  committed when the earlier 150-test run was recorded. A reviewer wanting
+  the individual assertion should read the cited
   test file at the stated name.
 
 ## Screenshots (F)
