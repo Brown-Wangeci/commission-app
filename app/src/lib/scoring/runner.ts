@@ -7,6 +7,7 @@ import { formatDateTime } from "@/lib/format";
 import { callScoringWithRetry, type CallResult } from "./client";
 import { recordDecision, type DecisionWithReasons, type ScoringTrigger } from "./decisions";
 import { claimJob, completeJob, dueJobIds, rescheduleAfterFailure } from "./jobs";
+import { fits, NO_DEADLINE, scoringRunWorstCaseMs } from "@/lib/time-budget";
 import { buildScoreRequest, PayloadError } from "./payload";
 
 /**
@@ -147,17 +148,26 @@ export async function runScoringJob(jobId: string, now: Date = new Date()): Prom
   return path === "primary" ? "scored" : "advisory";
 }
 
-export type RunSummary = Record<RunOutcome | "error", number>;
+export type RunSummary = Record<RunOutcome | "error" | "deferred", number>;
 
 /**
  * Runs every job that is due now. Used by the scheduler and the manual
  * trigger. One job's unexpected error (for example the activation changed
  * state mid-run) is logged and does not stop the others; its lease expires
  * and the next poll takes it again.
+ *
+ * With a deadline (a cron request), a job is started only if its worst case
+ * still fits; the rest stay due, are counted as deferred, and the next run
+ * takes them. The scheduler passes no deadline.
  */
-export async function runDueScoringJobs(now: Date = new Date(), limit = 50): Promise<RunSummary> {
-  const summary: RunSummary = { scored: 0, advisory: 0, failed: 0, obsolete: 0, not_claimed: 0, error: 0 };
-  for (const id of await dueJobIds(now, limit)) {
+export async function runDueScoringJobs(now: Date = new Date(), limit = 50, deadline: number = NO_DEADLINE): Promise<RunSummary> {
+  const summary: RunSummary = { scored: 0, advisory: 0, failed: 0, obsolete: 0, not_claimed: 0, error: 0, deferred: 0 };
+  const ids = await dueJobIds(now, limit);
+  for (const [index, id] of ids.entries()) {
+    if (!fits(deadline, scoringRunWorstCaseMs())) {
+      summary.deferred = ids.length - index;
+      break;
+    }
     try {
       summary[await runScoringJob(id, now)] += 1;
     } catch (error) {

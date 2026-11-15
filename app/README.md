@@ -206,7 +206,9 @@ live suites run only when their target answers and are skipped otherwise:
 
 ## Deploying
 
-What a hosted deployment needs:
+The hosted setup (Vercel, Neon, Vercel Blob, Render, cron-job.org) is written
+up step by step in [docs/DEPLOY.md](../docs/DEPLOY.md), and the local fallback
+in [docs/RUNBOOK.md](../docs/RUNBOOK.md). In general, a hosted deployment needs:
 
 1. **PostgreSQL** reachable at `DATABASE_URL`.
 2. **The scoring service**, deployed separately as a Python web service from
@@ -215,16 +217,19 @@ What a hosted deployment needs:
    `SCORING_SERVICE_URL` at it. Keep it private to the app if you can.
 3. **The app**, built with `npm ci && npm run build` and started with
    `npm run start:deploy`, which runs `prisma migrate deploy` before
-   `next start`, so migrations run as part of every deploy. `next start`
+   `next start`, so migrations run as part of every deploy. On a platform
+   that builds but has no start step (Vercel), run the migrations yourself
+   with the direct database URL (docs/DEPLOY.md). `next start`
    honours `PORT`. Set every variable from `.env.example`; `NEXTAUTH_URL`
    must be the public URL.
 4. **A scheduler**: either a worker process running `npm run scheduler`, or a
-   cron service calling `POST /api/cron/scoring` every minute with the
-   `CRON_SECRET` bearer token.
-5. **Persistent storage for evidence files** (`EVIDENCE_STORAGE_DIR`). The app
-   writes uploads to local disk; on a platform with ephemeral disks, mount a
-   volume, or replace `src/lib/evidence/storage.ts` with object storage
-   (nothing else reads the disk).
+   cron service calling `POST /api/cron/scoring`, `/api/cron/payments` and
+   `/api/cron/anchoring` with the `CRON_SECRET` bearer token. Each run stops
+   starting new work at `CRON_TIME_BUDGET_SECONDS`.
+5. **Persistent storage for evidence files.** Local disk
+   (`EVIDENCE_STORAGE_DIR`) by default; on Vercel, whose disk does not
+   persist, a private Vercel Blob store (`EVIDENCE_STORAGE`, chosen
+   automatically there). Both sit behind `src/lib/evidence/storage.ts`.
 6. Health check: `GET /api/health` (200 when the database answers).
 
 Then seed (`npm run db:seed`, with the scoring service reachable) and follow

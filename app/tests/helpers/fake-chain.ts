@@ -68,7 +68,7 @@ export class FakeChain implements ChainWriter {
     return txHash;
   }
 
-  async waitForReceipt(txHash: string): Promise<Receipt | null> {
+  async waitForReceipt(txHash: string, _timeoutMs?: number): Promise<Receipt | null> {
     this.check("waitForReceipt");
     if (this.mode === "receipt_timeout") return null;
     const receipt = this.receipts.get(txHash);

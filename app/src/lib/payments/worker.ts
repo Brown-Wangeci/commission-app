@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { fits, NO_DEADLINE, paymentWorstCaseMs } from "@/lib/time-budget";
 import { missingCredentials } from "./credentials";
 import { checkDisbursement, expireStaleSends, sendDisbursement } from "./disbursement";
 import { checkFunding, expireStaleFundingSends, sendFunding } from "./funding";
@@ -9,7 +10,7 @@ import { checkFunding, expireStaleFundingSends, sendFunding } from "./funding";
  * restarting neither loses nor repeats an instruction. Several copies may run
  * at once, because each row is claimed by a conditional update.
  */
-export type PaymentRunSummary = { skipped: boolean; sends: number; checks: number; expired: number; error: number };
+export type PaymentRunSummary = { skipped: boolean; sends: number; checks: number; expired: number; error: number; deferred: number };
 
 const BATCH = 50;
 
@@ -26,9 +27,23 @@ async function dueIds(now: Date, take: number) {
   return { fundingSends, payoutSends, fundingChecks, payoutChecks };
 }
 
-/** One row's failure is logged by id only and does not stop the others. */
-async function each(rows: Array<{ id: string }>, run: (id: string) => Promise<unknown>, summary: PaymentRunSummary, field: "sends" | "checks"): Promise<void> {
-  for (const { id } of rows) {
+/**
+ * One row's failure is logged by id only and does not stop the others. A row
+ * whose worst case no longer fits before the deadline is left due (deferred)
+ * for the next run, never started.
+ */
+async function each(
+  rows: Array<{ id: string }>,
+  run: (id: string) => Promise<unknown>,
+  summary: PaymentRunSummary,
+  field: "sends" | "checks",
+  deadline: number,
+): Promise<void> {
+  for (const [index, { id }] of rows.entries()) {
+    if (!fits(deadline, paymentWorstCaseMs())) {
+      summary.deferred += rows.length - index;
+      return;
+    }
     try {
       await run(id);
       summary[field] += 1;
@@ -40,14 +55,14 @@ async function each(rows: Array<{ id: string }>, run: (id: string) => Promise<un
 }
 
 /** Runs everything due. Waits, without using up any retries, until the credentials are set. */
-export async function runDuePayments(now: Date = new Date(), take = BATCH): Promise<PaymentRunSummary> {
-  const summary: PaymentRunSummary = { skipped: false, sends: 0, checks: 0, expired: 0, error: 0 };
+export async function runDuePayments(now: Date = new Date(), take = BATCH, deadline: number = NO_DEADLINE): Promise<PaymentRunSummary> {
+  const summary: PaymentRunSummary = { skipped: false, sends: 0, checks: 0, expired: 0, error: 0, deferred: 0 };
   if (missingCredentials().length > 0) return { ...summary, skipped: true };
   summary.expired = (await expireStaleSends(now)) + (await expireStaleFundingSends(now));
   const due = await dueIds(now, take);
-  await each(due.fundingSends, (id) => sendFunding(id, now), summary, "sends");
-  await each(due.payoutSends, (id) => sendDisbursement(id, now), summary, "sends");
-  await each(due.fundingChecks, (id) => checkFunding(id, now), summary, "checks");
-  await each(due.payoutChecks, (id) => checkDisbursement(id, now), summary, "checks");
+  await each(due.fundingSends, (id) => sendFunding(id, now), summary, "sends", deadline);
+  await each(due.payoutSends, (id) => sendDisbursement(id, now), summary, "sends", deadline);
+  await each(due.fundingChecks, (id) => checkFunding(id, now), summary, "checks", deadline);
+  await each(due.payoutChecks, (id) => checkDisbursement(id, now), summary, "checks", deadline);
   return summary;
 }

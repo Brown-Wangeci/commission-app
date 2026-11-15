@@ -4,6 +4,14 @@ import { idSchema } from "@/lib/validation";
 import { forceT7 } from "@/lib/scoring/force";
 import { prisma } from "@/lib/db";
 
+/**
+ * Vercel Hobby's function limit with Fluid Compute (Vercel docs). The scoring
+ * call inside is bounded well below it: SCORING_IMMEDIATE_ATTEMPTS x
+ * SCORING_TIMEOUT_MS plus backoff (46.5 s with the defaults), after which the
+ * activation goes to review as unscored.
+ */
+export const maxDuration = 300;
+
 /** Admin control: score this activation with the T7 model now. */
 export const POST = withErrors<{ id: string }>("POST /api/admin/activations/[id]/score-t7", async (_request, { params }) => {
   const admin = await requireApiRole("admin");

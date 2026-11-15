@@ -22,8 +22,6 @@ loadEnv();
 // window in .env applies to new submissions only.
 process.env.HOLD_WINDOW_SECONDS = String(7 * 24 * 60 * 60);
 
-import fs from "node:fs/promises";
-import path from "node:path";
 import type { ActivationState, Agent, Job } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { assertUtf8Database } from "@/lib/db-encoding";
@@ -32,6 +30,7 @@ import { hashPassword } from "@/lib/auth/password";
 import { acceptAssignment, assignJob } from "@/lib/escrow/holds";
 import { createJob, jobInputSchema } from "@/lib/jobs/jobs";
 import { currentEvidenceConfig, updateEvidenceConfig } from "@/lib/evidence/config";
+import { evidenceBackendName, removeAllEvidence } from "@/lib/evidence/storage";
 import { nairobiDate, type FieldDefinition, type FieldInput } from "@/lib/evidence/fields";
 import { sumCents } from "@/lib/money/cents";
 import { maxLiability } from "@/lib/money/commission";
@@ -324,7 +323,8 @@ async function clearPreviousSeed(): Promise<void> {
   const tables = rows.map((r) => r.tablename).filter((t) => !keep.has(t)).map((t) => `"${t}"`);
   if (tables.length > 0) await prisma.$executeRawUnsafe(`TRUNCATE ${tables.join(", ")} RESTART IDENTITY CASCADE`);
   await prisma.$executeRawUnsafe(`ALTER SEQUENCE "activation_reference_seq" RESTART WITH 1`);
-  await fs.rm(path.resolve(process.cwd(), config().EVIDENCE_STORAGE_DIR), { recursive: true, force: true });
+  await removeAllEvidence();
+  console.log(`Evidence storage: ${evidenceBackendName()} (emptied).`);
 }
 
 // ---------------------------------------------------------------- the data

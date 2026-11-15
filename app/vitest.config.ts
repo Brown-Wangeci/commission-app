@@ -64,6 +64,7 @@ export default defineConfig(({ mode }) => {
       env: {
         ...env,
         DATABASE_URL: runUrl,
+        DATABASE_URL_UNPOOLED: runUrl,
         EVIDENCE_STORAGE_DIR: "storage/test-evidence",
         ...FAKE_SERVICES,
       },

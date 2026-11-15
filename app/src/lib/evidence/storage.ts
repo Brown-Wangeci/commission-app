@@ -1,14 +1,17 @@
 import { createHash } from "node:crypto";
-import fs from "node:fs/promises";
 import path from "node:path";
 import { config } from "@/lib/config";
 import { ApiError } from "@/lib/http/errors";
+import { backendName, type StorageBackend } from "./storage-backend";
+import { blobBackend } from "./storage-blob";
+import { diskBackend } from "./storage-disk";
 
 /**
- * Evidence files live on local disk under EVIDENCE_STORAGE_DIR, one folder
- * per activation, and are served only through the authorised
- * /api/evidence/[id] route. A hosted deployment would swap this module for
- * object storage; nothing else reads the disk directly.
+ * Evidence files, one folder per activation, served only through the
+ * authorised /api/evidence/[id] route. This module is the storage boundary:
+ * nothing else reads or writes evidence bytes. Where they live is chosen by
+ * storage-backend.ts: local disk under EVIDENCE_STORAGE_DIR for development
+ * and tests, a private Vercel Blob store for the hosted app.
  */
 export const UPLOAD_TYPES: Readonly<Record<string, string>> = {
   "image/jpeg": "jpg",
@@ -24,8 +27,17 @@ export function sha256(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
 }
 
-function root(): string {
-  return path.resolve(process.cwd(), config().EVIDENCE_STORAGE_DIR);
+function backend(): StorageBackend {
+  return backendName() === "blob" ? blobBackend : diskBackend;
+}
+
+/** A stored path is "<activationId>/<name>"; anything that could climb out is refused. */
+function checkedPath(storagePath: string): string {
+  const normal = path.posix.normalize(storagePath);
+  if (normal !== storagePath || normal.startsWith("/") || normal.split("/").includes("..")) {
+    throw new ApiError(400, "bad_request", "Invalid evidence path.");
+  }
+  return normal;
 }
 
 function checkUpload(file: File): string {
@@ -54,24 +66,27 @@ export async function storeBytes(
   mimeType: string,
   originalName: string,
 ): Promise<StoredFile> {
-  const relative = path.posix.join(activationId, storedName);
-  const absolute = path.join(root(), activationId, storedName);
-  await fs.mkdir(path.dirname(absolute), { recursive: true });
-  await fs.writeFile(absolute, bytes);
-  return { storagePath: relative, sha256: sha256(bytes), mimeType, fileName: originalName.slice(0, 200) };
+  const storagePath = checkedPath(path.posix.join(activationId, storedName));
+  await backend().write(storagePath, bytes, mimeType);
+  return { storagePath, sha256: sha256(bytes), mimeType, fileName: originalName.slice(0, 200) };
 }
 
 export async function readStored(storagePath: string): Promise<Buffer> {
-  const absolute = path.resolve(root(), storagePath);
-  if (!absolute.startsWith(root())) throw new ApiError(400, "bad_request", "Invalid evidence path.");
-  try {
-    return await fs.readFile(absolute);
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") throw new ApiError(404, "not_found", "The evidence file is missing from storage.");
-    throw error;
-  }
+  const bytes = await backend().read(checkedPath(storagePath));
+  if (!bytes) throw new ApiError(404, "not_found", "The evidence file is missing from storage.");
+  return bytes;
 }
 
 export async function removeActivationFiles(activationId: string): Promise<void> {
-  await fs.rm(path.join(root(), activationId), { recursive: true, force: true });
+  await backend().removeFolder(checkedPath(activationId));
+}
+
+/** Empties evidence storage, whichever backend is in use. For the seed only. */
+export async function removeAllEvidence(): Promise<void> {
+  await backend().removeAll();
+}
+
+/** Which backend is in use, for the seed log. Never a credential. */
+export function evidenceBackendName(): StorageBackend["name"] {
+  return backend().name;
 }

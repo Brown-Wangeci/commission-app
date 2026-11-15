@@ -6,6 +6,7 @@ import { merkleRoot } from "@/lib/audit/merkle";
 import { config } from "@/lib/config";
 import { prisma } from "@/lib/db";
 import { backoffMs, raiseToAdministrators } from "@/lib/payments/attention";
+import { anchorCallsReserveMs, anchorRoundMinimumMs, fits, NO_DEADLINE, remainingMs } from "@/lib/time-budget";
 import { chainWriter, type AnchorLog, type ChainWriter } from "./chain";
 import { scrubChainText } from "./credentials";
 
@@ -122,7 +123,16 @@ async function alreadyAnchored(chain: ChainWriter, anchor: AuditAnchor): Promise
 
 type Attempt = "confirmed" | "waiting";
 
-async function send(chain: ChainWriter, anchor: AuditAnchor, now: Date): Promise<Attempt> {
+/**
+ * How long to wait for a receipt: ANCHOR_RECEIPT_TIMEOUT_MS, cut short so the
+ * calls after it still fit before the deadline. A receipt not seen in time is
+ * the ordinary "waiting" outcome; the next run asks the chain first.
+ */
+function receiptWaitMs(deadline: number): number {
+  return Math.min(config().ANCHOR_RECEIPT_TIMEOUT_MS, Math.max(0, remainingMs(deadline) - anchorCallsReserveMs()));
+}
+
+async function send(chain: ChainWriter, anchor: AuditAnchor, now: Date, deadline: number): Promise<Attempt> {
   if ((await chain.anchoredAt(anchor.root)) > 0n) {
     const log = await alreadyAnchored(chain, anchor);
     if (!log) throw new Error("The root is on chain but its transaction has not been found yet.");
@@ -132,7 +142,8 @@ async function send(chain: ChainWriter, anchor: AuditAnchor, now: Date): Promise
   const searchFromBlock = anchor.searchFromBlock ?? (await chain.blockNumber());
   const txHash = await chain.submit(anchor.root);
   await prisma.auditAnchor.update({ where: { id: anchor.id }, data: { status: "submitted", txHash, searchFromBlock, submitter: chain.submitter, submittedAt: now } });
-  const receipt = await chain.waitForReceipt(txHash, config().ANCHOR_RECEIPT_TIMEOUT_MS);
+  const waitMs = receiptWaitMs(deadline);
+  const receipt = waitMs > 0 ? await chain.waitForReceipt(txHash, waitMs) : null;
   if (!receipt) return waitForReceipt(anchor, now);
   if (receipt.status === "success") {
     const log = await chain.receiptLog(txHash);
@@ -174,11 +185,11 @@ async function retryOrEscalate(anchor: AuditAnchor, reason: string, now: Date): 
   });
 }
 
-async function attempt(chain: ChainWriter, anchor: AuditAnchor, now: Date): Promise<Attempt | "failed" | "not_claimed"> {
+async function attempt(chain: ChainWriter, anchor: AuditAnchor, now: Date, deadline: number): Promise<Attempt | "failed" | "not_claimed"> {
   const claimed = await claim(anchor, now);
   if (!claimed) return "not_claimed";
   try {
-    return await send(chain, claimed, now);
+    return await send(chain, claimed, now, deadline);
   } catch (error) {
     await retryOrEscalate(claimed, scrubChainText(error instanceof Error ? error.message : String(error)), now);
     return "failed";
@@ -189,12 +200,17 @@ async function attempt(chain: ChainWriter, anchor: AuditAnchor, now: Date): Prom
  * Works the queue once: finishes the batch in flight, then, if it confirmed
  * and the interval has passed, cuts and sends the next. Waits, using no
  * attempts, while the chain is not configured.
+ *
+ * With a deadline (a cron request), a round starts only if its chain calls
+ * fit with time to spare, and the receipt wait is cut to what is left; the
+ * scheduler passes no deadline.
  */
-export async function runDueAnchoring(now: Date = new Date()): Promise<AnchorRunSummary> {
+export async function runDueAnchoring(now: Date = new Date(), deadline: number = NO_DEADLINE): Promise<AnchorRunSummary> {
   const summary: AnchorRunSummary = { skipped: false, created: 0, confirmed: 0, failed: 0, waiting: null };
   const chain = chainWriter();
   if (!chain) return { ...summary, skipped: true };
   for (let round = 0; round < 2; round += 1) {
+    if (!fits(deadline, anchorRoundMinimumMs())) return { ...summary, waiting: summary.waiting ?? "Deferred to the next run: not enough time left in this one." };
     let anchor = await openAnchor();
     if (anchor?.escalatedAt) return { ...summary, waiting: `Batch ${anchor.fromSequence}-${anchor.toSequence} needs an administrator.` };
     if (!anchor) {
@@ -207,7 +223,7 @@ export async function runDueAnchoring(now: Date = new Date()): Promise<AnchorRun
       if (!anchor) return summary;
       summary.created += 1;
     }
-    const outcome = await attempt(chain, anchor, now);
+    const outcome = await attempt(chain, anchor, now, deadline);
     if (outcome === "confirmed") summary.confirmed += 1;
     else {
       if (outcome === "failed") summary.failed += 1;
