@@ -77,9 +77,14 @@ matter on Vercel:
 ## Deploy order
 
 1. **Scoring service.** It must already be live, because the seed scores
-   through it. Check `GET https://ledgerfield-scoring.onrender.com/health`,
-   which should show `"loaded": true`. A free instance that has been idle
-   takes a while to answer the first request.
+   through it. Its build installs the Python requirements, then downloads
+   the serving artifacts from the GitHub release `scoring-artifacts-v1`. It
+   checks them against `artifacts/scoring-artifacts-v1.tar.gz.sha256` and
+   fails on a mismatch (`render.yaml`). It never retrains: a Linux rebuild
+   gives a different model. Check
+   `GET https://ledgerfield-scoring.onrender.com/health`, which should show
+   `"loaded": true`. A free instance that has been idle takes a while to
+   answer the first request.
 2. **Database, Blob store and variables.** Attach Neon, create the private
    Blob store, set the variables above.
 3. **Merge to `main`.** Vercel builds with `npm run build` (money column
