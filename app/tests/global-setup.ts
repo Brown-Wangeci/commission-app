@@ -49,7 +49,8 @@ export default async function setup(): Promise<() => Promise<void>> {
     );
   }
   execSync("npx prisma migrate deploy", {
-    env: { ...process.env, DATABASE_URL: runUrl },
+    // Both set explicitly, so directUrl cannot point a migration anywhere else.
+    env: { ...process.env, DATABASE_URL: runUrl, DATABASE_URL_UNPOOLED: runUrl },
     stdio: "pipe",
   });
 

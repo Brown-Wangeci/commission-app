@@ -1,0 +1,27 @@
+# The fraud-scoring service as it runs on Render today, recorded so it can be
+# recreated. It was created by hand in the Render dashboard, which remains the
+# source of truth; this file is not connected to Render as a Blueprint, so
+# committing or editing it deploys nothing. If the two ever differ, confirm
+# the build and start commands under the service's Settings and update this
+# file to match.
+#
+# Free instance: it spins down when idle and the first request after that is
+# slow. A cron-job.org job pings /health every 10 minutes to keep it awake
+# (see docs/DEPLOY.md). No PYTHON_VERSION is set on the service, so Render's
+# default Python applies.
+#
+# The build regenerates the seed-42 dataset and both serving artifacts
+# (T7 and T0) exactly as CI does; nothing large is committed.
+services:
+  - type: web
+    name: ledgerfield-scoring
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: >-
+      pip install -r requirements.txt &&
+      python -m src.generator.run &&
+      python -m src.serve.artifact &&
+      python -m src.serve.artifact t0_none t0_none-isotonic-v1
+    startCommand: uvicorn src.serve.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health

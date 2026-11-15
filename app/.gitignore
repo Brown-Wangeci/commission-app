@@ -7,6 +7,9 @@ next-env.d.ts
 .pgdata/
 .pgdata-test/
 
+# Logs and process ids from scripts/demo-start
+.demo/
+
 # Uploaded evidence files (runtime state, not source)
 storage/
 

@@ -47,7 +47,10 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Environment / secrets
+# Environment / secrets. The exception comes last: a later pattern wins, so
+# .env* after it would ignore app/.env.example again.
 .env
 .env.*
+.env*
+.vercel
 !.env.example

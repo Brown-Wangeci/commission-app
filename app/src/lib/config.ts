@@ -16,6 +16,7 @@ const schema = z.object({
   SCHEDULER_INTERVAL_SECONDS: z.coerce.number().int().positive().default(30),
   SCHEDULER_LEASE_SECONDS: z.coerce.number().int().positive().default(120),
   CRON_SECRET: z.string().optional(),
+  CRON_TIME_BUDGET_SECONDS: z.coerce.number().int().positive().default(240),
   MSISDN_HASH_SALT: z.string().min(16, "MSISDN_HASH_SALT must be set to a long random string."),
   EVIDENCE_STORAGE_DIR: z.string().min(1).default("storage/evidence"),
   EVIDENCE_MAX_BYTES: z.coerce.number().int().positive().default(8_000_000),

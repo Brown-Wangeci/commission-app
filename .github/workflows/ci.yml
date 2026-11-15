@@ -40,6 +40,8 @@ jobs:
         working-directory: app
     env:
       DATABASE_URL: postgresql://ledgerfield:ledgerfield@localhost:5432/ledgerfield
+      # A direct connection already, so Prisma Migrate (directUrl) uses the same server.
+      DATABASE_URL_UNPOOLED: postgresql://ledgerfield:ledgerfield@localhost:5432/ledgerfield
       TEST_DATABASE_URL: postgresql://ledgerfield:ledgerfield@localhost:5432/ledgerfield_test
       # Test-only values: not secrets, never used outside this job.
       MSISDN_HASH_SALT: ci-only-salt-not-a-secret-0123456789

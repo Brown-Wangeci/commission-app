@@ -24,7 +24,12 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // The app connects through DATABASE_URL (Neon: the pooled URL). Migrations
+  // need a direct session, so Prisma Migrate uses directUrl (Neon: the
+  // unpooled URL). Locally both are the same server: scripts/prisma-env.ts
+  // copies DATABASE_URL into DATABASE_URL_UNPOOLED when it is not set.
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum Role {

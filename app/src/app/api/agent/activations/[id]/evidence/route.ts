@@ -6,6 +6,9 @@ import { badRequest } from "@/lib/http/errors";
 import { ok, withErrors } from "@/lib/http/route";
 import { idSchema } from "@/lib/validation";
 
+/** Vercel Hobby's function limit with Fluid Compute (Vercel docs). This route stores photos only; it calls no scoring. */
+export const maxDuration = 300;
+
 /** The agent answers an evidence request (multipart: note, photos, photoMeta). */
 export const POST = withErrors<{ id: string }>("POST /api/agent/activations/[id]/evidence", async (request, { params }) => {
   const agent = await agentFor(await requireApiRole("agent"));
