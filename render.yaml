@@ -1,17 +1,22 @@
-# The fraud-scoring service as it runs on Render today, recorded so it can be
-# recreated. It was created by hand in the Render dashboard, which remains the
-# source of truth; this file is not connected to Render as a Blueprint, so
-# committing or editing it deploys nothing. If the two ever differ, confirm
-# the build and start commands under the service's Settings and update this
-# file to match.
+# The fraud-scoring service on Render, recorded so it can be recreated. It was
+# created by hand in the Render dashboard, which remains the source of truth;
+# this file is not connected to Render as a Blueprint, so committing or
+# editing it deploys nothing. If the two ever differ, update this file to
+# match the service's Settings.
+#
+# The build does NOT train anything. It downloads the exact serving artifacts
+# the reported results come from (GitHub release scoring-artifacts-v1),
+# checks the archive against the SHA-256 committed in
+# artifacts/scoring-artifacts-v1.tar.gz.sha256, and fails on any mismatch.
+# Rebuilding the artifacts on Linux gives a numerically different model under
+# the same version label: docs/chapter5/evidence/hosted/scoring/.
+# To publish new artifacts: python scripts/package_artifacts.py, attach the
+# archive to a new release, commit the new .sha256, and update the URL below.
 #
 # Free instance: it spins down when idle and the first request after that is
 # slow. A cron-job.org job pings /health every 10 minutes to keep it awake
 # (see docs/DEPLOY.md). No PYTHON_VERSION is set on the service, so Render's
 # default Python applies.
-#
-# The build regenerates the seed-42 dataset and both serving artifacts
-# (T7 and T0) exactly as CI does; nothing large is committed.
 services:
   - type: web
     name: ledgerfield-scoring
@@ -20,8 +25,10 @@ services:
     region: frankfurt
     buildCommand: >-
       pip install -r requirements.txt &&
-      python -m src.generator.run &&
-      python -m src.serve.artifact &&
-      python -m src.serve.artifact t0_none t0_none-isotonic-v1
+      curl -fsSL -o scoring-artifacts-v1.tar.gz
+      https://github.com/Brown-Wangeci/commission-app/releases/download/scoring-artifacts-v1/scoring-artifacts-v1.tar.gz &&
+      sha256sum -c artifacts/scoring-artifacts-v1.tar.gz.sha256 &&
+      tar -xzf scoring-artifacts-v1.tar.gz &&
+      rm scoring-artifacts-v1.tar.gz
     startCommand: uvicorn src.serve.app:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health

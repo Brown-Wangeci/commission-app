@@ -54,3 +54,7 @@ Thumbs.db
 .env*
 .vercel
 !.env.example
+
+# The scoring-artifacts release archive (scripts/package_artifacts.py). Only
+# its .sha256 under artifacts/ is committed; the archive is a release asset.
+/scoring-artifacts-*.tar.gz
