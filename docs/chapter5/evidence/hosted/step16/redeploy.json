@@ -1,0 +1,7 @@
+{
+  "redeployed_at": "2026-11-15T09:56:11Z",
+  "before": "commission-ouspuoxbq-browns-projects-10743417.vercel.app",
+  "after": "commission-q48qwyeqc-browns-projects-10743417.vercel.app",
+  "command": "vercel redeploy <before> --environment production",
+  "alias": "commission-app-ten-pied.vercel.app"
+}

@@ -215,7 +215,9 @@ in [docs/RUNBOOK.md](../docs/RUNBOOK.md). In general, a hosted deployment needs:
 1. **PostgreSQL** reachable at `DATABASE_URL`.
 2. **The scoring service**, deployed separately as a Python web service from
    the repository root, with its trained `artifacts/` (they are not
-   committed; build them as the root README describes). Point
+   committed; build them as the root README describes, or, as on Render,
+   download the published archive and check its SHA-256: `render.yaml`. A
+   rebuild on another platform gives a different model). Point
    `SCORING_SERVICE_URL` at it. Keep it private to the app if you can.
 3. **The app**, built with `npm ci && npm run build` and started with
    `npm run start:deploy`, which runs `prisma migrate deploy` before
@@ -237,8 +239,13 @@ in [docs/RUNBOOK.md](../docs/RUNBOOK.md). In general, a hosted deployment needs:
 Then seed (`npm run db:seed`, with the scoring service reachable) and follow
 DEMO.md.
 
-**Not done in this build:** no hosted deployment was made. It needs your
-hosting account, database and secrets. Issue #19 stays open for that.
+**Hosted deployment:** made on 2026-11-15 (Vercel, Neon, Vercel Blob, Render,
+cron-job.org, Polygon Amoy, Daraja sandbox) and verified; the evidence is in
+[docs/chapter5/evidence/hosted/](../docs/chapter5/evidence/hosted/README.md).
+**Not shown there:** a hosted M-Pesa payment settling through a real callback
+(the callbacks of 2026-11-15 never arrived, cause unknown), and hosted
+behaviour on mobile data or beyond the free plans. The local setup
+(docs/RUNBOOK.md) is the fallback for a live demonstration.
 
 ## Money
 

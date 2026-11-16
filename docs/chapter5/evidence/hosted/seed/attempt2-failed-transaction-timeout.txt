@@ -1,0 +1,31 @@
+seed started 2026-11-15T07:43:02Z
+scoring loaded: true
+Evidence storage: blob (emptied).
+PrismaClientKnownRequestError: 
+Invalid `tx.disbursement.create()` invocation in
+<repo>\app\src\lib\payments\disbursement.ts:35:46
+
+  32 export async function queueDisbursement(tx: Tx, authorisation: PayoutAuthorisation, reference: string): Promise<Disbursement> {
+  33   const problem = b2cAmountProblem(authorisation.amountCents);
+  34   const at = authorisation.authorisedAt;
+→ 35   const disbursement = await tx.disbursement.create(
+Transaction API error: Transaction already closed: A query cannot be executed on an expired transaction. The timeout for this transaction was 5000 ms, however 5197 ms passed since the start of the transaction. Consider increasing the interactive transaction timeout or doing less work in the transaction.
+    at ei.handleRequestError (<repo>\app\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (<repo>\app\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (<repo>\app\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at async a (<repo>\app\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at async queueDisbursement (<repo>\app\src\lib\payments\disbursement.ts:35:24)
+    at async DarajaPayoutAuthoriser.authorise (<repo>\app\src\lib\payouts\daraja.ts:22:5)
+    at async authorisePayout (<repo>\app\src\lib\payouts\authorise.ts:40:25)
+    at async applyT7Decision (<repo>\app\src\lib\activations\outcomes.ts:74:5)
+    at async applyDecision (<repo>\app\src\lib\scoring\runner.ts:68:44)
+    at async <anonymous> (<repo>\app\src\lib\scoring\runner.ts:78:5) {
+  code: 'P2028',
+  meta: {
+    modelName: 'Disbursement',
+    error: 'Transaction already closed: A query cannot be executed on an expired transaction. The timeout for this transaction was 5000 ms, however 5197 ms passed since the start of the transaction. Consider increasing the interactive transaction timeout or doing less work in the transaction.'
+  },
+  clientVersion: '6.19.3'
+}
+seed exit 1
+seed finished 2026-11-15T07:48:22Z

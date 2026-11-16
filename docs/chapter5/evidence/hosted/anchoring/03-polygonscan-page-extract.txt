@@ -1,0 +1,7 @@
+Status: Success Block: 52913281 314 Block Confirmations Timestamp: Nov-15-2026 09:45:02 AM +UTC 5 mins ago Nov-15-2026 09:45:02 AM
+Block: 52913281 314 Block Confirmations Timestamp: Nov-15-2026 09:45:02 AM +UTC 5 mins ago Nov-15-2026 09:45:02 AM +UTC Time Forma
+Timestamp: Nov-15-2026 09:45:02 AM +UTC 5 mins ago Nov-15-2026 09:45:02 AM +UTC Time Formats UTC Local Unix Timestamp From: 0xe78D
+From: 0xe78D1E2d0985874871b8fAd800F9f0d0ab598E8F To: 0x437EcaE6De461105Cd8F2596f52CA8d886aB83a0 Value: 0 POL Transaction Fee: 0 .
+Interacted With (To): (not found)
+Transaction Fee: 0 . 001477710003743532 POL Gas Price: 30 . 000000076 Gwei (0 . 000000030000000076 POL) Gas Limit & Usage by Txn:
+Fail context: none in visible text

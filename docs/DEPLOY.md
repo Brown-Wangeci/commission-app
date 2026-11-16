@@ -111,8 +111,14 @@ matter on Vercel:
    first, then run, from `app/`:
 
    ```sh
-   node --env-file=.env.hosted node_modules/tsx/dist/cli.mjs prisma/seed.ts
+   node node_modules/tsx/dist/cli.mjs scripts/seed-hosted.ts
    ```
+
+   It reads `.env.hosted` and seeds through the direct URL with a single
+   connection and a 30 s transaction timeout. A laptop far from Frankfurt
+   needs both: at about 190 ms per query, the seed takes about 40 minutes.
+   Remote runs have lost the connection part-way; a rerun starts clean.
+   Details are in RUNBOOK.md, "Reset the hosted demo data".
 
    `vercel env pull` writes `VERCEL="1"` into `.env.hosted`, so the seed
    stores its photos in the Blob store, as the hosted app does. It prints

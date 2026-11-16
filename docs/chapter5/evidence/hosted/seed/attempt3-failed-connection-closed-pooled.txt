@@ -1,0 +1,28 @@
+seed started 2026-11-15T07:49:52Z
+scoring loaded: true
+Evidence storage: blob (emptied).
+PrismaClientKnownRequestError: 
+Invalid `db.payoutCycle.findMany()` invocation in
+<repo>\app\src\lib\scoring\payload.ts:139:39
+
+  136 }
+  137 
+  138 async function loadCalendar(db: Tx, submittedAt: Date): Promise<PayoutCycle[]> {
+→ 139   const cycles = await db.payoutCycle.findMany(
+Server has closed the connection.
+    at ei.handleRequestError (<repo>\app\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (<repo>\app\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (<repo>\app\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at async a (<repo>\app\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at async loadCalendar (<repo>\app\src\lib\scoring\payload.ts:139:18)
+    at async buildScoreRequest (<repo>\app\src\lib\scoring\payload.ts:188:20)
+    at async callService (<repo>\app\src\lib\scoring\runner.ts:49:21)
+    at async runScoringJob (<repo>\app\src\lib\scoring\runner.ts:142:18)
+    at async submitActivation (<repo>\app\src\lib\activations\submit.ts:273:19)
+    at async submit (<repo>\app\prisma\seed.ts:281:11) {
+  code: 'P1017',
+  meta: { modelName: 'PayoutCycle' },
+  clientVersion: '6.19.3'
+}
+seed exit 1
+seed finished 2026-11-15T08:17:02Z

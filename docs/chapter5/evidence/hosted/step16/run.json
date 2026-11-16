@@ -1,0 +1,264 @@
+{
+  "app": "https://commission-app-ten-pied.vercel.app",
+  "ran_at": "2026-11-15T09:49:23.157Z",
+  "roles": [
+    {
+      "role": "admin",
+      "email": "reviewer@ledgerfield.test",
+      "area": "/admin",
+      "status": 200,
+      "location": null
+    },
+    {
+      "role": "admin",
+      "email": "reviewer@ledgerfield.test",
+      "area": "/client",
+      "status": 307,
+      "location": "/admin"
+    },
+    {
+      "role": "admin",
+      "email": "reviewer@ledgerfield.test",
+      "area": "/agent",
+      "status": 307,
+      "location": "/admin"
+    },
+    {
+      "role": "client",
+      "email": "client2@ledgerfield.test",
+      "area": "/admin",
+      "status": 307,
+      "location": "/client"
+    },
+    {
+      "role": "client",
+      "email": "client2@ledgerfield.test",
+      "area": "/client",
+      "status": 200,
+      "location": null
+    },
+    {
+      "role": "client",
+      "email": "client2@ledgerfield.test",
+      "area": "/agent",
+      "status": 307,
+      "location": "/client"
+    },
+    {
+      "role": "agent",
+      "email": "mercy@ledgerfield.test",
+      "area": "/admin",
+      "status": 307,
+      "location": "/agent"
+    },
+    {
+      "role": "agent",
+      "email": "mercy@ledgerfield.test",
+      "area": "/client",
+      "status": 307,
+      "location": "/agent"
+    },
+    {
+      "role": "agent",
+      "email": "mercy@ledgerfield.test",
+      "area": "/agent",
+      "status": 200,
+      "location": null
+    }
+  ],
+  "jobId": "cmwhnklhj0001le080p7g6upu",
+  "assignmentId": "cmwhnkm3i0005le08e5mytt1r",
+  "activation": {
+    "id": "4a3d5ce0-730e-4274-bfb5-6a0f462a7c84",
+    "reference": "LF-000063",
+    "submittedAt": "2026-11-15T09:49:24.644Z",
+    "holdClosesAt": "2026-11-15T09:54:24.644Z",
+    "stateAfterSubmit": "held",
+    "submitRequestMs": 3470
+  },
+  "t0": {
+    "id": "cmwhnkosi000fky08xsiuf2js",
+    "mode": "t0",
+    "modelVersion": "t0_none-isotonic-v1",
+    "probability": 0.1169590577483177,
+    "band": "auto_release",
+    "releaseThreshold": 0.301471,
+    "rejectThreshold": 0.729167,
+    "scoredAt": "2026-11-15T09:49:26.252Z",
+    "trigger": "submission",
+    "reasons": [
+      {
+        "rank": 1,
+        "feature": "ip_location_mismatch_flag",
+        "description": "the network location disagreed with the device's GPS location",
+        "contribution": 1.16609787940979,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      },
+      {
+        "rank": 2,
+        "feature": "proof_of_activation_missing_flag",
+        "description": "no proof of activation was attached",
+        "contribution": 1.028686761856079,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      },
+      {
+        "rank": 3,
+        "feature": "acceptance_to_submission_seconds",
+        "description": "the agent took 0.0 hours between accepting the job and submitting it",
+        "contribution": 0.8622594475746155,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      }
+    ]
+  },
+  "firstWeekReported": "dormant_lapsed",
+  "t7": {
+    "id": "cmwhnrvcz000sky089u8dvbta",
+    "mode": "t7",
+    "modelVersion": "t7_none-isotonic-v1",
+    "probability": 0.4054054319858551,
+    "band": "review",
+    "releaseThreshold": 0.266667,
+    "rejectThreshold": 0.666667,
+    "scoredAt": "2026-11-15T09:55:01.350Z",
+    "trigger": "hold_close",
+    "reasons": [
+      {
+        "rank": 1,
+        "feature": "ip_location_mismatch_flag",
+        "description": "the network location disagreed with the device's GPS location",
+        "contribution": 1.204182505607605,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      },
+      {
+        "rank": 2,
+        "feature": "proof_of_activation_missing_flag",
+        "description": "no proof of activation was attached",
+        "contribution": 1.081583380699158,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      },
+      {
+        "rank": 3,
+        "feature": "acceptance_to_submission_seconds",
+        "description": "the agent took 0.0 hours between accepting the job and submitting it",
+        "contribution": 1.06872546672821,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      }
+    ]
+  },
+  "stateAfterT7": "in_review",
+  "decisionsAfterT7": [
+    {
+      "id": "cmwhnkosi000fky08xsiuf2js",
+      "mode": "t0",
+      "modelVersion": "t0_none-isotonic-v1",
+      "probability": 0.1169590577483177,
+      "band": "auto_release",
+      "releaseThreshold": 0.301471,
+      "rejectThreshold": 0.729167,
+      "scoredAt": "2026-11-15T09:49:26.252Z",
+      "trigger": "submission",
+      "reasons": [
+        {
+          "rank": 1,
+          "feature": "ip_location_mismatch_flag",
+          "description": "the network location disagreed with the device's GPS location",
+          "contribution": 1.16609787940979,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 2,
+          "feature": "proof_of_activation_missing_flag",
+          "description": "no proof of activation was attached",
+          "contribution": 1.028686761856079,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 3,
+          "feature": "acceptance_to_submission_seconds",
+          "description": "the agent took 0.0 hours between accepting the job and submitting it",
+          "contribution": 0.8622594475746155,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        }
+      ]
+    },
+    {
+      "id": "cmwhnrvcz000sky089u8dvbta",
+      "mode": "t7",
+      "modelVersion": "t7_none-isotonic-v1",
+      "probability": 0.4054054319858551,
+      "band": "review",
+      "releaseThreshold": 0.266667,
+      "rejectThreshold": 0.666667,
+      "scoredAt": "2026-11-15T09:55:01.350Z",
+      "trigger": "hold_close",
+      "reasons": [
+        {
+          "rank": 1,
+          "feature": "ip_location_mismatch_flag",
+          "description": "the network location disagreed with the device's GPS location",
+          "contribution": 1.204182505607605,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 2,
+          "feature": "proof_of_activation_missing_flag",
+          "description": "no proof of activation was attached",
+          "contribution": 1.081583380699158,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 3,
+          "feature": "acceptance_to_submission_seconds",
+          "description": "the agent took 0.0 hours between accepting the job and submitting it",
+          "contribution": 1.06872546672821,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        }
+      ]
+    }
+  ],
+  "waitedForT7Ms": 347186,
+  "photosAtSubmit": [
+    {
+      "id": "cmwhnkojw0007ky08s7jjs98o",
+      "sequence": 1,
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 5024,
+      "sha256": "b315eb249b06d948db9228907a4522ff7ddc4c206a2e207b0670c39f200fa6f8",
+      "uploadedSha256": "b315eb249b06d948db9228907a4522ff7ddc4c206a2e207b0670c39f200fa6f8",
+      "matches": true
+    },
+    {
+      "id": "cmwhnkojw0008ky08okgho33q",
+      "sequence": 2,
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 4914,
+      "sha256": "1db586fed53642e26d46ed442f5b2921a411056a324664aa3a7d0dbf724bdacd",
+      "uploadedSha256": "1db586fed53642e26d46ed442f5b2921a411056a324664aa3a7d0dbf724bdacd",
+      "matches": true
+    },
+    {
+      "id": "cmwhnkojw0009ky08menh1s5g",
+      "sequence": 3,
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 5024,
+      "sha256": "1aa152a0b10e9fb8d4134e4e38a84176ec1e6f65c9689dd89deebeba22674ff2",
+      "uploadedSha256": "1aa152a0b10e9fb8d4134e4e38a84176ec1e6f65c9689dd89deebeba22674ff2",
+      "matches": true
+    }
+  ]
+}

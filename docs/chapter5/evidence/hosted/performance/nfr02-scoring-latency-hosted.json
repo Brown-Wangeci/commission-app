@@ -1,0 +1,103 @@
+{
+  "measured_at": "2026-11-16T13:15:02.691Z",
+  "service": "https://ledgerfield-scoring.onrender.com",
+  "client": "developer laptop, Nairobi (not the deployed app)",
+  "requests_per_pass": 118,
+  "passes": 2,
+  "request_bytes": {
+    "min": 1770,
+    "median": 7902,
+    "max": 16215
+  },
+  "target_seconds": 1,
+  "round_trip_from_this_machine": {
+    "overall": {
+      "n": 236,
+      "errors": 0,
+      "mean_s": 0.435976573305082,
+      "p50_s": 0.41254200000001584,
+      "p95_s": 0.541103999999992,
+      "p99_s": 0.6174422999999951,
+      "max_s": 0.7361032000000123,
+      "min_s": 0.31231079999997746,
+      "within_1s": 236,
+      "within_1s_share": 1
+    },
+    "t0": {
+      "n": 128,
+      "errors": 0,
+      "mean_s": 0.42549502109374726,
+      "p50_s": 0.4104594999999972,
+      "p95_s": 0.5175872999999556,
+      "p99_s": 0.6505146999999997,
+      "max_s": 0.7361032000000123,
+      "min_s": 0.31231079999997746,
+      "within_1s": 128,
+      "within_1s_share": 1
+    },
+    "t7": {
+      "n": 108,
+      "errors": 0,
+      "mean_s": 0.4483991537037007,
+      "p50_s": 0.42724650000000836,
+      "p95_s": 0.5518016000000061,
+      "p99_s": 0.6062626000000164,
+      "max_s": 0.6174422999999951,
+      "min_s": 0.3126625000000349,
+      "within_1s": 108,
+      "within_1s_share": 1
+    }
+  },
+  "network_baseline_health_from_this_machine": {
+    "n": 30,
+    "errors": 0,
+    "mean_s": 0.25520288000000096,
+    "p50_s": 0.22741779999999562,
+    "p95_s": 0.512468899999978,
+    "p99_s": 0.5243191000000225,
+    "max_s": 0.5243191000000225,
+    "min_s": 0.1825807999999961,
+    "within_1s": 30,
+    "within_1s_share": 1
+  },
+  "recorded_by_deployed_app": {
+    "since": "2026-11-15T09:34:00.000Z",
+    "calls": [
+      {
+        "mode": "t0",
+        "seconds": 0.346,
+        "at": "2026-11-15T09:41:06.975Z"
+      },
+      {
+        "mode": "t0",
+        "seconds": 0.303,
+        "at": "2026-11-15T09:41:07.456Z"
+      },
+      {
+        "mode": "t0",
+        "seconds": 0.241,
+        "at": "2026-11-15T09:49:26.269Z"
+      },
+      {
+        "mode": "t7",
+        "seconds": 0.341,
+        "at": "2026-11-15T09:55:01.372Z"
+      },
+      {
+        "mode": "t0",
+        "seconds": 0.236,
+        "at": "2026-11-15T20:09:45.787Z"
+      }
+    ],
+    "n": 5,
+    "errors": 0,
+    "mean_s": 0.2934,
+    "p50_s": 0.303,
+    "p95_s": 0.346,
+    "p99_s": 0.346,
+    "max_s": 0.346,
+    "min_s": 0.236,
+    "within_1s": 5,
+    "within_1s_share": 1
+  }
+}

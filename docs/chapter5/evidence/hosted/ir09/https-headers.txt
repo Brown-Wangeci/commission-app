@@ -1,0 +1,30 @@
+# IR-09 HTTPS response headers, 2026-11-15T07:43:51Z
+
+## curl -sS -o /dev/null -D - https://commission-app-ten-pied.vercel.app/
+HTTP/1.1 307 Temporary Redirect
+Content-Type: text/html; charset=utf-8
+Location: /login
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains
+Transfer-Encoding: chunked
+
+## curl -sS -o /dev/null -D - https://commission-app-ten-pied.vercel.app/login
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains
+Transfer-Encoding: chunked
+
+## curl -sS -o /dev/null -D - https://commission-app-ten-pied.vercel.app/api/health
+HTTP/1.1 200 OK
+Content-Type: application/json
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains
+Transfer-Encoding: chunked
+
+## TLS
+http_version=1.1 ssl_verify_result=0
+subject=CN=*.vercel.app
+issuer=C=US, O=Google Trust Services, CN=WR1
+Protocol: TLSv1.3
+    Protocol  : TLSv1.3

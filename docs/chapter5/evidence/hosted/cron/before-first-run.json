@@ -1,0 +1,85 @@
+{
+  "taken_at": "2026-11-15T09:35:36.314Z",
+  "held_activations": [
+    {
+      "reference": "LF-000057",
+      "holdClosesAt": "2026-11-21T08:25:00.000Z",
+      "holdWindowOver": false
+    },
+    {
+      "reference": "LF-000058",
+      "holdClosesAt": "2026-11-20T11:25:00.000Z",
+      "holdWindowOver": false
+    },
+    {
+      "reference": "LF-000059",
+      "holdClosesAt": "2026-11-18T07:25:00.000Z",
+      "holdWindowOver": false
+    },
+    {
+      "reference": "LF-000060",
+      "holdClosesAt": "2026-11-17T10:25:00.000Z",
+      "holdWindowOver": false
+    }
+  ],
+  "open_scoring_jobs": [
+    {
+      "reference": "LF-000055",
+      "state": "in_review",
+      "mode": "t0",
+      "trigger": "submission",
+      "status": "pending",
+      "dueAt": "2026-11-15T06:06:00.000Z",
+      "due": true
+    },
+    {
+      "reference": "LF-000062",
+      "state": "submitted",
+      "mode": "t0",
+      "trigger": "submission",
+      "status": "pending",
+      "dueAt": "2026-11-15T08:49:35.930Z",
+      "due": true
+    },
+    {
+      "reference": "LF-000060",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-17T10:25:00.000Z",
+      "due": false
+    },
+    {
+      "reference": "LF-000059",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-18T07:25:00.000Z",
+      "due": false
+    },
+    {
+      "reference": "LF-000058",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-20T11:25:00.000Z",
+      "due": false
+    },
+    {
+      "reference": "LF-000057",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-21T08:25:00.000Z",
+      "due": false
+    }
+  ],
+  "t7_decisions_total": 53,
+  "audit_chain_length": 705,
+  "anchors": [],
+  "disbursements_queued": 0
+}

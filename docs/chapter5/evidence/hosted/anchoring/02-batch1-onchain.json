@@ -1,0 +1,20 @@
+{
+  "chainId": 80002,
+  "transaction": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+  "status": "success",
+  "blockNumber": 52913281,
+  "blockTimestamp": "2026-11-15T09:45:02.000Z",
+  "from": "0xe78d1e2d0985874871b8fad800f9f0d0ab598e8f",
+  "to": "0x437ecae6de461105cd8f2596f52ca8d886ab83a0",
+  "gasUsed": 49257,
+  "effectiveGasPriceWei": "30000000076",
+  "feeWei": "1477710003743532",
+  "logs": 2,
+  "contractViews": [
+    "anchoredAt"
+  ],
+  "root": "0x024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+  "anchoredAt": 1794735902,
+  "anchoredAtIso": "2026-11-15T09:45:02.000Z",
+  "polygonscan": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+}

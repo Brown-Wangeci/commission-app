@@ -1,0 +1,38 @@
+Evidence storage: blob (emptied).
+
+Activations by state:
+  held               5
+  withdrawn          1
+  refused            1
+  awaiting_evidence  1
+  submitted          1
+  in_review          3
+  disputed           1
+  approved           49
+
+Simulated payments (no call was made to M-Pesa):
+  payout  paid         48
+  payout  failed       1
+  funding pending      1
+  funding failed       1
+  funding confirmed    2
+
+Named cases (state as decided by the real scoring service):
+  ok   LF-000048 Samuel, refused (dispute open): refused [t0:review(0.375) -> t7:reject(0.676)]
+  ok   LF-000049 Samuel, contested refusal: disputed [t0:review(0.375) -> t7:review(0.536)]
+  ok   LF-000050 Mercy, band changes from T0 to T7: approved [t0:review(0.596) -> t7:auto_release(0.002)]
+  ok   LF-000052 Grace, the mockup case (T7 review): in_review [t0:auto_release(0.140) -> t7:review(0.536)]
+  ok   LF-000053 Brian, escalated at T0: in_review [t0:reject(0.731)]
+  ok   LF-000055 Faith, could not be scored at T0: in_review [no score]
+  ok   LF-000056 Mercy, awaiting evidence: awaiting_evidence [t0:auto_release(0.199) -> t7:review(0.536)]
+  ok   LF-000057 Grace Wanjiku, held: held [t0:auto_release(0.001)]
+  ok   LF-000058 Faith Chebet, held: held [t0:auto_release(0.001)]
+  ok   LF-000059 Mercy Achieng, held: held [t0:auto_release(0.001)]
+  ok   LF-000060 Samuel Mutua, held: held [t0:auto_release(0.005)]
+  ok   LF-000061 Grace, withdrawn: withdrawn [t0:auto_release(0.001)]
+  ok   LF-000062 Brian, submitted (T0 queued): submitted [no score]
+  MISS LF-000054 Kevin, evidence returned: held [t0:review(0.725)]
+
+1 case(s) landed elsewhere; the model decided differently. See above.
+
+Sign in with any @ledgerfield.test account; the password is <demo password>.

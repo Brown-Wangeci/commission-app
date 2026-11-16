@@ -1,0 +1,14 @@
+seed started 2026-11-15T08:21:25Z
+using: unpooled (direct) URL
+Evidence storage: blob (emptied).
+PrismaClientKnownRequestError: Server has closed the connection.
+    at Qr.transaction (<repo>\app\node_modules\@prisma\client\src\runtime\core\engines\library\LibraryEngine.ts:217:13)
+    at async Proxy._transactionWithCallback (<repo>\app\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:725:9)
+    at async seedPayments (<repo>\app\prisma\seed.ts:582:3)
+    at async main (<repo>\app\prisma\seed.ts:555:3) {
+  code: 'P1017',
+  meta: null,
+  clientVersion: '6.19.3'
+}
+seed exit 1
+seed finished 2026-11-15T08:50:46Z

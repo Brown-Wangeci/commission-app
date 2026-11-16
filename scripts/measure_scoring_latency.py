@@ -22,7 +22,9 @@ Usage:
 """
 from __future__ import annotations
 
+import datetime
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -37,7 +39,8 @@ from src.serve import testing as serve_testing  # noqa: E402
 
 TARGET_S = 1.0
 SEED = 20261109
-SERVICE_URL = "http://127.0.0.1:8000"
+# Defaults to the local service. Set SCORING_SERVICE_URL to measure a hosted one.
+SERVICE_URL = os.environ.get("SCORING_SERVICE_URL", "http://127.0.0.1:8000").rstrip("/")
 
 
 def percentile(sorted_values: list, p: float) -> float:
@@ -95,7 +98,8 @@ def main() -> None:
                 print(f"  {i + 1}/{n} activations timed ({time.perf_counter() - started_run:.0f}s elapsed)")
 
     report = {
-        "measured_at": "2026-11-09",
+        "measured_at": datetime.date.today().isoformat(),
+        "service": "local (127.0.0.1)" if SERVICE_URL.startswith("http://127.0.0.1") else SERVICE_URL,
         "sample_size_per_mode": n,
         "dataset_total_activations": total,
         "sampling": f"uniform random sample, random_state={SEED}, not the full dataset (see script docstring for why)",

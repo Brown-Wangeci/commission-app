@@ -88,3 +88,31 @@ describe("queued work inside a request fits the function limit", () => {
     expect(JSON.parse(read("vercel.json"))).toMatchObject({ regions: ["fra1"] });
   });
 });
+
+describe("PRISMA_TRANSACTION_TIMEOUT_MS (remote seeding only)", () => {
+  it("leaves Prisma's defaults alone when unset, empty or invalid", async () => {
+    const { clientOptions } = await import("@/lib/db");
+    for (const value of [undefined, "", "abc", "0", "-5", "1.5"]) expect(clientOptions({ PRISMA_TRANSACTION_TIMEOUT_MS: value }), String(value)).toEqual({});
+  });
+
+  it("sets the interactive transaction timeout when given", async () => {
+    const { clientOptions } = await import("@/lib/db");
+    expect(clientOptions({ PRISMA_TRANSACTION_TIMEOUT_MS: "30000" })).toEqual({ transactionOptions: { timeout: 30000, maxWait: 30000 } });
+  });
+});
+
+describe("scripts/seed-hosted.ts", () => {
+  const complete = { VERCEL: "1", DATABASE_URL: "postgresql://u:p@ep-x-pooler.example/db?sslmode=require", DATABASE_URL_UNPOOLED: "postgresql://u:p@ep-x.example/db?sslmode=require", BLOB_READ_WRITE_TOKEN: "t", SCORING_SERVICE_URL: "https://s.example", MSISDN_HASH_SALT: "0123456789abcdef" };
+
+  it("seeds over the direct URL with one connection and a 30 s transaction timeout", async () => {
+    const { hostedSeedEnv } = await import("../scripts/seed-hosted");
+    expect(hostedSeedEnv(complete)).toMatchObject({ DATABASE_URL: "postgresql://u:p@ep-x.example/db?sslmode=require&connection_limit=1", PRISMA_TRANSACTION_TIMEOUT_MS: "30000" });
+  });
+
+  it("refuses a pull without the Blob token, a non-Vercel file, or a pooled direct URL", async () => {
+    const { hostedSeedEnv } = await import("../scripts/seed-hosted");
+    expect(() => hostedSeedEnv({ ...complete, BLOB_READ_WRITE_TOKEN: undefined })).toThrow(/BLOB_READ_WRITE_TOKEN/);
+    expect(() => hostedSeedEnv({ ...complete, VERCEL: undefined })).toThrow(/not a Vercel pull/);
+    expect(() => hostedSeedEnv({ ...complete, DATABASE_URL_UNPOOLED: complete.DATABASE_URL })).toThrow(/pooled host/);
+  });
+});

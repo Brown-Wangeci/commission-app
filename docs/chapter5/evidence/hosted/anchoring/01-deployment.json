@@ -1,0 +1,11 @@
+{
+  "chainId": 80002,
+  "compiler": "0.8.37+commit.f401782d.Emscripten.clang",
+  "deployer": "0xe78D1E2d0985874871b8fAd800F9f0d0ab598E8F",
+  "contractAddress": "0x437ecae6de461105cd8f2596f52ca8d886ab83a0",
+  "transactionHash": "0x3eebc1dc17102e3efce29996e39cafe3a33bb60477d5cec435d244dd2fdaeabe",
+  "blockNumber": "52901547",
+  "gasUsed": "128073",
+  "transactionUrl": "https://amoy.polygonscan.com/tx/0x3eebc1dc17102e3efce29996e39cafe3a33bb60477d5cec435d244dd2fdaeabe",
+  "contractUrl": "https://amoy.polygonscan.com/address/0x437ecae6de461105cd8f2596f52ca8d886ab83a0"
+}

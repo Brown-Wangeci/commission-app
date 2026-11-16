@@ -1,0 +1,49 @@
+# IR-09 capture, 2026-11-15T07:43:36Z, curl 8.21.0
+
+## curl -sS -o /dev/null -D - http://commission-app-ten-pied.vercel.app/
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-ten-pied.vercel.app/
+Refresh: 0;url=https://commission-app-ten-pied.vercel.app/
+server: Vercel
+
+## curl -sS -o /dev/null -D - http://commission-app-ten-pied.vercel.app/login
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-ten-pied.vercel.app/login
+Refresh: 0;url=https://commission-app-ten-pied.vercel.app/login
+server: Vercel
+
+## curl -sS -o /dev/null -D - http://commission-app-ten-pied.vercel.app/api/health
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-ten-pied.vercel.app/api/health
+Refresh: 0;url=https://commission-app-ten-pied.vercel.app/api/health
+server: Vercel
+
+## curl -sS -o /dev/null -D - http://commission-app-browns-projects-10743417.vercel.app/
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-browns-projects-10743417.vercel.app/
+Refresh: 0;url=https://commission-app-browns-projects-10743417.vercel.app/
+server: Vercel
+
+## curl -sS -o /dev/null -D - http://commission-app-browns-projects-10743417.vercel.app/login
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-browns-projects-10743417.vercel.app/login
+Refresh: 0;url=https://commission-app-browns-projects-10743417.vercel.app/login
+server: Vercel
+
+## curl -sS -o /dev/null -D - http://commission-app-browns-projects-10743417.vercel.app/api/health
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-browns-projects-10743417.vercel.app/api/health
+Refresh: 0;url=https://commission-app-browns-projects-10743417.vercel.app/api/health
+server: Vercel
+
+## POST over plain HTTP (never reaches the app)
+
+## curl -sS -o /dev/null -D - -X POST http://commission-app-ten-pied.vercel.app/api/cron/scoring
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-ten-pied.vercel.app/api/cron/scoring
+server: Vercel
+
+## curl -sS -o /dev/null -D - -X POST http://commission-app-ten-pied.vercel.app/api/payments/callback/stk/unsigned-test
+HTTP/1.0 308 Permanent Redirect
+Location: https://commission-app-ten-pied.vercel.app/api/payments/callback/stk/unsigned-test
+server: Vercel

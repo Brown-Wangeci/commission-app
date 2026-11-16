@@ -1,0 +1,88 @@
+{
+  "taken_at": "2026-11-15T09:45:28.951Z",
+  "held_activations": [
+    {
+      "reference": "LF-000057",
+      "holdClosesAt": "2026-11-21T08:25:00.000Z",
+      "holdWindowOver": false
+    },
+    {
+      "reference": "LF-000058",
+      "holdClosesAt": "2026-11-20T11:25:00.000Z",
+      "holdWindowOver": false
+    },
+    {
+      "reference": "LF-000059",
+      "holdClosesAt": "2026-11-18T07:25:00.000Z",
+      "holdWindowOver": false
+    },
+    {
+      "reference": "LF-000060",
+      "holdClosesAt": "2026-11-17T10:25:00.000Z",
+      "holdWindowOver": false
+    },
+    {
+      "reference": "LF-000062",
+      "holdClosesAt": "2026-11-15T09:46:06.391Z",
+      "holdWindowOver": false
+    }
+  ],
+  "open_scoring_jobs": [
+    {
+      "reference": "LF-000062",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-15T09:46:06.391Z",
+      "due": false
+    },
+    {
+      "reference": "LF-000060",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-17T10:25:00.000Z",
+      "due": false
+    },
+    {
+      "reference": "LF-000059",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-18T07:25:00.000Z",
+      "due": false
+    },
+    {
+      "reference": "LF-000058",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-20T11:25:00.000Z",
+      "due": false
+    },
+    {
+      "reference": "LF-000057",
+      "state": "held",
+      "mode": "t7",
+      "trigger": "hold_close",
+      "status": "pending",
+      "dueAt": "2026-11-21T08:25:00.000Z",
+      "due": false
+    }
+  ],
+  "t7_decisions_total": 53,
+  "audit_chain_length": 710,
+  "anchors": [
+    {
+      "fromSequence": 1,
+      "toSequence": 709,
+      "status": "confirmed",
+      "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+    }
+  ],
+  "disbursements_queued": 0
+}
