@@ -71,6 +71,19 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   A delay on Safaricom's side is the leading explanation and is not proven
   (`docs/chapter5/evidence/hosted/mpesa/callback-delivery-experiment.md`).
 
+- **Reconciliation is shown on the hosted app only for a failed funding
+  attempt that Daraja answered with a non-success, an unanswered check, and a
+  payout query.** It has not been seen raising a late `ResultCode 0` against the
+  real service: the check on the first KSh 10 push answered HTTP 429 at
+  13:43 UTC on 2026-11-16, and the next one is an hour later
+  (`docs/chapter5/evidence/hosted/mpesa/reconciliation-armed.md`).
+- **The Linux (CI) build of the scoring artifacts was not compared with the
+  published ones.** The question of whether the ubuntu build scores like the
+  local and Render builds is unanswered. A throwaway Linux build was not
+  permitted, the cause of the platform difference is not established, and the
+  item is dropped by decision rather than resolved
+  (`docs/chapter5/evidence/hosted/scoring/model-comparison.md`).
+
 ## Test traceability (D)
 
 - **Correction (2026-11-09): FR-09 was wrongly recorded as untested.**

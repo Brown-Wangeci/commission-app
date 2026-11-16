@@ -1,0 +1,44 @@
+[
+  {
+    "id": "cmwjbcxx40001i7078shprgcr",
+    "checkedAt": "2026-11-16T13:43:00.292Z",
+    "fundingAttemptId": "cmwhok68r0001lb08hbrw57h9",
+    "disbursementId": null,
+    "purpose": "reconcile",
+    "outcome": "accepted",
+    "countedAsCheck": true,
+    "httpStatus": 200,
+    "darajaCode": "17",
+    "detail": "Rule limited.",
+    "retryAfterSeconds": null,
+    "nextCheckAt": null
+  },
+  {
+    "id": "cmwjbcy4b0003i707ehbsvxp9",
+    "checkedAt": "2026-11-16T13:43:00.292Z",
+    "fundingAttemptId": "cmwho9ob50001l2083yom7ib9",
+    "disbursementId": null,
+    "purpose": "reconcile",
+    "outcome": "not_delivered",
+    "countedAsCheck": false,
+    "httpStatus": 429,
+    "darajaCode": null,
+    "detail": "Daraja is unavailable (HTTP 429).",
+    "retryAfterSeconds": null,
+    "nextCheckAt": "2026-11-16T14:43:00.292Z"
+  },
+  {
+    "id": "cmwjbcyft0005i7076mg5ckpc",
+    "checkedAt": "2026-11-16T13:43:00.292Z",
+    "fundingAttemptId": null,
+    "disbursementId": "cmwi9zaq90008ju08dcc1khlv",
+    "purpose": "reconcile",
+    "outcome": "accepted",
+    "countedAsCheck": true,
+    "httpStatus": 200,
+    "darajaCode": null,
+    "detail": null,
+    "retryAfterSeconds": null,
+    "nextCheckAt": "2026-11-16T14:43:00.292Z"
+  }
+]

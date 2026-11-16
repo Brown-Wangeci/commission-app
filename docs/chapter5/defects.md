@@ -381,9 +381,14 @@ reported by callback is not reconciled. Asking never sends anything.
   settles as paid, administrators are told, so that nobody pays it by another
   route. A failure was already raised.
 
-**Not done.** The rows already in the hosted database (the two failed KSh 10
-attempts and LF-000064) were made before this change and have no deadline, so
-they are not reconciled until a deadline is set on them by hand.
+**Done by hand on 16 November 2026.** The rows already in the hosted database
+(the two failed KSh 10 attempts and LF-000064) were made before this change and
+had no deadline. A deadline was set on those three rows with
+`app/scripts/arm-reconciliation.ts`, and the hosted cron asked Daraja about each
+at once. Its answers (a definite non-success, an unanswered HTTP 429, an
+accepted payout query) are in
+`docs/chapter5/evidence/hosted/mpesa/reconciliation-armed.md`. Rows made after
+the change are armed by the app itself.
 
 **Retest.** `funding.test.ts`, "reconciling after giving up" (slow interval,
 stops at the deadline, success raised and nothing credited, a late callback
