@@ -1,0 +1,77 @@
+{
+  "paymentStatusCheckRows": 3,
+  "funding": [
+    {
+      "id": "cmwhmvzbn01tho838v4bjr52d",
+      "status": "pending",
+      "amountCents": 500000,
+      "createdAt": "2026-11-15T08:51:35.930Z",
+      "resultCode": null,
+      "escalatedAt": null,
+      "reconcileUntil": null,
+      "nextAttemptAt": "2027-11-15T08:51:35.930Z",
+      "queryCount": 0,
+      "noAnswerCount": 0,
+      "receipt": "none",
+      "checkoutRequestId": "present"
+    },
+    {
+      "id": "cmwhmvzq001tjo838h9j3w2hw",
+      "status": "failed",
+      "amountCents": 250000,
+      "createdAt": "2026-11-15T08:51:35.930Z",
+      "resultCode": "1032",
+      "escalatedAt": null,
+      "reconcileUntil": null,
+      "nextAttemptAt": "2026-11-15T08:51:35.930Z",
+      "queryCount": 0,
+      "noAnswerCount": 0,
+      "receipt": "none",
+      "checkoutRequestId": "present"
+    },
+    {
+      "id": "cmwho9ob50001l2083yom7ib9",
+      "status": "failed",
+      "amountCents": 1000,
+      "createdAt": "2026-11-15T10:08:52.039Z",
+      "resultCode": null,
+      "escalatedAt": null,
+      "reconcileUntil": "2026-11-18T13:42:43.067Z",
+      "nextAttemptAt": "2026-11-16T14:43:00.292Z",
+      "queryCount": 3,
+      "noAnswerCount": 1,
+      "receipt": "none",
+      "checkoutRequestId": "present"
+    },
+    {
+      "id": "cmwhok68r0001lb08hbrw57h9",
+      "status": "failed",
+      "amountCents": 1000,
+      "createdAt": "2026-11-15T10:17:01.843Z",
+      "resultCode": null,
+      "escalatedAt": null,
+      "reconcileUntil": null,
+      "nextAttemptAt": "2026-11-16T13:45:00.292Z",
+      "queryCount": 4,
+      "noAnswerCount": 0,
+      "receipt": "none",
+      "checkoutRequestId": "present"
+    }
+  ],
+  "payouts": [
+    {
+      "id": "cmwi9zaq90008ju08dcc1khlv",
+      "status": "unconfirmed",
+      "amountCents": 1000,
+      "createdAt": "2026-11-15T20:16:39.368Z",
+      "resultCode": null,
+      "escalatedAt": "2026-11-15T22:20:01.511Z",
+      "reconcileUntil": "2026-11-18T13:42:43.067Z",
+      "nextAttemptAt": "2026-11-16T14:43:00.292Z",
+      "queryCount": 5,
+      "noAnswerCount": 0,
+      "receipt": "none",
+      "conversationId": "present"
+    }
+  ]
+}
