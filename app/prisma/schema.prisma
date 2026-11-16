@@ -303,9 +303,16 @@ model FundingAttempt {
   payerMsisdn       String
   status            FundingStatus  @default(queued)
   sendCount         Int            @default(0)
+  /// Status checks Daraja answered with a result. A check it did not answer
+  /// (HTTP 429, a timeout, "still being processed") is not counted here.
   queryCount        Int            @default(0)
+  /// Status checks that got no result, kept only to lengthen the wait.
+  noAnswerCount     Int            @default(0)
   nextAttemptAt     DateTime
   lockedUntil       DateTime?
+  /// Set when the attempt is marked failed without an answer from Daraja. Until
+  /// then Daraja is still asked, slowly, in case the payment completed late.
+  reconcileUntil    DateTime?
   merchantRequestId String?
   checkoutRequestId String?        @unique
   /// M-Pesa receipt. Unique, so one payment cannot credit two attempts.
@@ -320,6 +327,7 @@ model FundingAttempt {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   deposit           EscrowDeposit?
+  statusChecks      PaymentStatusCheck[]
 
   @@index([status, nextAttemptAt])
   @@index([clientId, createdAt])
@@ -650,9 +658,16 @@ model Disbursement {
   payoutMsisdn       String
   status             DisbursementStatus  @default(queued)
   sendCount          Int                 @default(0)
+  /// Status queries Daraja accepted. One it could not take (HTTP 429, a
+  /// timeout) is not counted here.
   queryCount         Int                 @default(0)
+  /// Status queries Daraja could not take, kept only to lengthen the wait.
+  noAnswerCount      Int                 @default(0)
   nextAttemptAt      DateTime
   lockedUntil        DateTime?
+  /// Set when the payout is raised as unconfirmed. Until then Daraja is still
+  /// asked, slowly, in case it completed late. Never a reason to send again.
+  reconcileUntil     DateTime?
   conversationId     String?             @unique
   /// M-Pesa receipt. Unique, so one payment cannot settle two instructions.
   receipt            String?             @unique
@@ -665,8 +680,40 @@ model Disbursement {
   resolvedAt         DateTime?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+  statusChecks       PaymentStatusCheck[]
 
   @@index([status, nextAttemptAt])
+}
+
+/// One row for every status check made to Daraja about a funding attempt or a
+/// disbursement, and exactly what came back. Append-only: a database trigger
+/// refuses any change or delete. Holds no phone number: `detail` is redacted
+/// before it is stored.
+model PaymentStatusCheck {
+  id                String          @id @default(cuid())
+  checkedAt         DateTime
+  /// Exactly one of the two is set.
+  fundingAttemptId  String?
+  fundingAttempt    FundingAttempt? @relation(fields: [fundingAttemptId], references: [id], onDelete: Restrict)
+  disbursementId    String?
+  disbursement      Disbursement?   @relation(fields: [disbursementId], references: [id], onDelete: Restrict)
+  /// "result_wait" (waiting for the first result) or "reconcile" (after giving up or raising it).
+  purpose           String
+  /// "accepted", "refused", "not_delivered" or "unknown": the client's classification of the answer.
+  outcome           String
+  /// True when it used one of the allowed checks, which only a real result does.
+  countedAsCheck    Boolean
+  httpStatus        Int?
+  /// Daraja's ResultCode, or its errorCode when it refused.
+  darajaCode        String?
+  detail            String?
+  /// The Retry-After header as received, in seconds.
+  retryAfterSeconds Int?
+  /// When the next check was scheduled, if one was.
+  nextCheckAt       DateTime?
+
+  @@index([fundingAttemptId, checkedAt])
+  @@index([disbursementId, checkedAt])
 }
 
 /// Every callback that passed origin verification, one row per distinct

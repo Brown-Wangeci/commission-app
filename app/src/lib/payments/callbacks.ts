@@ -128,6 +128,8 @@ async function applyPayoutSuccess(tx: Tx, row: Disbursement, result: ParsedResul
   const used = await tx.disbursement.findUnique({ where: { receipt: result.receipt }, select: { id: true } });
   if (used) return contradiction(tx, "A payout success reused a receipt from another payout.", activationId);
   await markPaid(tx, row, { receipt: result.receipt, conversationId: result.conversationId, at });
+  // A payout already raised as unconfirmed has now settled: say so, so nobody pays it by another route.
+  if (row.escalatedAt) await raiseToAdministrators(tx, { activationId, message: `A payout of ${formatCents(row.amountCents)} that was raised as unconfirmed has now been paid by M-Pesa (receipt ${result.receipt}). Do not pay it by any other route.` });
   return { outcome: "applied" };
 }
 

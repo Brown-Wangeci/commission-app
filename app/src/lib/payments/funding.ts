@@ -10,7 +10,8 @@ import { stkAmountProblem } from "./amount";
 import { backoffMs, raiseToAdministrators } from "./attention";
 import { newReference } from "./callback-url";
 import { mpesaCredentials } from "./credentials";
-import { stkPush, stkQuery, type DarajaOutcome, type StkAccepted } from "./daraja-client";
+import { stkPush, stkQuery, type DarajaOutcome, type StkAccepted, type StkQueryAccepted } from "./daraja-client";
+import { addMs, noAnswerDelayMs, reconcileDeadline, reconcileDelayMs, recordStatusCheck, stkAnswer, wholeMinutes, type CheckPurpose } from "./status-checks";
 
 /**
  * Funding the escrow balance by STK Push (FR-06). Starting an attempt moves no
@@ -146,7 +147,7 @@ async function reportFailure(tx: Tx, attempt: FundingAttempt, reason: string, at
 export async function confirmFunding(tx: Tx, attempt: FundingAttempt, receipt: string, at: Date): Promise<void> {
   await tx.fundingAttempt.update({
     where: { id: attempt.id },
-    data: { status: "confirmed", receipt, resultCode: "0", failureReason: null, lastError: null, lockedUntil: null, escalatedAt: null, resolvedAt: at },
+    data: { status: "confirmed", receipt, resultCode: "0", failureReason: null, lastError: null, lockedUntil: null, escalatedAt: null, reconcileUntil: null, resolvedAt: at },
   });
   await lockClient(tx, attempt.clientId);
   await recordDeposit(tx, { clientId: attempt.clientId, amountCents: attempt.amountCents, actorId: attempt.requestedById, fundingAttemptId: attempt.id, at });
@@ -157,7 +158,7 @@ export async function confirmFunding(tx: Tx, attempt: FundingAttempt, receipt: s
 export async function failFunding(tx: Tx, attempt: FundingAttempt, resultCode: string, reason: string, at: Date): Promise<void> {
   await tx.fundingAttempt.update({
     where: { id: attempt.id },
-    data: { status: "failed", resultCode, failureReason: reason, lastError: reason, lockedUntil: null, resolvedAt: at },
+    data: { status: "failed", resultCode, failureReason: reason, lastError: reason, lockedUntil: null, reconcileUntil: null, resolvedAt: at },
   });
   await reportFailure(tx, attempt, reason, at);
 }
@@ -171,49 +172,107 @@ export async function expireStaleFundingSends(now: Date): Promise<number> {
   return expired.count;
 }
 
-async function claimStatusCheck(id: string, now: Date): Promise<FundingAttempt | null> {
-  const attempt = await prisma.fundingAttempt.findUnique({ where: { id } });
-  if (!attempt) return null;
-  const nextAttemptAt = new Date(now.getTime() + backoffMs(config().FUNDING_RESULT_WAIT_SECONDS, attempt.queryCount + 1));
-  const claimed = await prisma.fundingAttempt.updateMany({
-    where: { id, status: "pending", queryCount: attempt.queryCount, nextAttemptAt: { lte: now }, escalatedAt: null },
-    data: { queryCount: { increment: 1 }, nextAttemptAt },
-  });
-  return claimed.count === 0 ? null : { ...attempt, queryCount: attempt.queryCount + 1 };
+/*
+ * Status checks. Two kinds, one query:
+ *   result_wait  the first result is overdue. Daraja is asked until it answers
+ *                or FUNDING_GIVE_UP_AFTER_SECONDS pass (defect 10).
+ *   reconcile    the app has marked the attempt failed without an answer, so
+ *                Daraja is still asked, slowly, for a bounded period (defect 12).
+ * Neither ever credits. Only a verified callback does.
+ */
+
+/** One worker wins the claim by moving the due time a lease ahead, so a worker that dies mid-check is retried later. */
+async function claimStatusCheck(id: string, now: Date, purpose: CheckPurpose): Promise<FundingAttempt | null> {
+  const due = { id, nextAttemptAt: { lte: now }, escalatedAt: null };
+  const where: Prisma.FundingAttemptWhereInput =
+    purpose === "result_wait" ? { ...due, status: "pending" } : { ...due, status: "failed", resultCode: null, reconcileUntil: { gt: now } };
+  const claimed = await prisma.fundingAttempt.updateMany({ where, data: { nextAttemptAt: leaseEnd(now) } });
+  return claimed.count === 0 ? null : prisma.fundingAttempt.findUnique({ where: { id } });
 }
 
 /** The result is overdue. Moves a pending attempt that can be moved. Never credits: only a callback can. */
 export async function checkFunding(id: string, now: Date = new Date()): Promise<void> {
-  const attempt = await claimStatusCheck(id, now);
+  const attempt = await claimStatusCheck(id, now, "result_wait");
   if (!attempt) return;
-  if (!attempt.checkoutRequestId) return giveUp(attempt, "M-Pesa never confirmed this request.", now);
-  const outcome = await stkQuery({ checkoutRequestId: attempt.checkoutRequestId, at: now });
-  if (outcome.kind !== "accepted") return noAnswer(attempt, outcome.reason, now);
-  const code = String(outcome.body.ResultCode ?? "");
-  if (code === "0") return escalatePaidWithoutCallback(attempt, now);
-  return giveUp(attempt, outcome.body.ResultDesc ?? `M-Pesa reported code ${code}.`, now);
+  if (!attempt.checkoutRequestId) return giveUp(attempt, "M-Pesa never confirmed this request.", now, false);
+  await askDaraja(attempt, now, "result_wait");
 }
 
-async function noAnswer(attempt: FundingAttempt, reason: string, now: Date): Promise<void> {
-  if (attempt.queryCount >= config().FUNDING_MAX_STATUS_QUERIES) return giveUp(attempt, `No result from M-Pesa after ${attempt.queryCount} checks.`, now);
-  await prisma.fundingAttempt.updateMany({ where: { id: attempt.id, status: "pending" }, data: { lastError: reason } });
+/** After an inferred failure: asks Daraja again, slowly. Raises a success, closes on a failure, otherwise waits. */
+export async function reconcileFunding(id: string, now: Date = new Date()): Promise<void> {
+  const attempt = await claimStatusCheck(id, now, "reconcile");
+  if (!attempt?.checkoutRequestId) return;
+  await askDaraja(attempt, now, "reconcile");
 }
 
-/** An inferred failure, so `resultCode` stays empty and a late success callback can still credit. */
-async function giveUp(attempt: FundingAttempt, reason: string, now: Date): Promise<void> {
+async function askDaraja(attempt: FundingAttempt, now: Date, purpose: CheckPurpose): Promise<void> {
+  const outcome = await stkQuery({ checkoutRequestId: attempt.checkoutRequestId as string, at: now });
+  const answer = stkAnswer(outcome);
+  if (!answer) return noAnswer(attempt, outcome, now, purpose);
+  await recordStatusCheck(prisma, { fundingAttemptId: attempt.id }, { purpose, outcome, counted: true, at: now, nextCheckAt: null });
+  await prisma.fundingAttempt.update({ where: { id: attempt.id }, data: { queryCount: { increment: 1 } } });
+  if (answer.code === "0") return escalatePaidWithoutCallback(attempt, now);
+  const reason = answer.description ?? `M-Pesa reported code ${answer.code}.`;
+  return purpose === "result_wait" ? giveUp(attempt, reason, now, false) : closeReconciliation(attempt);
+}
+
+function giveUpAt(attempt: FundingAttempt): Date {
+  return addMs(attempt.createdAt, config().FUNDING_GIVE_UP_AFTER_SECONDS * 1000);
+}
+
+/**
+ * Daraja gave no result (HTTP 429, a timeout, "being processed"). The check is
+ * recorded but not counted. Waiting is bounded by time: a result wait ends at
+ * the give-up time, a reconciliation at its deadline.
+ */
+async function noAnswer(attempt: FundingAttempt, outcome: DarajaOutcome<StkQueryAccepted>, now: Date, purpose: CheckPurpose): Promise<void> {
+  const limit = giveUpAt(attempt);
+  const waiting = purpose === "result_wait";
+  if (waiting && now >= limit) {
+    await recordStatusCheck(prisma, { fundingAttemptId: attempt.id }, { purpose, outcome, counted: false, at: now, nextCheckAt: null });
+    return giveUp(attempt, `No result from M-Pesa within ${wholeMinutes(config().FUNDING_GIVE_UP_AFTER_SECONDS)} minutes.`, now, true);
+  }
+  const next = waiting ? new Date(Math.min(addMs(now, noAnswerDelayMs(attempt.noAnswerCount, outcome.retryAfterSeconds)).getTime(), limit.getTime())) : addMs(now, reconcileDelayMs(outcome.retryAfterSeconds));
+  await recordStatusCheck(prisma, { fundingAttemptId: attempt.id }, { purpose, outcome, counted: false, at: now, nextCheckAt: next });
+  const data: Prisma.FundingAttemptUpdateManyMutationInput = { nextAttemptAt: next, noAnswerCount: { increment: 1 } };
+  await prisma.fundingAttempt.updateMany({ where: { id: attempt.id, status: waiting ? "pending" : "failed" }, data: waiting ? { ...data, lastError: outcome.kind === "accepted" ? "Daraja gave no result." : outcome.reason } : data });
+}
+
+/**
+ * An inferred failure, so `resultCode` stays empty and a late success callback
+ * can still credit. With `reconcile`, Daraja is also asked again, slowly, in
+ * case the payment completes late.
+ */
+async function giveUp(attempt: FundingAttempt, reason: string, now: Date, reconcile: boolean): Promise<void> {
+  const again = reconcile ? { reconcileUntil: reconcileDeadline(now), nextAttemptAt: addMs(now, reconcileDelayMs(null)) } : {};
   await prisma.$transaction(async (tx) => {
     const moved = await tx.fundingAttempt.updateMany({
       where: { id: attempt.id, status: "pending" },
-      data: { status: "failed", failureReason: reason, lastError: reason, resolvedAt: now },
+      data: { status: "failed", failureReason: reason, lastError: reason, resolvedAt: now, ...again },
     });
     if (moved.count > 0) await reportFailure(tx, attempt, reason, now);
   });
 }
 
+/** Daraja says it is not paid: nothing more to ask. The row stays as it is. */
+async function closeReconciliation(attempt: FundingAttempt): Promise<void> {
+  await prisma.fundingAttempt.updateMany({ where: { id: attempt.id, status: "failed" }, data: { reconcileUntil: null } });
+}
+
+/**
+ * Daraja's status check says this was paid, and no callback came. It is raised
+ * to an administrator and nothing is credited, because a status answer carries
+ * no receipt and no amount, and M-Pesa may have reversed the payment since:
+ * on 2026-11-16 Daraja still answered "processed successfully" for a payment
+ * its own sandbox had reversed. A late verified callback still credits, once.
+ */
 async function escalatePaidWithoutCallback(attempt: FundingAttempt, now: Date): Promise<void> {
-  const reason = "M-Pesa's status check says this was paid, but no callback arrived, so nothing has been credited.";
+  const reason = "M-Pesa's status check says this was paid, but no callback arrived, so nothing has been credited. Check the M-Pesa portal: it may since have been reversed.";
   await prisma.$transaction(async (tx) => {
-    const moved = await tx.fundingAttempt.updateMany({ where: { id: attempt.id, status: "pending", escalatedAt: null }, data: { escalatedAt: now, lastError: reason } });
+    const moved = await tx.fundingAttempt.updateMany({
+      where: { id: attempt.id, status: { in: ["pending", "failed"] }, resultCode: null, escalatedAt: null },
+      data: { escalatedAt: now, lastError: reason, reconcileUntil: null },
+    });
     if (moved.count > 0) await raiseToAdministrators(tx, { message: `Funding of ${formatCents(attempt.amountCents)} needs checking. ${reason}` });
   });
 }

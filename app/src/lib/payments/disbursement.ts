@@ -7,6 +7,7 @@ import { notify } from "@/lib/notifications";
 import { b2cAmountProblem } from "./amount";
 import { backoffMs, raiseToAdministrators } from "./attention";
 import { b2cPayment, transactionStatus, type B2cAccepted, type DarajaOutcome } from "./daraja-client";
+import { addMs, noAnswerDelayMs, reconcileDeadline, reconcileDelayMs, recordStatusCheck, type CheckPurpose } from "./status-checks";
 
 /**
  * The B2C queue (FR-19, IR-03, NFR-04). Approval writes a row here inside its
@@ -143,6 +144,7 @@ export async function markPaid(tx: Tx, disbursement: Disbursement, input: { rece
       lastError: null,
       lockedUntil: null,
       escalatedAt: null,
+      reconcileUntil: null,
       resolvedAt: input.at,
     },
   });
@@ -168,6 +170,7 @@ export async function markFailed(tx: Tx, disbursement: Disbursement, input: { re
       lastError: input.reason,
       lockedUntil: null,
       escalatedAt: input.at,
+      reconcileUntil: null,
       resolvedAt: input.at,
     },
   });
@@ -183,31 +186,71 @@ export async function expireStaleSends(now: Date): Promise<number> {
   return expired.count;
 }
 
-async function claimStatusCheck(id: string, now: Date): Promise<Disbursement | null> {
-  const row = await prisma.disbursement.findUnique({ where: { id } });
-  if (!row) return null;
-  const nextAttemptAt = new Date(now.getTime() + backoffMs(config().PAYMENT_RESULT_WAIT_SECONDS, row.queryCount + 1));
-  const claimed = await prisma.disbursement.updateMany({
-    where: { id, status: { in: ["sent", "unconfirmed"] }, queryCount: row.queryCount, nextAttemptAt: { lte: now }, escalatedAt: null },
-    data: { status: "unconfirmed", queryCount: { increment: 1 }, nextAttemptAt },
-  });
-  return claimed.count === 0 ? null : { ...row, status: "unconfirmed", queryCount: row.queryCount + 1 };
+/*
+ * Status checks. Asking is not sending: it can never pay anything twice. The
+ * answer to a status query arrives later, by callback, and is applied by the
+ * same verified path as any other result.
+ *   result_wait  the result is overdue. Daraja is asked until it has accepted
+ *                PAYMENT_MAX_STATUS_QUERIES queries or PAYMENT_ESCALATE_AFTER_SECONDS
+ *                pass, then it is raised (defect 10).
+ *   reconcile    after it was raised, Daraja is still asked, slowly, for a
+ *                bounded period (defect 12).
+ * A query Daraja could not take (HTTP 429, a timeout) is recorded but does not
+ * use up a query, and its Retry-After is honoured.
+ */
+
+/** One worker wins the claim by moving the due time a lease ahead, so a worker that dies mid-check is retried later. */
+async function claimStatusCheck(id: string, now: Date, purpose: CheckPurpose): Promise<Disbursement | null> {
+  const lease = new Date(now.getTime() + config().SCHEDULER_LEASE_SECONDS * 1000);
+  const due = { id, nextAttemptAt: { lte: now } };
+  const claimed =
+    purpose === "result_wait"
+      ? await prisma.disbursement.updateMany({ where: { ...due, status: { in: ["sent", "unconfirmed"] }, escalatedAt: null }, data: { status: "unconfirmed", nextAttemptAt: lease } })
+      : await prisma.disbursement.updateMany({ where: { ...due, status: "unconfirmed", escalatedAt: { not: null }, reconcileUntil: { gt: now } }, data: { nextAttemptAt: lease } });
+  return claimed.count === 0 ? null : prisma.disbursement.findUnique({ where: { id } });
+}
+
+function escalateAt(disbursement: Disbursement): Date {
+  return addMs(disbursement.acceptedAt ?? disbursement.createdAt, config().PAYMENT_ESCALATE_AFTER_SECONDS * 1000);
 }
 
 /** The result is overdue. Asks Daraja where the instruction stands; the answer arrives by callback. */
 export async function checkDisbursement(id: string, now: Date = new Date()): Promise<void> {
-  const disbursement = await claimStatusCheck(id, now);
+  const disbursement = await claimStatusCheck(id, now, "result_wait");
   if (!disbursement) return;
-  if (disbursement.queryCount > config().PAYMENT_MAX_STATUS_QUERIES) return escalateUnresolved(disbursement, now);
+  if (disbursement.queryCount >= config().PAYMENT_MAX_STATUS_QUERIES || now >= escalateAt(disbursement)) return escalateUnresolved(disbursement, now);
+  await askDaraja(disbursement, now, "result_wait");
+}
+
+/** After it was raised: asks Daraja again, slowly. Never sends the payout again. */
+export async function reconcileDisbursement(id: string, now: Date = new Date()): Promise<void> {
+  const disbursement = await claimStatusCheck(id, now, "reconcile");
+  if (disbursement) await askDaraja(disbursement, now, "reconcile");
+}
+
+async function askDaraja(disbursement: Disbursement, now: Date, purpose: CheckPurpose): Promise<void> {
   const outcome = await transactionStatus({ reference: disbursement.reference });
-  if (outcome.kind === "accepted") return;
-  await prisma.disbursement.updateMany({ where: { id, status: "unconfirmed" }, data: { lastError: outcome.reason } });
+  const waiting = purpose === "result_wait";
+  if (outcome.kind === "accepted") {
+    const nextAttemptAt = addMs(now, waiting ? backoffMs(config().PAYMENT_RESULT_WAIT_SECONDS, disbursement.queryCount + 1) : reconcileDelayMs(null));
+    await recordStatusCheck(prisma, { disbursementId: disbursement.id }, { purpose, outcome, counted: true, at: now, nextCheckAt: nextAttemptAt });
+    await prisma.disbursement.update({ where: { id: disbursement.id }, data: { queryCount: { increment: 1 }, nextAttemptAt } });
+    return;
+  }
+  const delay = waiting ? noAnswerDelayMs(disbursement.noAnswerCount, outcome.retryAfterSeconds) : reconcileDelayMs(outcome.retryAfterSeconds);
+  const nextAttemptAt = waiting ? new Date(Math.min(addMs(now, delay).getTime(), escalateAt(disbursement).getTime())) : addMs(now, delay);
+  await recordStatusCheck(prisma, { disbursementId: disbursement.id }, { purpose, outcome, counted: false, at: now, nextCheckAt: nextAttemptAt });
+  const data: Prisma.DisbursementUpdateManyMutationInput = { nextAttemptAt, noAnswerCount: { increment: 1 } };
+  await prisma.disbursement.updateMany({ where: { id: disbursement.id, status: "unconfirmed" }, data: waiting ? { ...data, lastError: outcome.reason } : data });
 }
 
 async function escalateUnresolved(disbursement: Disbursement, now: Date): Promise<void> {
   const reason = "M-Pesa has not confirmed this payout. It will not be sent again. Check the M-Pesa portal before paying by any other route.";
   await prisma.$transaction(async (tx) => {
-    const moved = await tx.disbursement.updateMany({ where: { id: disbursement.id, status: "unconfirmed", escalatedAt: null }, data: { escalatedAt: now, lastError: reason } });
+    const moved = await tx.disbursement.updateMany({
+      where: { id: disbursement.id, status: "unconfirmed", escalatedAt: null },
+      data: { escalatedAt: now, lastError: reason, reconcileUntil: reconcileDeadline(now), nextAttemptAt: addMs(now, reconcileDelayMs(null)) },
+    });
     if (moved.count === 0) return;
     await recordAuditEvent(tx, { kind: "payout_unconfirmed", activationId: disbursement.activationId, detail: `${formatCents(disbursement.amountCents)}: ${reason}`, at: now });
     await raiseToAdministrators(tx, { activationId: disbursement.activationId, message: `A payout of ${formatCents(disbursement.amountCents)} needs checking. ${reason}` });

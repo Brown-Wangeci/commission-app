@@ -177,9 +177,11 @@ every one with its default. Nothing secret is committed.
 | `MPESA_B2C_MIN_CENTS`, `MPESA_B2C_MAX_CENTS` | 1000, 25000000 | B2C limits, from Daraja's documentation |
 | `MPESA_CALLBACK_ALLOWED_IPS` | (empty = off) | Optional source check, on top of the signed URL |
 | `PAYMENT_RETRY_BASE_SECONDS`, `PAYMENT_MAX_SENDS` | 60, 6 | Payout retries, doubling (assumption) |
-| `PAYMENT_RESULT_WAIT_SECONDS`, `PAYMENT_MAX_STATUS_QUERIES` | 900, 3 | When to ask Daraja, and how often (assumption) |
+| `PAYMENT_RESULT_WAIT_SECONDS`, `PAYMENT_MAX_STATUS_QUERIES`, `PAYMENT_ESCALATE_AFTER_SECONDS` | 900, 3, 7200 | When to ask Daraja, how many accepted queries, and the time after which an unresolved payout is raised (assumption) |
 | `FUNDING_RETRY_BASE_SECONDS`, `FUNDING_MAX_SENDS` | 15, 3 | Funding retries, doubling (assumption) |
-| `FUNDING_RESULT_WAIT_SECONDS`, `FUNDING_MAX_STATUS_QUERIES` | 180, 3 | The same for funding (assumption) |
+| `FUNDING_RESULT_WAIT_SECONDS`, `FUNDING_GIVE_UP_AFTER_SECONDS` | 180, 1500 | When to first ask Daraja, and when to mark an unanswered funding attempt failed (assumption; replaces `FUNDING_MAX_STATUS_QUERIES`) |
+| `STATUS_NO_ANSWER_RETRY_SECONDS`, `STATUS_RETRY_AFTER_MAX_SECONDS` | 60, 900 | Wait after a status check Daraja did not answer, and the cap on a Retry-After it sends (assumption) |
+| `RECONCILE_INTERVAL_SECONDS`, `RECONCILE_PERIOD_SECONDS` | 3600, 172800 | How often, and for how long, Daraja is still asked after the app gave up (assumption; 48 hours covers the 20-hour delay seen on 2026-11-15) |
 | `MSISDN_HASH_SALT` | (required) | Salt for hashing customer numbers |
 | `EVIDENCE_STORAGE_DIR`, `EVIDENCE_MAX_BYTES` | `storage/evidence`, 8000000 | Where evidence files go, and the per-file limit |
 | `SCORING_PYTHON` | repo `.venv` | Python used by `npm run dev:all` |

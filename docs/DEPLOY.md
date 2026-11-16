@@ -60,6 +60,9 @@ matter on Vercel:
 | `EVIDENCE_STORAGE` | blob on Vercel, disk elsewhere | Set it only to force one backend. |
 | `EVIDENCE_MAX_BYTES` | 8000000 | Vercel also caps a whole request at 4.5 MB, so larger uploads are refused by the platform with 413. |
 | `ANCHOR_INTERVAL_SECONDS` | 3600 | How often a new anchoring batch is cut. |
+| `FUNDING_GIVE_UP_AFTER_SECONDS`, `PAYMENT_ESCALATE_AFTER_SECONDS` | 1500, 7200 | How long an unanswered STK funding attempt waits before it is marked failed, and how long an unconfirmed payout waits before it is raised. A status check Daraja does not answer (HTTP 429, a timeout) does not use up a check. Replaces `FUNDING_MAX_STATUS_QUERIES`. |
+| `STATUS_NO_ANSWER_RETRY_SECONDS`, `STATUS_RETRY_AFTER_MAX_SECONDS` | 60, 900 | Wait after an unanswered check (doubling), and the most of a `Retry-After` the app will honour. |
+| `RECONCILE_INTERVAL_SECONDS`, `RECONCILE_PERIOD_SECONDS` | 3600, 172800 | After giving up, Daraja is still asked this often, for this long. Rows created before this feature have no deadline and are not reconciled. |
 
 ### Set but not read by the deployed app
 

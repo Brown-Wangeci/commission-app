@@ -1,0 +1,16 @@
+{
+  "label": "B",
+  "mode": "bogus",
+  "amountKsh": "1",
+  "sentAt": "2026-11-16T12:04:18.091Z",
+  "callbackHost": "commission-app-ten-pied.vercel.app",
+  "callbackPathShape": "/api/payments/callback/stk/<reference>/<signature>",
+  "httpStatus": 200,
+  "daraja": {
+    "MerchantRequestID": "104b-4235-9328-5de584002ffd135091",
+    "CheckoutRequestID": "ws_CO_16112026<masked>",
+    "ResponseCode": "0",
+    "ResponseDescription": "Success. Request accepted for processing",
+    "CustomerMessage": "Success. Request accepted for processing"
+  }
+}
