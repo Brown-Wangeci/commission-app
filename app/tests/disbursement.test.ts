@@ -683,3 +683,109 @@ describe("no credential reaches a log, a stored reason or an error (E1)", () => 
     expect(stored.failureReason).toContain("[redacted]");
   });
 });
+
+describe("status queries Daraja cannot take, and reconciling a raised payout (defects 10, 11 and 12)", () => {
+  const resultWait = 900_000;
+  const HOUR = 3_600_000;
+  const PERIOD = 172_800_000;
+
+  function scriptStatus(reply: { status: number; body: unknown; headers?: Record<string, string> }) {
+    daraja.setHandler((call) => (call.path === PATHS.status ? reply : undefined));
+  }
+
+  /** Three queries Daraja accepts, then a fourth due check that raises it. */
+  async function raised() {
+    const state = await sent();
+    let now = after(resultWait + 1);
+    for (let i = 0; i < 4; i += 1) {
+      await checkDisbursement(state.disbursement.id, now);
+      now = new Date((await row(state.activationId)).nextAttemptAt.getTime() + 1);
+    }
+    return { ...state, stored: await row(state.activationId) };
+  }
+
+  it("does not use up a query on HTTP 429, honours Retry-After, and records the answer", async () => {
+    const { activationId, disbursement } = await sent();
+    scriptStatus({ status: 429, body: {}, headers: { "Retry-After": "600" } });
+    const due = after(resultWait + 1);
+    await checkDisbursement(disbursement.id, due);
+    const stored = await row(activationId);
+    expect(stored).toMatchObject({ status: "unconfirmed", queryCount: 0, noAnswerCount: 1 });
+    expect(stored.nextAttemptAt.getTime() - due.getTime()).toBe(600_000);
+    const [check] = await prisma.paymentStatusCheck.findMany({ where: { disbursementId: disbursement.id } });
+    expect(check).toMatchObject({ purpose: "result_wait", outcome: "not_delivered", countedAsCheck: false, httpStatus: 429, retryAfterSeconds: 600 });
+    await expect(prisma.paymentStatusCheck.update({ where: { id: check.id }, data: { detail: "edited" } })).rejects.toThrow(/append-only/);
+  });
+
+  it("counts a query Daraja accepted, as before", async () => {
+    const { activationId, disbursement } = await sent();
+    await checkDisbursement(disbursement.id, after(resultWait + 1));
+    expect(await row(activationId)).toMatchObject({ queryCount: 1, noAnswerCount: 0 });
+    expect(await prisma.paymentStatusCheck.count({ where: { disbursementId: disbursement.id, countedAsCheck: true } })).toBe(1);
+  });
+
+  it("raises it after the time limit even when Daraja never takes a query, and never sends it again", async () => {
+    const { activationId, disbursement, reviewerId } = await sent();
+    scriptStatus({ status: 429, body: {} });
+    let now = after(resultWait + 1);
+    for (let i = 0; i < 30 && !(await row(activationId)).escalatedAt; i += 1) {
+      await checkDisbursement(disbursement.id, now);
+      now = new Date((await row(activationId)).nextAttemptAt.getTime() + 1);
+    }
+    const stored = await row(activationId);
+    expect(stored).toMatchObject({ status: "unconfirmed", queryCount: 0 });
+    expect(stored.escalatedAt!.getTime()).toBeGreaterThanOrEqual(after(7_200_000).getTime());
+    expect(daraja.callsTo(PATHS.b2c)).toHaveLength(1);
+    expect(await prisma.notification.count({ where: { userId: reviewerId, kind: "payment_attention" } })).toBe(1);
+  });
+
+  it("keeps asking after it is raised, slowly and for a bounded period, and never sends it again", async () => {
+    const { activationId, stored } = await raised();
+    expect(stored.reconcileUntil!.getTime() - stored.escalatedAt!.getTime()).toBe(PERIOD);
+    expect(stored.nextAttemptAt.getTime() - stored.escalatedAt!.getTime()).toBe(HOUR);
+    const asked = daraja.callsTo(PATHS.status).length;
+    await runDuePayments(new Date(stored.escalatedAt!.getTime() + HOUR / 2));
+    expect(daraja.callsTo(PATHS.status)).toHaveLength(asked);
+    await runDuePayments(new Date(stored.escalatedAt!.getTime() + HOUR + 1000));
+    expect(daraja.callsTo(PATHS.status)).toHaveLength(asked + 1);
+    const last = await prisma.paymentStatusCheck.findFirstOrThrow({ where: { disbursementId: stored.id }, orderBy: { checkedAt: "desc" } });
+    expect(last).toMatchObject({ purpose: "reconcile", countedAsCheck: true });
+    await runDuePayments(new Date(stored.escalatedAt!.getTime() + 49 * HOUR));
+    expect(daraja.callsTo(PATHS.status)).toHaveLength(asked + 1);
+    expect(daraja.callsTo(PATHS.b2c)).toHaveLength(1);
+    expect((await row(activationId)).status).toBe("unconfirmed");
+  });
+
+  it("a Completed result for a raised payout settles it once through the verified path, and tells administrators", async () => {
+    const { activationId, disbursement, reviewerId, stored } = await raised();
+    await runDuePayments(new Date(stored.escalatedAt!.getTime() + HOUR + 1000));
+    await deliver("status-result", disbursement.reference, statusResult({ reference: disbursement.reference, status: "Completed" }));
+    await deliver("status-result", disbursement.reference, statusResult({ reference: disbursement.reference, status: "Completed" }));
+    expect(await row(activationId)).toMatchObject({ status: "paid", escalatedAt: null, reconcileUntil: null, receipt: "MBN31H462N" });
+    // Raised once when it was escalated, and once more when it turned out to be paid.
+    expect(await prisma.notification.count({ where: { userId: reviewerId, kind: "payment_attention" } })).toBe(2);
+    const asked = daraja.callsTo(PATHS.status).length;
+    await runDuePayments(new Date(stored.escalatedAt!.getTime() + 10 * HOUR));
+    expect(daraja.callsTo(PATHS.status)).toHaveLength(asked);
+    expect(daraja.callsTo(PATHS.b2c)).toHaveLength(1);
+  });
+
+  it("a Declined result for a raised payout is recorded as failed and raised", async () => {
+    const { activationId, disbursement, stored } = await raised();
+    await runDuePayments(new Date(stored.escalatedAt!.getTime() + HOUR + 1000));
+    await deliver("status-result", disbursement.reference, statusResult({ reference: disbursement.reference, status: "Declined" }));
+    expect(await row(activationId)).toMatchObject({ status: "failed", reconcileUntil: null });
+  });
+});
+
+describe("the audit log holds a masked payout number (defect 13)", () => {
+  it("authorising a payout records the number masked, never in full", async () => {
+    const { activationId } = await approved();
+    const events = await prisma.auditEvent.findMany({ where: { activationId, kind: "payout_authorised" } });
+    expect(events).toHaveLength(1);
+    expect(events[0].detail).not.toContain("0712000000");
+    expect(events[0].detail).toMatch(/to 07\*{6}000 authorised via daraja/);
+    const everything = JSON.stringify(await prisma.auditEvent.findMany(), (_key, value) => (typeof value === "bigint" ? String(value) : value));
+    expect(everything).not.toMatch(/0712000000/);
+  });
+});

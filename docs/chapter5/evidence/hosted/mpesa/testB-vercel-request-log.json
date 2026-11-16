@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-11-16T12:04:29.956Z",
+    "requestHostname": "commission-app-ten-pied.vercel.app",
+    "requestMethod": "POST",
+    "requestPathShape": "/api/payments/callback/stk/<reference>/<signature>",
+    "httpStatus": 401,
+    "edgeNetworkRegion": "bom1",
+    "clientIpCountry": "KE",
+    "clientUserAgent": "ReactorNetty/1.2.9",
+    "wafAction": "allow",
+    "note": "Daraja request to the hosted origin for Test B (bogus signature, so 401 is the designed answer)."
+  }
+]

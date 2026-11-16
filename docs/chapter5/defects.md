@@ -273,3 +273,157 @@ which includes the checkout-id masking case). The
 full evidence tree was also scanned directly against the real phone numbers
 used, in every run from that point on, not merely checked by pattern (see
 `app/BUILD_LOG.md`, Build 3 and Build 3 follow-up verification sections).
+
+## 10 to 14. Found by the hosted M-Pesa test, 15 to 16 November 2026
+
+**What happened.** On the hosted system two STK Push attempts of KSh 10
+(13:08 and 13:17 EAT on 15 November) were accepted by Daraja, and no callback
+reached the app. The app asked Daraja for the result three times each and
+marked both attempts failed (22 and 30 minutes after they were made), with
+"No result from M-Pesa after 3 checks." About 20 hours later (09:10 EAT on
+16 November) Safaricom completed the first one: the payer's phone shows KSh 10
+debited, then reversed at 10:00 EAT. Daraja's STK Query for it now answers
+`ResultCode 0`, "processed successfully", while the app still holds it as
+failed, with no alert to an administrator. Separately, the KSh 10 B2C payout
+for LF-000064 was accepted by Daraja on 15 November and is still
+`unconfirmed`: no result or status callback was ever received for it.
+
+**What is not known.** Why no callback came. A controlled experiment on
+16 November (`docs/chapter5/evidence/hosted/mpesa/callback-delivery-experiment.md`)
+shows Daraja delivering a callback within about 10 seconds both to a
+temporary tunnel and to the hosted `vercel.app` origin, and Vercel's firewall
+denied nothing. So the origin is reachable, and the missing callbacks look
+like a delay on Safaricom's side that the app cannot see. The five items
+below are about what the app did with that uncertainty.
+
+### 10. A status check Daraja did not answer used up one of the three checks
+
+**Defect.** An STK status check that got HTTP 429 ("Daraja is unavailable"),
+a timeout, or `500.001.1001` ("being processed") counted as one of the three
+allowed checks. Rate limiting alone could therefore end a funding attempt as
+failed, "No result from M-Pesa after 3 checks", although Daraja had never
+answered. The payout queue had the same flaw. `Retry-After` was never read.
+No money was at risk: nothing is credited without a verified callback, and a
+status check never sends anything. The harm was a wrong, premature failure
+shown to the client, and an unconfirmed payout raised without Daraja ever
+having been asked.
+
+**Cause.** `claimStatusCheck` (`funding.ts`, `disbursement.ts`) increased
+`queryCount` when it claimed the row, before the query was made, and the
+limit was a count of claims, not of answers.
+
+**Fix.** `queryCount` now counts only a result Daraja gave (funding) or a
+query it accepted (payout). A check with no answer is recorded, adds to
+`noAnswerCount`, and waits 60 s doubling to 16 min, or the `Retry-After`
+Daraja sent if longer, capped at 900 s. Waiting is bounded by time instead of
+by a count: funding is marked failed after `FUNDING_GIVE_UP_AFTER_SECONDS`
+(1500, replacing `FUNDING_MAX_STATUS_QUERIES`), and a payout is raised after
+`PAYMENT_MAX_STATUS_QUERIES` accepted queries or
+`PAYMENT_ESCALATE_AFTER_SECONDS` (7200), whichever is first. All new
+parameters are assumptions in `app/.env.example`. An answered failure still
+ends an attempt at once. The claim now moves the due time a lease ahead, so
+two workers still cannot ask twice. Guarantees unchanged: nothing is credited
+by a status check; nothing is sent again.
+
+**Retest.** `app/tests/funding.test.ts`, "a status check Daraja does not
+answer" (429 and `Retry-After`, cap, doubling, 504, answered failure,
+never credits) and the rewritten "gives up after the time limit, not after a
+count"; `app/tests/disbursement.test.ts`, "does not use up a query on HTTP
+429", "raises it after the time limit even when Daraja never takes a query";
+`app/tests/status-check-rules.test.ts`.
+
+### 11. Daraja's answer to each check was thrown away
+
+**Defect.** Only the latest `lastError` was kept, and the give-up message
+replaced it. After the hosted failure it was not possible to say what Daraja
+had answered to each of the three checks. Scoring has an append-only
+`ScoringAttempt` table; payments had nothing.
+
+**Fix.** A new append-only table, `PaymentStatusCheck` (migration
+`20261116120000_payment_status_checks`): one row per check, for funding and
+payouts, with the purpose, Daraja's classification, HTTP status, its code,
+its words (redacted and cut to 300 characters), `Retry-After`, whether it
+used a check, and when the next one was scheduled. A trigger refuses any
+update or delete, and a constraint makes each row name exactly one funding
+attempt or disbursement.
+
+**Retest.** `funding.test.ts`, "a record of every answer" (one row per check
+with the right fields, update and delete refused, no phone number kept, a row
+with no subject refused); `disbursement.test.ts` ("records the answer").
+
+### 12. Nothing asked Daraja again after the app gave up
+
+**Defect.** After a funding attempt was marked failed without an answer, or a
+payout was raised as unconfirmed, the queues stopped asking. The first
+attempt above is the example: Daraja now says it succeeded, and the app still
+says failed. A payment that completes late could only be noticed if its
+callback arrived.
+
+**Fix.** Reconciliation. When funding is marked failed without an answer, or a
+payout is raised, the row gets a deadline (`RECONCILE_PERIOD_SECONDS`, 48
+hours, which covers the 20 hours seen) and Daraja is asked every
+`RECONCILE_INTERVAL_SECONDS` (1 hour) until then. A failure that M-Pesa itself
+reported by callback is not reconciled. Asking never sends anything.
+
+- **Funding: raised, not applied.** If Daraja says `ResultCode 0`, the attempt
+  is raised to every administrator and nothing is credited. Chosen because a
+  status answer carries no receipt and no amount, and the deposit trigger and
+  the unique-receipt guard both need a receipt; because credit only through a
+  verified callback is an existing guarantee with its own test; and because
+  this very case shows the risk: Daraja still answered "processed
+  successfully" for a payment its sandbox reversed 50 minutes later, so
+  crediting from a status answer would have created KSh 10 of escrow with no
+  money behind it. A late verified callback still credits, once (the same
+  path as before).
+- **Payouts: recorded and raised.** The answer to a status query arrives by
+  callback and is applied by the existing verified path, which has the receipt
+  and amount. Each query is recorded, and when a payout that had been raised
+  settles as paid, administrators are told, so that nobody pays it by another
+  route. A failure was already raised.
+
+**Not done.** The rows already in the hosted database (the two failed KSh 10
+attempts and LF-000064) were made before this change and have no deadline, so
+they are not reconciled until a deadline is set on them by hand.
+
+**Retest.** `funding.test.ts`, "reconciling after giving up" (slow interval,
+stops at the deadline, success raised and nothing credited, a late callback
+credits once, a Daraja failure closes it, a callback failure is not asked
+about, two workers ask once); `disbursement.test.ts`, "keeps asking after it is
+raised", "a Completed result for a raised payout settles it once", "a Declined
+result". Every payout test asserts that B2C is sent exactly once.
+
+### 13. The audit log held the full payout number
+
+**Defect.** The `payout_authorised` audit event wrote the agent's full M-Pesa
+number into its text. The audit log is append-only, shown to every
+administrator, and requirement NFR-13 asks for the number to be masked except
+in a dispute or failed payout. This was found when a diagnostic query printed
+an event's text.
+
+**Fix.** `app/src/lib/payouts/authorise.ts` now writes the number masked
+(`07******000`), with the same `maskPhone` used for logs. **Existing events
+are not altered**: the table is append-only and hash-chained, and changing one
+would break verification and the batches already anchored. On the hosted
+database, before the fix, **50 of 773 audit events** held a full number (all
+`payout_authorised`, five distinct numbers); none of the 61 notifications did.
+Those 50 remain. NFR-13's other gap, the number in full on four admin
+screens, is unchanged.
+
+**Retest.** `disbursement.test.ts`, "authorising a payout records the number
+masked, never in full".
+
+### 14. Reversals are not known to the app (known limitation, not fixed)
+
+**Observed.** The sandbox reversed the KSh 10 about 50 minutes after
+completing it. The app has no concept of a reversal and receives nothing
+about one.
+
+**Why it is not built.** By decision. What protects the books today is that
+funding is credited only by a verified callback, never by a status answer
+(defect 12). What is not covered: if Daraja reverses a payment after the app
+has credited it, the escrow balance stays credited. Whether a production
+reversal can happen, and how it would be reported, is not established here:
+the behaviour was seen once, in the sandbox, and no Safaricom documentation
+on it was found.
+
+**Retest.** None. Listed in `docs/chapter5/gaps.md`.

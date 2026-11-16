@@ -7,7 +7,7 @@ import type { AddressInfo } from "node:net";
  * OriginatorConversationID, and a test can script any other reply.
  */
 export type DarajaCall = { path: string; body: Record<string, string | number>; authorization: string | null };
-export type DarajaReply = { status: number; body: unknown; delayMs?: number; destroy?: boolean };
+export type DarajaReply = { status: number; body: unknown; delayMs?: number; destroy?: boolean; headers?: Record<string, string> };
 /** Return a reply to override the default for this call, or undefined to keep it. */
 export type DarajaHandler = (call: DarajaCall) => DarajaReply | undefined;
 
@@ -61,7 +61,7 @@ function send(res: http.ServerResponse, req: http.IncomingMessage, reply: Daraja
   }
   setTimeout(() => {
     if (res.destroyed) return;
-    res.writeHead(reply.status, { "Content-Type": "application/json" });
+    res.writeHead(reply.status, { "Content-Type": "application/json", ...reply.headers });
     res.end(typeof reply.body === "string" ? reply.body : JSON.stringify(reply.body));
   }, reply.delayMs ?? 0);
 }

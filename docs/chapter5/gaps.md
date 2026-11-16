@@ -57,6 +57,20 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   specifically exercise mixed fractional-second input. Both are stated as
   gaps in `docs/chapter5/defects.md` itself, not glossed over here.
 
+- **Reversals are not handled (defect 14).** On 2026-11-16 the Daraja sandbox
+  reversed a KSh 10 STK payment about 50 minutes after completing it. The app
+  has no handling for reversals and is told nothing about them. Funding is
+  credited only by a verified callback, so a late success from a status check
+  cannot create a credit, but a reversal after a credit would leave the
+  balance credited. Production behaviour is not established; no Safaricom
+  documentation was found. Not built, by decision.
+- **The hosted M-Pesa callbacks of 2026-11-15 are unexplained.** Two STK
+  Pushes and one B2C payout were accepted by Daraja and produced no callback.
+  A later experiment shows callbacks reaching both a tunnel and the hosted
+  origin within seconds, so the cause is not a blocked or unreachable origin.
+  A delay on Safaricom's side is the leading explanation and is not proven
+  (`docs/chapter5/evidence/hosted/mpesa/callback-delivery-experiment.md`).
+
 ## Test traceability (D)
 
 - **Correction (2026-11-09): FR-09 was wrongly recorded as untested.**

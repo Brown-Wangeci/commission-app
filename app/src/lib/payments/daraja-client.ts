@@ -17,11 +17,16 @@ import { redactText } from "./redact";
  *   unknown        It may have been received, for example a timeout after the
  *                  request left. Must never be sent again automatically.
  */
-export type DarajaOutcome<T> =
+export type DarajaOutcome<T> = (
   | { kind: "accepted"; body: T }
   | { kind: "refused"; reason: string; code: string; retryable: boolean; duplicate: boolean }
   | { kind: "not_delivered"; reason: string }
-  | { kind: "unknown"; reason: string };
+  | { kind: "unknown"; reason: string }
+) &
+  Observed;
+
+/** What was seen on the wire, when anything was: the HTTP status, and Retry-After in seconds. */
+export type Observed = { httpStatus?: number; retryAfterSeconds?: number | null };
 
 export type StkAccepted = { MerchantRequestID: string; CheckoutRequestID: string; ResponseDescription?: string };
 export type StkQueryAccepted = { ResultCode?: string | number; ResultDesc?: string };
@@ -101,6 +106,16 @@ export function classifyResponse<T>(status: number, body: unknown): DarajaOutcom
   return { kind: "unknown", reason: `Daraja gave no usable answer (HTTP ${status}), so it may or may not have received this.` };
 }
 
+/** Retry-After as whole seconds from now: a number of seconds, or an HTTP date. Null if absent or unreadable. */
+export function parseRetryAfter(value: string | null, nowMs: number = Date.now()): number | null {
+  const text = value?.trim();
+  if (!text) return null;
+  if (/^\d+$/.test(text)) return Number(text);
+  if (!/[A-Za-z]/.test(text)) return null;
+  const date = Date.parse(text);
+  return Number.isNaN(date) ? null : Math.max(0, Math.ceil((date - nowMs) / 1000));
+}
+
 async function readBody(response: Response): Promise<unknown> {
   try {
     return await response.json();
@@ -128,7 +143,8 @@ async function post<T>(label: string, path: string, body: Record<string, unknown
     });
     const parsed = await readBody(response);
     capture({ direction: "response", label, status: response.status, payload: parsed });
-    return classifyResponse<T>(response.status, parsed);
+    const observed: Observed = { httpStatus: response.status, retryAfterSeconds: parseRetryAfter(response.headers.get("retry-after")) };
+    return { ...classifyResponse<T>(response.status, parsed), ...observed } as DarajaOutcome<T>;
   } catch (error) {
     return networkFailure(error);
   }

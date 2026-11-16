@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/db";
 import { fits, NO_DEADLINE, paymentWorstCaseMs } from "@/lib/time-budget";
 import { missingCredentials } from "./credentials";
-import { checkDisbursement, expireStaleSends, sendDisbursement } from "./disbursement";
-import { checkFunding, expireStaleFundingSends, sendFunding } from "./funding";
+import { checkDisbursement, expireStaleSends, reconcileDisbursement, sendDisbursement } from "./disbursement";
+import { checkFunding, expireStaleFundingSends, reconcileFunding, sendFunding } from "./funding";
 
 /**
  * The payment queue's worker. Nothing is held in memory between polls: the
@@ -18,13 +18,16 @@ async function dueIds(now: Date, take: number) {
   const due = { nextAttemptAt: { lte: now } };
   const select = { id: true } as const;
   const orderBy = { nextAttemptAt: "asc" } as const;
-  const [fundingSends, payoutSends, fundingChecks, payoutChecks] = await Promise.all([
+  const reconcilable = { reconcileUntil: { gt: now }, ...due };
+  const [fundingSends, payoutSends, fundingChecks, payoutChecks, fundingReconciles, payoutReconciles] = await Promise.all([
     prisma.fundingAttempt.findMany({ where: { status: "queued", ...due }, select, orderBy, take }),
     prisma.disbursement.findMany({ where: { status: "queued", ...due }, select, orderBy, take }),
     prisma.fundingAttempt.findMany({ where: { status: "pending", escalatedAt: null, ...due }, select, orderBy, take }),
     prisma.disbursement.findMany({ where: { status: { in: ["sent", "unconfirmed"] }, escalatedAt: null, ...due }, select, orderBy, take }),
+    prisma.fundingAttempt.findMany({ where: { status: "failed", resultCode: null, escalatedAt: null, ...reconcilable }, select, orderBy, take }),
+    prisma.disbursement.findMany({ where: { status: "unconfirmed", escalatedAt: { not: null }, ...reconcilable }, select, orderBy, take }),
   ]);
-  return { fundingSends, payoutSends, fundingChecks, payoutChecks };
+  return { fundingSends, payoutSends, fundingChecks, payoutChecks, fundingReconciles, payoutReconciles };
 }
 
 /**
@@ -64,5 +67,7 @@ export async function runDuePayments(now: Date = new Date(), take = BATCH, deadl
   await each(due.payoutSends, (id) => sendDisbursement(id, now), summary, "sends", deadline);
   await each(due.fundingChecks, (id) => checkFunding(id, now), summary, "checks", deadline);
   await each(due.payoutChecks, (id) => checkDisbursement(id, now), summary, "checks", deadline);
+  await each(due.fundingReconciles, (id) => reconcileFunding(id, now), summary, "checks", deadline);
+  await each(due.payoutReconciles, (id) => reconcileDisbursement(id, now), summary, "checks", deadline);
   return summary;
 }

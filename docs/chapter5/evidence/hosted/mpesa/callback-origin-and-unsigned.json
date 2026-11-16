@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-11-15T09:51:26.385Z",
+  "callback_url_built_by_hosted_config": "https://commission-app-ten-pied.vercel.app/api/payments/callback/stk/<reference: 32 hex>/<signature: 64 hex, HMAC-SHA256>",
+  "callback_origin": "https://commission-app-ten-pied.vercel.app",
+  "matches_production_origin": true,
+  "note": "Built in-process from the hosted settings (MPESA_CALLBACK_BASE_URL and the signing key derived from MPESA_CONSUMER_SECRET); reference and signature redacted. No signed callback was sent.",
+  "unsigned_or_forged_callbacks": [
+    {
+      "case": "random reference, all-zero signature",
+      "path": "/api/payments/callback/stk/<ref>/<64 hex>",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"message\":\"Not accepted.\"}}"
+    },
+    {
+      "case": "random reference, random signature",
+      "path": "/api/payments/callback/stk/<ref>/<64 hex>",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"message\":\"Not accepted.\"}}"
+    },
+    {
+      "case": "unknown kind",
+      "path": "/api/payments/callback/bogus/<ref>/<64 hex>",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"message\":\"Not accepted.\"}}"
+    },
+    {
+      "case": "signature made for b2c-result, sent to stk",
+      "path": "/api/payments/callback/stk/<ref>/<64 hex>",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"message\":\"Not accepted.\"}}"
+    },
+    {
+      "case": "no signature segment",
+      "path": "/api/payments/callback/stk/<ref>",
+      "status": 404,
+      "body": "{\"error\":{\"code\":\"not_found\",\"message\":\"No API route matches this path.\"}}"
+    }
+  ]
+}

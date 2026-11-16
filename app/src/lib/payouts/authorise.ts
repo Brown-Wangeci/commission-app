@@ -1,6 +1,7 @@
 import type { PayoutAuthorisation, Prisma } from "@prisma/client";
 import { recordAuditEvent } from "@/lib/activations/transition";
 import { formatCents } from "@/lib/money/cents";
+import { maskPhone } from "@/lib/payments/redact";
 import { payoutAuthoriser, usePayoutAuthoriser } from "./boundary";
 import { recordCommission, storedCommissionView } from "./commissions";
 import { DarajaPayoutAuthoriser } from "./daraja";
@@ -49,8 +50,9 @@ export async function authorisePayout(
     kind: "payout_authorised",
     activationId: activation.id,
     actorId: input.authorisedById,
+    // The audit log is append-only and shown to every administrator, so it holds a masked number only.
     detail:
-      `${formatCents(commission.amountCents)} to ${activation.agent.payoutMsisdn} authorised via ${authorisation.provider}: ` +
+      `${formatCents(commission.amountCents)} to ${maskPhone(activation.agent.payoutMsisdn)} authorised via ${authorisation.provider}: ` +
       `${storedCommissionView(commission).derivation}.`,
     at: input.at,
   });

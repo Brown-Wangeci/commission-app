@@ -1,11 +1,11 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db";
 import { clientEscrow } from "@/lib/escrow/client";
-import { checkFunding, listFundingAttempts, sendFunding, startFunding } from "@/lib/payments/funding";
+import { checkFunding, listFundingAttempts, reconcileFunding, sendFunding, startFunding } from "@/lib/payments/funding";
 import { runDuePayments } from "@/lib/payments/worker";
 import { deliver, stkCancelled, stkSuccess } from "./helpers/daraja-payloads";
 import { resetDatabase } from "./helpers/db";
-import { createClient } from "./helpers/factories";
+import { createClient, createUser } from "./helpers/factories";
 import { PATHS, startFakeDaraja, type FakeDaraja } from "./helpers/fake-daraja";
 
 const AMOUNT = 500_000;
@@ -316,18 +316,222 @@ describe("a result that never arrives", () => {
     expect(await balance()).toBe(0);
   });
 
-  it("gives up after the check limit, and a late callback can still credit", async () => {
-    daraja.setHandler((call) => (call.path === PATHS.stkQuery ? { status: 500, body: { errorCode: "500.001.1001", errorMessage: "The transaction is being processed" } } : undefined));
+  it("gives up after the time limit, not after a count, and a late callback can still credit", async () => {
+    scriptQuery({ status: 500, body: { errorCode: "500.001.1001", errorMessage: "The transaction is being processed" } });
     const attempt = await start({ at: t0 });
+    const limit = new Date(t0.getTime() + GIVE_UP_MS);
     let now = overdue;
-    for (let i = 0; i < 3; i += 1) {
+    let checks = 0;
+    while ((await attemptRow(attempt.id)).status === "pending") {
       await checkFunding(attempt.id, now);
-      now = new Date((await attemptRow(attempt.id)).nextAttemptAt.getTime() + 1);
+      checks += 1;
+      const row = await attemptRow(attempt.id);
+      if (row.status === "pending") expect(row.queryCount).toBe(0);
+      now = new Date(row.nextAttemptAt.getTime() + 1);
+      expect(checks).toBeLessThan(20);
     }
-    expect(await attemptRow(attempt.id)).toMatchObject({ status: "failed", resultCode: null });
+    const failed = await attemptRow(attempt.id);
+    expect(failed).toMatchObject({ status: "failed", resultCode: null, failureReason: "No result from M-Pesa within 25 minutes.", queryCount: 0 });
+    expect(checks).toBeGreaterThan(3);
+    expect(failed.resolvedAt!.getTime()).toBeGreaterThanOrEqual(limit.getTime());
     await deliver("stk", attempt.reference, stkSuccess(attempt.checkoutRequestId!, 5000));
     expect((await attemptRow(attempt.id)).status).toBe("confirmed");
     expect(await balance()).toBe(AMOUNT);
+  });
+});
+
+/** Scripts Daraja's answer to every STK status query; everything else keeps its default. */
+function scriptQuery(reply: { status: number; body: unknown; headers?: Record<string, string> }) {
+  daraja.setHandler((call) => (call.path === PATHS.stkQuery ? reply : undefined));
+}
+
+const t0 = new Date("2026-11-07T09:00:00.000Z");
+const WAIT_MS = 181_000;
+const GIVE_UP_MS = 1_500_000;
+const HOUR_MS = 3_600_000;
+
+describe("a status check Daraja does not answer (defect 10)", () => {
+  const overdue = new Date(t0.getTime() + WAIT_MS);
+  const tooMany = { status: 429, body: {}, headers: { "Retry-After": "300" } };
+
+  it("does not use up a check on HTTP 429, and waits as long as Retry-After says", async () => {
+    scriptQuery(tooMany);
+    const attempt = await start({ at: t0 });
+    await checkFunding(attempt.id, overdue);
+    const row = await attemptRow(attempt.id);
+    expect(row).toMatchObject({ status: "pending", queryCount: 0, noAnswerCount: 1 });
+    expect(row.lastError).toMatch(/HTTP 429/);
+    expect(row.nextAttemptAt.getTime() - overdue.getTime()).toBe(300_000);
+    await runDuePayments(new Date(overdue.getTime() + 60_000));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(1);
+    await runDuePayments(new Date(row.nextAttemptAt.getTime() + 1));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(2);
+  });
+
+  it("caps a Retry-After so one header cannot park a payment", async () => {
+    scriptQuery({ status: 429, body: {}, headers: { "Retry-After": "100000" } });
+    const attempt = await start({ at: t0 });
+    await checkFunding(attempt.id, overdue);
+    expect((await attemptRow(attempt.id)).nextAttemptAt.getTime() - overdue.getTime()).toBe(900_000);
+  });
+
+  it("waits the base time, then doubles, when there is no Retry-After", async () => {
+    scriptQuery({ status: 429, body: {} });
+    const attempt = await start({ at: t0 });
+    const gaps: number[] = [];
+    let now = overdue;
+    for (let i = 0; i < 3; i += 1) {
+      await checkFunding(attempt.id, now);
+      const next = (await attemptRow(attempt.id)).nextAttemptAt;
+      gaps.push(next.getTime() - now.getTime());
+      now = new Date(next.getTime() + 1);
+    }
+    expect(gaps).toEqual([60_000, 120_000, 240_000]);
+    expect(await attemptRow(attempt.id)).toMatchObject({ status: "pending", queryCount: 0, noAnswerCount: 3 });
+  });
+
+  it("treats a timeout and a gateway error as no answer too", async () => {
+    scriptQuery({ status: 504, body: "<html>Gateway Timeout</html>" });
+    const attempt = await start({ at: t0 });
+    await checkFunding(attempt.id, overdue);
+    expect(await attemptRow(attempt.id)).toMatchObject({ status: "pending", queryCount: 0, noAnswerCount: 1 });
+  });
+
+  it("counts a check only when Daraja gave a result, and a failure result still ends the attempt at once", async () => {
+    const attempt = await start({ at: t0 });
+    await checkFunding(attempt.id, overdue);
+    expect(await attemptRow(attempt.id)).toMatchObject({ status: "failed", failureReason: "Request cancelled by user", queryCount: 1, reconcileUntil: null });
+  });
+
+  it("never credits on any status answer", async () => {
+    scriptQuery({ status: 200, body: { ResponseCode: "0", ResultCode: "0", ResultDesc: "The service request is processed successfully." } });
+    const attempt = await start({ at: t0 });
+    await checkFunding(attempt.id, overdue);
+    expect(await balance()).toBe(0);
+    expect(await prisma.escrowDeposit.count()).toBe(0);
+  });
+});
+
+describe("a record of every answer (defect 11)", () => {
+  const overdue = new Date(t0.getTime() + WAIT_MS);
+
+  it("keeps one row per check with what Daraja answered, and refuses any change to it", async () => {
+    const attempt = await start({ at: t0 });
+    scriptQuery({ status: 429, body: {}, headers: { "Retry-After": "300" } });
+    await checkFunding(attempt.id, overdue);
+    scriptQuery({ status: 500, body: { errorCode: "500.001.1001", errorMessage: "The transaction is being processed" } });
+    await checkFunding(attempt.id, new Date(overdue.getTime() + 301_000));
+    daraja.setHandler(() => undefined);
+    await checkFunding(attempt.id, new Date(overdue.getTime() + 600_000));
+    const rows = await prisma.paymentStatusCheck.findMany({ where: { fundingAttemptId: attempt.id }, orderBy: { checkedAt: "asc" } });
+    expect(rows.map((r) => [r.purpose, r.outcome, r.countedAsCheck, r.httpStatus, r.darajaCode, r.retryAfterSeconds])).toEqual([
+      ["result_wait", "not_delivered", false, 429, null, 300],
+      ["result_wait", "refused", false, 500, "500.001.1001", null],
+      ["result_wait", "accepted", true, 200, "1032", null],
+    ]);
+    expect(rows[2].detail).toBe("Request cancelled by user");
+    expect(rows[0].nextCheckAt).not.toBeNull();
+    await expect(prisma.paymentStatusCheck.update({ where: { id: rows[0].id }, data: { detail: "edited" } })).rejects.toThrow(/append-only/);
+    await expect(prisma.paymentStatusCheck.deleteMany({ where: { id: rows[0].id } })).rejects.toThrow(/append-only/);
+  });
+
+  it("stores no phone number from Daraja's words", async () => {
+    scriptQuery({ status: 400, body: { errorCode: "400.002.02", errorMessage: "Invalid PhoneNumber 254712345678 for request" } });
+    const attempt = await start({ at: t0 });
+    await checkFunding(attempt.id, overdue);
+    const text = JSON.stringify(await prisma.paymentStatusCheck.findMany());
+    expect(text).not.toMatch(/254712345678/);
+  });
+
+  it("refuses a row that names neither a funding attempt nor a disbursement", async () => {
+    const base = { checkedAt: t0, purpose: "result_wait", outcome: "unknown", countedAsCheck: false };
+    await expect(prisma.paymentStatusCheck.create({ data: base })).rejects.toThrow();
+  });
+});
+
+describe("reconciling after giving up (defect 12)", () => {
+  const overdue = new Date(t0.getTime() + WAIT_MS);
+
+  /** Fails an attempt without an answer, by letting the time limit pass on "being processed" answers. */
+  async function inferredFailure() {
+    scriptQuery({ status: 500, body: { errorCode: "500.001.1001", errorMessage: "The transaction is being processed" } });
+    const attempt = await start({ at: t0 });
+    let now = overdue;
+    while ((await attemptRow(attempt.id)).status === "pending") {
+      await checkFunding(attempt.id, now);
+      now = new Date((await attemptRow(attempt.id)).nextAttemptAt.getTime() + 1);
+    }
+    return { attempt, failedAt: (await attemptRow(attempt.id)).resolvedAt! };
+  }
+
+  it("asks Daraja again slowly after an inferred failure, and not before the interval", async () => {
+    const { attempt, failedAt } = await inferredFailure();
+    const row = await attemptRow(attempt.id);
+    expect(row.reconcileUntil!.getTime() - failedAt.getTime()).toBe(172_800_000);
+    expect(row.nextAttemptAt.getTime() - failedAt.getTime()).toBe(HOUR_MS);
+    const before = daraja.callsTo(PATHS.stkQuery).length;
+    await runDuePayments(new Date(failedAt.getTime() + HOUR_MS / 2));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(before);
+    await runDuePayments(new Date(failedAt.getTime() + HOUR_MS + 1000));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(before + 1);
+    const last = await prisma.paymentStatusCheck.findFirstOrThrow({ where: { fundingAttemptId: attempt.id }, orderBy: { checkedAt: "desc" } });
+    expect(last).toMatchObject({ purpose: "reconcile", countedAsCheck: false });
+    expect(await attemptRow(attempt.id)).toMatchObject({ status: "failed", resultCode: null });
+  });
+
+  it("stops asking when the period is over", async () => {
+    const { attempt, failedAt } = await inferredFailure();
+    const before = daraja.callsTo(PATHS.stkQuery).length;
+    await runDuePayments(new Date(failedAt.getTime() + 49 * HOUR_MS));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(before);
+    expect((await attemptRow(attempt.id)).status).toBe("failed");
+  });
+
+  it("raises a success to an administrator, credits nothing, and a verified callback still credits once", async () => {
+    const admin = await createUser("admin");
+    const { attempt, failedAt } = await inferredFailure();
+    scriptQuery({ status: 200, body: { ResponseCode: "0", ResultCode: "0", ResultDesc: "The service request is processed successfully." } });
+    await runDuePayments(new Date(failedAt.getTime() + HOUR_MS + 1000));
+    const raised = await attemptRow(attempt.id);
+    expect(raised).toMatchObject({ status: "failed", resultCode: null, reconcileUntil: null });
+    expect(raised.escalatedAt).not.toBeNull();
+    expect(raised.lastError).toMatch(/nothing has been credited/);
+    expect(await balance()).toBe(0);
+    expect(await prisma.escrowDeposit.count()).toBe(0);
+    expect(await prisma.notification.count({ where: { userId: admin.id, kind: "payment_attention" } })).toBe(1);
+    const queries = daraja.callsTo(PATHS.stkQuery).length;
+    await runDuePayments(new Date(failedAt.getTime() + 5 * HOUR_MS));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(queries);
+    for (let i = 0; i < 3; i += 1) await deliver("stk", attempt.reference, stkSuccess(attempt.checkoutRequestId!, 5000));
+    expect(await attemptRow(attempt.id)).toMatchObject({ status: "confirmed", escalatedAt: null });
+    expect(await prisma.escrowDeposit.count()).toBe(1);
+    expect(await balance()).toBe(AMOUNT);
+  });
+
+  it("closes quietly when Daraja says it was not paid", async () => {
+    const { attempt, failedAt } = await inferredFailure();
+    daraja.setHandler(() => undefined);
+    await runDuePayments(new Date(failedAt.getTime() + HOUR_MS + 1000));
+    expect(await attemptRow(attempt.id)).toMatchObject({ status: "failed", reconcileUntil: null, escalatedAt: null });
+    const queries = daraja.callsTo(PATHS.stkQuery).length;
+    await runDuePayments(new Date(failedAt.getTime() + 6 * HOUR_MS));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(queries);
+  });
+
+  it("does not ask about a failure M-Pesa itself reported by callback", async () => {
+    const attempt = await start({ at: t0 });
+    await deliver("stk", attempt.reference, stkCancelled(attempt.checkoutRequestId!));
+    expect((await attemptRow(attempt.id)).reconcileUntil).toBeNull();
+    await runDuePayments(new Date(t0.getTime() + 10 * HOUR_MS));
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(0);
+  });
+
+  it("asks once when two workers reconcile the same attempt together", async () => {
+    const { attempt, failedAt } = await inferredFailure();
+    const before = daraja.callsTo(PATHS.stkQuery).length;
+    const due = new Date(failedAt.getTime() + HOUR_MS + 1000);
+    await Promise.all([reconcileFunding(attempt.id, due), reconcileFunding(attempt.id, due)]);
+    expect(daraja.callsTo(PATHS.stkQuery)).toHaveLength(before + 1);
   });
 });
 
