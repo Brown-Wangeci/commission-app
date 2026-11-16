@@ -1,0 +1,89 @@
+{
+  "window_from": "2026-11-15T09:34:00.000Z",
+  "audit_events": [
+    {
+      "id": 706,
+      "at": "2026-11-15T09:41:06.391Z",
+      "kind": "scoring_decision",
+      "activation": "LF-000055",
+      "from": null,
+      "to": null,
+      "detail": "T0 scored (advisory): band auto_release, probability 0.001, thresholds 0.301 / 0.729."
+    },
+    {
+      "id": 707,
+      "at": "2026-11-15T09:41:06.391Z",
+      "kind": "transition",
+      "activation": "LF-000062",
+      "from": "submitted",
+      "to": "scored_t0",
+      "detail": "T0 t0_none-isotonic-v1: 1.2%, band auto_release"
+    },
+    {
+      "id": 708,
+      "at": "2026-11-15T09:41:06.391Z",
+      "kind": "transition",
+      "activation": "LF-000062",
+      "from": "scored_t0",
+      "to": "held",
+      "detail": "Held for the hold window; scored again by the hold-close model when it closes."
+    },
+    {
+      "id": 709,
+      "at": "2026-11-15T09:41:06.391Z",
+      "kind": "scoring_decision",
+      "activation": "LF-000062",
+      "from": null,
+      "to": null,
+      "detail": "T0 scored (primary): band auto_release, probability 0.012, thresholds 0.301 / 0.729."
+    },
+    {
+      "id": 710,
+      "at": "2026-11-15T09:45:01.271Z",
+      "kind": "audit_anchored",
+      "activation": null,
+      "from": null,
+      "to": null,
+      "detail": "Audit events 1 to 709 anchored on chain 80002: root 024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1, transaction 0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9, block 52913281."
+    }
+  ],
+  "scoring_decisions": [
+    {
+      "recordedAt": "2026-11-15T09:41:06.991Z",
+      "activation": "LF-000055",
+      "mode": "t0",
+      "model": "t0_none-isotonic-v1",
+      "band": "auto_release",
+      "probability": 0.001,
+      "trigger": "submission"
+    },
+    {
+      "recordedAt": "2026-11-15T09:41:07.463Z",
+      "activation": "LF-000062",
+      "mode": "t0",
+      "model": "t0_none-isotonic-v1",
+      "band": "auto_release",
+      "probability": 0.01233271975070238,
+      "trigger": "submission"
+    }
+  ],
+  "anchors": [
+    {
+      "fromSequence": 1,
+      "toSequence": 709,
+      "leafCount": 709,
+      "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+      "status": "confirmed",
+      "chainId": 80002,
+      "contractAddress": "0x437ecae6de461105cd8f2596f52ca8d886ab83a0",
+      "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+      "blockNumber": 52913281,
+      "submitter": "0xe78D1E2d0985874871b8fAd800F9f0d0ab598E8F",
+      "attempts": 1,
+      "createdAt": "2026-11-15T09:45:01.271Z",
+      "submittedAt": "2026-11-15T09:45:01.271Z",
+      "confirmedAt": "2026-11-15T09:45:01.271Z",
+      "chainTimestamp": "2026-11-15T09:45:02.000Z"
+    }
+  ]
+}

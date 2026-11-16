@@ -16,10 +16,55 @@ machine, because no other exists.
 | CPU | 13th Gen Intel Core i7-1365U, 10 cores (12 logical) | Runs the app, the scoring service, PostgreSQL and the browser for screenshots, all at once during measurement | The only machine available to this project; a laptop-class mobile CPU, not server-class, which the NFR-01/NFR-02 reports state plainly |
 | RAM | 16 GB | Headroom for Node, Python/XGBoost, PostgreSQL and a browser concurrently | As installed; not chosen for this project |
 | OS | Windows 11 Pro, build 26200 | Host platform for every tool below | The developer's own machine |
-| Deployment | None (no hosted instance) | N/A | IR-09 is not met; see README.md "Known limitations". All measurements below are against `npm start` / `next start` on this machine, not a server |
+| Deployment | None for the measurements in this table; a hosted deployment exists since 2026-11-15 (see "Hosted deployment" below) | N/A | Every local measurement below is against `npm start` / `next start` on this machine, not a server. Hosted measurements are kept separately in evidence/hosted/ |
 | Database host | Embedded PostgreSQL, 127.0.0.1:5433 | The app's own data store | `embedded-postgres` (see software table) starts a real PostgreSQL server locally with no separate installation, so the schema, triggers and constraints under test are the real ones, not a stand-in |
 | Scoring service host | Uvicorn, 127.0.0.1:8000, single process | Serves the fraud model over HTTP exactly as the app calls it | Matches `src/serve/app.py`; one process, no load balancer, because there is no hosted deployment to put one in front of |
 | Network | Loopback only (127.0.0.1) | Every measured call in this chapter | No measurement here includes real network latency, mobile data conditions, or a reverse proxy; NFR-01's own rationale (agents on mobile data) is therefore not reproduced by this measurement, which is a gap recorded in gaps.md |
+
+## Hosted deployment (added 2026-11-16)
+
+The system also runs hosted. The local setup above is still the demonstration
+fallback, and every local measurement in this chapter is unchanged. The
+hosted measurements are in `evidence/hosted/`, labelled as hosted, and are
+not mixed into the local tables.
+
+| Part | Service and plan | Region | Notes |
+|---|---|---|---|
+| App | Vercel, Hobby (free), project `commission-app`, root `app` | fra1 (`app/vercel.json`) | Fluid Compute: 300 s function limit, set in the route files; 4.5 MB request body limit |
+| Database | Neon (free), PostgreSQL 18.7, via the Vercel integration | eu-central-1 (Frankfurt) | Pooled URL for the app, direct URL for migrations and the seed |
+| Evidence photos | Vercel Blob, private store | fra1 | Served only through the authorised `/api/evidence/[id]` route |
+| Scoring service | Render, free web service | Frankfurt | Python 3.14.3 (from its build log); serves the published artifacts, checked by SHA-256; spins down when idle |
+| Audit anchoring | Polygon Amoy testnet, chain 80002 | n/a | One batch of 709 events cost 0.001478 POL in fees |
+| Payments | Safaricom Daraja sandbox | n/a | Callbacks go to the Vercel origin |
+| Scheduler | cron-job.org (free) | Germany (source of the requests) | Scoring and payments every minute, anchoring every 5 minutes |
+| Client for measurements | The developer laptop in the table above, in Nairobi | | About 0.23 s to Frankfurt (median of 30 `GET /health` calls) |
+
+Limits that shaped the work, as observed or read from the providers'
+documentation during this work (they change; check the provider before
+relying on them):
+
+- **Vercel Hobby.** 300 s per function, 4.5 MB per request body (larger gives
+  413), so a cron request stops starting new work after 240 s
+  (`CRON_TIME_BUDGET_SECONDS`) and a photo over about 4.5 MB is refused.
+  Request logs older than 12 hours need a paid plan (observed: HTTP 402 for
+  older records). The firewall was not configured and denied nothing.
+- **Vercel Blob (Hobby).** 1 GB of storage and a monthly allowance of
+  operations and transfer, after which access is blocked for a period. The
+  demo uses a small fraction.
+- **Neon free.** A remote seed from Nairobi takes about 42 minutes at roughly
+  190 ms per query, and two earlier attempts lost their connection part-way
+  (`evidence/hosted/seed/`).
+- **Render free.** The instance spins down when idle and takes a while to
+  answer the first request afterwards.
+- **Daraja sandbox.** Answered a status query with HTTP 429 and with
+  `500.001.1001` ("being processed"); completed one STK payment about 20 hours
+  late and reversed it; did not deliver the callbacks of 15 November
+  (`evidence/hosted/mpesa/`).
+- **Polygon Amoy.** Fees are paid from a funded testnet wallet.
+
+What the hosted measurements do and do not establish is stated beside each
+measurement. In short: one client machine, one internet connection, free
+plans, a small demo database, and no mobile-data conditions.
 
 ## Software
 

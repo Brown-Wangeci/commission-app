@@ -1,0 +1,44 @@
+{
+  "app": "https://commission-app-ten-pied.vercel.app",
+  "checked_at": "2026-11-15T09:58:14.337Z",
+  "activation": {
+    "id": "4a3d5ce0-730e-4274-bfb5-6a0f462a7c84",
+    "reference": "LF-000063",
+    "submittedAt": "2026-11-15T09:49:24.644Z",
+    "holdClosesAt": "2026-11-15T09:54:24.644Z",
+    "stateAfterSubmit": "held",
+    "submitRequestMs": 3470
+  },
+  "photos": [
+    {
+      "id": "cmwhnkojw0007ky08s7jjs98o",
+      "sequence": 1,
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 5024,
+      "sha256": "b315eb249b06d948db9228907a4522ff7ddc4c206a2e207b0670c39f200fa6f8",
+      "uploadedSha256": "b315eb249b06d948db9228907a4522ff7ddc4c206a2e207b0670c39f200fa6f8",
+      "matches": true
+    },
+    {
+      "id": "cmwhnkojw0008ky08okgho33q",
+      "sequence": 2,
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 4914,
+      "sha256": "1db586fed53642e26d46ed442f5b2921a411056a324664aa3a7d0dbf724bdacd",
+      "uploadedSha256": "1db586fed53642e26d46ed442f5b2921a411056a324664aa3a7d0dbf724bdacd",
+      "matches": true
+    },
+    {
+      "id": "cmwhnkojw0009ky08menh1s5g",
+      "sequence": 3,
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 5024,
+      "sha256": "1aa152a0b10e9fb8d4134e4e38a84176ec1e6f65c9689dd89deebeba22674ff2",
+      "uploadedSha256": "1aa152a0b10e9fb8d4134e4e38a84176ec1e6f65c9689dd89deebeba22674ff2",
+      "matches": true
+    }
+  ]
+}

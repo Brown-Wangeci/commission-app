@@ -1,0 +1,2665 @@
+{
+  "summary": {
+    "measured_at": "2026-11-15T07:42:16.980Z",
+    "requests": 115,
+    "t0": 62,
+    "t7": 53,
+    "raw_equal": 115,
+    "probability_equal": 115,
+    "band_equal": 115,
+    "features_equal": 95,
+    "thresholds_equal": 115
+  },
+  "results": [
+    {
+      "reference": "LF-000001",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0038868242409080267,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0038868242409080267,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000001",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0009285024716518819,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0009285024716518819,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000002",
+      "mode": "t0",
+      "local": {
+        "raw": 0.004417067393660545,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.004417067393660545,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000002",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0010014151921495795,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0010014151921495795,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000003",
+      "mode": "t0",
+      "local": {
+        "raw": 0.00579852843657136,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.00579852843657136,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000003",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0014837959315627813,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0014837959315627813,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000004",
+      "mode": "t0",
+      "local": {
+        "raw": 0.005984325427561998,
+        "probability": 0.0024125450290739536,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.005984325427561998,
+        "probability": 0.0024125450290739536,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000004",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0016505065141245723,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0016505065141245723,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000005",
+      "mode": "t0",
+      "local": {
+        "raw": 0.006982120685279369,
+        "probability": 0.002967359032481909,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.006982120685279369,
+        "probability": 0.002967359032481909,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 6.338943254526361,
+          "render": 6.338943254526362
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000005",
+      "mode": "t7",
+      "local": {
+        "raw": 0.001065188436768949,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.001065188436768949,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 6.338943254526361,
+          "render": 6.338943254526362
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000006",
+      "mode": "t0",
+      "local": {
+        "raw": 0.02036002092063427,
+        "probability": 0.012332720682024956,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.02036002092063427,
+        "probability": 0.012332720682024956,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000006",
+      "mode": "t7",
+      "local": {
+        "raw": 0.009578588418662548,
+        "probability": 0.005056179594248533,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.009578588418662548,
+        "probability": 0.005056179594248533,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000007",
+      "mode": "t0",
+      "local": {
+        "raw": 0.003528504865244031,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.003528504865244031,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000007",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0012169105466455221,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0012169105466455221,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000008",
+      "mode": "t0",
+      "local": {
+        "raw": 0.005236637778580189,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.005236637778580189,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000008",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0010479449992999434,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0010479449992999434,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000009",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0021613757126033306,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0021613757126033306,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000009",
+      "mode": "t7",
+      "local": {
+        "raw": 0.00047277804696932435,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.00047277804696932435,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000010",
+      "mode": "t0",
+      "local": {
+        "raw": 0.002592340111732483,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.002592340111732483,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000010",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0010054700542241335,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0010054700542241335,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000011",
+      "mode": "t0",
+      "local": {
+        "raw": 0.004385368898510933,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.004385368898510933,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000011",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0008431848837062716,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0008431848837062716,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000012",
+      "mode": "t0",
+      "local": {
+        "raw": 0.002110852627083659,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.002110852627083659,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000012",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0005826819688081741,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0005826819688081741,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000013",
+      "mode": "t0",
+      "local": {
+        "raw": 0.011556041426956654,
+        "probability": 0.005333333276212215,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.011556041426956654,
+        "probability": 0.005333333276212215,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000013",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0031224831473082304,
+        "probability": 0.001490312977693975,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0031224831473082304,
+        "probability": 0.001490312977693975,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000014",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0020249064546078444,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0020249064546078444,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000014",
+      "mode": "t7",
+      "local": {
+        "raw": 0.000792234088294208,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.000792234088294208,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000015",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0040330467745661736,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0040330467745661736,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 6.486772394481477,
+          "render": 6.486772394481478
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000015",
+      "mode": "t7",
+      "local": {
+        "raw": 0.000760120281483978,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.000760120281483978,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 6.486772394481477,
+          "render": 6.486772394481478
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000016",
+      "mode": "t0",
+      "local": {
+        "raw": 0.003165816655382514,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.003165816655382514,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 4.3562248116222255,
+          "render": 4.356224811622226
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000016",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0004396752337925136,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0004396752337925136,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 4.3562248116222255,
+          "render": 4.356224811622226
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000017",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0032753916457295418,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0032753916457295418,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000017",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0009215398458763957,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0009215398458763957,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000018",
+      "mode": "t0",
+      "local": {
+        "raw": 0.002749922452494502,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.002749922452494502,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000018",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0011339070042595267,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0011339070042595267,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000019",
+      "mode": "t0",
+      "local": {
+        "raw": 0.00223420187830925,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.00223420187830925,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000019",
+      "mode": "t7",
+      "local": {
+        "raw": 0.00042234419379383326,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.00042234419379383326,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000020",
+      "mode": "t0",
+      "local": {
+        "raw": 0.006080291233956814,
+        "probability": 0.0024125450290739536,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.006080291233956814,
+        "probability": 0.0024125450290739536,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000020",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0011887289583683014,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0011887289583683014,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000021",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0036375331692397594,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0036375331692397594,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000021",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0009391927742399275,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0009391927742399275,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000022",
+      "mode": "t0",
+      "local": {
+        "raw": 0.013341614976525307,
+        "probability": 0.012332720682024956,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.013341614976525307,
+        "probability": 0.012332720682024956,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000022",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0016679505351930857,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0016679505351930857,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000023",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0033430387265980244,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0033430387265980244,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 2.576563580933766,
+          "render": 2.5765635809337657
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000023",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0002782661758828908,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0002782661758828908,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 2.576563580933766,
+          "render": 2.5765635809337657
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000024",
+      "mode": "t0",
+      "local": {
+        "raw": 0.009176387451589108,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.009176387451589108,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000024",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0012276617344468832,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0012276617344468832,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000025",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0023052282631397247,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0023052282631397247,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000025",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0003869831271003932,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0003869831271003932,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000026",
+      "mode": "t0",
+      "local": {
+        "raw": 0.009349427185952663,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.009349427185952663,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000026",
+      "mode": "t7",
+      "local": {
+        "raw": 0.001464924542233348,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.001464924542233348,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000027",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0021307747811079025,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0021307747811079025,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000027",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0004494996683206409,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0004494996683206409,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000028",
+      "mode": "t0",
+      "local": {
+        "raw": 0.010916821658611298,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.010916821658611298,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000028",
+      "mode": "t7",
+      "local": {
+        "raw": 0.001287882449105382,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.001287882449105382,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000029",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0018993429839611053,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0018993429839611053,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000029",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0003394761879462749,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0003394761879462749,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000030",
+      "mode": "t0",
+      "local": {
+        "raw": 0.008741602301597595,
+        "probability": 0.005112474784255028,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.008741602301597595,
+        "probability": 0.005112474784255028,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000030",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0011493673082441092,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0011493673082441092,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000031",
+      "mode": "t0",
+      "local": {
+        "raw": 0.001710633747279644,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.001710633747279644,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000031",
+      "mode": "t7",
+      "local": {
+        "raw": 0.000343407184118405,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.000343407184118405,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000032",
+      "mode": "t0",
+      "local": {
+        "raw": 0.010253861546516418,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.010253861546516418,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000032",
+      "mode": "t7",
+      "local": {
+        "raw": 0.001548323198221624,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.001548323198221624,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000033",
+      "mode": "t0",
+      "local": {
+        "raw": 0.012593312188982964,
+        "probability": 0.01233272161334753,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.012593312188982964,
+        "probability": 0.01233272161334753,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000033",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0027835245709866285,
+        "probability": 0.0014903130941092968,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0027835245709866285,
+        "probability": 0.0014903130941092968,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000034",
+      "mode": "t0",
+      "local": {
+        "raw": 0.006915237754583359,
+        "probability": 0.002967359032481909,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.006915237754583359,
+        "probability": 0.002967359032481909,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000034",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0013420352479442954,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0013420352479442954,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000035",
+      "mode": "t0",
+      "local": {
+        "raw": 0.006016859319061041,
+        "probability": 0.0024125452619045973,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.006016859319061041,
+        "probability": 0.0024125452619045973,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000035",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0009100070456042886,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0009100070456042886,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000036",
+      "mode": "t0",
+      "local": {
+        "raw": 0.024146124720573425,
+        "probability": 0.014218009077012539,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.024146124720573425,
+        "probability": 0.014218009077012539,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000036",
+      "mode": "t7",
+      "local": {
+        "raw": 0.005006016697734594,
+        "probability": 0.005056179128587246,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.005006016697734594,
+        "probability": 0.005056179128587246,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000037",
+      "mode": "t0",
+      "local": {
+        "raw": 0.004305550828576088,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.004305550828576088,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.383183946096407,
+          "render": 1.3831839460964068
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000037",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0008169945795089006,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0008169945795089006,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.383183946096407,
+          "render": 1.3831839460964068
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000038",
+      "mode": "t0",
+      "local": {
+        "raw": 0.007866332307457924,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.007866332307457924,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000038",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0009791100164875388,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0009791100164875388,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000039",
+      "mode": "t0",
+      "local": {
+        "raw": 0.005597584880888462,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.005597584880888462,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.3778132322025662,
+          "render": 1.377813232202566
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000039",
+      "mode": "t7",
+      "local": {
+        "raw": 0.001545582665130496,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.001545582665130496,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.3778132322025662,
+          "render": 1.377813232202566
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000040",
+      "mode": "t0",
+      "local": {
+        "raw": 0.004013774450868368,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.004013774450868368,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.4767702067738318,
+          "render": 1.4767702067738315
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000040",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0005364558310247958,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0005364558310247958,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.4767702067738318,
+          "render": 1.4767702067738315
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000041",
+      "mode": "t0",
+      "local": {
+        "raw": 0.06189056113362312,
+        "probability": 0.05202312022447586,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.06189056113362312,
+        "probability": 0.05202312022447586,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000041",
+      "mode": "t7",
+      "local": {
+        "raw": 0.2151482105255127,
+        "probability": 0.190476194024086,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.2151482105255127,
+        "probability": 0.190476194024086,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000042",
+      "mode": "t0",
+      "local": {
+        "raw": 0.005415630992501974,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.005415630992501974,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000042",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0007827033987268806,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0007827033987268806,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000043",
+      "mode": "t0",
+      "local": {
+        "raw": 0.005381243769079447,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.005381243769079447,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000043",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0012177048483863473,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0012177048483863473,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000044",
+      "mode": "t0",
+      "local": {
+        "raw": 0.008837487548589706,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.008837487548589706,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000044",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0019732972141355276,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0019732972141355276,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000045",
+      "mode": "t0",
+      "local": {
+        "raw": 0.004109291359782219,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.004109291359782219,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000045",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0008442488615401089,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0008442488615401089,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000046",
+      "mode": "t0",
+      "local": {
+        "raw": 0.002529845340177417,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.002529845340177417,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000046",
+      "mode": "t7",
+      "local": {
+        "raw": 0.000331846356857568,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.000331846356857568,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000047",
+      "mode": "t0",
+      "local": {
+        "raw": 0.009243099018931389,
+        "probability": 0.005112474784255028,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.009243099018931389,
+        "probability": 0.005112474784255028,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 6.4694482181224835,
+          "render": 6.469448218122483
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000047",
+      "mode": "t7",
+      "local": {
+        "raw": 0.003162752604112029,
+        "probability": 0.001490312977693975,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.003162752604112029,
+        "probability": 0.001490312977693975,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 6.4694482181224835,
+          "render": 6.469448218122483
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000048",
+      "mode": "t0",
+      "local": {
+        "raw": 0.418675035238266,
+        "probability": 0.3984375298023224,
+        "band": "review",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.418675035238266,
+        "probability": 0.3984375298023224,
+        "band": "review",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 0.33799873150472537,
+          "render": 0.3379987315047254
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000048",
+      "mode": "t7",
+      "local": {
+        "raw": 0.7283796072006226,
+        "probability": 0.7572815418243408,
+        "band": "reject",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.7283796072006226,
+        "probability": 0.7572815418243408,
+        "band": "reject",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 0.33799873150472537,
+          "render": 0.3379987315047254
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000049",
+      "mode": "t0",
+      "local": {
+        "raw": 0.4220438599586487,
+        "probability": 0.3984375,
+        "band": "review",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.4220438599586487,
+        "probability": 0.3984375,
+        "band": "review",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000049",
+      "mode": "t7",
+      "local": {
+        "raw": 0.7125282287597656,
+        "probability": 0.7572815418243408,
+        "band": "reject",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.7125282287597656,
+        "probability": 0.7572815418243408,
+        "band": "reject",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000050",
+      "mode": "t0",
+      "local": {
+        "raw": 0.5153874158859253,
+        "probability": 0.4939759075641632,
+        "band": "review",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.5153874158859253,
+        "probability": 0.4939759075641632,
+        "band": "review",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000050",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0033960361033678055,
+        "probability": 0.0024602191988378763,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0033960361033678055,
+        "probability": 0.0024602191988378763,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000051",
+      "mode": "t0",
+      "local": {
+        "raw": 0.01403000671416521,
+        "probability": 0.012332719750702381,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.01403000671416521,
+        "probability": 0.012332719750702381,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000051",
+      "mode": "t7",
+      "local": {
+        "raw": 0.0017353591974824667,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0017353591974824667,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000052",
+      "mode": "t0",
+      "local": {
+        "raw": 0.17214851081371307,
+        "probability": 0.1339285671710968,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.17214851081371307,
+        "probability": 0.1339285671710968,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000052",
+      "mode": "t7",
+      "local": {
+        "raw": 0.47273826599121094,
+        "probability": 0.5090252757072449,
+        "band": "review",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.47273826599121094,
+        "probability": 0.5090252757072449,
+        "band": "review",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000053",
+      "mode": "t0",
+      "local": {
+        "raw": 0.6511313319206238,
+        "probability": 0.7473683953285217,
+        "band": "reject",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.6511313319206238,
+        "probability": 0.7473683953285217,
+        "band": "reject",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000054",
+      "mode": "t0",
+      "local": {
+        "raw": 0.6465206742286682,
+        "probability": 0.747368335723877,
+        "band": "reject",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.6465206742286682,
+        "probability": 0.747368335723877,
+        "band": "reject",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000055",
+      "mode": "t0",
+      "local": {
+        "raw": 0.002325150417163968,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.002325150417163968,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000056",
+      "mode": "t0",
+      "local": {
+        "raw": 0.23442812263965607,
+        "probability": 0.24014337360858917,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.23442812263965607,
+        "probability": 0.24014337360858917,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.500967152854312,
+          "render": 1.5009671528543118
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000056",
+      "mode": "t7",
+      "local": {
+        "raw": 0.5692659616470337,
+        "probability": 0.5090252757072449,
+        "band": "review",
+        "model": "t7_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.5692659616470337,
+        "probability": 0.5090252757072449,
+        "band": "review",
+        "model": "t7_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": false,
+      "feature_differences": [
+        {
+          "feature": "distance_from_agent_home_km",
+          "local": 1.500967152854312,
+          "render": 1.5009671528543118
+        }
+      ],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000057",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0026892845053225756,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0026892845053225756,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000058",
+      "mode": "t0",
+      "local": {
+        "raw": 0.002282257890328765,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.002282257890328765,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000059",
+      "mode": "t0",
+      "local": {
+        "raw": 0.004332783166319132,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.004332783166319132,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000060",
+      "mode": "t0",
+      "local": {
+        "raw": 0.008321990258991718,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.008321990258991718,
+        "probability": 0.0051124743185937405,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000061",
+      "mode": "t0",
+      "local": {
+        "raw": 0.0032862378284335136,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.0032862378284335136,
+        "probability": 0.001,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    },
+    {
+      "reference": "LF-000062",
+      "mode": "t0",
+      "local": {
+        "raw": 0.017935805022716522,
+        "probability": 0.012332720682024956,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "render": {
+        "raw": 0.017935805022716522,
+        "probability": 0.012332720682024956,
+        "band": "auto_release",
+        "model": "t0_none-isotonic-v1"
+      },
+      "raw_equal": true,
+      "probability_equal": true,
+      "band_equal": true,
+      "features_equal": true,
+      "feature_differences": [],
+      "thresholds_equal": true
+    }
+  ]
+}

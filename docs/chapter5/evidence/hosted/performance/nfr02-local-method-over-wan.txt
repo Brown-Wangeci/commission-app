@@ -1,0 +1,22 @@
+NFR-02, the local method tried against the hosted scoring service, 2026-11-16.
+
+scripts/measure_scoring_latency.py sends each activation's full 90-day history
+from the synthetic dataset. Run from a laptop in Nairobi to the Render service
+in Frankfurt, a first run of 200 activations per mode stopped with
+httpx.WriteTimeout (30 s) while uploading a request body. A probe of three
+activations (drawn with the same random seed, 20261109) then gave:
+
+  request body      status   seconds
+  7,305,417 bytes     200     21.871   (t0)
+  7,307,113 bytes     200     21.902   (t7)
+  11,471,872 bytes    200     32.784   (t0)
+  11,473,546 bytes    200     33.251   (t7)
+  33,618,609 bytes    502    154.615   (t0)   gateway error from the service's proxy
+  33,620,390 bytes    --     120.0     (t7)   write timeout
+
+Over loopback the local run measured a median 1.4 s per request
+(nfr02-scoring-latency.json in ../../performance/). Over this link the time
+is dominated by uploading 7 to 34 MB, so it measures the uplink, not the service. The hosted measurement uses
+the requests the app itself builds from the hosted database instead
+(nfr02-scoring-latency-hosted.json). The probe printed no scores, and the
+dataset activation ids it used are synthetic.

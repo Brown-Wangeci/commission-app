@@ -1,0 +1,465 @@
+{
+  "app": "https://commission-app-ten-pied.vercel.app",
+  "activation": "LF-000050",
+  "requested_at": "2026-11-15T09:49:53.678Z",
+  "response_ms": 1083,
+  "report": {
+    "status": "verified",
+    "summary": "All 10 event(s) recompute, link, and are included in roots the contract recorded on chain.",
+    "checkedAt": "2026-11-15T09:49:54.383Z",
+    "chainId": 80002,
+    "contractAddress": "0x437ecae6de461105cd8f2596f52ca8d886ab83a0",
+    "events": [
+      {
+        "eventId": "550",
+        "sequence": "550",
+        "kind": "transition",
+        "storedHash": "2050bf2ad170096d0cfd161ea466c87b6db16fd36a9fc33ebe650a52c610abba",
+        "recomputedHash": "2050bf2ad170096d0cfd161ea466c87b6db16fd36a9fc33ebe650a52c610abba",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "af1221b52eb0ead0960d66de11a0fcce454347c0a85914b0413c8c3577b2499c",
+          "d84a4943f8b8a74e3814de8ff67a683760def0cb02f7eeb79f31dc2dcba9702c",
+          "0bee85763bb4a944a2599c5692569db26aa46ec8081ab15aaf75fefd19d5083d",
+          "71dac9e13969b3ea04930d8738f6facca8a78caed4761b590f4d6072a18f137f",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "551",
+        "sequence": "551",
+        "kind": "activation_submitted",
+        "storedHash": "e85d8105b03f6460c6b1773a5a960ce4b8db9c63773054ccd1a3aca3454df2d8",
+        "recomputedHash": "e85d8105b03f6460c6b1773a5a960ce4b8db9c63773054ccd1a3aca3454df2d8",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "9ddf1bdaff48750bbb74cefb2d06fbd2656d636a6282473ce109c1f2933cd921",
+          "4ada4384b69eae484dc4d373812b0d0d953944626de80028d0477f0847c39e55",
+          "0bee85763bb4a944a2599c5692569db26aa46ec8081ab15aaf75fefd19d5083d",
+          "71dac9e13969b3ea04930d8738f6facca8a78caed4761b590f4d6072a18f137f",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "552",
+        "sequence": "552",
+        "kind": "transition",
+        "storedHash": "e9cd2985caf960081ad8e95da1bbcfa2035facb6e9f5c9007f23f04fc6d4ab54",
+        "recomputedHash": "e9cd2985caf960081ad8e95da1bbcfa2035facb6e9f5c9007f23f04fc6d4ab54",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "d4fac164713b110e228a5a01c041b181ea74d51822032ddd78b068081b39df1e",
+          "4ada4384b69eae484dc4d373812b0d0d953944626de80028d0477f0847c39e55",
+          "0bee85763bb4a944a2599c5692569db26aa46ec8081ab15aaf75fefd19d5083d",
+          "71dac9e13969b3ea04930d8738f6facca8a78caed4761b590f4d6072a18f137f",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "553",
+        "sequence": "553",
+        "kind": "transition",
+        "storedHash": "11964fe1c569f73ad8fec5f58f393e12c522a567c53e680cbe76c89562abc698",
+        "recomputedHash": "11964fe1c569f73ad8fec5f58f393e12c522a567c53e680cbe76c89562abc698",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "085a9b32d6c08c5262db51f8c43fb175b50dc2d520595bdef6c806898c69938d",
+          "61652baef46b0d08fe1155ff94441bb4e31642f768b450a844f9f6e40b61136b",
+          "a3eea560654f888a71fe7721de08f835240e455a4ead68eef06045559c8384ee",
+          "a07072d5817965bb77166a4a7f9c6298b360b6fecf6312cd5438b19ac981e7fd",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "554",
+        "sequence": "554",
+        "kind": "scoring_decision",
+        "storedHash": "5ede512e3eeb5f4a29e46c60de81d299e9f530d4e988e971fca739b0b3a8b4b6",
+        "recomputedHash": "5ede512e3eeb5f4a29e46c60de81d299e9f530d4e988e971fca739b0b3a8b4b6",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "52afa9040af3af714b9e524fb9bb4789ac846f5b8e5af69e9d7bc6d60ca27602",
+          "61652baef46b0d08fe1155ff94441bb4e31642f768b450a844f9f6e40b61136b",
+          "a3eea560654f888a71fe7721de08f835240e455a4ead68eef06045559c8384ee",
+          "a07072d5817965bb77166a4a7f9c6298b360b6fecf6312cd5438b19ac981e7fd",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "555",
+        "sequence": "555",
+        "kind": "transition",
+        "storedHash": "0db994de33b299709d7431a8b7982dcfd6a2ef1a6072eb8962a4930473284b7d",
+        "recomputedHash": "0db994de33b299709d7431a8b7982dcfd6a2ef1a6072eb8962a4930473284b7d",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "72d400c5bbe718855286832b2f58f1cc8970b4afa2eecb1034226d003c31e275",
+          "6bcfe5a6fe00fa2809067c44118ae520d61b2375661c992225adc77d081a6f2d",
+          "a3eea560654f888a71fe7721de08f835240e455a4ead68eef06045559c8384ee",
+          "a07072d5817965bb77166a4a7f9c6298b360b6fecf6312cd5438b19ac981e7fd",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "556",
+        "sequence": "556",
+        "kind": "transition",
+        "storedHash": "eb71ba4c147d904d0c89e259f710080752479ce69b3b24da8cc3abbce3aed39a",
+        "recomputedHash": "eb71ba4c147d904d0c89e259f710080752479ce69b3b24da8cc3abbce3aed39a",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "54aed45a5b2911d91078b40998dba3ebcd5985884b44e5b358a9b42ad1e1c7db",
+          "6bcfe5a6fe00fa2809067c44118ae520d61b2375661c992225adc77d081a6f2d",
+          "a3eea560654f888a71fe7721de08f835240e455a4ead68eef06045559c8384ee",
+          "a07072d5817965bb77166a4a7f9c6298b360b6fecf6312cd5438b19ac981e7fd",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "557",
+        "sequence": "557",
+        "kind": "payout_authorised",
+        "storedHash": "6ed9fca62e153d15494a34f5331e14c52a2d2da86e4bfbbf5a85474811c3a5e6",
+        "recomputedHash": "6ed9fca62e153d15494a34f5331e14c52a2d2da86e4bfbbf5a85474811c3a5e6",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "feb0dc4a167aabfc70e38a745f3559190e514c4267fa3141dd9670b7d040bbc0",
+          "d4bf6757a17d7da7c841eed3f8a0a903c21b7bda2bc34963836709cbe39b5a9c",
+          "0024cbd7862dd95a4e002136c495da283f937f7248661ff5e4f0018220d8031c",
+          "a07072d5817965bb77166a4a7f9c6298b360b6fecf6312cd5438b19ac981e7fd",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "558",
+        "sequence": "558",
+        "kind": "scoring_decision",
+        "storedHash": "ee16b251594997afe6a6df2c00ac2e5cdab4c8511d6198705667d9919c75ab9c",
+        "recomputedHash": "ee16b251594997afe6a6df2c00ac2e5cdab4c8511d6198705667d9919c75ab9c",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "b07a4ff571504bf03a6b79756551ac4d112a33fce36c56f559652c74d110ee18",
+          "d4bf6757a17d7da7c841eed3f8a0a903c21b7bda2bc34963836709cbe39b5a9c",
+          "0024cbd7862dd95a4e002136c495da283f937f7248661ff5e4f0018220d8031c",
+          "a07072d5817965bb77166a4a7f9c6298b360b6fecf6312cd5438b19ac981e7fd",
+          "fabc2afa8c67f4ca9b39c1a29547fc33bc470ab4f4b4008b5ef76ec72a9e389b",
+          "188a4b1ad30977bf9df9701c4d3e8af653be4a07ac365206b9a035b9f8ae1d24",
+          "4b0bcae7039147f9213d642478bc45814f533aa07c034d7bc3d467819c9616a0",
+          "f6629948031e1fe5496b92ac829be24acfd8c694144ceb1ca3ba920c09c3f7e5",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "eventId": "704",
+        "sequence": "704",
+        "kind": "payout_paid",
+        "storedHash": "5ede15807ed9262548a8cb0748c736dc7a0925b2f4c1af665cc344bc2395dd0e",
+        "recomputedHash": "5ede15807ed9262548a8cb0748c736dc7a0925b2f4c1af665cc344bc2395dd0e",
+        "hashMatches": true,
+        "linkMatches": true,
+        "proof": [
+          "de1b2bfe14e35c2db5b07308655cb1c94067634c2851ccb426df9856088540e6",
+          "5df1da758d73f3a5850050252d37dc0cf684e21f0c061bd4cfed48a73271780e",
+          "5649951ed11c0244de99ab58ad390419373eefaeea9d17f6fc286a6813471ce6",
+          "b987e5e22568307190f5e41aa3334f4292a633248245149d3be9929353168823",
+          "61153ddcae07815c45ef2315093e7741da1ea205aa7d55ddf76beac8d755836c",
+          "e74db02d819f6dd29c0d9701d754d825c9a5e2361d4869597c087121fa7dda82",
+          "783d241f3bf98aa190f78c4dd63b6792af3a8f0412166f1851e107de13636a47",
+          "9fcb9124a0fe489a75de7979988ae59c18716578f1b740043236a0d05fb74b09",
+          "5cabd3778650b468ce05630cb7106c784d3c82b38cadccf3526c9944cd54413e"
+        ],
+        "proofValid": true,
+        "anchor": {
+          "state": "anchored",
+          "batchId": "cmwhnf0hg0000ky0834r9eo4i",
+          "root": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "chainId": 80002,
+          "txHash": "0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9",
+          "blockNumber": "52913281",
+          "anchoredAt": "2026-11-15T09:45:02.000Z",
+          "txUrl": "https://amoy.polygonscan.com/tx/0x50f1181985276df1fa80e024f990429a0f019e1b25cf9f5474dafaa4059ddba9"
+        },
+        "batch": {
+          "storedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "recomputedRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+          "rootMatches": true,
+          "onChain": {
+            "checked": true,
+            "contractAnchoredAt": "2026-11-15T09:45:02.000Z",
+            "transactionRoot": "024a38b59585569240255bb298c497684d87a039c702bc0d3b4d94a1cdd09ef1",
+            "transactionBlock": "52913281",
+            "rootOnChain": true,
+            "matchesTransaction": true
+          }
+        },
+        "ok": true
+      }
+    ]
+  }
+}
