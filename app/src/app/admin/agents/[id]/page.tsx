@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { EmptyState } from "@/components/EmptyState";
 import { agentStats } from "@/lib/agents/history";
 import { formatDate, formatDateTime, formatPercent, formatProbability, initials } from "@/lib/format";
 import { payoutAmountView } from "@/lib/payouts/amount";
@@ -48,7 +49,9 @@ export default async function AgentHistoryPage({ params }: { params: Promise<{ i
       </div>
       <div className="card">
         {activations.length === 0 ? (
-          <div className="empty">This agent has not submitted anything yet.</div>
+          <EmptyState title="This agent has not submitted anything yet" next="The agent accepts an assigned job and submits an activation; it then reaches the review queue if it needs a person.">
+            Each submission appears here with its status, latest score and last human decision.
+          </EmptyState>
         ) : (
           <div className="table-wrap">
             <table className="table">

@@ -5,6 +5,9 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson, type FieldErrors } from "@/lib/client-api";
+import { confirmationProblem, passwordProblems } from "@/lib/auth/password-rules";
+import { PasswordInput } from "@/components/PasswordInput";
+import { PasswordRules } from "@/components/PasswordRules";
 
 type Role = "agent" | "client";
 
@@ -36,6 +39,14 @@ export function SignupForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [coords, setCoords] = useState({ lat: "", lon: "" });
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const mismatch = confirmationProblem(password, confirmation);
+
+  /** Typing in a field clears the error shown for it, so a fixed field is not left marked wrong. */
+  function clearError(name: string) {
+    setErrors(({ [name]: _removed, ...rest }) => rest);
+  }
 
   function useMyLocation() {
     navigator.geolocation?.getCurrentPosition(
@@ -47,9 +58,18 @@ export function SignupForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const local: FieldErrors = {};
+    const problems = passwordProblems(password);
+    if (problems.length > 0) local.password = problems.join(" ");
+    if (confirmation === "") local.confirmPassword = "Type the password again to confirm it.";
+    if (Object.keys(local).length > 0 || mismatch) {
+      setErrors(local);
+      setMessage("Check the password fields below.");
+      return;
+    }
     setBusy(true);
     setMessage(null);
-    const form = new FormData(event.currentTarget);
     const result = await postJson<{ id: string }>("/api/auth/signup", bodyFrom(form, role));
     if (!result.ok) {
       setBusy(false);
@@ -84,9 +104,15 @@ export function SignupForm() {
       </div>
       <div className="field">
         <label htmlFor="password">Password</label>
-        <input id="password" name="password" type="password" className="input" autoComplete="new-password" />
-        <span className="hint">At least 8 characters.</span>
+        <PasswordInput id="password" name="password" autoComplete="new-password" value={password} onChange={(value) => { setPassword(value); clearError("password"); }} describedBy="password-rules" invalid={Boolean(errors.password)} />
+        <PasswordRules id="password-rules" password={password} />
         <FieldError errors={errors} name="password" />
+      </div>
+      <div className="field">
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <PasswordInput id="confirmPassword" name="confirmPassword" autoComplete="new-password" value={confirmation} onChange={(value) => { setConfirmation(value); clearError("confirmPassword"); }} invalid={Boolean(mismatch)} />
+        {mismatch ? <span className="field-error" role="status">{mismatch}</span> : confirmation !== "" && <span className="hint" role="status">The passwords match.</span>}
+        <FieldError errors={errors} name="confirmPassword" />
       </div>
       {role === "client" ? (
         <div className="field">

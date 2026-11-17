@@ -533,3 +533,76 @@ legend { padding: 0 var(--space-2); }
   color: var(--ink); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
 }
 .agent-app input[type="file"]:disabled::file-selector-button { color: var(--ink-5); cursor: not-allowed; }
+
+/* ---------- Usability pass: passwords, disclosures, groups, empty states ---------- */
+.password-field { display: flex; gap: var(--space-2); align-items: stretch; }
+.password-field .input { flex: 1; min-width: 0; }
+.password-toggle { min-width: 64px; }
+
+.rules { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); font-size: 12px; line-height: 17px; color: var(--ink-3); }
+.rules li { display: flex; gap: var(--space-2); align-items: baseline; }
+.rules li::before { content: "\25CB" / ""; font-size: 10px; }
+.rules li.met { color: var(--accent-ink); }
+.rules li.met::before { content: "\25CF" / ""; color: var(--accent); }
+.rule-state { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; min-width: 52px; }
+
+/* An empty list: what it is, what will appear, who acts next. */
+.empty { display: grid; justify-items: center; gap: var(--space-2); }
+.empty-title { font-weight: 600; color: var(--ink); font-size: 14px; }
+.empty-body { max-width: 52ch; }
+.empty-next { max-width: 52ch; font-size: 13px; color: var(--ink-3); }
+.empty-next-label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; margin-right: var(--space-1); color: var(--ink-4); }
+.empty-action { margin-top: var(--space-2); }
+
+/* A section that opens on click: the card look, a one-line summary, the body below. */
+.disclosure { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.disclosure + .disclosure, .disclosure + .card, .card + .disclosure { margin-top: var(--space-3); }
+.disclosure > summary { display: flex; align-items: center; gap: var(--space-3); min-height: 48px; padding: var(--space-2) var(--space-6); cursor: pointer; list-style: none; }
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure > summary::before { content: "\25B8" / ""; color: var(--ink-3); font-size: 12px; }
+.disclosure[open] > summary::before { content: "\25BE" / ""; }
+.disclosure > summary:hover h2 { color: var(--accent); }
+.disclosure-hint { margin-left: auto; font-size: 12px; line-height: 17px; color: var(--ink-3); text-align: right; }
+.disclosure-body { padding: var(--space-2) var(--space-6) var(--space-6); border-top: 1px solid var(--line); }
+.disclosure[open] > summary .disclosure-hint { display: none; }
+@media (max-width: 640px) {
+  .disclosure > summary { padding: var(--space-2) var(--space-4); flex-wrap: wrap; }
+  .disclosure-hint { margin-left: 0; text-align: left; flex-basis: 100%; }
+  .disclosure-body { padding: var(--space-2) var(--space-4) var(--space-4); }
+}
+
+/* A quiet action: no box, so the one primary button on a screen is the only thing that looks pressable. */
+.btn.quiet { background: none; border-color: transparent; color: var(--ink-3); padding: 0 var(--space-3); }
+.btn.quiet:hover { background: var(--bg); border-color: var(--line); color: var(--ink); }
+.btn.quiet:disabled { background: none; border-color: transparent; color: var(--ink-5); }
+.btn.quiet.danger-text:hover { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
+.decide-secondary { display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap; }
+.more-factors { margin-top: var(--space-2); }
+.more-factors > summary { cursor: pointer; color: var(--ink-3); padding: var(--space-1) 0; }
+.assessment .why { margin-top: var(--space-3); }
+
+/* Reviewer dashboard: the block of things that need a person, and the grouped counts. */
+.attention-list { list-style: none; margin: 0; padding: 0; }
+.attention-item { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-6); border-top: 1px solid var(--line); border-left: 3px solid transparent; flex-wrap: wrap; }
+.attention-item.live { border-left-color: var(--warn); }
+.attention-count { font-family: var(--mono); font-size: 22px; line-height: 26px; font-weight: 500; min-width: 36px; text-align: right; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+.attention-item.live .attention-count { color: var(--ink); }
+.state-rows { list-style: none; margin: 0; padding: 0; }
+.state-rows li { padding: var(--space-1) 0; border-top: 1px dashed var(--line); }
+.state-rows li:first-child { border-top: 0; }
+@media (max-width: 640px) { .attention-item { padding: var(--space-3) var(--space-4); } }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* Post a job: four groups on the left, the money summary on the right and always in view. */
+.page-form { max-width: 1120px; }
+.post-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--space-6); align-items: start; }
+.post-summary { position: sticky; top: calc(56px + var(--space-4)); }
+.form-group { background: var(--surface); padding: var(--space-6); }
+.form-group > legend { font-family: var(--sans); font-size: 16px; line-height: 20px; font-weight: 600; letter-spacing: -0.01em; text-transform: none; color: var(--ink); padding: 0 var(--space-2); }
+@media (max-width: 1000px) {
+  .post-layout { grid-template-columns: minmax(0, 1fr); }
+  .post-summary { position: sticky; top: auto; bottom: 0; z-index: 5; max-height: 55vh; overflow-y: auto; box-shadow: var(--shadow-2); }
+}
+@media (max-width: 640px) { .form-group { padding: var(--space-4); } }
+
+.steps { margin: var(--space-3) 0 0; padding-left: var(--space-6); display: grid; gap: var(--space-2); }

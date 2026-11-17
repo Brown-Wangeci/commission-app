@@ -19,17 +19,17 @@ function gpsLine(detail: ReviewDetail): string {
 const NETWORK: Record<string, string> = { cellular: "mobile data", wifi: "wifi" };
 
 /**
- * The label/value list of what was submitted. Unrecorded values say so. The
- * job's own fields come first, labelled as the client configured them in the
- * version this submission was validated against (issue #50).
+ * The label/value list of what was submitted, shown inside a collapsed
+ * section on the review screen. Unrecorded values say so. The job's own
+ * fields come first, labelled as the client configured them in the version
+ * this submission was validated against (issue #50).
  */
 export function SubmittedDetails({ detail }: { detail: ReviewDetail }) {
   const s = detail.submission;
   const regionsDiffer = s.ipRegionName !== null && s.ipRegionName !== s.gpsRegionName;
   const jobFields = detail.evidence.fields.filter((field) => field.type !== "photo");
   return (
-    <section className="card card-pad" aria-labelledby="details-heading">
-      <h2 id="details-heading" style={{ marginBottom: 8 }}>Submitted details</h2>
+    <div>
       {jobFields.length > 0 && (
         <>
           <h3 className="group-label" style={{ marginTop: 4 }}>Fields set for this job <span className="muted small">(version {detail.evidence.version})</span></h3>
@@ -52,7 +52,7 @@ export function SubmittedDetails({ detail }: { detail: ReviewDetail }) {
         <dt>Capture window</dt>
         <dd>{captureWindow(detail)}</dd>
         <dt>GPS location</dt>
-        <dd className="num">{gpsLine(detail)} &middot; <Link href="#location">map</Link></dd>
+        <dd className="num">{gpsLine(detail)} &middot; <a href="#location">map</a></dd>
         <dt>Network region</dt>
         <dd>
           {s.ipRegionName ?? s.ipRegion}
@@ -87,6 +87,6 @@ export function SubmittedDetails({ detail }: { detail: ReviewDetail }) {
         <dt>Payout number</dt>
         <dd className="mono">{detail.payout.payoutMsisdn}</dd>
       </dl>
-    </section>
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import { EmptyState } from "@/components/EmptyState";
 import { clientEscrowView } from "@/lib/jobs/jobs";
 import { Money } from "@/components/Money";
 
@@ -18,7 +19,13 @@ export default async function ClientsPage() {
           <p className="muted small">Client businesses, their escrow, and their jobs. Open a job to assign it to an agent.</p>
         </div>
       </div>
-      {clients.length === 0 && <div className="card empty">No client businesses have signed up.</div>}
+      {clients.length === 0 && (
+        <div className="card">
+          <EmptyState title="No client businesses have signed up" next="A client business creates an account from the sign-up page, funds its escrow and posts a job.">
+            Each client appears here with its escrow balance and its jobs.
+          </EmptyState>
+        </div>
+      )}
       <div className="stack-lg">
         {clients.map((client) => {
           const view = views.get(client.id)!;
@@ -35,7 +42,11 @@ export default async function ClientsPage() {
                   <Money cents={view.availableCents} derivation={view.availableDerivation} />
                 </div>
               </div>
-              {view.jobs.length === 0 ? <div className="empty">No jobs posted.</div> : (
+              {view.jobs.length === 0 ? (
+                <EmptyState title="No jobs posted" next="The client posts a job; then it appears here and on the Jobs list for a reviewer to assign agents.">
+                  This client's jobs appear here with their escrow position.
+                </EmptyState>
+              ) : (
                 <div className="table-wrap">
                   <table className="table">
                     <thead><tr><th>Job</th><th className="right">Per approved submission</th><th className="right">Assigned</th><th className="right">Activations</th><th className="right">Locked</th><th className="right">Unspent</th></tr></thead>

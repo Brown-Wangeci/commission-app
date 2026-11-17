@@ -35,6 +35,8 @@ const WIDTH = 360;
 const HEIGHT = 800;
 const MINIMUM = 48;
 const AGENT_EMAIL = "mercy@ledgerfield.test";
+/** The seed's refused activation belongs to this agent, not to Mercy; the contest form is measured from their list. */
+const REFUSED_AGENT_EMAIL = "samuel@ledgerfield.test";
 const INTERACTIVE = 'a[href], button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])';
 
 type Control = { tag: string; type: string | null; name: string; width: number; height: number; meets: boolean };
@@ -150,8 +152,17 @@ async function main(): Promise<void> {
     const activationsList = summarise("Agent activations list", "/agent/activations", await measure(page));
 
     const details = [];
-    for (const status of ["Awaiting evidence", "Refused", "Approved"]) {
-      const row = rows.find((r) => r.status.toLowerCase() === status.toLowerCase() && r.href);
+    for (const status of ["Awaiting evidence", "Approved", "Refused"]) {
+      let row = rows.find((r) => r.status.toLowerCase() === status.toLowerCase() && r.href);
+      if (!row?.href && status === "Refused") {
+        // Mercy has none in the current seed: sign in as the agent who does, and measure the same page type.
+        const other = await signIn(REFUSED_AGENT_EMAIL);
+        const at = other.cookie.indexOf("=");
+        await context.clearCookies();
+        await context.addCookies([{ name: other.cookie.slice(0, at), value: decodeURIComponent(other.cookie.slice(at + 1)), domain: new URL(APP).hostname, path: "/" }]);
+        await page.goto(`${APP}/agent/activations`, { waitUntil: "networkidle" });
+        row = (await listRows(page)).find((r) => r.status.toLowerCase() === "refused" && r.href);
+      }
       if (!row?.href) throw new Error(`No ${status} activation in the list for ${AGENT_EMAIL}; seed the database first.`);
       await page.goto(`${APP}${row.href}`, { waitUntil: "networkidle" });
       await page.waitForTimeout(400);

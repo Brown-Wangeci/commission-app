@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
 import { ActionButton } from "./ActionButton";
+import { EmptyState } from "./EmptyState";
 
 /**
  * Activations waiting for the hold window to close, with the admin controls
@@ -24,7 +25,9 @@ export async function HoldWindowPanel() {
         <ActionButton url="/api/admin/scoring/run-due" label="Run due scoring now" report="run-summary" />
       </div>
       {held.length === 0 ? (
-        <div className="empty">No activations are on hold.</div>
+        <EmptyState title="No activations are on hold" next="Nobody needs to act. A submission is held automatically after its first score.">
+          Held submissions appear here with the time their hold window closes. When it closes, the hold-close model scores them.
+        </EmptyState>
       ) : (
         <div className="table-wrap">
           <table className="table">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { EmptyState } from "@/components/EmptyState";
 import { ApiError } from "@/lib/http/errors";
 import { reviewDetail, type EvidenceView } from "@/lib/review/detail";
 import { formatDateTime, formatDistance } from "@/lib/format";
@@ -41,7 +42,11 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
         </div>
       </div>
       {items.length === 0 ? (
-        <div className="card empty">No evidence was attached.</div>
+        <div className="card">
+          <EmptyState title="No evidence was attached" next="Ask the agent for more evidence from the review screen if the decision needs it.">
+            Photos and proof the agent submitted would appear here, full size.
+          </EmptyState>
+        </div>
       ) : (
         <div className="gallery">
           {items.map((item) => (

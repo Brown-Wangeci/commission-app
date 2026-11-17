@@ -4,6 +4,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export function LoginForm({ next }: { next: string }) {
   const router = useRouter();
@@ -38,7 +39,7 @@ export function LoginForm({ next }: { next: string }) {
       </div>
       <div className="field">
         <label htmlFor="password">Password</label>
-        <input id="password" name="password" type="password" className="input" autoComplete="current-password" required />
+        <PasswordInput id="password" name="password" autoComplete="current-password" required />
       </div>
       <button type="submit" className="btn primary block" disabled={busy}>
         {busy ? "Signing in" : "Sign in"}

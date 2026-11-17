@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { EmptyState } from "@/components/EmptyState";
 import { jobEscrow, unspentDerivation } from "@/lib/escrow/holds";
 import { jobTerms } from "@/lib/jobs/jobs";
 import { currentEvidenceConfig } from "@/lib/evidence/config";
@@ -71,7 +72,11 @@ export default async function AdminJobPage({ params }: { params: Promise<{ id: s
       </section>
       <section className="card">
         <div className="card-pad"><h2>Assignments ({job.assignments.length})</h2></div>
-        {job.assignments.length === 0 ? <div className="empty">Nobody has been assigned yet.</div> : (
+        {job.assignments.length === 0 ? (
+          <EmptyState title="Nobody has been assigned yet" next={job.status === "open" ? "A reviewer assigns an agent with the control above." : "Nobody: the job is closed."}>
+            Each agent assigned appears here with their escrow hold and their activation.
+          </EmptyState>
+        ) : (
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>Agent</th><th>Assigned</th><th>Accepted</th><th>Escrow hold</th><th>Activation</th></tr></thead>

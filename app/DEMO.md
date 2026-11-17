@@ -153,7 +153,7 @@ This creates a new activation whose band changes between T0 and T7.
 
    The page shows the status. It is usually **Checked and on hold**
    (submission-time band auto-release or review). As the reviewer, open the
-   activation from the Dashboard's **Hold window** panel and note the T0
+   activation from the Dashboard's **Hold window** tab and note the T0
    probability and band.
 4. **Client reports the customer's first week.** As **client2@**, open the
    job and click **Report activity** on the new activation.
@@ -165,7 +165,7 @@ This creates a new activation whose band changes between T0 and T7.
 
    **Save first-week activity.** Either way the week pushes the hold-close
    band the other way from the submission-time band.
-5. **Close the hold now.** As **reviewer@**, on the Dashboard click **Force T7
+5. **Close the hold now.** As **reviewer@**, on the Dashboard's **Hold window** tab click **Force T7
    now** beside the activation, or use **Score with the hold-close model
    now** on its review screen. A demo cannot wait seven days; this is the
    admin control for that. The T7 score is stored next to the T0 score.
@@ -246,7 +246,7 @@ show the agent's side first.
 - **A scoring failure.** Stop the scoring service (Ctrl+C in terminal 2) and
   submit another activation as an agent (assign a second slot first). It
   goes to the queue as "Could not be scored (T0)", never released. Restart
-  the service, then on the Dashboard click **Run due scoring now** once the
+  the service, then on the Dashboard's **Hold window** tab click **Run due scoring now** once the
   retry is due (about a minute): the score is stored as advice and the flag
   clears, but the activation stays with the reviewer.
 - **The scheduled path.** Set `HOLD_WINDOW_SECONDS=120` in `app/.env`, restart

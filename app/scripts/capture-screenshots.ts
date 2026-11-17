@@ -30,6 +30,8 @@ loadEnv();
 const VIEWPORT = { width: 1360, height: 900 };
 const PHONE = { width: 360, height: 800 };
 const AGENT_EMAIL = "mercy@ledgerfield.test";
+/** A password that meets the sign-up rule (the seeded accounts' password, PASSWORD, predates it and cannot be used to sign up). */
+const SIGNUP_PASSWORD = "Fake-Value-123";
 const skipped: string[] = [];
 let captured = 0;
 
@@ -98,7 +100,7 @@ async function submissionForm(browser: Browser, outDir: string): Promise<void> {
   try {
     await page.goto(`${APP}/login`, { waitUntil: "networkidle" });
     await page.getByLabel("Email").fill(AGENT_EMAIL);
-    await page.getByLabel("Password").fill(PASSWORD);
+    await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
     await page.getByRole("button", { name: /Sign in/i }).click();
     await page.waitForURL(`${APP}/agent`, { timeout: 15_000 });
     await page.getByRole("button", { name: "Accept job" }).first().click();
@@ -112,6 +114,44 @@ async function submissionForm(browser: Browser, outDir: string): Promise<void> {
   } finally {
     await context.close();
   }
+}
+
+/**
+ * Supplementary captures of the screens the usability pass changed, saved
+ * under usability/ beside the sixteen figures (which keep their names). Not
+ * numbered figures: they exist to show what each changed screen looks like.
+ */
+async function usabilityViews(browser: Browser, outDir: string, reviewId: string | null): Promise<void> {
+  const dir = path.join(outDir, "usability");
+  fs.mkdirSync(dir, { recursive: true });
+  const adminCtx = await contextFor(browser, "reviewer@ledgerfield.test");
+  const clientCtx = await contextFor(browser, "client2@ledgerfield.test");
+  const agentCtx = await contextFor(browser, AGENT_EMAIL);
+  const admin = await adminCtx.newPage();
+  const client = await clientCtx.newPage();
+  const agent = await agentCtx.newPage();
+  await shot(admin, dir, "usability-01-admin-dashboard", "/admin", "main");
+  await shot(admin, dir, "usability-02-admin-jobs", "/admin/jobs", "table, .empty");
+  if (reviewId) {
+    await admin.goto(`${APP}/admin/review/${reviewId}`, { waitUntil: "networkidle" });
+    await admin.evaluate("document.querySelectorAll('details.disclosure').forEach((d) => { d.open = true; })");
+    await admin.waitForTimeout(400);
+    await save(admin, dir, "usability-03-review-sections-open", `/admin/review/${reviewId} with every section opened`);
+  }
+  const signup = await browser.newContext({ viewport: VIEWPORT });
+  const anon = await signup.newPage();
+  await anon.goto(`${APP}/signup`, { waitUntil: "networkidle" });
+  await anon.getByLabel("Password", { exact: true }).fill("abc123");
+  await anon.getByLabel("Confirm password", { exact: true }).fill("abc124");
+  await anon.getByRole("button", { name: "Show password" }).first().click();
+  await save(anon, dir, "usability-04-signup-password-rules", "/signup with a password that is too short, a mismatch, and the first field shown");
+  await signup.close();
+  await shot(client, dir, "usability-05-post-job-form", "/client/jobs/new", "form");
+  await agent.setViewportSize(PHONE);
+  await shot(agent, dir, "usability-06-agent-home-360", "/agent", "main");
+  await adminCtx.close();
+  await clientCtx.close();
+  await agentCtx.close();
 }
 
 async function main(): Promise<void> {
@@ -156,6 +196,8 @@ async function main(): Promise<void> {
 
     if (disputedId) {
       await admin.goto(`${APP}/admin/review/${disputedId}`, { waitUntil: "networkidle" });
+      // The audit record is a section that opens on click (usability pass), so open it first.
+      await admin.locator("details#audit > summary").click();
       const verifyButton = admin.getByRole("button", { name: /Verify against the blockchain/i });
       if (await verifyButton.count()) {
         await verifyButton.click();
@@ -172,7 +214,8 @@ async function main(): Promise<void> {
     await anon.getByLabel("A client business").check();
     await anon.getByLabel("Your full name").fill("Test Duplicate");
     await anon.getByLabel("Email").fill("client2@ledgerfield.test");
-    await anon.getByLabel("Password").fill(PASSWORD);
+    await anon.getByLabel("Password", { exact: true }).fill(SIGNUP_PASSWORD);
+    await anon.getByLabel("Confirm password", { exact: true }).fill(SIGNUP_PASSWORD);
     await anon.getByLabel("Business name").fill("Test Co");
     await anon.getByRole("button", { name: /Create account/i }).click();
     await anon.waitForSelector(".alert.error, .field-error", { timeout: 10_000 }).catch(() => undefined);
@@ -199,6 +242,7 @@ async function main(): Promise<void> {
     await clientCtx.close();
 
     await submissionForm(browser, outDir);
+    await usabilityViews(browser, outDir, inReviewMockup);
   } finally {
     await browser.close();
     await prisma.$disconnect();

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_PASSWORD_LENGTH, passwordProblems } from "@/lib/auth/password-rules";
 import { MAX_ROW_CENTS } from "@/lib/money/cents";
 import { BPS_PER_WHOLE } from "@/lib/money/commission";
 
@@ -31,10 +32,18 @@ export const nameSchema = z.string().trim().min(2, "Enter at least 2 characters.
 
 export const emailSchema = z.string().trim().toLowerCase().email("Enter a valid email address.").max(200);
 
+/**
+ * The sign-up password rule (see auth/password-rules.ts). Applied when an
+ * account is made, never at sign-in, so older accounts keep working. One
+ * issue holds every unmet rule, so a client sees all of them at once.
+ */
 export const passwordSchema = z
   .string()
-  .min(8, "Use at least 8 characters.")
-  .max(200, "Use at most 200 characters.");
+  .max(MAX_PASSWORD_LENGTH, `Use at most ${MAX_PASSWORD_LENGTH} characters.`)
+  .superRefine((value, ctx) => {
+    const problems = passwordProblems(value);
+    if (problems.length > 0) ctx.addIssue({ code: z.ZodIssueCode.custom, message: problems.join(" ") });
+  });
 
 /** Kenyan mobile numbers: 07XXXXXXXX, 01XXXXXXXX, or the same with +254 / 254. */
 export const kenyanMsisdnSchema = z

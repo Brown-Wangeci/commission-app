@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import type { AuditRecordEvent } from "@/lib/audit/history";
 import type { AuditVerification, EventCheck } from "@/lib/audit/verify";
 import { postJson } from "@/lib/client-api";
+import { Disclosure } from "@/components/Disclosure";
+import { EmptyState } from "@/components/EmptyState";
 
-type Props = { apiBase: string; disputed: boolean };
+/** `collapsible` puts the record in a section that opens on click, for screens where it is not the main thing. */
+type Props = { apiBase: string; disputed: boolean; collapsible?: boolean };
 
 const STATUS_TEXT: Record<AuditVerification["status"], { chip: string; label: string; tone: string }> = {
   verified: { chip: "approved", label: "Verified on chain", tone: "ok" },
@@ -60,7 +63,7 @@ function CheckLine({ check }: { check: EventCheck }) {
  * A submission's audit record and its independent verification (FR-22),
  * shown on the dispute flow, where it matters most.
  */
-export function AuditTrailPanel({ apiBase, disputed }: Props) {
+export function AuditTrailPanel({ apiBase, disputed, collapsible = false }: Props) {
   const [events, setEvents] = useState<AuditRecordEvent[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AuditVerification | null>(null);
@@ -82,12 +85,11 @@ export function AuditTrailPanel({ apiBase, disputed }: Props) {
     else setResult(response.data);
   }
 
-  return (
-    <section className="card card-pad stack" aria-labelledby="audit-heading" id="audit">
-      <div className="row wrap" style={{ justifyContent: "space-between" }}>
-        <h2 id="audit-heading">Audit record</h2>
-        <button type="button" className="btn" onClick={verify} disabled={busy || !events}>{busy ? "Verifying" : "Verify against the blockchain"}</button>
-      </div>
+  const verifyButton = (
+    <button type="button" className="btn" onClick={verify} disabled={busy || !events}>{busy ? "Verifying" : "Verify against the blockchain"}</button>
+  );
+  const body = (
+    <>
       {disputed && (
         <div className="alert info">
           This submission is in dispute. Every change to it is hashed into a chain, and the chain is anchored on the blockchain in batches. Verifying
@@ -102,7 +104,11 @@ export function AuditTrailPanel({ apiBase, disputed }: Props) {
         </div>
       )}
       {events === null && !error && <p className="small muted">Loading the audit record.</p>}
-      {events && events.length === 0 && <p className="small muted">No events recorded.</p>}
+      {events && events.length === 0 && (
+        <EmptyState title="No events recorded" next="Nothing is needed. Events are added by the system as this submission changes.">
+          Every change to a submission is recorded here with its hash.
+        </EmptyState>
+      )}
       {events && events.length > 0 && (
         <div className="table-wrap">
           <table className="table">
@@ -121,6 +127,25 @@ export function AuditTrailPanel({ apiBase, disputed }: Props) {
           </table>
         </div>
       )}
+    </>
+  );
+  if (collapsible) {
+    return (
+      <Disclosure id="audit" title="Audit record" hint="Every change, hashed and checked against the blockchain">
+        <div className="stack">
+          <div>{verifyButton}</div>
+          {body}
+        </div>
+      </Disclosure>
+    );
+  }
+  return (
+    <section className="card card-pad stack" aria-labelledby="audit-heading" id="audit">
+      <div className="row wrap" style={{ justifyContent: "space-between" }}>
+        <h2 id="audit-heading">Audit record</h2>
+        {verifyButton}
+      </div>
+      {body}
     </section>
   );
 }

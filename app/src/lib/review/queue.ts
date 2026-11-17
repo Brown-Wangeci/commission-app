@@ -40,6 +40,8 @@ export type QueueRow = {
   submissionReasons: ReasonView[];
   agentReasons: ReasonView[];
   failedAttempts: number;
+  /** The last failed scoring call, so a row can say why it has no score. */
+  lastFailure: { kind: string; message: string } | null;
   evidenceAsked: string | null;
 };
 
@@ -52,6 +54,7 @@ const queueInclude = {
   evidenceRequests: { where: { status: "open" as const }, orderBy: { requestedAt: "desc" as const }, take: 1 },
   decisions: { orderBy: { recordedAt: "desc" as const }, take: 1, include: { reasons: true } },
   _count: { select: { attempts: { where: { outcome: "failed" as const } } } },
+  attempts: { where: { outcome: "failed" as const }, orderBy: { attemptedAt: "desc" as const }, take: 1 },
 };
 
 async function loadRows(db: Tx, states: ActivationState[]) {
@@ -90,6 +93,7 @@ function toRow(activation: LoadedRow): QueueRow {
     submissionReasons: submission,
     agentReasons: agent,
     failedAttempts: activation._count.attempts,
+    lastFailure: activation.attempts[0] ? { kind: activation.attempts[0].errorKind ?? "unknown", message: activation.attempts[0].errorMessage ?? "" } : null,
     evidenceAsked: request?.message ?? null,
   };
 }

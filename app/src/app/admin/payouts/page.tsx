@@ -1,6 +1,7 @@
 import type { Disbursement } from "@prisma/client";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import { EmptyState } from "@/components/EmptyState";
 import { formatDateTime } from "@/lib/format";
 import { formatCents, sumCents } from "@/lib/money/cents";
 import { DISBURSEMENT_DISPLAY, paymentAttention, type PaymentAttention } from "@/lib/payments/admin";
@@ -85,7 +86,11 @@ export default async function PayoutsPage() {
       )}
       <AttentionCard attention={attention} stuck={stuck.length} />
       <div className="card">
-        {payouts.length === 0 ? <div className="empty">No payouts have been authorised yet.</div> : (
+        {payouts.length === 0 ? (
+          <EmptyState title="No payouts have been authorised yet" next="A reviewer approves a submission, or the system releases one when its hold closes; the payout then appears here.">
+            Each payout shows its M-Pesa state and, if it did not complete, the reason and a Retry button.
+          </EmptyState>
+        ) : (
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>Activation</th><th>Agent</th><th>Pays to</th><th className="right">Commission</th><th>Authorised</th><th>By</th><th>M-Pesa</th></tr></thead>

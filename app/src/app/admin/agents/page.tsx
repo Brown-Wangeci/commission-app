@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import { EmptyState } from "@/components/EmptyState";
 import { agentStatsMany } from "@/lib/agents/history";
 import { formatDate, formatPercent } from "@/lib/format";
 
@@ -16,7 +17,11 @@ export default async function AgentsPage() {
         </div>
       </div>
       <div className="card">
-        {agents.length === 0 ? <div className="empty">No agents have signed up.</div> : (
+        {agents.length === 0 ? (
+          <EmptyState title="No agents have signed up" next="An agent creates an account from the sign-up page; then a reviewer can assign jobs to them.">
+            Each agent appears here with their submissions and approval rate.
+          </EmptyState>
+        ) : (
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>Agent</th><th>Based in</th><th>Agent since</th><th className="right">Submissions</th><th className="right">Approved</th><th className="right">Rejected</th><th className="right">Withdrawn</th><th className="right">Pending</th><th className="right">Approval rate</th></tr></thead>

@@ -142,7 +142,7 @@ T7 scoring at hold-close, and retries after scoring failures, are rows in the
 can be stopped and restarted freely, and several copies can run at once. Two
 manual triggers exist for when it is not running:
 
-- the Dashboard buttons **Run due scoring now** and **Force T7 now**;
+- the Dashboard's **Hold window** tab, with its buttons **Run due scoring now** and **Force T7 now**;
 - `POST /api/cron/scoring` with `Authorization: Bearer $CRON_SECRET`, for a
   hosted cron service.
 
