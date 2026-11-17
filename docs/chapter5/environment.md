@@ -1,13 +1,14 @@
 # Environment
 
 The exact hardware and software this project's evidence was measured and
-captured on. **There is no hosted deployment.** Every number in this chapter
--- the load test (NFR-01), the scoring latency measurement (NFR-02), the
-screenshots, the logs, and every test run -- comes from this one developer
-machine. README.md's "Known limitations" says the same thing: IR-09 (hosted
-deployment) is not met. Where NFR-02 asks for figures "on the deployment
-hardware", the deployment hardware and the measurement hardware are the same
-machine, because no other exists.
+captured on. Every local number in this chapter -- the load test (NFR-01), the scoring
+latency measurement (NFR-02), the local screenshots, the logs, and every local
+test run -- comes from this one developer machine. A hosted deployment has
+existed since 2026-11-15 (see "Hosted deployment" below); its evidence is kept
+separately in `evidence/hosted/` and is not mixed into the local figures.
+Where NFR-02 asks for figures "on the deployment hardware", the local latency
+figures were measured on the same machine that ran the local setup, not on the
+hosted servers.
 
 ## Hardware and deployment
 
@@ -18,7 +19,7 @@ machine, because no other exists.
 | OS | Windows 11 Pro, build 26200 | Host platform for every tool below | The developer's own machine |
 | Deployment | None for the measurements in this table; a hosted deployment exists since 2026-11-15 (see "Hosted deployment" below) | N/A | Every local measurement below is against `npm start` / `next start` on this machine, not a server. Hosted measurements are kept separately in evidence/hosted/ |
 | Database host | Embedded PostgreSQL, 127.0.0.1:5433 | The app's own data store | `embedded-postgres` (see software table) starts a real PostgreSQL server locally with no separate installation, so the schema, triggers and constraints under test are the real ones, not a stand-in |
-| Scoring service host | Uvicorn, 127.0.0.1:8000, single process | Serves the fraud model over HTTP exactly as the app calls it | Matches `src/serve/app.py`; one process, no load balancer, because there is no hosted deployment to put one in front of |
+| Scoring service host | Uvicorn, 127.0.0.1:8000, single process | Serves the fraud model over HTTP exactly as the app calls it | Matches `src/serve/app.py`; one process, no load balancer, because the local setup has nothing to put one in front of |
 | Network | Loopback only (127.0.0.1) | Every measured call in this chapter | No measurement here includes real network latency, mobile data conditions, or a reverse proxy; NFR-01's own rationale (agents on mobile data) is therefore not reproduced by this measurement, which is a gap recorded in gaps.md |
 
 ## Hosted deployment (added 2026-11-16)
