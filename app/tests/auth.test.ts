@@ -44,7 +44,7 @@ describe("sign-up (issue #2)", () => {
       role: "agent",
       name: "Grace Wanjiku",
       email: "Grace@Example.com",
-      password: "a-long-password",
+      password: "Long-Password-42",
       payoutMsisdn: "+254 712 345 678",
       homeAreaName: "Kariobangi",
       homeLat: "-1.25",
@@ -55,12 +55,12 @@ describe("sign-up (issue #2)", () => {
     expect(user.email).toBe("grace@example.com");
     expect(user.role).toBe("agent");
     expect(agent.payoutMsisdn).toBe("0712345678");
-    expect(await verifyPassword("a-long-password", user.passwordHash)).toBe(true);
+    expect(await verifyPassword("Long-Password-42", user.passwordHash)).toBe(true);
   });
 
   it("creates a client business", async () => {
     const input = signupSchema.parse({
-      role: "client", name: "Owner", email: "owner@biz.co.ke", password: "a-long-password", businessName: "Duka Telco",
+      role: "client", name: "Owner", email: "owner@biz.co.ke", password: "Long-Password-42", businessName: "Duka Telco",
     });
     const user = await registerUser(input);
     const client = await prisma.clientBusiness.findUniqueOrThrow({ where: { userId: user.id } });
@@ -69,14 +69,14 @@ describe("sign-up (issue #2)", () => {
 
   it("refuses to create an admin through public sign-up", () => {
     const result = signupSchema.safeParse({
-      role: "admin", name: "Mallory", email: "m@x.com", password: "a-long-password",
+      role: "admin", name: "Mallory", email: "m@x.com", password: "Long-Password-42",
     });
     expect(result.success).toBe(false);
   });
 
   it("refuses a duplicate email with a conflict", async () => {
     const input = signupSchema.parse({
-      role: "client", name: "Owner", email: "dup@biz.co.ke", password: "a-long-password", businessName: "Biz",
+      role: "client", name: "Owner", email: "dup@biz.co.ke", password: "Long-Password-42", businessName: "Biz",
     });
     await registerUser(input);
     await expect(registerUser(input)).rejects.toMatchObject({ status: 409 });

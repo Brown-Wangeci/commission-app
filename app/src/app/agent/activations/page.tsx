@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { agentFor } from "@/lib/auth/actors";
+import { EmptyState } from "@/components/EmptyState";
 import { requirePageRole } from "@/lib/auth/session";
 import { agentActivations } from "@/lib/agents/views";
 import { formatDateTime } from "@/lib/format";
@@ -21,7 +22,9 @@ export default async function AgentActivationsPage() {
       </div>
       <div className="card">
         {rows.length === 0 ? (
-          <div className="empty">You have not submitted any activations yet.</div>
+          <EmptyState title="You have not submitted any activations yet" next="You accept a job and submit an activation from My jobs." action={{ href: "/agent", label: "Go to My jobs" }}>
+            Each activation you submit appears here with its status and the reason for it, newest first.
+          </EmptyState>
         ) : (
           <div className="table-wrap">
             <table className="table">

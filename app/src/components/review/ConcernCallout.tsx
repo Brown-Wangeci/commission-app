@@ -4,6 +4,7 @@ import { explainConcern, type ConcernAction } from "@/lib/review/concern";
 import { describeFailureKind } from "@/lib/scoring/status";
 import { formatContribution, formatDateTime } from "@/lib/format";
 import { stageName } from "@/lib/review/copy";
+import { isMissingActivity } from "@/lib/scoring/messages";
 
 function actionHref(action: ConcernAction, detail: ReviewDetail): string {
   switch (action.kind) {
@@ -22,6 +23,11 @@ function actionHref(action: ConcernAction, detail: ReviewDetail): string {
   }
 }
 
+/** A link to somewhere on this page is a plain anchor, so the browser reports the change of address and a collapsed section can open. */
+function ActionLink({ href, children }: { href: string; children: string }) {
+  return href.startsWith("#") ? <a className="btn small" href={href}>{children}</a> : <Link className="btn small" href={href}>{children}</Link>;
+}
+
 function Unscored({ detail }: { detail: ReviewDetail }) {
   const { health } = detail;
   return (
@@ -30,8 +36,10 @@ function Unscored({ detail }: { detail: ReviewDetail }) {
         <h2 id="concern-heading">Check this first &mdash; this submission has no score</h2>
       </div>
       <p className="small">
-        The model could not score it {stageName(detail.unscoredStage ?? "t0")}
-        {health.lastFailure ? `: ${describeFailureKind(health.lastFailure.kind)}` : ""}. {health.failedAttempts} failed attempt
+        {isMissingActivity(health.lastFailure)
+          ? "The hold-close model could not score it: no first-week customer activity has been reported for it."
+          : `The model could not score it ${stageName(detail.unscoredStage ?? "t0")}${health.lastFailure ? `: ${describeFailureKind(health.lastFailure.kind)}` : ""}.`}{" "}
+        {health.failedAttempts} failed attempt
         {health.failedAttempts === 1 ? "" : "s"} recorded.{" "}
         {health.pendingRetry
           ? `The next automatic retry is due ${formatDateTime(health.pendingRetry.dueAt)}; any score it returns is advice only.`
@@ -42,7 +50,7 @@ function Unscored({ detail }: { detail: ReviewDetail }) {
       <p className="small" style={{ marginTop: 6 }}>Decide on the evidence below, or ask the agent for more.</p>
       <div className="inline-actions">
         <Link className="btn small" href={`/admin/review/${detail.id}/evidence`}>View all {detail.photos.length} photos</Link>
-        <Link className="btn small" href="#location">Show the location on a map</Link>
+        <ActionLink href="#location">Show the location on a map</ActionLink>
       </div>
     </section>
   );
@@ -81,7 +89,7 @@ export function ConcernCallout({ detail }: { detail: ReviewDetail }) {
       {explanation.actions.length > 0 && (
         <div className="inline-actions">
           {explanation.actions.map((action) => (
-            <Link key={action.label} className="btn small" href={actionHref(action, detail)}>{action.label}</Link>
+            <ActionLink key={action.label} href={actionHref(action, detail)}>{action.label}</ActionLink>
           ))}
         </div>
       )}

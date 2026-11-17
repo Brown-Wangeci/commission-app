@@ -36,8 +36,7 @@ function body(entry: AuditEntry): string | null {
 export function ReviewTimeline({ detail }: { detail: ReviewDetail }) {
   if (detail.audit.length === 0) return null;
   return (
-    <section className="card card-pad" aria-labelledby="history-heading">
-      <h2 id="history-heading" style={{ marginBottom: 6 }}>History</h2>
+    <div>
       <ul className="timeline">
         {detail.audit.map((entry, index) => (
           <li key={index}>
@@ -47,6 +46,6 @@ export function ReviewTimeline({ detail }: { detail: ReviewDetail }) {
           </li>
         ))}
       </ul>
-    </section>
+    </div>
   );
 }

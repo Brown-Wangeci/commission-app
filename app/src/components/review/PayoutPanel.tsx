@@ -41,7 +41,9 @@ const FORM_TEXT: Record<Action, { label: string; hint: string; submit: string }>
 /**
  * "Approving pays ...", the commission with its derivation line (from the
  * job's commission structure before approval, from the stored commission
- * record after), and the three decisions.
+ * record after), and the three decisions. Approving is the one primary
+ * button; asking for evidence and rejecting sit beneath it as quiet actions.
+ * While a decision's reason is being written, only that form shows.
  */
 export function PayoutPanel(props: Props) {
   const router = useRouter();
@@ -83,19 +85,21 @@ export function PayoutPanel(props: Props) {
         </span>
       )}
       {!decidable && <p className="small muted" style={{ marginTop: 8 }}>This submission is {props.stateLabel.toLowerCase()}; there is nothing to decide here.</p>}
-      {decidable && (
+      {decidable && !open && (
         <div className="decide-buttons" id="decide-ask">
           <button type="button" className="btn primary" disabled={!props.canApprove} onClick={() => setOpen("approve")}>Approve &amp; pay</button>
-          <button
-            type="button"
-            className="btn"
-            disabled={!props.canRequestEvidence}
-            title={props.canRequestEvidence ? undefined : "Evidence can be requested only while a submission is in review, not during a dispute."}
-            onClick={() => setOpen("request-evidence")}
-          >
-            Ask for evidence
-          </button>
-          <button type="button" className="btn danger" disabled={!props.canRefuse} onClick={() => setOpen("refuse")}>Reject</button>
+          <div className="decide-secondary">
+            <button
+              type="button"
+              className="btn quiet"
+              disabled={!props.canRequestEvidence}
+              title={props.canRequestEvidence ? undefined : "Evidence can be requested only while a submission is in review, not during a dispute."}
+              onClick={() => setOpen("request-evidence")}
+            >
+              Ask for evidence
+            </button>
+            <button type="button" className="btn quiet danger-text" disabled={!props.canRefuse} onClick={() => setOpen("refuse")}>Reject</button>
+          </div>
         </div>
       )}
       {open && (

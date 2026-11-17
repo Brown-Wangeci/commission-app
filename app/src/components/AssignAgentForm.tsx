@@ -8,7 +8,8 @@ import { formatCents } from "@/lib/money/cents";
 type Option = { id: string; label: string };
 
 /** Admin control: assign one slot of this job to an agent. */
-export function AssignAgentForm({ jobId, agents }: { jobId: string; agents: Option[] }) {
+/** `compact` is for a row of a list: the label is read by screen readers only, since the row already says which job. */
+export function AssignAgentForm({ jobId, agents, compact = false }: { jobId: string; agents: Option[]; compact?: boolean }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
@@ -32,13 +33,14 @@ export function AssignAgentForm({ jobId, agents }: { jobId: string; agents: Opti
 
   return (
     <form className="stack-sm" onSubmit={submit}>
-      <label htmlFor="agentId" className="label">Assign to an agent</label>
+      <label htmlFor={`agentId-${jobId}`} className={compact ? "visually-hidden" : "label"}>Assign to an agent</label>
       <div className="row wrap">
-        <select id="agentId" name="agentId" className="select" style={{ maxWidth: 320 }} required>
+        <select id={`agentId-${jobId}`} name="agentId" className="select" style={{ maxWidth: 320 }} required>
           {agents.map((agent) => <option key={agent.id} value={agent.id}>{agent.label}</option>)}
         </select>
         <button type="submit" className="btn primary" disabled={busy || agents.length === 0}>{busy ? "Assigning" : "Assign"}</button>
       </div>
+      {agents.length === 0 && <span className="tiny muted">No agents have signed up yet, so there is nobody to assign.</span>}
       {error && <span className="field-error">{error}</span>}
       {done && <span className="tiny" style={{ color: "var(--accent)" }}>{done}</span>}
     </form>

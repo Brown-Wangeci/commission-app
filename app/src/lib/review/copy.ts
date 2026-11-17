@@ -1,5 +1,6 @@
 import type { ReviewOpenReason, ScoringMode } from "@prisma/client";
 import { formatProbability } from "@/lib/format";
+import { isMissingActivity } from "@/lib/scoring/messages";
 import type { DecisionView } from "./detail";
 
 /**
@@ -34,11 +35,34 @@ function bandSentence(decision: DecisionView): string {
   return `At ${p} it is at or below the auto-approve cut-off (${release}).`;
 }
 
-/** One line saying why this submission is in front of a person. */
-export function whyHere(openReason: ReviewOpenReason | null, latest: DecisionView | null, unscoredStage: ScoringMode | null): string {
-  if (unscoredStage) {
-    return `No score: the model could not be reached ${stageName(unscoredStage)}, so it was sent to a person instead of being released.`;
+/** The last failed scoring call for an activation, as recorded: its kind and its message. */
+export type ScoringFailure = { kind: string; message: string };
+
+/**
+ * Why there is no score, in plain words. A hold-close score that cannot be
+ * built because no first-week activity was reported says so; it is not a
+ * fault of the scoring service. Anything else keeps the earlier wording.
+ */
+export function noScoreReason(stage: ScoringMode, failure: ScoringFailure | null): string {
+  if (stage === "t7" && isMissingActivity(failure)) {
+    return "the hold-close model needs the customer's first week of activity, and none has been reported";
   }
+  if (failure?.kind === "missing_input") return `information the model needs was missing ${stageName(stage)}`;
+  return `the model could not be reached ${stageName(stage)}`;
+}
+
+export function noScoreSentence(stage: ScoringMode, failure: ScoringFailure | null): string {
+  return `No score: ${noScoreReason(stage, failure)}, so it was sent to a person instead of being released.`;
+}
+
+/** One line saying why this submission is in front of a person. */
+export function whyHere(
+  openReason: ReviewOpenReason | null,
+  latest: DecisionView | null,
+  unscoredStage: ScoringMode | null,
+  failure: ScoringFailure | null = null,
+): string {
+  if (unscoredStage) return noScoreSentence(unscoredStage, failure);
   if (!latest) return "No score has been recorded for this submission.";
   if (openReason === "t0_reject_escalation" && latest.mode === "t0") {
     return `${bandSentence(latest)} A submission-time score never refuses on its own, so it was sent to a person before the hold window closed.`;

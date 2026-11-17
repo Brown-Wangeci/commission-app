@@ -432,3 +432,37 @@ the behaviour was seen once, in the sandbox, and no Safaricom documentation
 on it was found.
 
 **Retest.** None. Listed in `docs/chapter5/gaps.md`.
+
+## 15. Found while making the usability pass, 16 November 2026 (caught before merge; none was in a released build)
+
+The pass moved content into sections that open on click and regrouped screens.
+Each item below was found by looking at the recaptured screens or by running
+the browser, not by a failing automated test, and each now has a regression
+check.
+
+- **A collapsed section hid what a reviewer needs.** With the history inside a
+  closed section, the awaiting-evidence screen no longer showed what the agent
+  had been asked for. Fixed with a "Waiting for the agent" block above the
+  concern, showing who asked, when and what. Retest: `app/tests/usability.test.tsx`
+  (item 3) and figure-5-04.
+- **A collapsed audit record made the capture script's Verify click miss.**
+  Figure 10 was captured without its verification result, and the script did
+  not fail. The script now opens the section first. Retest: figure-5-10.
+- **A link to a closed section would not have opened it.** The Next.js `Link`
+  to `#location` changes the address with `history.pushState`, which does not
+  raise `hashchange`, so "Show the location on a map" would have scrolled to
+  nothing. Links to places on the same page are plain anchors, and the section
+  opens on `hashchange`. Retest: `usability.test.tsx` (source checks) and
+  `app/scripts/verify-usability.js` (opens by address, run in a browser).
+- **A unitless line height made each dashboard group card about 570 px tall.**
+  Caught on the first capture; fixed with a length. Retest: usability-01.
+- **The touch-target script assumed an activation the seed no longer has.** It
+  looked for a refused activation in Mercy's list; the current seed gives that
+  case to Samuel, so the script stopped. It now falls back to Samuel's list for
+  that one page and says so in its output. Retest: `nfr12-touch-targets.json`.
+- **Tests used a password the new rule refuses.** Four sign-up tests in
+  `app/tests/auth.test.ts` used `a-long-password` (two character classes). They
+  now use `Long-Password-42`. The assertions are unchanged.
+
+No test asserted on any wording or layout the pass changed, other than the four
+password fixtures above.

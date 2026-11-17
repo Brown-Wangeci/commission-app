@@ -53,9 +53,16 @@ function parseTerms(terms: Terms): { parsed: Parsed | null; errors: FieldErrors 
 }
 
 /** Live preview: commission per approved submission and the amount publication will lock, with derivations. */
-function Preview({ terms, availableCents }: { terms: Terms; availableCents: number }) {
+export function Preview({ terms, availableCents }: { terms: Terms; availableCents: number }) {
   const { parsed } = parseTerms(terms);
-  if (!parsed) return <p className="small muted">Enter the value, rate and number of activations to see the commission and what publishing will lock.</p>;
+  if (!parsed) {
+    return (
+      <div className="stack-sm">
+        <p className="small muted">Enter the value, rate and number of activations to see the commission and what publishing will lock.</p>
+        <div className="small muted">Available now: {formatCents(availableCents)}.</div>
+      </div>
+    );
+  }
   try {
     const commission = computeCommission(parsed);
     const liability = maxLiability(parsed, parsed.slots);
@@ -84,14 +91,24 @@ function Preview({ terms, availableCents }: { terms: Terms; availableCents: numb
   }
 }
 
-/** Post a job: its area, its commission structure and how many activations. */
-export function PostJobForm({ availableCents }: { availableCents: number }) {
+/**
+ * Defaults, so a first-time client has fewer fields to fill. Assumptions, not
+ * measured figures: ten activations, a 10% rate, a 700 m radius, and a 30-day
+ * deadline (set by the page). Money fields that depend on the client's own
+ * business (the value of a sign-up, any flat amount) stay empty.
+ */
+export const DEFAULT_SLOTS = "10";
+export const DEFAULT_RATE_PERCENT = "10";
+export const DEFAULT_RADIUS_M = "700";
+
+/** Post a job, in four groups: the job, the evidence, the area and the commission. A summary of the money stays in view. */
+export function PostJobForm({ availableCents, defaultDeadline }: { availableCents: number; defaultDeadline: string }) {
   const router = useRouter();
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [centre, setCentre] = useState({ lat: "", lon: "" });
-  const [terms, setTerms] = useState<Terms>({ value: "", rate: "10", flat: "", slots: "" });
+  const [terms, setTerms] = useState<Terms>({ value: "", rate: DEFAULT_RATE_PERCENT, flat: "", slots: DEFAULT_SLOTS });
   const [fields, setFields] = useState<EditorRow[]>([]);
 
   function useMyLocation() {
@@ -130,7 +147,7 @@ export function PostJobForm({ availableCents }: { availableCents: number }) {
       setMessage(result.message);
       return;
     }
-    router.push(`/client/jobs/${result.data.jobId}`);
+    router.push(`/client/jobs/${result.data.jobId}?posted=1`);
     router.refresh();
   }
 
@@ -144,51 +161,56 @@ export function PostJobForm({ availableCents }: { availableCents: number }) {
   );
 
   return (
-    <form className="stack-lg" onSubmit={submit} noValidate>
-      {message && <div className="alert error" role="alert">{message}</div>}
-      <fieldset className="stack">
-        <legend>The job</legend>
-        <Field name="title" label="Title" errors={errors} hint="For example: SIM registration drive, Gikomba Market" />
-        <div className="field">
-          <label htmlFor="description">What agents should do</label>
-          <textarea id="description" name="description" className="textarea" />
-          <FieldError errors={errors} name="description" />
-        </div>
-        <Field name="deadline" label="Deadline" type="date" errors={errors} hint="The last day work is accepted. After it, no new assignments or submissions; the deadline cannot be changed once published." />
-      </fieldset>
-      <fieldset className="stack">
-        <legend>Evidence the agent must submit</legend>
-        <p className="hint" style={{ margin: 0 }}>
-          The capture form is built from these fields, in this order, and every submission is checked against them. You can change them
-          later; submissions already made stay judged by the fields in force when they were made. These fields are for your checks and the
-          reviewer&rsquo;s; they are never given to the fraud model.
-        </p>
-        <EvidenceFieldsEditor rows={fields} onChange={setFields} errors={errors} />
-      </fieldset>
-      <fieldset className="stack">
-        <legend>Job area</legend>
-        <Field name="areaName" label="Place name" errors={errors} />
-        <div className="grid-3">
-          <div className="field"><label htmlFor="areaLat">Centre latitude</label><input id="areaLat" name="areaLat" className="input" value={centre.lat} onChange={(e) => setCentre({ ...centre, lat: e.target.value })} /><FieldError errors={errors} name="areaLat" /></div>
-          <div className="field"><label htmlFor="areaLon">Centre longitude</label><input id="areaLon" name="areaLon" className="input" value={centre.lon} onChange={(e) => setCentre({ ...centre, lon: e.target.value })} /><FieldError errors={errors} name="areaLon" /></div>
-          <Field name="areaRadiusM" label="Radius (metres)" errors={errors} defaultValue="700" inputMode="numeric" />
-        </div>
-        <button type="button" className="btn small" onClick={useMyLocation} style={{ alignSelf: "flex-start" }}>Use my current location as the centre</button>
-        <span className="hint">Photos taken outside this circle are flagged to the reviewer.</span>
-      </fieldset>
-      <fieldset className="stack">
-        <legend>Commission</legend>
-        <div className="grid-3">
-          {termInput("value", "submissionValueKsh", "Value of one approved submission (KSh)", "What one sign-up is worth to you.")}
-          {termInput("rate", "commissionRatePercent", "Commission rate (%)", "Applied to the value, rounded down to the cent.")}
-          {termInput("flat", "flatCommissionKsh", "Flat amount per approved submission (KSh, optional)")}
-        </div>
-        <div className="grid-3">
-          {termInput("slots", "slots", "Activations wanted")}
-        </div>
+    <form className="post-layout" onSubmit={submit} noValidate>
+      <div className="stack-lg">
+        {message && <div className="alert error" role="alert">{message}</div>}
+        <fieldset className="form-group stack">
+          <legend>1. The job</legend>
+          <Field name="title" label="Title" errors={errors} hint="For example: SIM registration drive, Gikomba Market" />
+          <div className="field">
+            <label htmlFor="description">What agents should do</label>
+            <textarea id="description" name="description" className="textarea" />
+            <FieldError errors={errors} name="description" />
+          </div>
+          <Field name="deadline" label="Deadline" type="date" defaultValue={defaultDeadline} errors={errors} hint="The last day work is accepted, 30 days from today unless you change it. After it, no new assignments or submissions; it cannot be changed once published." />
+        </fieldset>
+        <fieldset className="form-group stack">
+          <legend>2. Evidence the agent must submit</legend>
+          <p className="hint" style={{ margin: 0 }}>
+            Optional. Every submission already records the customer&rsquo;s number, SIM date, capture method and optional proof. Add fields here
+            for anything else you want checked; the capture form is built from them, in this order. You can change them later; submissions
+            already made stay judged by the fields in force when they were made. They are for your checks and the reviewer&rsquo;s, never given
+            to the fraud model.
+          </p>
+          <EvidenceFieldsEditor rows={fields} onChange={setFields} errors={errors} />
+        </fieldset>
+        <fieldset className="form-group stack">
+          <legend>3. Job area</legend>
+          <Field name="areaName" label="Place name" errors={errors} />
+          <div className="grid-3">
+            <div className="field"><label htmlFor="areaLat">Centre latitude</label><input id="areaLat" name="areaLat" className="input" value={centre.lat} onChange={(e) => setCentre({ ...centre, lat: e.target.value })} /><FieldError errors={errors} name="areaLat" /></div>
+            <div className="field"><label htmlFor="areaLon">Centre longitude</label><input id="areaLon" name="areaLon" className="input" value={centre.lon} onChange={(e) => setCentre({ ...centre, lon: e.target.value })} /><FieldError errors={errors} name="areaLon" /></div>
+            <Field name="areaRadiusM" label="Radius (metres)" errors={errors} defaultValue={DEFAULT_RADIUS_M} inputMode="numeric" />
+          </div>
+          <button type="button" className="btn small" onClick={useMyLocation} style={{ alignSelf: "flex-start" }}>Use my current location as the centre</button>
+          <span className="hint">Photos taken outside this circle are flagged to the reviewer.</span>
+        </fieldset>
+        <fieldset className="form-group stack">
+          <legend>4. Commission</legend>
+          <div className="grid-2">
+            {termInput("value", "submissionValueKsh", "Value of one approved submission (KSh)", "What one sign-up is worth to you.")}
+            {termInput("rate", "commissionRatePercent", "Commission rate (%)", "Applied to the value, rounded down to the cent.")}
+            {termInput("flat", "flatCommissionKsh", "Flat amount per approved submission (KSh, optional)")}
+            {termInput("slots", "slots", "Activations wanted", "How many sign-ups you want. Publishing locks the most this could cost.")}
+          </div>
+        </fieldset>
+      </div>
+      <aside className="post-summary card card-pad stack" aria-labelledby="summary-heading">
+        <h2 id="summary-heading">Commission summary</h2>
         <Preview terms={terms} availableCents={availableCents} />
-      </fieldset>
-      <button type="submit" className="btn primary" disabled={busy}>{busy ? "Publishing" : "Publish the job"}</button>
+        <button type="submit" className="btn primary block" disabled={busy}>{busy ? "Publishing" : "Publish the job"}</button>
+        <p className="tiny muted">Agents are assigned by a reviewer after you publish.</p>
+      </aside>
     </form>
   );
 }

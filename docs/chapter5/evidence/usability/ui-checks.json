@@ -1,0 +1,20 @@
+{
+  "toggleTypes": [
+    "password",
+    "text",
+    "password"
+  ],
+  "seededSignInLandedOn": "/",
+  "rulesMetForWeak": 1,
+  "rulesMetForStrong": 2,
+  "mismatchText": "The two passwords do not match.",
+  "primaryButtonsOnReview": 1,
+  "detailsClosedAtStart": 4,
+  "mapOpenedByLink": "true (by address, no callout link on this case)",
+  "auditOpenedByAddress": true,
+  "decisionPanelTopPx": 241,
+  "afterApproveClickPrimaryCount": 1,
+  "afterApproveClickShowsForm": 1,
+  "summaryVisibleAfterScroll": true,
+  "summaryText": "Commission summary COMMISSION PER APPROVED SUBMISSION KSh 300.00 KSh 3,000.00 × 10.00% = KSh 300.00 LOCKED FROM YOUR ESCROW WHEN YOU PUBLISH KSh 3,000.00 10 × KSh 300.00 per approved submission Availa"
+}

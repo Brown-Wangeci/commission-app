@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { formatDateTime } from "@/lib/format";
 import { formatCents } from "@/lib/money/cents";
+import { EmptyState } from "@/components/EmptyState";
 
 export type FundingRow = {
   id: string;
@@ -39,7 +40,13 @@ export function FundingList({ rows }: { rows: FundingRow[] }) {
     return () => clearInterval(timer);
   }, [waiting, router]);
 
-  if (rows.length === 0) return <p className="small muted">No funding yet. Your escrow is credited only once M-Pesa confirms a payment.</p>;
+  if (rows.length === 0) {
+    return (
+      <EmptyState title="No funding yet" next="You enter an amount and pay from your phone. Your escrow is credited only once M-Pesa confirms the payment.">
+        Each M-Pesa payment you start appears here with its status.
+      </EmptyState>
+    );
+  }
   return (
     <div className="table-wrap">
       <table className="table">

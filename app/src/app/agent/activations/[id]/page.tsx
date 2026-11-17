@@ -1,4 +1,5 @@
 import { AuditTrailPanel } from "@/components/audit/AuditTrailPanel";
+import { EmptyState } from "@/components/EmptyState";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { agentFor } from "@/lib/auth/actors";
@@ -104,7 +105,11 @@ export default async function AgentActivationPage({ params }: { params: Promise<
         )}
         <section className="card card-pad">
           <h2 style={{ marginBottom: 12 }}>Your evidence ({photos.length})</h2>
-          {photos.length === 0 ? <p className="small muted">No files.</p> : (
+          {photos.length === 0 ? (
+            <EmptyState title="No files were attached" next="If a reviewer asks for more evidence, you send it from this page.">
+              Photos and proof you attached would appear here.
+            </EmptyState>
+          ) : (
             <div className="thumbs">
               {photos.map((item) => (
                 <a key={item.id} href={`/api/evidence/${item.id}`} target="_blank" rel="noreferrer" className="thumb">

@@ -84,6 +84,40 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   item is dropped by decision rather than resolved
   (`docs/chapter5/evidence/hosted/scoring/model-comparison.md`).
 
+## Usability pass (2026-11-16)
+
+- **No user has tried it.** The changes were judged by their author against the
+  eight goals in the brief, by reading the recaptured screens and by the checks
+  in `docs/chapter5/evidence/usability/`. No agent, client or reviewer used the
+  new screens, so "less overwhelming" and "next action obvious" are not
+  measured.
+- **The password rule's numbers are assumptions.** A minimum of 8 characters
+  and three of four character classes are stated as assumptions in
+  `password-rules.ts`. There is no check against common or breached passwords
+  (a first version had a short hand-written list; it was removed by decision),
+  so "Password1!" is accepted. The rule applies at sign-up only; there is no
+  password-change screen.
+- **Confirm-password is checked in the form only.** The API takes no
+  confirmation field, so a client posting to `/api/auth/signup` directly is held
+  to the rule but not asked to confirm.
+- **The interactive behaviour has no automated test.** The suite has no DOM
+  environment, so the show/hide toggle, the live rule list, a section opening
+  from a link and the sticky summary are checked by `app/scripts/verify-usability.js`
+  in a real browser, run by hand on 2026-11-16, not by CI. Component
+  structure, order and wording are covered by tests that render markup or read
+  source, which can pass while a style is wrong.
+- **The wording for a missing first week was not captured.** The seed has no
+  hold-close activation that failed for lack of first-week activity, so no
+  screenshot shows that sentence; a database test covers it.
+- **Defaults are assumptions.** Ten activations, a 30-day deadline, a 10% rate
+  and a 700 m radius on the post-a-job form are conveniences, not figures from
+  the project's specification or a partner.
+- **The Chapter 4 wireframes were not regenerated**, as instructed, so they
+  describe the earlier layouts of the screens changed here.
+- **One local pytest run failed once** (`test_score_then_explain_returns_both_records_in_time_order`)
+  while the vitest suite was running at the same time on the same machine; it
+  passed alone and CI is the record. Python code was not changed.
+
 ## Test traceability (D)
 
 - **Correction (2026-11-09): FR-09 was wrongly recorded as untested.**

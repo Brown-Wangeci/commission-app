@@ -12,17 +12,20 @@ import { formatDateTime } from "@/lib/format";
 import { formatCents, sumCents } from "@/lib/money/cents";
 import { MoneyStat } from "@/components/Money";
 import { StateChip } from "@/components/review/StateChip";
+import { EmptyState } from "@/components/EmptyState";
 import { CloseJobButton } from "@/components/client/CloseJobButton";
 
 /** One job: its commission, its escrow, and the outcome of every activation with its reason. */
-export default async function ClientJobPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ClientJobPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ posted?: string }> }) {
   const client = await clientFor(await requirePageRole("client"));
+  const justPosted = (await searchParams).posted === "1";
   const detail = await clientJob(client.id, (await params).id).catch((error) => {
     if (error instanceof ApiError && error.status === 404) notFound();
     throw error;
   });
   const { job, terms, escrow, unspentDerivation, activations } = detail;
   const evidence = await currentEvidenceConfig(prisma, job.id);
+  const assigned = await prisma.assignment.count({ where: { jobId: job.id } });
   const inProgressCents = sumCents([escrow.reservedCents, escrow.heldCents]);
   const fullyLocked = escrow.lockedCents === terms.liability.amountCents;
   return (
@@ -38,6 +41,16 @@ export default async function ClientJobPage({ params }: { params: Promise<{ id: 
           </p>
         </div>
       </div>
+      {justPosted && (
+        <div className="alert ok" role="status" style={{ marginBottom: 16 }}>
+          Your job is published and its maximum cost is locked from your escrow. A reviewer assigns agents next; you do not need to do anything until activations arrive here.
+        </div>
+      )}
+      {!justPosted && job.status === "open" && assigned === 0 && (
+        <div className="callout calm" style={{ marginBottom: 16 }}>
+          <p className="small">No agent has been assigned yet. A reviewer assigns agents to open jobs; nothing is needed from you.</p>
+        </div>
+      )}
       <div className="grid-4" style={{ marginBottom: 16 }}>
         <MoneyStat label="Commission per approved submission" cents={terms.commission.amountCents} derivation={terms.commission.derivation} />
         <MoneyStat
@@ -88,7 +101,11 @@ export default async function ClientJobPage({ params }: { params: Promise<{ id: 
       </section>
       <section className="card">
         <div className="card-pad"><h2>Activations on this job ({activations.length})</h2></div>
-        {activations.length === 0 ? <div className="empty">No activations yet.</div> : (
+        {activations.length === 0 ? (
+          <EmptyState title="No activations yet" next={assigned === 0 ? "A reviewer assigns agents to this job first; then they sign customers up and submit." : "The assigned agents accept the job, sign customers up and submit; a reviewer then decides."}>
+            Each activation an agent submits appears here with its outcome and the reason for it.
+          </EmptyState>
+        ) : (
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>Reference</th><th>Agent</th><th>Submitted</th><th>Outcome</th><th>Reason</th><th>First-week activity</th></tr></thead>

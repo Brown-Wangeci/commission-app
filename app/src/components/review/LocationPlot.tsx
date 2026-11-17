@@ -65,9 +65,9 @@ export function LocationPlot({ detail }: { detail: ReviewDetail }) {
   const osm = `https://www.openstreetmap.org/?mlat=${detail.submission.gpsLat.toFixed(5)}&mlon=${detail.submission.gpsLon.toFixed(5)}#map=15/${detail.submission.gpsLat.toFixed(5)}/${detail.submission.gpsLon.toFixed(5)}`;
 
   return (
-    <section className="card card-pad target" id="location" aria-labelledby="location-heading">
+    <div>
       <div className="row-between" style={{ marginBottom: 10 }}>
-        <h2 id="location-heading">Where it happened</h2>
+        <span className="small muted">Drawn to scale from the recorded coordinates.</span>
         <a className="small" href={osm} target="_blank" rel="noreferrer">Open in OpenStreetMap</a>
       </div>
       <svg className="plot" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="Plot of the job area, the submission, the photos and the agent's base">
@@ -99,6 +99,6 @@ export function LocationPlot({ detail }: { detail: ReviewDetail }) {
           Off the map (more than {OFF_MAP_KM} km away): {far.map((m) => `${m.label}, ${formatDistance(distanceKm(centre.lat, centre.lon, m.lat, m.lon))} from the job area`).join("; ")}.
         </p>
       )}
-    </section>
+    </div>
   );
 }

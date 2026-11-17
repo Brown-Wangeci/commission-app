@@ -15,6 +15,7 @@ function itemsFor(role: RoleName, reviewCount: number | undefined): NavItem[] {
     return [
       { href: "/admin", label: "Dashboard", exact: true },
       { href: "/admin/review", label: "Review queue", badge: reviewCount },
+      { href: "/admin/jobs", label: "Jobs" },
       { href: "/admin/agents", label: "Agents" },
       { href: "/admin/clients", label: "Clients" },
       { href: "/admin/payouts", label: "Payouts" },

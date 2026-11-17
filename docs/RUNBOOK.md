@@ -57,7 +57,7 @@ A T7 (hold-close) decision normally comes seven days after submission. Three
 ways to see one now:
 
 1. **Force it on one activation.** Sign in as an admin. On the dashboard
-   (`/admin`), the hold-window panel lists held activations; press
+   (`/admin`), the **Hold window** tab lists held activations; press
    **Force T7 now** beside one. It is scored at once with the T7
    model and the band is applied. It runs the same durable job as the
    scheduler, so it cannot be scored twice.

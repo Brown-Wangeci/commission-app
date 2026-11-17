@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { listQueue, type QueueRow, type QueueTab } from "@/lib/review/queue";
-import { capitalise, openReasonLabel } from "@/lib/review/copy";
+import { capitalise, noScoreReason, openReasonLabel } from "@/lib/review/copy";
 import { formatContribution, formatDateTime, formatProbability } from "@/lib/format";
+import { EmptyState } from "@/components/EmptyState";
 import { Money } from "@/components/Money";
 import { StateChip, UnscoredChip } from "@/components/review/StateChip";
 import { QueueRowActions } from "@/components/review/QueueRowActions";
@@ -70,7 +71,7 @@ function Row({ row, tab }: { row: QueueRow; tab: QueueTab }) {
             <Reasons title="About the agent" reasons={row.agentReasons} agent />
           </div>
         ) : (
-          <p className="small muted">No score yet: the model could not be reached{row.unscoredStage ? ` ${row.unscoredStage === "t0" ? "at submission" : "at hold-close"}` : ""}. Retries continue; any later score is advice only.</p>
+          <p className="small muted">No score yet{row.unscoredStage ? `: ${noScoreReason(row.unscoredStage, row.lastFailure)}` : ""}. Retries continue; any later score is advice only.</p>
         )}
       </td>
       <td className="right small col-payout">{row.amount === null ? "Unavailable" : <Money cents={row.amount.amountCents} derivation={row.amount.commission.derivation} />}</td>
@@ -101,7 +102,15 @@ export default async function ReviewQueuePage({ searchParams }: { searchParams: 
       </nav>
       <div className="card">
         {rows.length === 0 ? (
-          <div className="empty">{tab === "waiting" ? "Nothing is waiting for a decision." : "No evidence requests are open."}</div>
+          tab === "waiting" ? (
+            <EmptyState title="Nothing is waiting for a decision" next="Nobody needs to act. A reviewer is needed when a score falls between the cut-offs, a submission could not be scored, or an agent contests a refusal.">
+              Submissions that need a person appear here, oldest first.
+            </EmptyState>
+          ) : (
+            <EmptyState title="No evidence requests are open" next="The agent acts when you ask for more evidence; the submission returns to Waiting for a decision once they respond.">
+              Submissions parked while an agent gathers more evidence appear here with what was asked.
+            </EmptyState>
+          )
         ) : (
           <div className="table-wrap">
             <table className="table">

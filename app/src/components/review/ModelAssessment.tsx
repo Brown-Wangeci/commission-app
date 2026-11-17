@@ -31,13 +31,15 @@ function DecisionHistory({ detail }: { detail: ReviewDetail }) {
 }
 
 /** The model's advice for this submission, from the latest stored decision. */
+/** How many factors show before the rest open on click. */
+const TOP_REASONS = 3;
+
 export function ModelAssessment({ detail }: { detail: ReviewDetail }) {
   const latest = detail.latest;
   const reason = currentOpenReason(detail);
   return (
     <section className="card card-pad assessment" aria-labelledby="assessment-heading">
       <h2 id="assessment-heading" style={{ marginBottom: 4 }}>Model assessment</h2>
-      <p className="framing">{MODEL_FRAMING}</p>
       {latest ? (
         <>
           <div className="prob-label">Fraud probability</div>
@@ -45,19 +47,20 @@ export function ModelAssessment({ detail }: { detail: ReviewDetail }) {
           <p className="tiny muted" style={{ marginTop: 4 }}>
             {modelName(latest.mode)} &middot; <span className="mono">{latest.modelVersion}</span> &middot; scored {triggerLabel(latest.trigger)}
           </p>
-          <p className="why">{whyHere(reason, latest, detail.unscoredStage)}</p>
-          <h3 style={{ margin: "18px 0 6px" }}>What moved the score</h3>
-          <ReasonList reasons={latest.reasons} />
+          <p className="why">{whyHere(reason, latest, detail.unscoredStage, detail.health.lastFailure)}</p>
           <RiskScale probability={latest.probability} releaseThreshold={latest.releaseThreshold} rejectThreshold={latest.rejectThreshold} />
+          <h3 style={{ margin: "12px 0 6px" }}>Top reasons</h3>
+          <ReasonList reasons={latest.reasons} top={TOP_REASONS} />
         </>
       ) : (
         <>
           <div className="prob-label">Fraud probability</div>
           <div className="prob muted">Unavailable</div>
-          <p className="why">{whyHere(reason, null, detail.unscoredStage)}</p>
+          <p className="why">{whyHere(reason, null, detail.unscoredStage, detail.health.lastFailure)}</p>
         </>
       )}
       <DecisionHistory detail={detail} />
+      <p className="framing" style={{ marginTop: 12, marginBottom: 0 }}>{MODEL_FRAMING}</p>
       {detail.actions.canForceT7 && (
         <div style={{ marginTop: 14 }}>
           <ActionButton

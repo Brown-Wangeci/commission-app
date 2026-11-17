@@ -6,6 +6,7 @@ import { formatDateTime } from "@/lib/format";
 import { formatCents } from "@/lib/money/cents";
 import { payoutAmountView } from "@/lib/payouts/amount";
 import { ActionButton } from "@/components/ActionButton";
+import { EmptyState } from "@/components/EmptyState";
 import { NotificationsPanel } from "@/components/NotificationsPanel";
 
 type Assignment = Awaited<ReturnType<typeof agentHome>>["toAccept"][number];
@@ -25,24 +26,43 @@ function JobLine({ assignment }: { assignment: Assignment }) {
   );
 }
 
-/** The agent's home: notifications, jobs to accept, and jobs ready for an activation. */
+/**
+ * The agent's home. What needs the agent now comes first: a job to accept,
+ * then a job to submit. A list with nothing in it is not drawn as a card, and
+ * if both are empty one message says what will appear and who acts next. The
+ * steps of a job are one line below, not a section.
+ */
 export default async function AgentHomePage() {
   const user = await requirePageRole("agent");
   const agent = await agentFor(user);
   const { toAccept, toSubmit } = await agentHome(agent.id);
+  const nothingNow = toAccept.length === 0 && toSubmit.length === 0;
   return (
     <main className="page page-narrow">
       <div className="page-header">
         <div>
           <h1>My jobs</h1>
-          <p className="muted small">Accept a job, sign the customer up, then submit the activation with your evidence.</p>
+          <p className="muted small">
+            {nothingNow
+              ? "Nothing needs you right now."
+              : toAccept.length > 0
+                ? `${toAccept.length} ${toAccept.length === 1 ? "job is" : "jobs are"} waiting for you to accept.`
+                : `${toSubmit.length} ${toSubmit.length === 1 ? "job is" : "jobs are"} ready for an activation.`}
+          </p>
         </div>
         <Link href="/agent/activations" className="btn">My activations</Link>
       </div>
       <NotificationsPanel userId={user.id} linkBase="/agent/activations" />
-      <section className="card" style={{ marginBottom: 20 }}>
-        <div className="card-pad"><h2>Waiting for you to accept ({toAccept.length})</h2></div>
-        {toAccept.length === 0 ? <div className="empty">No new jobs.</div> : (
+      {nothingNow && (
+        <section className="card" style={{ marginBottom: 20 }}>
+          <EmptyState title="No jobs for you right now" next="A reviewer assigns jobs to agents. You will see one here, with an Accept button, as soon as it is assigned.">
+            A job you accept appears under Ready to submit, where you sign the customer up and submit it with your evidence.
+          </EmptyState>
+        </section>
+      )}
+      {toAccept.length > 0 && (
+        <section className="card" style={{ marginBottom: 20 }} aria-labelledby="accept-heading">
+          <div className="card-pad"><h2 id="accept-heading">Accept a job ({toAccept.length})</h2></div>
           <ul className="timeline" style={{ padding: "0 20px 8px" }}>
             {toAccept.map((assignment) => (
               <li key={assignment.id} className="row-between wrap">
@@ -51,21 +71,31 @@ export default async function AgentHomePage() {
               </li>
             ))}
           </ul>
-        )}
-      </section>
-      <section className="card">
-        <div className="card-pad"><h2>Ready to submit ({toSubmit.length})</h2></div>
-        {toSubmit.length === 0 ? <div className="empty">Nothing to submit. Accepted jobs appear here.</div> : (
+        </section>
+      )}
+      {toSubmit.length > 0 && (
+        <section className="card" style={{ marginBottom: 20 }} aria-labelledby="submit-heading">
+          <div className="card-pad"><h2 id="submit-heading">Ready to submit ({toSubmit.length})</h2></div>
           <ul className="timeline" style={{ padding: "0 20px 8px" }}>
             {toSubmit.map((assignment) => (
               <li key={assignment.id} className="row-between wrap">
                 <JobLine assignment={assignment} />
-                <Link href={`/agent/submit/${assignment.id}`} className="btn primary small">Submit activation</Link>
+                <Link href={`/agent/submit/${assignment.id}`} className={`btn small${toAccept.length === 0 ? " primary" : ""}`}>Submit activation</Link>
               </li>
             ))}
           </ul>
-        )}
-      </section>
+        </section>
+      )}
+      <details className="disclosure">
+        <summary><h2>How a job works</h2></summary>
+        <div className="disclosure-body">
+          <ol className="small steps">
+            <li>Accept the job a reviewer assigned to you.</li>
+            <li>Sign the customer up, then open Submit activation and add your evidence.</li>
+            <li>A reviewer or the system decides. You are paid by M-Pesa once it is approved; follow it under My activations.</li>
+          </ol>
+        </div>
+      </details>
     </main>
   );
 }

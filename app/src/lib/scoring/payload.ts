@@ -1,4 +1,5 @@
 import type { Activation, Agent, Assignment, CustomerActivityDay, Job, PayoutCycle } from "@prisma/client";
+import { NO_ACTIVITY_MESSAGE } from "./messages";
 import type { Tx } from "@/lib/db";
 import type {
   ActivationEventPayload,
@@ -152,7 +153,7 @@ async function loadCalendar(db: Tx, submittedAt: Date): Promise<PayoutCycle[]> {
 async function loadActivity(db: Tx, activationId: string): Promise<DownstreamActivityPayload[]> {
   const days = await db.customerActivityDay.findMany({ where: { activationId }, orderBy: { day: "asc" } });
   if (days.length === 0) {
-    throw new PayloadError("no first-week customer activity has been reported for this activation");
+    throw new PayloadError(NO_ACTIVITY_MESSAGE);
   }
   return days.map(activityDay);
 }
