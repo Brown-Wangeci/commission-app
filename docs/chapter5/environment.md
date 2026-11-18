@@ -1,14 +1,23 @@
 # Environment
 
 The exact hardware and software this project's evidence was measured and
-captured on. Every local number in this chapter -- the load test (NFR-01), the scoring
-latency measurement (NFR-02), the local screenshots, the logs, and every local
-test run -- comes from this one developer machine. A hosted deployment has
-existed since 2026-11-15 (see "Hosted deployment" below); its evidence is kept
-separately in `evidence/hosted/` and is not mixed into the local figures.
-Where NFR-02 asks for figures "on the deployment hardware", the local latency
-figures were measured on the same machine that ran the local setup, not on the
-hosted servers.
+captured on, and the hosted system it was also run on.
+
+**A hosted deployment exists** (since 2026-11-15): the app on Vercel (region
+fra1), the database on Neon, evidence photos on Vercel Blob, the scoring
+service on Render, audit anchoring on Polygon Amoy, payments against the
+Safaricom Daraja sandbox, and the scheduler on cron-job.org. How it is built
+and configured is in `docs/DEPLOY.md`; what was measured on it is in
+`evidence/hosted/`, and the services are tabulated under "Hosted deployment"
+below. Hosted evidence is kept separately and is not mixed into the local
+figures.
+
+The rest of this file describes the local environment. Every local number in
+this chapter -- the load test (NFR-01), the scoring latency measurement
+(NFR-02), the local screenshots, the logs, and every local test run -- comes
+from this one developer machine. Where NFR-02 asks for figures "on the
+deployment hardware", the local latency figures were measured on the same
+machine that ran the local setup, not on the hosted servers.
 
 ## Hardware and deployment
 
