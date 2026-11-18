@@ -33,16 +33,21 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
 
 ## Blockchain anchoring (B)
 
-- **IR-04's verification method ("Test on the test network") is not fully
-  met.** The audit-anchor contract was deployed and exercised on a local
-  Anvil node, not Polygon Amoy, because no funded Amoy wallet was available
-  at any point in this project. The contract, the client code, the queue
-  and the verifier are all unchanged between a local node and Amoy; only
-  the chain differs. `docs/chapter5/requirements_traceability.csv` marks
-  IR-04 "partially met" for this reason, and
-  `docs/chapter5/evidence/blockchain/README.md` gives the exact two
-  commands (`npm run contract:deploy`, `npm run anchor:evidence`) that would
-  repeat the same run on Amoy once a wallet exists.
+- **Anchoring ran on Polygon Amoy; what remains is the tamper test and
+  mainnet.** The audit-anchor contract was first deployed and exercised on a
+  local Anvil node (`docs/chapter5/evidence/blockchain/local-anvil-2026-11-08`)
+  because no funded Amoy wallet was available. On 2026-11-15 the same contract
+  was deployed to Polygon Amoy (chain 80002), one batch of 709 audit events was
+  anchored (transaction `0x50f11819...ddba9`, status success), and one
+  activation's 10 events were verified against the root on chain
+  (`docs/chapter5/evidence/hosted/anchoring/`: `01-deployment.json`,
+  `02-batch1-onchain.json`, `verify-LF-000050.json`). The tamper-detection
+  test (`04-verification-tampered.json`) was run only on the local node, which
+  is deliberate: that run rewrites an audit event on purpose, and doing it
+  against the hosted database would have altered the hosted record. No
+  tamper test was run against Amoy. Amoy is a test network, not Polygon
+  mainnet. `docs/chapter5/requirements_traceability.csv` marks IR-04 and
+  FR-21 "met" on this basis.
 
 ## Defects (E)
 
