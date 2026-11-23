@@ -1,0 +1,43 @@
+{
+  "what": "shrinkPhoto (app/src/lib/evidence/photo-resize.ts) run in headless Chromium on a synthetic 4000x3000 JPEG with heavy sensor-like noise. A local check of the browser canvas path, not the hosted retest with a phone.",
+  "ceilingMeaning": "bytes one photo may take = 3,500,000 / photos the form allows",
+  "result": {
+    "original": {
+      "bytes": 7646976
+    },
+    "forForm2": {
+      "ceiling": 1750000,
+      "bytes": 555564,
+      "width": 1600,
+      "height": 1200,
+      "type": "image/jpeg",
+      "name": "IMG_20261123_134000.jpg",
+      "fits": true,
+      "changed": true,
+      "lastModifiedKept": true,
+      "ms": 334,
+      "totalForAllPhotos": 1111128,
+      "budget": 3500000,
+      "platformLimit": 4500000
+    },
+    "forForm13": {
+      "ceiling": 269230,
+      "bytes": 133058,
+      "width": 1024,
+      "height": 768,
+      "type": "image/jpeg",
+      "name": "IMG_20261123_134000.jpg",
+      "fits": true,
+      "changed": true,
+      "lastModifiedKept": true,
+      "ms": 424,
+      "totalForAllPhotos": 1729754,
+      "budget": 3500000,
+      "platformLimit": 4500000
+    },
+    "undecodable": {
+      "changed": false,
+      "fits": true
+    }
+  }
+}
