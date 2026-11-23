@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { postForm, type FieldErrors } from "@/lib/client-api";
 import { nairobiDate, validateEvidence, type FieldDefinition } from "@/lib/evidence/fields";
+import { budgetProblem, photoShare, photoTooBigMessage } from "@/lib/evidence/photo-limits";
+import { shrinkPhoto } from "@/lib/evidence/photo-resize";
 import { EvidenceFieldInputs } from "./EvidenceFieldInputs";
 
 type Region = { code: string; name: string };
@@ -100,8 +102,12 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [preparing, setPreparing] = useState(0);
   const today = nairobiDate(new Date());
   const allFields = [...platformFields, ...jobFields];
+  // Each photo may take an equal share of the upload budget for the most photos this form allows.
+  const maxPhotos = allFields.reduce((sum, f) => sum + (f.type === "photo" ? f.format.maxCount : 0), 0);
+  const ceiling = photoShare(maxPhotos);
 
   const applyFix = (next: Fix) => {
     setFix(next);
@@ -113,11 +119,22 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
     locate(applyFix, () => setMessage("Your location is not available. Enter it by hand below."));
   }, []);
 
-  /** A photo is stamped with its own file time and the device's location at the moment it is added. */
-  function addPhotos(key: string, files: File[]) {
+  /**
+   * A photo is stamped with its own file time and the device's location at the
+   * moment it is added, taken from the original file. It is then shrunk in the
+   * browser (defect 16); the shrunk file keeps the original's modified time.
+   */
+  async function addPhotos(key: string, files: File[]) {
     const field = allFields.find((f) => f.key === key);
     const max = field?.type === "photo" ? field.format.maxCount : 0;
-    const added = files.map((file) => ({ file, capturedAt: new Date(file.lastModified).toISOString(), fix }));
+    const stamped = files.map((file) => ({ file, capturedAt: new Date(file.lastModified).toISOString(), fix }));
+    setMessage(null);
+    setPreparing((n) => n + 1);
+    const prepared = await Promise.all(stamped.map(async (item) => ({ item, shrunk: await shrinkPhoto(item.file, ceiling) })));
+    setPreparing((n) => n - 1);
+    const refused = prepared.find((p) => !p.shrunk.fits);
+    if (refused) setMessage(photoTooBigMessage(refused.item.file.name));
+    const added = prepared.filter((p) => p.shrunk.fits).map((p) => ({ file: p.shrunk.file, capturedAt: p.item.capturedAt, fix: p.item.fix }));
     setPhotos((current) => ({ ...current, [key]: [...(current[key] ?? []), ...added].slice(0, max) }));
   }
 
@@ -142,6 +159,12 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
     const local = checkHere(event.currentTarget);
     setErrors(local ?? {});
     if (local) return;
+    const total = Object.values(photos).flat().reduce((sum, photo) => sum + photo.file.size, 0);
+    const tooBig = budgetProblem(total);
+    if (tooBig) {
+      setMessage(tooBig);
+      return;
+    }
     setBusy(true);
     const result = await postForm<{ activationId: string }>("/api/agent/activations", buildForm(event.currentTarget, photos, device));
     setBusy(false);
@@ -155,7 +178,7 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   }
 
   const fieldErrors = byFieldKey(errors);
-  const attached = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.map((p) => ({ name: p.file.name, located: p.fix !== null }))]));
+  const attached = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.map((p) => ({ name: p.file.name, located: p.fix !== null, sizeBytes: p.file.size }))]));
 
   return (
     <form className="stack-lg" onSubmit={submit} noValidate>
@@ -215,7 +238,7 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
         </div>
       </details>
 
-      <button type="submit" className="btn primary" disabled={busy}>{busy ? "Submitting and checking" : "Submit activation"}</button>
+      <button type="submit" className="btn primary" disabled={busy || preparing > 0}>{busy ? "Submitting and checking" : preparing > 0 ? "Getting photos ready" : "Submit activation"}</button>
     </form>
   );
 }

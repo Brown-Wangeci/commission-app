@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { badRequest } from "@/lib/http/errors";
+import { ApiError, badRequest } from "@/lib/http/errors";
 import { MAX_JOB_PHOTOS } from "@/lib/evidence/fields";
+import { REQUEST_BODY_LIMIT_BYTES, TOO_LARGE_MESSAGE } from "@/lib/evidence/photo-limits";
 import { idSchema, latitudeSchema, longitudeSchema } from "@/lib/validation";
 import type { PhotoInput, SubmissionInput } from "./submit";
 
@@ -82,10 +83,22 @@ function photosFor(form: FormData, key: string): PhotoInput[] {
   return photosNamed(form, `photos:${key}`, `photoMeta:${key}`);
 }
 
+/**
+ * Refuses photos that together exceed the platform's request body limit. On
+ * Vercel such a request never reaches this code (the platform answers 413
+ * first); this keeps any other host consistent, and the per-file limit in
+ * storage.ts still applies on top.
+ */
+export function assertPhotoBytes(photos: PhotoInput[]): void {
+  const total = photos.reduce((sum, photo) => sum + photo.file.size, 0);
+  if (total > REQUEST_BODY_LIMIT_BYTES) throw new ApiError(413, "payload_too_large", TOO_LARGE_MESSAGE);
+}
+
 /** The photos of an evidence-request reply ("photos" and "photoMeta"), which belong to no field. */
 export function photoInputs(form: FormData): PhotoInput[] {
   const photos = photosNamed(form, "photos", "photoMeta");
   if (photos.length > MAX_JOB_PHOTOS) throw badRequest(`Attach at most ${MAX_JOB_PHOTOS} photos.`);
+  assertPhotoBytes(photos);
   return photos;
 }
 
@@ -106,6 +119,7 @@ export function parseSubmissionForm(form: FormData, agentId: string): Submission
   }
   const total = Object.values(photos).reduce((sum, list) => sum + list.length, 0);
   if (total > MAX_JOB_PHOTOS + 1) throw badRequest(`Attach at most ${MAX_JOB_PHOTOS} photos and one proof of activation.`);
+  assertPhotoBytes(Object.values(photos).flat());
   return {
     agentId,
     assignmentId: context.assignmentId,

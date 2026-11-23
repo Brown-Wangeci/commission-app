@@ -1,3 +1,5 @@
+import { TOO_LARGE_MESSAGE } from "@/lib/evidence/photo-limits";
+
 /**
  * Browser-side helper for calling the app's own API routes. Turns the
  * standard error body into a message and per-field errors a form can show.
@@ -23,10 +25,12 @@ async function parse<T>(response: Response): Promise<ApiResult<T>> {
   const body: unknown = await response.json().catch(() => null);
   if (response.ok) return { ok: true, data: body as T };
   const error = (body as { error?: { message?: string; details?: unknown } } | null)?.error;
+  // Vercel answers an oversize body with a plain 413 before the app runs, so there is no JSON message to show.
+  const message = response.status === 413 ? TOO_LARGE_MESSAGE : error?.message ?? `Request failed (${response.status}).`;
   return {
     ok: false,
     status: response.status,
-    message: error?.message ?? `Request failed (${response.status}).`,
+    message,
     fieldErrors: toFieldErrors(error?.details),
   };
 }

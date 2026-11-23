@@ -1,14 +1,14 @@
 import type { ChangeEvent } from "react";
 import { describeFormat, type FieldDefinition } from "@/lib/evidence/fields";
 
-export type AttachedPhoto = { name: string; located: boolean };
+export type AttachedPhoto = { name: string; located: boolean; sizeBytes?: number };
 
 type Props = {
   fields: FieldDefinition[];
   /** An error message per field key. */
   errors: Record<string, string>;
   photos: Record<string, AttachedPhoto[]>;
-  onAddPhotos?: (key: string, files: File[]) => void;
+  onAddPhotos?: (key: string, files: File[]) => void | Promise<void>;
   onRemovePhoto?: (key: string, index: number) => void;
   /** Whether the device has a location fix to stamp new photos with. */
   locationKnown: boolean;
@@ -56,7 +56,7 @@ function inputFor(field: FieldDefinition, today: string) {
 function PhotoField({ field, attached, onAdd, onRemove, locationKnown }: {
   field: Extract<FieldDefinition, { type: "photo" }>;
   attached: AttachedPhoto[];
-  onAdd?: (files: File[]) => void;
+  onAdd?: (files: File[]) => void | Promise<void>;
   onRemove?: (index: number) => void;
   locationKnown: boolean;
 }) {
@@ -76,7 +76,7 @@ function PhotoField({ field, attached, onAdd, onRemove, locationKnown }: {
         <ul className="small" style={{ margin: 0, paddingLeft: 18 }}>
           {attached.map((photo, index) => (
             <li key={index}>
-              {photo.name} {photo.located ? "" : "(no location)"}{" "}
+              {photo.name}{photo.sizeBytes === undefined ? "" : ` (${(photo.sizeBytes / 1_000_000).toFixed(1)} MB)`} {photo.located ? "" : "(no location)"}{" "}
               <button type="button" className="linkbutton" onClick={() => onRemove?.(index)}>remove</button>
             </li>
           ))}
