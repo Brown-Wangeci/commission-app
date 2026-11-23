@@ -1,9 +1,9 @@
 # Hosted deployment evidence
 
-Evidence from running Ledgerfield as a hosted system on 15 and 16 November
+Evidence from running Ledgerfield as a hosted system on 15, 16 and 23 November
 2026, and what each file shows. The hosted app is
 `https://commission-app-ten-pied.vercel.app`; the services are listed in
-`../../environment.md`, "Hosted deployment". All timestamps are UTC. Every file
+`../../environment.md`, "Hosted deployment". All timestamps are UTC, except in `step18/README.md`, which uses EAT (its JSON gives both). Every file
 was checked for secrets, phone numbers and local paths before it was
 committed; identifiers that can carry a phone number are masked.
 
@@ -23,20 +23,27 @@ the local setup (`scripts/demo-start`) remains the fallback.
 | `ir09/` | Plain HTTP answers 308 to HTTPS for every path including POST; HTTPS responses carry HSTS; TLS 1.3, valid certificate | A packet capture; hops other than browser to Vercel |
 | `mpesa/` | The callback origin the app builds, and that forged or unsigned callbacks get 401. `callback-delivery-experiment.md`: Daraja delivered callbacks to a tunnel and to the hosted origin within about 10 s, and Vercel blocked nothing | **Why the 15 November STK and B2C callbacks never arrived (unexplained, see below)** |
 | `performance/` | NFR-01 on the hosted app (99.35% within 2 s, 100 users) and NFR-02 on the hosted scoring service. See its README for what is and is not comparable with the local figures | NFR-02 at the dataset's history size over the internet |
+| `step18/` | One hosted STK Push credited and one hosted B2C payout paid, each by a real callback with ResultCode 0 and no status query, 23 November, from the hosted database (read only). Timeline, verdict, masking | Failure, retry and reconciliation paths (only the success path ran); which origin received the callbacks (not stored, request log not collected) |
 
 ## M-Pesa: what was and was not shown
 
 - Shown: the hosted origin accepts only correctly signed callbacks (401
   otherwise); Daraja reaches that origin; the app credits only by a verified
   callback.
-- Not shown: a hosted STK Push or B2C payout settling through a real signed
-  callback. The two STK Pushes of 15 November and one B2C payout were accepted
-  by Daraja and no callback reached the app; one of the STK payments completed
-  about 20 hours later on Safaricom's side and was reversed 50 minutes after
-  that. The cause is not known. The app's handling of this is
-  `../../defects.md` items 10 to 14.
-- The local, tunnelled run of 8 November (`../mpesa/run-2026-11-08*`) remains
-  the end-to-end demonstration.
+- Shown on 23 November (`step18/`): a hosted STK Push of KSh 10 credited the
+  escrow by a verified callback (ResultCode 0, 8.3 s after the request) and a
+  hosted B2C payout of KSh 10 was marked paid by the B2C result callback
+  (ResultCode 0), with no status query used for either.
+- Not shown: why the 15 November callbacks never arrived. The two STK Pushes
+  of 15 November and one B2C payout were accepted by Daraja and no callback
+  reached the app; one of the STK payments completed about 20 hours later on
+  Safaricom's side and was reversed 50 minutes after that. The cause is not
+  known; the 23 November callbacks arrived within seconds. The app's handling
+  of the 15 November failures is `../../defects.md` items 10 to 14.
+- Not shown: a hosted failure, retry or reconciliation run end to end; the
+  23 November test ran only the success path.
+- The local, tunnelled run of 8 November (`../mpesa/run-2026-11-08*`) and the
+  hosted run of 23 November (`step18/`) are the end-to-end demonstrations.
 
 ## Changes that came out of it
 

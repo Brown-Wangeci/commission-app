@@ -1,0 +1,110 @@
+{
+  "cutoff": "2026-11-23T00:00:00+03:00",
+  "attempts": [
+    {
+      "fundingAttempt": {
+        "id": "cmwt418bz0001jj071w1rl095",
+        "amountKsh": 10,
+        "status": "confirmed",
+        "createdAt": {
+          "utc": "2026-11-23T07:15:39.877Z",
+          "eat": "2026-11-23T10:15:39.877+03:00"
+        },
+        "resolvedAt": {
+          "utc": "2026-11-23T07:15:48.169Z",
+          "eat": "2026-11-23T10:15:48.169+03:00"
+        },
+        "updatedAt": {
+          "utc": "2026-11-23T07:15:48.208Z",
+          "eat": "2026-11-23T10:15:48.208+03:00"
+        },
+        "sendCount": 1,
+        "queryCount": 0,
+        "noAnswerCount": 0,
+        "resultCode_setOnlyByCallback": "0",
+        "failureReason": null,
+        "lastError": null,
+        "receiptMasked": "****SDPD",
+        "merchantRequestIdMasked": "****719353",
+        "checkoutRequestIdMasked": "****154542",
+        "escalatedAt": null,
+        "reconcileUntil": null
+      },
+      "paymentStatusChecks": [],
+      "paymentCallbacks": [
+        {
+          "kind": "stk",
+          "outcome": "applied",
+          "resultCode": "0",
+          "note": null,
+          "deliveries": 1,
+          "firstReceivedAt": {
+            "utc": "2026-11-23T07:15:48.173Z",
+            "eat": "2026-11-23T10:15:48.173+03:00"
+          },
+          "lastReceivedAt": {
+            "utc": "2026-11-23T07:15:48.173Z",
+            "eat": "2026-11-23T10:15:48.173+03:00"
+          },
+          "summary": {
+            "receipt": "****SDPD",
+            "resultCode": "0",
+            "resultDesc": "The service request is processed successfully.",
+            "amountCents": 1000,
+            "conversationId": null,
+            "transactionStatus": null
+          }
+        }
+      ],
+      "escrowDeposit": [
+        {
+          "id": "cmwt41erg0003jj079t45nfby",
+          "amountKsh": 10,
+          "createdAt": {
+            "utc": "2026-11-23T07:15:48.169Z",
+            "eat": "2026-11-23T10:15:48.169+03:00"
+          },
+          "fundingAttemptId": "cmwt418bz0001jj071w1rl095"
+        }
+      ],
+      "notifications": [
+        {
+          "kind": "funding_confirmed",
+          "createdAt": {
+            "utc": "2026-11-23T07:15:48.232Z",
+            "eat": "2026-11-23T10:15:48.232+03:00"
+          }
+        }
+      ],
+      "auditEvents": [
+        {
+          "id": "960",
+          "at": {
+            "utc": "2026-11-23T07:15:39.877Z",
+            "eat": "2026-11-23T10:15:39.877+03:00"
+          },
+          "kind": "funding_requested",
+          "fromState": null,
+          "toState": null,
+          "detail": "KSh 10.00 requested by M-Pesa. Nothing is credited until M-Pesa confirms it.",
+          "chainSequence": "960",
+          "chainHashPrefix": "18b5b6539e56"
+        },
+        {
+          "id": "961",
+          "at": {
+            "utc": "2026-11-23T07:15:48.169Z",
+            "eat": "2026-11-23T10:15:48.169+03:00"
+          },
+          "kind": "escrow_funded",
+          "fromState": null,
+          "toState": null,
+          "detail": "KSh 10.00 deposited into the client's escrow.",
+          "chainSequence": "961",
+          "chainHashPrefix": "ce65672d8d9f"
+        }
+      ],
+      "depositsForThisClientSinceCutoff": 1
+    }
+  ]
+}
