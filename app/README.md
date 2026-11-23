@@ -242,9 +242,11 @@ DEMO.md.
 **Hosted deployment:** made on 2026-11-15 (Vercel, Neon, Vercel Blob, Render,
 cron-job.org, Polygon Amoy, Daraja sandbox) and verified; the evidence is in
 [docs/chapter5/evidence/hosted/](../docs/chapter5/evidence/hosted/README.md).
-**Not shown there:** a hosted M-Pesa payment settling through a real callback
-(the callbacks of 2026-11-15 never arrived, cause unknown), and hosted
-behaviour on mobile data or beyond the free plans. The local setup
+**Shown there:** on 2026-11-23 a hosted STK Push credited the escrow and a
+hosted B2C payout was paid, each by a real callback with ResultCode 0
+(`evidence/hosted/step18`). **Not shown there:** why the callbacks of
+2026-11-15 never arrived (cause unknown), a hosted failure or retry run end to
+end, and hosted behaviour on mobile data or beyond the free plans. The local setup
 (docs/RUNBOOK.md) is the fallback for a live demonstration.
 
 ## Money

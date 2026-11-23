@@ -2,8 +2,13 @@
 
 One STK Push (funding) and one B2C payout (disbursement) run on the hosted
 deployment against the Safaricom Daraja sandbox, and what the hosted Neon
-database recorded for them. All times are EAT (UTC+3); the JSON files give UTC
-and EAT for every timestamp.
+database recorded for them. All times are UTC, with EAT (UTC+3) beside them;
+the JSON files give both for every timestamp. The database stores timestamps
+as `timestamp without time zone` holding UTC (the server's `TimeZone` is UTC),
+so `10:15:39.877` in the raw row is 13:15:39 EAT. The first version of this
+folder labelled those UTC values as EAT because the reading client's zone was
+EAT; the tester's own account of funding at about 13:15 EAT and the audit
+text's "13:43" retry (EAT) both agree with the UTC reading.
 
 ## Verdict
 
@@ -30,31 +35,35 @@ Why each is a callback and not a status query, from the records:
 
 Funding attempt `cmwt418bz0001jj071w1rl095`, KSh 10.00, receipt ending SDPD.
 
-| Time (EAT) | Event | Source |
+| Time (UTC, EAT beside) | Event | Source |
 |---|---|---|
-| 10:15:39.877 | Attempt created, `queued`; audit event 960 `funding_requested` | FundingAttempt.createdAt, AuditEvent |
+| 10:15:39.877 UTC (13:15:39 EAT) | Attempt created, `queued`; audit event 960 `funding_requested` | FundingAttempt.createdAt, AuditEvent |
 | (not recorded) | Sent to Daraja once (`sendCount` 1), which gave a MerchantRequestID and CheckoutRequestID; status `pending` | FundingAttempt |
-| 10:15:48.169 | Status `confirmed`; deposit of KSh 10.00 created; audit event 961 `escrow_funded` | FundingAttempt.resolvedAt, EscrowDeposit, AuditEvent |
-| 10:15:48.173 | Callback `stk` first received, outcome `applied`, ResultCode 0, "The service request is processed successfully.", amount 1000 cents, 1 delivery | PaymentCallback |
-| 10:15:48.232 | Notification `funding_confirmed` | Notification |
+| 10:15:48.169 UTC (13:15:48 EAT) | Status `confirmed`; deposit of KSh 10.00 created; audit event 961 `escrow_funded` | FundingAttempt.resolvedAt, EscrowDeposit, AuditEvent |
+| 10:15:48.173 UTC (13:15:48 EAT) | Callback `stk` first received, outcome `applied`, ResultCode 0, "The service request is processed successfully.", amount 1000 cents, 1 delivery | PaymentCallback |
+| 10:15:48.232 UTC (13:15:48 EAT) | Notification `funding_confirmed` | Notification |
 
 ## Payout leg
 
 Disbursement `cmwt58lkx0005l408pwh7y6b3` for activation LF-000065, generation
 1, KSh 10.00, receipt ending GGWK.
 
-| Time (EAT) | Event | Source |
+| Time (UTC, EAT beside) | Event | Source |
 |---|---|---|
-| 10:42:00.260 | LF-000065 submitted (events 965, 966). T0 could not be scored (timeout, 15000 ms) and the activation went to a reviewer (967, 968) | AuditEvent |
-| 10:43:00.630 | T0 scored, advisory: band `auto_release`, probability 0.117 (event 969) | AuditEvent |
-| 10:49:23.179 | Reviewer approved, reason "Verified evidence" (970); commission KSh 10.00 computed; payout authorised via daraja (971); disbursement created `queued` | AuditEvent, Commission, PayoutAuthorisation, Disbursement.createdAt |
-| 10:50:02.677 | Daraja accepted the B2C instruction (`acceptedAt`, `sendCount` 1) | Disbursement |
-| 10:50:07.837 | Status `paid`, ResultCode 0; audit event 972 `payout_paid` | Disbursement.resolvedAt, AuditEvent |
-| 10:50:07.843 | Callback `b2c-result` first received, outcome `applied`, ResultCode 0, "The service request is processed successfully.", amount 1000 cents, 1 delivery | PaymentCallback |
-| 10:50:07.894 | Notification `payout_paid` to the agent | Notification |
+| 10:42:00.260 UTC (13:42:00 EAT) | LF-000065 submitted (events 965, 966). T0 could not be scored (timeout, 15000 ms) and the activation went to a reviewer (967, 968) | AuditEvent |
+| 10:43:00.630 UTC (13:43:00 EAT) | T0 scored, advisory: band `auto_release`, probability 0.117 (event 969) | AuditEvent |
+| 10:49:23.179 UTC (13:49:23 EAT) | Reviewer approved, reason "Verified evidence" (970); commission KSh 10.00 computed; payout authorised via daraja (971); disbursement created `queued` | AuditEvent, Commission, PayoutAuthorisation, Disbursement.createdAt |
+| 10:50:02.677 UTC (13:50:02 EAT) | Daraja accepted the B2C instruction (`acceptedAt`, `sendCount` 1) | Disbursement |
+| 10:50:07.837 UTC (13:50:07 EAT) | Status `paid`, ResultCode 0; audit event 972 `payout_paid` | Disbursement.resolvedAt, AuditEvent |
+| 10:50:07.843 UTC (13:50:07 EAT) | Callback `b2c-result` first received, outcome `applied`, ResultCode 0, "The service request is processed successfully.", amount 1000 cents, 1 delivery | PaymentCallback |
+| 10:50:07.894 UTC (13:50:07 EAT) | Notification `payout_paid` to the agent | Notification |
 
 Request to payment: 44.7 s from approval. 39.5 s of that was the wait until
 the scheduler sent the instruction (the payments cron runs every minute).
+
+Two of the audit times above are the start of the run, not the moment of the
+event: the T0 failure (968) happened at about 10:42:48 UTC and the T0 score
+(969) at 10:43:45 UTC. See `cron-failure.md`.
 
 ## What the records do not show
 
@@ -79,9 +88,9 @@ the scheduler sent the instruction (the payments cron runs every minute).
 Read only, from `app/` with the production settings pulled by `vercel env pull`
 (not committed, never printed): every query ran inside `BEGIN READ ONLY` and
 was rolled back, and nothing in the database was changed or retried. The rows
-are the funding attempts and disbursements created after 2026-11-15 20:17 EAT,
-which is one of each; any cutoff between that time and 2026-11-23 10:15 EAT
-gives the same two. Audit events are the ones for the funding attempt's
+are the funding attempts and disbursements created after 2026-11-15 20:17 UTC
+(23:17 EAT), which is one of each; any cutoff between that time and
+2026-11-23 10:15 UTC (13:15 EAT) gives the same two. Audit events are the ones for the funding attempt's
 requester in its time window, and every event of LF-000065.
 
 Masking: receipts keep their last 4 characters; Daraja MerchantRequestID,

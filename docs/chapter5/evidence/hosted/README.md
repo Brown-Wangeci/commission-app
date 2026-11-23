@@ -3,7 +3,7 @@
 Evidence from running Ledgerfield as a hosted system on 15, 16 and 23 November
 2026, and what each file shows. The hosted app is
 `https://commission-app-ten-pied.vercel.app`; the services are listed in
-`../../environment.md`, "Hosted deployment". All timestamps are UTC, except in `step18/README.md`, which uses EAT (its JSON gives both). Every file
+`../../environment.md`, "Hosted deployment". All timestamps are UTC, in `step18/` too, where EAT is given beside them (its JSON gives both). Every file
 was checked for secrets, phone numbers and local paths before it was
 committed; identifiers that can carry a phone number are masked.
 
