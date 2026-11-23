@@ -75,6 +75,11 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   origin within seconds, so the cause is not a blocked or unreachable origin.
   A delay on Safaricom's side is the leading explanation and is not proven
   (`docs/chapter5/evidence/hosted/mpesa/callback-delivery-experiment.md`).
+  On 2026-11-23 a hosted STK Push and a hosted B2C payout each received their
+  callback within seconds and settled with ResultCode 0, with no status query
+  (`docs/chapter5/evidence/hosted/step18/`). That shows delivery to the hosted
+  origin works; it does not explain 15 November. Only the success path was
+  run: no hosted failure, retry or reconciliation was exercised on that day.
 
 - **Reconciliation is shown on the hosted app only for a failed funding
   attempt that Daraja answered with a non-success, an unanswered check, and a

@@ -1,0 +1,212 @@
+{
+  "cutoff": "2026-11-23T00:00:00+03:00",
+  "payouts": [
+    {
+      "disbursement": {
+        "id": "cmwt58lkx0005l408pwh7y6b3",
+        "generation": 1,
+        "amountKsh": 10,
+        "status": "paid",
+        "createdAt": {
+          "utc": "2026-11-23T07:49:23.179Z",
+          "eat": "2026-11-23T10:49:23.179+03:00"
+        },
+        "acceptedAt": {
+          "utc": "2026-11-23T07:50:02.677Z",
+          "eat": "2026-11-23T10:50:02.677+03:00"
+        },
+        "resolvedAt": {
+          "utc": "2026-11-23T07:50:07.837Z",
+          "eat": "2026-11-23T10:50:07.837+03:00"
+        },
+        "updatedAt": {
+          "utc": "2026-11-23T07:50:07.873Z",
+          "eat": "2026-11-23T10:50:07.873+03:00"
+        },
+        "sendCount": 1,
+        "queryCount": 0,
+        "noAnswerCount": 0,
+        "resultCode": "0",
+        "failureReason": null,
+        "lastError": null,
+        "receiptMasked": "****GGWK",
+        "conversationIdMasked": "****vbbbmb",
+        "escalatedAt": null,
+        "reconcileUntil": null
+      },
+      "activation": {
+        "id": "306e59bb-5359-4f40-82e8-58f37e9c278c",
+        "reference": "LF-000065",
+        "state": "approved",
+        "createdAt": {
+          "utc": "2026-11-23T07:42:02.004Z",
+          "eat": "2026-11-23T10:42:02.004+03:00"
+        }
+      },
+      "commission": {
+        "id": "cmwt58lki0001l4082kf37kjb",
+        "submissionValueCents": 10000,
+        "commissionRateBps": 1000,
+        "rateComponentCents": 1000,
+        "flatCommissionCents": 0,
+        "amountKsh": 10,
+        "roundedOffCents": 0,
+        "computedAt": {
+          "utc": "2026-11-23T07:49:23.179Z",
+          "eat": "2026-11-23T10:49:23.179+03:00"
+        }
+      },
+      "authorisation": {
+        "id": "cmwt58lkp0003l408w48wm70a",
+        "amountKsh": 10,
+        "authorisedAt": {
+          "utc": "2026-11-23T07:49:23.179Z",
+          "eat": "2026-11-23T10:49:23.179+03:00"
+        },
+        "provider": "daraja",
+        "hasProviderRef": true
+      },
+      "paymentStatusChecks": [],
+      "paymentCallbacks": [
+        {
+          "kind": "b2c-result",
+          "outcome": "applied",
+          "resultCode": "0",
+          "note": null,
+          "deliveries": 1,
+          "firstReceivedAt": {
+            "utc": "2026-11-23T07:50:07.843Z",
+            "eat": "2026-11-23T10:50:07.843+03:00"
+          },
+          "lastReceivedAt": {
+            "utc": "2026-11-23T07:50:07.843Z",
+            "eat": "2026-11-23T10:50:07.843+03:00"
+          },
+          "summary": {
+            "receipt": "****GGWK",
+            "resultCode": "0",
+            "resultDesc": "The service request is processed successfully.",
+            "amountCents": 1000,
+            "conversationId": "****vbbbmb",
+            "transactionStatus": null
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "kind": "payout_paid",
+          "createdAt": {
+            "utc": "2026-11-23T07:50:07.894Z",
+            "eat": "2026-11-23T10:50:07.894+03:00"
+          }
+        }
+      ],
+      "auditEvents": [
+        {
+          "id": "965",
+          "at": {
+            "utc": "2026-11-23T07:42:00.260Z",
+            "eat": "2026-11-23T10:42:00.260+03:00"
+          },
+          "kind": "transition",
+          "fromState": null,
+          "toState": "submitted",
+          "detail": "Submitted with 2 photo(s) against evidence configuration version 1.",
+          "chainSequence": "965",
+          "chainHashPrefix": "b79a756ee91e"
+        },
+        {
+          "id": "966",
+          "at": {
+            "utc": "2026-11-23T07:42:00.260Z",
+            "eat": "2026-11-23T10:42:00.260+03:00"
+          },
+          "kind": "activation_submitted",
+          "fromState": null,
+          "toState": null,
+          "detail": "LF-000065 submitted for job \"M-Pesa Agent Till Activation \u2013 Madaraka\" with 2 photo(s), against evidence configuration version 1.",
+          "chainSequence": "966",
+          "chainHashPrefix": "cc9745d407a2"
+        },
+        {
+          "id": "967",
+          "at": {
+            "utc": "2026-11-23T07:42:00.260Z",
+            "eat": "2026-11-23T10:42:00.260+03:00"
+          },
+          "kind": "transition",
+          "fromState": "submitted",
+          "toState": "in_review",
+          "detail": "Could not be scored at submission (T0) (timeout). Sent to a reviewer; never auto-released.",
+          "chainSequence": "967",
+          "chainHashPrefix": "c4862a0a52eb"
+        },
+        {
+          "id": "968",
+          "at": {
+            "utc": "2026-11-23T07:42:00.260Z",
+            "eat": "2026-11-23T10:42:00.260+03:00"
+          },
+          "kind": "scoring_failed",
+          "fromState": null,
+          "toState": null,
+          "detail": "T0 could not be scored (timeout: no response within 15000 ms). Next automatic retry 23 Nov 2026 at 13:43.",
+          "chainSequence": "968",
+          "chainHashPrefix": "d79e3562c5d3"
+        },
+        {
+          "id": "969",
+          "at": {
+            "utc": "2026-11-23T07:43:00.630Z",
+            "eat": "2026-11-23T10:43:00.630+03:00"
+          },
+          "kind": "scoring_decision",
+          "fromState": null,
+          "toState": null,
+          "detail": "T0 scored (advisory): band auto_release, probability 0.117, thresholds 0.301 / 0.729.",
+          "chainSequence": "969",
+          "chainHashPrefix": "17cab50aad3d"
+        },
+        {
+          "id": "970",
+          "at": {
+            "utc": "2026-11-23T07:49:23.179Z",
+            "eat": "2026-11-23T10:49:23.179+03:00"
+          },
+          "kind": "transition",
+          "fromState": "in_review",
+          "toState": "approved",
+          "detail": "Verified evidence",
+          "chainSequence": "970",
+          "chainHashPrefix": "cd3a95a45e80"
+        },
+        {
+          "id": "971",
+          "at": {
+            "utc": "2026-11-23T07:49:23.179Z",
+            "eat": "2026-11-23T10:49:23.179+03:00"
+          },
+          "kind": "payout_authorised",
+          "fromState": null,
+          "toState": null,
+          "detail": "KSh 10.00 to 07******149 authorised via daraja: KSh 100.00 \u00d7 10.00% = KSh 10.00.",
+          "chainSequence": "971",
+          "chainHashPrefix": "93c1f06cc428"
+        },
+        {
+          "id": "972",
+          "at": {
+            "utc": "2026-11-23T07:50:07.837Z",
+            "eat": "2026-11-23T10:50:07.837+03:00"
+          },
+          "kind": "payout_paid",
+          "fromState": null,
+          "toState": null,
+          "detail": "KSh 10.00 paid by M-Pesa, receipt ****GGWK.",
+          "chainSequence": "972",
+          "chainHashPrefix": "80d277d8bb06"
+        }
+      ]
+    }
+  ]
+}

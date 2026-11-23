@@ -1,18 +1,28 @@
 # Blockchain anchoring evidence
 
-## Status: anchored on a LOCAL chain, not on Polygon Amoy
+## Status: anchoring and verification ran on Polygon Amoy; the tamper test ran on a local node only
 
-**The run in `local-anvil-2026-11-08` used a local Anvil node (chain id 31337),
-not the public Polygon Amoy test network.** No Amoy wallet credentials were
-available when it was captured: the root `.env` had no `POLYGON_` settings. As
-instructed for that case, the run used a local node with every interface
-unchanged: the same contract bytecode, the same viem client, the same queue
-and the same verifier the app uses against Amoy. There are therefore **no
-Amoy explorer links**. Nothing here is on a public chain, and anyone wanting
-public, third-party-checkable anchors must repeat the run on Amoy (below).
+**Two sets of evidence exist, on two chains.**
 
-IR-04 names "Test on the test network" as its verification. A local node is not
-that network, so IR-04 stays partially met until the Amoy run exists.
+- **Polygon Amoy (chain 80002), 2026-11-15:** `docs/chapter5/evidence/hosted/anchoring/`
+  holds the deployment of `AuditAnchor` (`01-deployment.json`), one batch of 709
+  audit events anchored in one transaction (`02-batch1-onchain.json`,
+  `03-polygonscan-page-extract.txt`), and the verification of one activation's
+  10 events against the root on chain (`verify-LF-000050.json`). Amoy is a test
+  network, not Polygon mainnet.
+- **Local Anvil node (chain id 31337), 2026-11-08:** the run in
+  `local-anvil-2026-11-08`, described below. It was made first, when no Amoy
+  wallet was available, with the same contract bytecode, viem client, queue and
+  verifier the app uses against Amoy. It is the only place the tamper-detection
+  tests (`04` and `05` below) were run. That is deliberate: the script that runs
+  them (`npm run anchor:evidence`) rewrites audit events on purpose, so it
+  refuses any database that is not a scratch one (name starting with
+  `ledgerfield_evidence`), and the hosted database was never touched. No tamper
+  test has been run against Amoy.
+
+IR-04 names "Test on the test network" as its verification. Its current status
+in `docs/chapter5/requirements_traceability.csv` is **met**, on the strength of
+the Amoy evidence above.
 
 ## local-anvil-2026-11-08
 
@@ -34,7 +44,11 @@ The deployer is Anvil's first default account, a publicly known development
 account. Its private key is not in any file here; the evidence was scanned for
 it.
 
-## To repeat the run on Polygon Amoy
+## To run the tamper tests on Polygon Amoy as well
+
+Steps 1 and 2 were already done for the hosted deployment (see
+`../hosted/anchoring/`); they are repeated here only so that a scratch run
+uses its own contract. Only step 3 has never been run against Amoy.
 
 1. Fund an Amoy wallet and set `POLYGON_RPC_URL`, `POLYGON_CHAIN_ID=80002` and
    `POLYGON_PRIVATE_KEY` in the root `.env`.
