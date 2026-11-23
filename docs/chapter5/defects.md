@@ -466,3 +466,48 @@ check.
 
 No test asserted on any wording or layout the pass changed, other than the four
 password fixtures above.
+
+## 17. The scoring cron request can outlast the scheduler's timeout, 23 November 2026
+
+**Status: open, not fixed, awaiting the owner's decision.**
+
+**What happened.** cron-job.org reported the scoring job as failed at about
+10:43 UTC (13:43 EAT) while the app completed the work: LF-000065's T0 retry
+succeeded at 10:43:45 UTC. Evidence: `evidence/hosted/step18/cron-failure.md`.
+
+**Cause.** `/api/cron/scoring` makes up to three calls of up to 15 s for each
+due job, so one job holds the request for up to 46.5 s when the scoring
+service is slow; here the request lasted about 45 s. cron-job.org probably
+waits about 30 s (its documentation as recalled, not verified against its
+execution history). The route's own budget is 240 s.
+
+**Effect.** False failure notices; no data lost or duplicated. A real failure
+would look the same in the notice.
+
+**Options, none applied.** One attempt per job inside the cron route (the job
+queue already retries on the next run); a shorter timeout on the cron path; or
+answering the cron request before the work finishes.
+
+## 18. Scoring runner timestamps use the run's start time, 23 November 2026
+
+**Status: open, not fixed, awaiting the owner's decision.**
+
+**What happened.** For LF-000065 the audit event `scoring_failed` (968) is
+stamped 10:42:00.260 UTC but happened at about 10:42:48.6, and
+`scoring_decision` (969) is stamped 10:43:00.630 but the score finished at
+10:43:45.71 (`ScoringDecision.scoredAt`, which is correct). The retry after the
+inline failure was due at 10:43:00.26, 12 s later, not the 60 s the setting
+intends.
+
+**Cause.** `runScoringJob` takes one `now` (the submission time, or the cron
+run's start) and `onFailure`, `onSuccess` and `rescheduleAfterFailure` use it
+for audit times and the next due time, although the calls inside took up to
+46.5 s.
+
+**Effect.** Audit times are early by the duration of the scoring calls, and
+in a long cron batch by the time spent on earlier jobs; the audit chain
+records them as written. Retries come sooner than intended. Neither changed a
+decision.
+
+**Options, none applied.** Read the clock when each event is written; compute
+the retry from that time.
