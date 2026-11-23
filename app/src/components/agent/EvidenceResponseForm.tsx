@@ -3,6 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postForm } from "@/lib/client-api";
+import { MAX_JOB_PHOTOS } from "@/lib/evidence/fields";
+import { budgetProblem, photoShare, photoTooBigMessage } from "@/lib/evidence/photo-limits";
+import { shrinkPhoto } from "@/lib/evidence/photo-resize";
 
 type Fix = { lat: number; lon: number; accuracy: number };
 
@@ -12,6 +15,18 @@ export function EvidenceResponseForm({ activationId }: { activationId: string })
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [preparing, setPreparing] = useState(false);
+
+  /** Shrinks each chosen photo in the browser (defect 16); the shrunk file keeps the original's modified time, which is the capture time sent below. */
+  async function choose(chosen: File[]) {
+    setError(null);
+    setPreparing(true);
+    const prepared = await Promise.all(chosen.map((file) => shrinkPhoto(file, photoShare(MAX_JOB_PHOTOS))));
+    setPreparing(false);
+    const refused = prepared.findIndex((p) => !p.fits);
+    if (refused >= 0) setError(photoTooBigMessage(chosen[refused].name));
+    setFiles(prepared.filter((p) => p.fits).map((p) => p.file));
+  }
 
   async function currentFix(): Promise<Fix | null> {
     if (!navigator.geolocation) return null;
@@ -27,6 +42,11 @@ export function EvidenceResponseForm({ activationId }: { activationId: string })
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const note = String(new FormData(event.currentTarget).get("note") ?? "");
+    const tooBig = budgetProblem(files.reduce((sum, file) => sum + file.size, 0));
+    if (tooBig) {
+      setError(tooBig);
+      return;
+    }
     setBusy(true);
     setError(null);
     const fix = await currentFix();
@@ -55,11 +75,11 @@ export function EvidenceResponseForm({ activationId }: { activationId: string })
       </div>
       <div className="field">
         <label htmlFor="responsePhotos">Photos ({files.length})</label>
-        <input id="responsePhotos" type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onChange={(e) => setFiles(Array.from(e.target.files ?? []))} />
+        <input id="responsePhotos" type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onChange={(e) => { void choose(Array.from(e.target.files ?? [])); }} />
         <span className="hint">Add a note, photos, or both. Your submission goes back to the reviewer when you send this.</span>
       </div>
       {error && <div className="alert error" role="alert">{error}</div>}
-      <button type="submit" className="btn primary" disabled={busy}>{busy ? "Sending" : "Send to the reviewer"}</button>
+      <button type="submit" className="btn primary" disabled={busy || preparing}>{busy ? "Sending" : preparing ? "Getting photos ready" : "Send to the reviewer"}</button>
     </form>
   );
 }
