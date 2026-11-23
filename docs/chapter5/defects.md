@@ -467,6 +467,50 @@ check.
 No test asserted on any wording or layout the pass changed, other than the four
 password fixtures above.
 
+## 16. Phone-camera photos exceed the platform's request limit, 23 November 2026
+
+**What happened.** On the hosted app two photos from an Android phone camera
+(capture forced, so no file picker) made the submission fail. The agent saw only
+"Request failed (413)." with nothing to act on.
+
+**Cause.** Vercel refuses a request body over about 4.5 MB before the app runs.
+The form sent each photo at the size the camera produced (3 to 8 MB), and the
+only server-side limit was 8 MB per file with no total, so a request could pass
+the app's check and still be refused by the platform. The platform's 413 has no
+JSON body, so the form's message fell back to the status number. Tests could
+not catch it because they upload small fixtures, and the local setup has no
+such limit.
+
+**Fix.**
+- Each photo is scaled and re-encoded in the browser before upload: longest
+  side at most 1600 px, JPEG quality 0.8 (`app/src/lib/evidence/photo-resize.ts`,
+  limits in `photo-limits.ts`). The per-photo capture time stamp is taken from
+  the original file and the shrunk file keeps its modified time; the location
+  stamp is unchanged. The camera-only input (`capture`) is unchanged. The EXIF
+  block, including any GPS tags in it, is dropped by re-encoding; the app does
+  not read EXIF for location.
+- A total budget of 3.5 MB of photos per request (assumption: 1 MB under the
+  platform limit for framing, values and metadata). Each photo gets an equal
+  share for the most photos the form allows (13 at most, so 269 KB each), and
+  if a photo is still over its share after the first attempt the encoder steps
+  down (1280 px at 0.7, 1024 at 0.6, 800 at 0.5, 640 at 0.45). A photo that
+  cannot fit is refused with its name and an instruction to retake it.
+  The submit button is held while photos are prepared, and the total is checked
+  again before sending.
+- A 413 now reads "The photos are too large to send together. Remove one or
+  more photos, or take them again, then submit again." The same shrinking, budget
+  and message apply to the reply-to-an-evidence-request form.
+- Server side: the 8 MB per-file limit stays, and photos that together exceed
+  4.5 MB are refused with 413 (`assertPhotoBytes`), which keeps any host that
+  is not Vercel consistent.
+
+**Retest.** TC-129 to TC-135 (`app/tests/photo-resize.test.ts`, 14 tests; CI run
+45174566208). The canvas path was also run in headless Chromium on a 12-megapixel
+JPEG: a 7.6 MB photo became 556 KB at 1600x1200 for a form allowing two photos,
+and 133 KB at 1024x768 for one allowing 13 (1.7 MB for all 13), with the modified
+time kept (`evidence/hosted/defect-16/`). The hosted retest with a real phone is
+recorded in the same folder once it has been run.
+
 ## 17. The scoring cron request can outlast the scheduler's timeout, 23 November 2026
 
 **Status: open, not fixed, awaiting the owner's decision.**
