@@ -136,7 +136,7 @@ All costs in units of one agent commission (`config/costs.yaml`):
 
 | Quantity | Value | Source |
 |---|---|---|
-| `false_negative` (auto-release a fraud) | 2.5 | literature (CBK 2025) for the unrecoverable share; the multiple is an assumption |
+| `false_negative` (auto-release a fraud) | 2.5 | literature (Central Bank of Kenya. (2025). Kenya financial sector stability report 2024 (published August 2025; covers 2024 and H1 2025). Financial Sector Regulators Forum. https://www.centralbank.go.ke/uploads/financial_sector_stability/1556846189_FSR%202024%20Sept.%20Final%202025.pdf; figures confirmed via press reports quoting the report) for the unrecoverable share; the multiple is an assumption |
 | `false_positive_review` (delay a genuine activation) | 0.05 | assumption, anchored to the Phase 5 measured mean review wait |
 | `false_positive_reject` (refuse a genuine activation) | 3.0 | **stated value judgement**, not measured: set above `false_negative` deliberately |
 | `review_sensitivity` (P a review catches fraud) | 0.85 | assumption |

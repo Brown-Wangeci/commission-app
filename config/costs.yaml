@@ -15,13 +15,18 @@ commission: 1.0  # controls: the unit. One correctly released genuine activation
 
 # Cost of releasing a fraudulent activation: the commission is paid out on work
 # that does not exist, the onboarding spend behind it is unrecoverable, and an
-# investigation follows. Anchored to the Central Bank of Kenya Financial Sector
-# Stability Report 2025: of KSh 1.9bn exposed to fraud in 2024, KSh 1.5bn was
-# lost and only KSh 368.8m recovered, so roughly four fifths of exposed value is
-# unrecoverable even in a regulated sector with recovery machinery. One
+# investigation follows. Anchored to: Central Bank of Kenya. (2025). Kenya
+# financial sector stability report 2024 (published August 2025; covers 2024 and
+# H1 2025). Financial Sector Regulators Forum.
+# https://www.centralbank.go.ke/uploads/financial_sector_stability/1556846189_FSR%202024%20Sept.%20Final%202025.pdf
+# Of 353 cases with KSh 1.96bn exposed to fraud, KSh 1.59bn was lost and only
+# KSh 368.8m recovered, so roughly four fifths of exposed value is
+# unrecoverable even in a regulated sector with recovery machinery. Those
+# figures are confirmed via press reports quoting the report; the PDF's table is
+# not text-extractable, so they were not read from the PDF itself. One
 # commission is paid, most of it never comes back, and the rest is the
 # onboarding and investigation the platform spends anyway.
-false_negative: 2.5  # controls: cost of auto-releasing a fraudulent activation. source: literature (CBK Financial Sector Stability Report 2025) for the unrecoverable share; the multiple itself is an assumption built on it
+false_negative: 2.5  # controls: cost of auto-releasing a fraudulent activation. source: literature (Central Bank of Kenya. (2025). Kenya financial sector stability report 2024 (published August 2025; covers 2024 and H1 2025). Financial Sector Regulators Forum. https://www.centralbank.go.ke/uploads/financial_sector_stability/1556846189_FSR%202024%20Sept.%20Final%202025.pdf) for the unrecoverable share; the multiple itself is an assumption built on it
 false_negative_range: [1.5, 4.0]  # controls: sensitivity sweep bounds. source: spec
 
 # The harm of getting a genuine activation wrong is split by band, because the
