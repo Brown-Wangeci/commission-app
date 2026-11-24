@@ -1,0 +1,260 @@
+{
+  "what": "Hosted retest of defect 16: a real phone submission to the hosted app after the fix reached production (deployment of merge commit 26dd582). Read only from the hosted database and the private Blob store; file names, storage paths and checksums are left out.",
+  "activation": {
+    "reference": "LF-000066",
+    "state": "in_review",
+    "createdAt": {
+      "utc": "2026-11-24T07:15:30.421Z",
+      "eat": "2026-11-24T10:15:30.421+03:00"
+    }
+  },
+  "jobPhotoFields": [
+    {
+      "key": "field_1",
+      "label": "Shop front photo",
+      "minCount": 1,
+      "maxCount": 3,
+      "mandatory": true
+    },
+    {
+      "key": "field_2",
+      "label": "Confirmation screen photo",
+      "minCount": 1,
+      "maxCount": 3,
+      "mandatory": true
+    }
+  ],
+  "photoLimitForThisJob": {
+    "jobPhotos": 6,
+    "proofPhotos": 1,
+    "total": 7
+  },
+  "photosStored": 7,
+  "photos": [
+    {
+      "sequence": 1,
+      "kind": "photo",
+      "field": "field_1",
+      "mimeType": "image/jpeg",
+      "storedBytes": 86675,
+      "width": 721,
+      "height": 1600,
+      "longestSidePx": 1600,
+      "exifBlock": false,
+      "sha256MatchesDatabase": true,
+      "capturedAt": {
+        "utc": "2026-11-24T07:08:13.528Z",
+        "eat": "2026-11-24T10:08:13.528+03:00"
+      },
+      "locationSource": "device",
+      "hasGps": true
+    },
+    {
+      "sequence": 2,
+      "kind": "photo",
+      "field": "field_1",
+      "mimeType": "image/jpeg",
+      "storedBytes": 74679,
+      "width": 721,
+      "height": 1600,
+      "longestSidePx": 1600,
+      "exifBlock": false,
+      "sha256MatchesDatabase": true,
+      "capturedAt": {
+        "utc": "2026-11-24T07:08:33.172Z",
+        "eat": "2026-11-24T10:08:33.172+03:00"
+      },
+      "locationSource": "device",
+      "hasGps": true
+    },
+    {
+      "sequence": 3,
+      "kind": "photo",
+      "field": "field_1",
+      "mimeType": "image/jpeg",
+      "storedBytes": 112276,
+      "width": 721,
+      "height": 1600,
+      "longestSidePx": 1600,
+      "exifBlock": false,
+      "sha256MatchesDatabase": true,
+      "capturedAt": {
+        "utc": "2026-11-24T07:08:42.348Z",
+        "eat": "2026-11-24T10:08:42.348+03:00"
+      },
+      "locationSource": "device",
+      "hasGps": true
+    },
+    {
+      "sequence": 4,
+      "kind": "photo",
+      "field": "field_2",
+      "mimeType": "image/jpeg",
+      "storedBytes": 131906,
+      "width": 721,
+      "height": 1600,
+      "longestSidePx": 1600,
+      "exifBlock": false,
+      "sha256MatchesDatabase": true,
+      "capturedAt": {
+        "utc": "2026-11-24T07:09:40.172Z",
+        "eat": "2026-11-24T10:09:40.172+03:00"
+      },
+      "locationSource": "device",
+      "hasGps": true
+    },
+    {
+      "sequence": 5,
+      "kind": "photo",
+      "field": "field_2",
+      "mimeType": "image/jpeg",
+      "storedBytes": 115566,
+      "width": 721,
+      "height": 1600,
+      "longestSidePx": 1600,
+      "exifBlock": false,
+      "sha256MatchesDatabase": true,
+      "capturedAt": {
+        "utc": "2026-11-24T07:09:49.256Z",
+        "eat": "2026-11-24T10:09:49.256+03:00"
+      },
+      "locationSource": "device",
+      "hasGps": true
+    },
+    {
+      "sequence": 6,
+      "kind": "photo",
+      "field": "field_2",
+      "mimeType": "image/jpeg",
+      "storedBytes": 76265,
+      "width": 721,
+      "height": 1600,
+      "longestSidePx": 1600,
+      "exifBlock": false,
+      "sha256MatchesDatabase": true,
+      "capturedAt": {
+        "utc": "2026-11-24T07:09:56.372Z",
+        "eat": "2026-11-24T10:09:56.372+03:00"
+      },
+      "locationSource": "device",
+      "hasGps": true
+    },
+    {
+      "sequence": 7,
+      "kind": "proof",
+      "field": "proof",
+      "mimeType": "image/jpeg",
+      "storedBytes": 170166,
+      "width": 721,
+      "height": 1600,
+      "longestSidePx": 1600,
+      "exifBlock": false,
+      "sha256MatchesDatabase": true,
+      "capturedAt": null,
+      "locationSource": "none",
+      "hasGps": false
+    }
+  ],
+  "totalStoredBytes": 767533,
+  "largestStoredBytes": 170166,
+  "smallestStoredBytes": 74679,
+  "platformRequestLimitBytes": 4500000,
+  "photoBudgetBytes": 3500000,
+  "httpOutcome": "Accepted: the activation and all 7 evidence rows exist, so the request reached the app and returned 201. Inferred from the records; the Vercel request log is not retained on the Hobby plan this long.",
+  "originalSizes": "Not recorded: the original camera files were not supplied, so sizes before shrinking are unknown.",
+  "auditEvents": [
+    {
+      "id": "999",
+      "at": {
+        "utc": "2026-11-24T07:15:25.245Z",
+        "eat": "2026-11-24T10:15:25.245+03:00"
+      },
+      "kind": "transition",
+      "fromState": null,
+      "toState": "submitted",
+      "detail": "Submitted with 6 photo(s) and proof of activation against evidence configuration version 1."
+    },
+    {
+      "id": "1000",
+      "at": {
+        "utc": "2026-11-24T07:15:25.245Z",
+        "eat": "2026-11-24T10:15:25.245+03:00"
+      },
+      "kind": "activation_submitted",
+      "fromState": null,
+      "toState": null,
+      "detail": "LF-000066 submitted for job \"M-Pesa Agent Till Activation – Madaraka\" with 6 photo(s), against evidence configuration version 1."
+    },
+    {
+      "id": "1001",
+      "at": {
+        "utc": "2026-11-24T07:15:25.245Z",
+        "eat": "2026-11-24T10:15:25.245+03:00"
+      },
+      "kind": "transition",
+      "fromState": "submitted",
+      "toState": "in_review",
+      "detail": "Could not be scored at submission (T0) (timeout). Sent to a reviewer; never auto-released."
+    },
+    {
+      "id": "1002",
+      "at": {
+        "utc": "2026-11-24T07:15:25.245Z",
+        "eat": "2026-11-24T10:15:25.245+03:00"
+      },
+      "kind": "scoring_failed",
+      "fromState": null,
+      "toState": null,
+      "detail": "T0 could not be scored (timeout: no response within 15000 ms). Next automatic retry 24 Nov 2026 at 10:16."
+    },
+    {
+      "id": "1003",
+      "at": {
+        "utc": "2026-11-24T07:17:00.703Z",
+        "eat": "2026-11-24T10:17:00.703+03:00"
+      },
+      "kind": "scoring_decision",
+      "fromState": null,
+      "toState": null,
+      "detail": "T0 scored (advisory): band auto_release, probability 0.070, thresholds 0.301 / 0.729."
+    }
+  ],
+  "scoringAttempts": [
+    {
+      "at": {
+        "utc": "2026-11-24T07:15:45.528Z",
+        "eat": "2026-11-24T10:15:45.528+03:00"
+      },
+      "outcome": "failed",
+      "errorKind": "timeout",
+      "durationMs": 15004
+    },
+    {
+      "at": {
+        "utc": "2026-11-24T07:16:01.040Z",
+        "eat": "2026-11-24T10:16:01.040+03:00"
+      },
+      "outcome": "failed",
+      "errorKind": "timeout",
+      "durationMs": 15003
+    },
+    {
+      "at": {
+        "utc": "2026-11-24T07:16:17.085Z",
+        "eat": "2026-11-24T10:16:17.085+03:00"
+      },
+      "outcome": "failed",
+      "errorKind": "timeout",
+      "durationMs": 15002
+    },
+    {
+      "at": {
+        "utc": "2026-11-24T07:17:01.587Z",
+        "eat": "2026-11-24T10:17:01.587+03:00"
+      },
+      "outcome": "succeeded",
+      "errorKind": null,
+      "durationMs": 823
+    }
+  ]
+}
