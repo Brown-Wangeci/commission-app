@@ -84,6 +84,19 @@ cron-job.org: the 10:43 UTC entry should show a timeout and a duration near
   finished at 10:43:45.71 (`ScoringDecision.scoredAt`), and the retry after the
   inline failure was due 12 s after it, not 60 s.
 
+## It happened again on 24 November
+
+The next fresh submission, LF-000066 (07:15:25 UTC, 10:15 EAT, the defect 16
+retest), went the same way: three inline T0 timeouts at 07:15:45, 07:16:01 and
+07:16:17 UTC, the activation sent to review, then the cron retry at 07:17:01
+UTC succeeded on its first call in 823 ms, so the service was awake by then
+(`../defect-16/retest-hosted.json`). That is two fresh submissions in a row
+whose first calls found the scoring service not answering, which fits a
+service that has spun down despite the keep-warm job, and fits the cause given
+above; it still does not prove it. The cron request on 24 November lasted
+about a second, which is consistent with no failure notice that time. Whether
+cron-job.org sent one is not known to me.
+
 ## What was not available
 
 - The Vercel request log for the cron call: the Hobby plan does not retain

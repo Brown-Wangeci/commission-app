@@ -508,8 +508,13 @@ such limit.
 45174566208). The canvas path was also run in headless Chromium on a 12-megapixel
 JPEG: a 7.6 MB photo became 556 KB at 1600x1200 for a form allowing two photos,
 and 133 KB at 1024x768 for one allowing 13 (1.7 MB for all 13), with the modified
-time kept (`evidence/hosted/defect-16/`). The hosted retest with a real phone is
-recorded in the same folder once it has been run.
+time kept (`evidence/hosted/defect-16/browser-check-local.json`). Hosted retest
+with a real phone, 2026-11-24 07:15 UTC (10:15 EAT), after the fix was in
+production: **passed**. LF-000066 was accepted with the most photos its job
+allows (7), each 74,679 to 170,166 bytes, 767,533 bytes in all, longest side
+1600 px, capture times and locations kept; no 413
+(`evidence/hosted/defect-16/retest-hosted.json`). The original file sizes were
+not recorded.
 
 ## 17. The scoring cron request can outlast the scheduler's timeout, 23 November 2026
 
@@ -528,9 +533,9 @@ execution history). The route's own budget is 240 s.
 **Effect.** False failure notices; no data lost or duplicated. A real failure
 would look the same in the notice.
 
-**Options, none applied.** One attempt per job inside the cron route (the job
-queue already retries on the next run); a shorter timeout on the cron path; or
-answering the cron request before the work finishes.
+**Proposed fix (not applied).** One attempt per job inside the cron route (the
+job queue already retries on the next run); a shorter timeout on the cron path;
+or answering the cron request before the work finishes.
 
 ## 18. Scoring runner timestamps use the run's start time, 23 November 2026
 
@@ -553,5 +558,5 @@ in a long cron batch by the time spent on earlier jobs; the audit chain
 records them as written. Retries come sooner than intended. Neither changed a
 decision.
 
-**Options, none applied.** Read the clock when each event is written; compute
-the retry from that time.
+**Proposed fix (not applied).** Read the clock when each event is written;
+compute the retry from that time.
