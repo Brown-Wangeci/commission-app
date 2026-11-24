@@ -20,7 +20,7 @@ with EAT beside them in the JSON.
 | Photos stored | 7 of 7, which is this job's maximum (field_1 up to 3, field_2 up to 3, one proof photo) |
 | Stored size | 74,679 to 170,166 bytes each; 767,533 bytes in total, against the 4.5 MB platform limit and the 3.5 MB budget |
 | Shrunk | Every photo is 721x1600: the longest side is exactly 1600 px and none has an EXIF block (re-encoding drops it). Stored checksums match the database |
-| Capture stamps kept | Six photos carry capture times of 07:08:13 to 07:09:56 UTC, six to seven minutes before the upload at 07:15:30, so they are the camera's times, not the time of shrinking. Each has a device location. The proof photo has no stamp by design |
+| Capture stamps kept | Six photos carry capture times of 07:08:13 to 07:09:56 UTC, five to seven minutes before the upload at 07:15:30, so they are the camera's times, not the time of shrinking. Each has a device location. The proof photo has no stamp by design |
 
 **Not established.**
 - The sizes before shrinking: the original camera files were not supplied.
