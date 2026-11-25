@@ -9,6 +9,7 @@ import { REVIEW_SETTING_EFFECT } from "@/lib/review/effect";
 import { groupKsh } from "@/lib/ui/format";
 import { ChoiceGroup } from "@/components/ChoiceGroup";
 import { EvidenceFieldsEditor, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
+import { JobAreaPicker } from "./JobAreaPicker";
 
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
   return errors[name] ? <span className="field-error">{errors[name]}</span> : null;
@@ -138,16 +139,8 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [centre, setCentre] = useState({ lat: "", lon: "" });
   const [terms, setTerms] = useState<Terms>({ value: "", rate: DEFAULT_RATE_PERCENT, flat: "", slots: DEFAULT_SLOTS });
   const [fields, setFields] = useState<EditorRow[]>([]);
-
-  function useMyLocation() {
-    navigator.geolocation?.getCurrentPosition(
-      (p) => setCentre({ lat: p.coords.latitude.toFixed(5), lon: p.coords.longitude.toFixed(5) }),
-      () => setMessage("Location is not available in this browser. Enter the centre by hand."),
-    );
-  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -237,14 +230,7 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
         </fieldset>
         <fieldset className="form-group stack">
           <legend>3. Job area</legend>
-          <Field name="areaName" label="Place name" errors={errors} />
-          <div className="grid-3">
-            <div className="field"><label htmlFor="areaLat">Centre latitude</label><input id="areaLat" name="areaLat" className="input" value={centre.lat} onChange={(e) => setCentre({ ...centre, lat: e.target.value })} /><FieldError errors={errors} name="areaLat" /></div>
-            <div className="field"><label htmlFor="areaLon">Centre longitude</label><input id="areaLon" name="areaLon" className="input" value={centre.lon} onChange={(e) => setCentre({ ...centre, lon: e.target.value })} /><FieldError errors={errors} name="areaLon" /></div>
-            <Field name="areaRadiusM" label="Radius (metres)" errors={errors} defaultValue={DEFAULT_RADIUS_M} inputMode="numeric" />
-          </div>
-          <button type="button" className="btn small" onClick={useMyLocation} style={{ alignSelf: "flex-start" }}>Use my current location as the centre</button>
-          <span className="hint">Photos taken outside this circle are flagged to the reviewer.</span>
+          <JobAreaPicker errors={errors} defaultRadiusM={Number(DEFAULT_RADIUS_M)} />
         </fieldset>
         <fieldset className="form-group stack">
           <legend>4. Commission</legend>

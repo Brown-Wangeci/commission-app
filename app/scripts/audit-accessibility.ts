@@ -25,6 +25,7 @@ import { chromium, type Browser, type BrowserContext, type Page } from "@playwri
 import { NON_TEXT_MINIMUM, TEXT_MINIMUM, contrastRatio, effectiveBackground, parseColor } from "./a11y/contrast";
 import { resolveUnjudged } from "./a11y/resolve";
 import { APP, signIn } from "./demo-client";
+import { MAP_HOSTS } from "../src/lib/map/config";
 
 const RULES = ["color-contrast", "target-size"];
 const AAA_TARGET_PX = 44;
@@ -79,6 +80,8 @@ async function contextFor(browser: Browser, view: (typeof VIEWPORTS)[number], em
   const context = await browser.newContext({ viewport: view.viewport, isMobile: view.isMobile, hasTouch: view.hasTouch });
   await context.route("**/*", (route) => {
     const method = route.request().method();
+    // OpenStreetMap's tile and search policies forbid automated clients: the map is audited without tiles.
+    if (MAP_HOSTS.includes(new URL(route.request().url()).hostname)) return route.abort();
     if (["GET", "HEAD", "OPTIONS"].includes(method)) return route.continue();
     blocked.push(`${method} ${new URL(route.request().url()).pathname}`);
     return route.abort();

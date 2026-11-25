@@ -7,6 +7,7 @@ import { nairobiDate, validateEvidence, type FieldDefinition } from "@/lib/evide
 import { budgetProblem, photoShare, photoTooBigMessage } from "@/lib/evidence/photo-limits";
 import { shrinkPhoto } from "@/lib/evidence/photo-resize";
 import { StickyActionBar } from "@/components/StickyActionBar";
+import { AreaStatus } from "./AreaStatus";
 import { EvidenceFieldInputs } from "./EvidenceFieldInputs";
 
 type Region = { code: string; name: string };
@@ -105,6 +106,7 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [preparing, setPreparing] = useState(0);
+  const [locating, setLocating] = useState(true);
   const today = nairobiDate(new Date());
   const allFields = [...platformFields, ...jobFields];
   // Each photo may take an equal share of the upload budget for the most photos this form allows.
@@ -114,12 +116,19 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   const applyFix = (next: Fix) => {
     setFix(next);
     setCoords({ lat: next.lat.toFixed(6), lon: next.lon.toFixed(6), accuracy: next.accuracy === null ? "" : String(Math.round(next.accuracy)) });
+    setLocating(false);
   };
+
+  /** Asks the device for its location again; the status line at the top says how it went. */
+  function relocate() {
+    setLocating(true);
+    locate(applyFix, () => setLocating(false));
+  }
 
   useEffect(() => {
     setDevice({ id: deviceId(), os: deviceOs() });
-    locate(applyFix, () => setMessage("Your location is not available. Enter it by hand below."));
-  }, []);
+    relocate();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // The thumbnails' object URLs are released when the form goes.
   const photosRef = useRef(photos);
@@ -191,12 +200,17 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   }
 
   const fieldErrors = byFieldKey(errors);
+  // The status line reads the coordinates the form will send, including any changed under Demo controls.
+  const sent = coords.lat.trim() !== "" && coords.lon.trim() !== "" && Number.isFinite(Number(coords.lat)) && Number.isFinite(Number(coords.lon))
+    ? { lat: Number(coords.lat), lon: Number(coords.lon), accuracy: coords.accuracy.trim() === "" ? null : Number(coords.accuracy) }
+    : null;
   const attached = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.map((p) => ({ name: p.file.name, located: p.fix !== null, sizeBytes: p.file.size, previewUrl: p.url }))]));
 
   return (
     <form className="stack-lg" onSubmit={submit} noValidate>
       <input type="hidden" name="assignmentId" value={assignmentId} />
       <input type="hidden" name="evidenceConfigId" value={evidenceConfigId} />
+      <AreaStatus area={job} fix={sent} locating={locating} onRetry={relocate} />
       {message && <div className="alert error" role="alert">{message}</div>}
 
       <fieldset className="stack">
@@ -207,30 +221,25 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
       {jobFields.length > 0 && (
         <fieldset className="stack">
           <legend>What this job needs</legend>
-          <p className="hint">Set by the client for this job (version {configVersion} of its evidence fields).</p>
           <EvidenceFieldInputs fields={jobFields} errors={fieldErrors} photos={attached} onAddPhotos={addPhotos} onRemovePhoto={removePhoto} locationKnown={fix !== null} today={today} />
         </fieldset>
       )}
 
-      <fieldset className="stack">
-        <legend>Captured by your device</legend>
-        <div className="grid-3">
-          <div className="field"><label htmlFor="gpsLat">Latitude</label><input id="gpsLat" name="gpsLat" className="input" value={coords.lat} onChange={(e) => setCoords({ ...coords, lat: e.target.value })} /><FieldError errors={errors} name="gpsLat" /></div>
-          <div className="field"><label htmlFor="gpsLon">Longitude</label><input id="gpsLon" name="gpsLon" className="input" value={coords.lon} onChange={(e) => setCoords({ ...coords, lon: e.target.value })} /><FieldError errors={errors} name="gpsLon" /></div>
-          <div className="field"><label htmlFor="gpsAccuracyM">Accuracy (m)</label><input id="gpsAccuracyM" name="gpsAccuracyM" className="input" value={coords.accuracy} onChange={(e) => setCoords({ ...coords, accuracy: e.target.value })} /></div>
-        </div>
-        <div className="row wrap">
-          <button type="button" className="btn small" onClick={() => locate(applyFix, () => setMessage("Location is not available in this browser."))}>Use my current location</button>
-        </div>
-        <p className="hint">Job area: {job.areaName}, within {job.areaRadiusM} m of {job.areaLat.toFixed(4)}, {job.areaLon.toFixed(4)}.</p>
-      </fieldset>
-
-      <details>
-        <summary className="small">Simulated device details (demonstration only)</summary>
+      <details className="demo-controls">
+        <summary className="small">Demo controls</summary>
         <div className="stack" style={{ marginTop: 12 }}>
           <p className="hint">
-            A field app would report these from the phone and the network. In this web version they are filled in by the browser and can be changed to demonstrate how the model reacts.
+            A field app would report these from the phone and the network. In this web version the browser fills them in, and they can be changed to demonstrate how the model reacts.
           </p>
+          <div className="grid-3">
+            <div className="field"><label htmlFor="gpsLat">Latitude</label><input id="gpsLat" name="gpsLat" className="input" value={coords.lat} onChange={(e) => setCoords({ ...coords, lat: e.target.value })} /><FieldError errors={errors} name="gpsLat" /></div>
+            <div className="field"><label htmlFor="gpsLon">Longitude</label><input id="gpsLon" name="gpsLon" className="input" value={coords.lon} onChange={(e) => setCoords({ ...coords, lon: e.target.value })} /><FieldError errors={errors} name="gpsLon" /></div>
+            <div className="field"><label htmlFor="gpsAccuracyM">Accuracy (m)</label><input id="gpsAccuracyM" name="gpsAccuracyM" className="input" value={coords.accuracy} onChange={(e) => setCoords({ ...coords, accuracy: e.target.value })} /></div>
+          </div>
+          <p className="hint">Job area centre: {job.areaLat.toFixed(4)}, {job.areaLon.toFixed(4)}, radius {job.areaRadiusM} m.</p>
+          <button type="button" className="btn small" onClick={() => applyFix({ lat: job.areaLat, lon: job.areaLon, accuracy: 10 })}>
+            Use the job area centre as my location (demo)
+          </button>
           <div className="grid-2">
             <div className="field"><span className="label">Device</span><span className="mono small">{device.id || "..."} &middot; {device.os} &middot; {APP_VERSION}</span></div>
             <div className="field">
@@ -245,9 +254,7 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
               {regions.map((region) => <option key={region.code} value={region.code}>{region.name} ({region.code})</option>)}
             </select>
           </div>
-          <button type="button" className="btn small" onClick={() => applyFix({ lat: job.areaLat, lon: job.areaLon, accuracy: 10 })}>
-            Use the job area centre as my location (demo)
-          </button>
+          <p className="hint">This job&rsquo;s evidence fields: version {configVersion}.</p>
         </div>
       </details>
 

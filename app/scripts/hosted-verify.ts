@@ -19,6 +19,17 @@
  *   open-assignment  posts a one-slot KSh 10.00 job as client2@, assigns it
  *           to mercy@ as reviewer@ and accepts it, leaving it unsubmitted, so
  *           the activation form can be audited (scripts/audit-accessibility.ts).
+ *   map-job posts a one-slot job as client2@ through the post-a-job page in
+ *           a browser, placing the job area with the map picker: a click on
+ *           the map, then "Use my location" with the browser's location set
+ *           to the point the other steps use, then the radius slider. It
+ *           records the values the picker put in the form, publishes, adds
+ *           the demo evidence fields, assigns mercy@, submits one activation
+ *           (T0 scored) and opens the review screen as reviewer@ without
+ *           deciding. It compares the area the database stored with the
+ *           form's values. OpenStreetMap's tile and search hosts are blocked
+ *           (their policies forbid automated clients), so no tile or search
+ *           request is made.
  *
  * Usage, from app/:
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts run <out.json>
@@ -26,6 +37,7 @@
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts review-on <out.json>
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts review-off <out.json>
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts open-assignment <out.json>
+ *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts map-job <out.json>
  *
  * The customer number it submits is generated, not a real person's.
  */
@@ -33,6 +45,8 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import { acceptAndSubmit, APP, call, DAY, DEMO_EVIDENCE_FIELDS, nairobiDate, signIn, week, type Session } from "./demo-client";
 import { placeholderPng } from "../prisma/seed-support/placeholder-png";
+import { MAP_HOSTS } from "../src/lib/map/config";
+import { RADIUS_STEPS_M } from "../src/lib/map/radius";
 
 type Decision = { mode: string; band: string; probability: number; releaseThreshold: number; rejectThreshold: number; trigger?: string; scoredAt?: string; reasons?: unknown[] };
 type Detail = { id: string; reference: string; state: string; submittedAt: string; holdClosesAt: string | null; decisions: Decision[]; photos: Array<{ id: string; url: string; sequence: number }> };
@@ -205,6 +219,95 @@ async function openAssignment(out: string): Promise<void> {
   log(`assignment accepted, not submitted; written ${out}`);
 }
 
+/** The job-area point the API-driven steps post (postJob), so map-job's activation is comparable. */
+const KIBUYE = { lat: -0.0995, lon: 34.768 };
+const MAP_JOB_RADIUS_M = 1000;
+
+type Page = import("@playwright/test").Page;
+type Context = import("@playwright/test").BrowserContext;
+
+async function formArea(page: Page): Promise<{ areaLat: string; areaLon: string; areaRadiusM: string }> {
+  return { areaLat: await page.inputValue("#areaLat"), areaLon: await page.inputValue("#areaLon"), areaRadiusM: await page.inputValue("#areaRadiusM") };
+}
+
+async function signInBrowser(context: Context, session: Session): Promise<void> {
+  const at = session.cookie.indexOf("=");
+  const url = new URL(APP);
+  await context.clearCookies();
+  await context.addCookies([{ name: session.cookie.slice(0, at), value: decodeURIComponent(session.cookie.slice(at + 1)), domain: url.hostname, path: "/", httpOnly: true, secure: url.protocol === "https:", sameSite: "Lax" }]);
+}
+
+/** Places the area with the picker (a map click, then the device's location, then the slider) and publishes. */
+async function postWithPicker(page: Page) {
+  await page.goto(`${APP}/client/jobs/new`, { waitUntil: "networkidle", timeout: 60_000 });
+  await page.fill("#title", "Hosted check: map picker, Kibuye Market");
+  await page.fill("#description", "Hosted check of the job-area map picker.");
+  // "Use my location" places the pin but names nothing; a place search would fill this in.
+  await page.fill("#areaName", "Kibuye Market, Kisumu");
+  await page.locator(".map-canvas.leaflet-container").waitFor({ timeout: 30_000 });
+  // A mouse click lands only inside the viewport, so bring the map into view first.
+  await page.locator(".map-canvas").scrollIntoViewIfNeeded();
+  const box = (await page.locator(".map-canvas").boundingBox())!;
+  await page.mouse.click(box.x + box.width * 0.6, box.y + box.height * 0.4);
+  await page.waitForFunction(() => (document.querySelector("#areaLat") as HTMLInputElement).value !== "");
+  const afterClick = await formArea(page);
+  log(`map click placed the pin at ${afterClick.areaLat}, ${afterClick.areaLon}`);
+  await page.getByRole("button", { name: "Use my location" }).click();
+  await page.waitForFunction((lat) => (document.querySelector("#areaLat") as HTMLInputElement).value === lat, KIBUYE.lat.toFixed(6));
+  await page.fill("#areaRadiusRange", String(RADIUS_STEPS_M.indexOf(MAP_JOB_RADIUS_M)));
+  const sent = await formArea(page);
+  log(`"Use my location" and the slider: ${sent.areaLat}, ${sent.areaLon}, ${sent.areaRadiusM} m`);
+  await page.fill("#submissionValueKsh", "2500");
+  await page.fill("#commissionRatePercent", "12");
+  await page.fill("#flatCommissionKsh", "50");
+  await page.fill("#slots", "1");
+  await page.locator("#title").click();
+  const valueAfterLeaving = await page.inputValue("#submissionValueKsh");
+  await page.getByRole("button", { name: "Publish the job" }).click();
+  await page.waitForURL(/\/client\/jobs\/[^/?]+\?posted=1/, { timeout: 60_000 });
+  const jobId = new URL(page.url()).pathname.split("/").at(-1)!;
+  return { afterClick, sent, valueAfterLeaving, jobId };
+}
+
+type MapJobDetail = Omit<Detail, "photos"> & { job: { areaLat: number; areaLon: number; areaRadiusM: number }; submission: { kmOutsideArea: number }; photos: Array<{ kmOutsideArea: number | null }> };
+
+async function mapJob(out: string): Promise<void> {
+  log(`app ${APP}`);
+  const { chromium } = await import("@playwright/test");
+  const sessions = { admin: await signIn(ROLES.admin), client: await signIn(ROLES.client), agent: await signIn(ROLES.agent) };
+  const browser = await chromium.launch();
+  const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, geolocation: { latitude: KIBUYE.lat, longitude: KIBUYE.lon }, permissions: ["geolocation"] });
+  await context.route((url) => MAP_HOSTS.includes(url.hostname), (route) => route.abort());
+  const startedAt = new Date().toISOString();
+  try {
+    await signInBrowser(context, sessions.client);
+    const picker = await postWithPicker(await context.newPage());
+    log(`published job ${picker.jobId}`);
+    await call(sessions.client, "POST", `/api/client/jobs/${picker.jobId}/evidence-config`, { fields: DEMO_EVIDENCE_FIELDS });
+    const assignmentId = await assignMercy(sessions.admin, picker.jobId);
+    const submitted = await acceptAndSubmit(sessions.agent, assignmentId, "dev-mercy-6120");
+    const detail = await call<MapJobDetail>(sessions.admin, "GET", `/api/admin/review/${submitted.activationId}`);
+    const t0 = detail.decisions.find((d) => d.mode === "t0") ?? null;
+    await signInBrowser(context, sessions.admin);
+    const reviewPage = await context.newPage();
+    const response = await reviewPage.goto(`${APP}/admin/review/${submitted.activationId}`, { waitUntil: "networkidle", timeout: 60_000 });
+    const reviewScreen = { status: response?.status() ?? null, showsWhereItHappened: (await reviewPage.getByText("Where it happened").count()) > 0, decided: false };
+    const stored = { areaLat: detail.job.areaLat, areaLon: detail.job.areaLon, areaRadiusM: detail.job.areaRadiusM };
+    const matches = {
+      areaLat: stored.areaLat === Number(picker.sent.areaLat),
+      areaLon: stored.areaLon === Number(picker.sent.areaLon),
+      areaRadiusM: stored.areaRadiusM === Number(picker.sent.areaRadiusM),
+      sameCentreAsApiSteps: stored.areaLat === KIBUYE.lat && stored.areaLon === KIBUYE.lon,
+    };
+    const activation = { id: submitted.activationId, reference: submitted.reference, state: detail.state, submissionKmOutsideArea: detail.submission.kmOutsideArea, photosKmOutsideArea: detail.photos.map((p) => p.kmOutsideArea) };
+    const result = { app: APP, started_at: startedAt, finished_at: new Date().toISOString(), mapServicesBlocked: MAP_HOSTS, picker, stored, matches, assignmentId, activation, t0, reviewScreen };
+    fs.writeFileSync(out, `${JSON.stringify(result, null, 2)}\n`);
+    log(`${submitted.reference}: stored ${JSON.stringify(stored)}; matches ${JSON.stringify(matches)}; state ${detail.state}; T0 ${t0 ? `${t0.band} ${t0.probability}` : "none"}; review screen ${reviewScreen.status}; written ${out}`);
+  } finally {
+    await browser.close();
+  }
+}
+
 async function main(): Promise<void> {
   const [command, a, b] = process.argv.slice(2);
   if (command === "run" && a) return run(a);
@@ -212,7 +315,8 @@ async function main(): Promise<void> {
   if (command === "review-on" && a) return reviewOn(a);
   if (command === "review-off" && a) return reviewOff(a);
   if (command === "open-assignment" && a) return openAssignment(a);
-  throw new Error("Usage: hosted-verify.ts run <out.json> | photos <earlier.json> <out.json> | review-on|review-off|open-assignment <out.json>");
+  if (command === "map-job" && a) return mapJob(a);
+  throw new Error("Usage: hosted-verify.ts run <out.json> | photos <earlier.json> <out.json> | review-on|review-off|open-assignment|map-job <out.json>");
 }
 
 main().catch((error) => {
