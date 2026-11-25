@@ -6,6 +6,8 @@ import { postJson, type FieldErrors } from "@/lib/client-api";
 import { differenceCents, formatCents, MoneyError, parseKshToCents, parsePercentToBps } from "@/lib/money/cents";
 import { commissionDerivation, computeCommission, liabilityDerivation, maxLiability } from "@/lib/money/commission";
 import { REVIEW_SETTING_EFFECT } from "@/lib/review/effect";
+import { groupKsh } from "@/lib/ui/format";
+import { ChoiceGroup } from "@/components/ChoiceGroup";
 import { EvidenceFieldsEditor, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
 
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
@@ -106,18 +108,29 @@ export const DEFAULT_RADIUS_M = "700";
 export const REVIEW_CHOICES: Record<string, boolean | null> = { "": null, on: true, off: false };
 
 export function ReviewChoice({ accountSetting }: { accountSetting: boolean }) {
+  const options = [
+    { value: "", label: `Use my account setting (currently ${accountSetting ? "on" : "off"})` },
+    { value: "on", label: "On for this job" },
+    { value: "off", label: "Off for this job" },
+  ];
   return (
     <div className="field">
-      <label htmlFor="reviewChoice">Require a reviewer before any payment on this job</label>
-      <select id="reviewChoice" name="reviewChoice" className="select" defaultValue="">
-        <option value="">Use my account setting (currently {accountSetting ? "on" : "off"})</option>
-        <option value="on">On for this job</option>
-        <option value="off">Off for this job</option>
-      </select>
+      <span className="label" id="reviewChoice-label">Require a reviewer before any payment on this job</span>
+      <ChoiceGroup name="reviewChoice" options={options} labelledBy="reviewChoice-label" defaultValue="" />
       <span className="hint">{REVIEW_SETTING_EFFECT} This job&rsquo;s choice cannot be changed once published.</span>
     </div>
   );
 }
+
+/** The unit drawn inside each money or rate box; the label names it too. */
+const AFFIX: Partial<Record<keyof Terms, { side: "prefix" | "suffix"; text: string }>> = {
+  value: { side: "prefix", text: "KSh" },
+  flat: { side: "prefix", text: "KSh" },
+  rate: { side: "suffix", text: "%" },
+};
+
+/** Shilling fields regroup with thousands separators when left (the parser accepts them). */
+const SHILLINGS: ReadonlyArray<keyof Terms> = ["value", "flat"];
 
 /** Post a job, in four groups: the job, the evidence, the area and the commission. A summary of the money stays in view. */
 export function PostJobForm({ availableCents, defaultDeadline, accountReviewSetting }: { availableCents: number; defaultDeadline: string; accountReviewSetting: boolean }) {
@@ -170,14 +183,28 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
     router.refresh();
   }
 
-  const termInput = (key: keyof Terms, name: string, label: string, hint?: string) => (
-    <div className="field">
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} className="input" inputMode="decimal" value={terms[key]} onChange={(e) => setTerms({ ...terms, [key]: e.target.value })} />
-      {hint && <span className="hint">{hint}</span>}
-      <FieldError errors={errors} name={name} />
-    </div>
-  );
+  const termInput = (key: keyof Terms, name: string, label: string, hint?: string) => {
+    const affix = AFFIX[key];
+    const input = (
+      <input
+        id={name}
+        name={name}
+        className="input"
+        inputMode="decimal"
+        value={terms[key]}
+        onChange={(e) => setTerms({ ...terms, [key]: e.target.value })}
+        onBlur={SHILLINGS.includes(key) ? (e) => setTerms({ ...terms, [key]: groupKsh(e.target.value) }) : undefined}
+      />
+    );
+    return (
+      <div className="field">
+        <label htmlFor={name}>{label}</label>
+        {affix ? <div className={`affix ${affix.side}`}><span className="affix-text" aria-hidden="true">{affix.text}</span>{input}</div> : input}
+        {hint && <span className="hint">{hint}</span>}
+        <FieldError errors={errors} name={name} />
+      </div>
+    );
+  };
 
   return (
     <form className="post-layout" onSubmit={submit} noValidate>
@@ -196,12 +223,16 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
         </fieldset>
         <fieldset className="form-group stack">
           <legend>2. Evidence the agent must submit</legend>
-          <p className="hint" style={{ margin: 0 }}>
-            Optional. Every submission already records the customer&rsquo;s number, SIM date, capture method and optional proof. Add fields here
-            for anything else you want checked; the capture form is built from them, in this order. You can change them later; submissions
-            already made stay judged by the fields in force when they were made. They are for your checks and the reviewer&rsquo;s, never given
-            to the fraud model.
-          </p>
+          <p className="hint" style={{ margin: 0 }}>Optional: add anything else you want the agent to record.</p>
+          <details className="help-more">
+            <summary className="small">How evidence fields work</summary>
+            <p className="hint">
+              Every submission already records the customer&rsquo;s number, SIM date, capture method and optional proof. Add fields here
+              for anything else you want checked; the capture form is built from them, in this order. You can change them later; submissions
+              already made stay judged by the fields in force when they were made. They are for your checks and the reviewer&rsquo;s, never given
+              to the fraud model.
+            </p>
+          </details>
           <EvidenceFieldsEditor rows={fields} onChange={setFields} errors={errors} />
         </fieldset>
         <fieldset className="form-group stack">

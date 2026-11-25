@@ -639,3 +639,60 @@ legend { padding: 0 var(--space-2); }
 /* A tab's short label shows on a phone only, its full label everywhere else. */
 .tab-short { display: none; }
 @media (max-width: 640px) { .tab-full { display: none; } .tab-short { display: inline; } }
+
+/* ---------- UI pass 2: choices, money inputs, photo tiles, the action bar ---------- */
+/* A few short choices as one segmented control; longer ones as option cards.
+   Native radios underneath. In a segment the radio covers the whole segment,
+   invisible, so the segment is the target; a card shows its radio. */
+.choice-group { display: grid; gap: var(--space-2); }
+.choice { position: relative; display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: 14px; line-height: 20px; color: var(--ink); }
+.choice-group.segmented { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; border: 1px solid var(--line-control); border-radius: var(--radius-btn); overflow: hidden; }
+.segmented .choice { justify-content: center; text-align: center; min-height: var(--control-h); padding: var(--space-1) var(--space-3); background: var(--surface); }
+.segmented .choice + .choice { border-left: 1px solid var(--line-control); }
+.segmented .choice input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.segmented .choice:has(input:checked) { background: var(--accent); color: var(--on-accent); font-weight: 500; }
+.choice-group.segmented:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cards .choice { border: 1px solid var(--line-control); border-radius: var(--radius-btn); padding: var(--space-1) var(--space-3); min-height: var(--control-h); background: var(--surface); }
+.cards .choice:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.agent-app .choice { font-size: 15px; }
+.agent-app .cards .choice { padding: 0 var(--space-3) 0 0; }
+
+/* A money or rate input with its unit drawn inside the box. */
+.affix { position: relative; display: flex; align-items: center; }
+.affix .input { flex: 1; }
+.affix-text { position: absolute; font-family: var(--mono); font-size: 13px; color: var(--ink-3); pointer-events: none; }
+.affix.prefix .affix-text { left: var(--space-3); }
+.affix.prefix .input { padding-left: 48px; }
+.affix.suffix .affix-text { right: var(--space-3); }
+.affix.suffix .input { padding-right: 32px; }
+
+/* Photos as tiles: a thumbnail per photo with a remove button, and a tile to take the next. */
+.photo-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--space-2); }
+.photo-tile, .photo-add { position: relative; aspect-ratio: 1 / 1; border-radius: var(--radius); overflow: hidden; }
+.photo-tile { background: var(--placeholder); border: 1px solid var(--line); }
+.photo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-tile-name { display: block; padding: var(--space-2); font-size: 12px; line-height: 17px; color: var(--ink-3); overflow-wrap: anywhere; }
+.photo-tile-flag { position: absolute; left: 0; right: 0; bottom: 0; background: var(--raise); color: var(--on-accent); font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; text-align: center; padding: 2px 0; }
+.photo-remove { position: absolute; top: 0; right: 0; width: var(--touch); height: var(--touch); padding: 0; border: 0; background: none; display: grid; place-items: center; cursor: pointer; }
+.photo-remove span { width: 28px; height: 28px; border-radius: 50%; background: var(--overlay); color: var(--on-accent); display: grid; place-items: center; font-size: 18px; line-height: 1; }
+.photo-remove:focus-visible { outline-offset: -4px; }
+.photo-add { border: 1px dashed var(--line-control); background: var(--surface); display: grid; place-content: center; justify-items: center; gap: var(--space-1); color: var(--accent); font-size: 14px; font-weight: 500; }
+.photo-add-plus { font-size: 24px; line-height: 1; }
+.photo-add input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; opacity: 0; cursor: pointer; }
+.photo-add:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.photo-add:hover { background: var(--accent-soft); }
+
+/* A form's main action. On a phone it stays at the bottom of the screen. */
+.action-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.action-bar-note { font-size: 12px; line-height: 17px; color: var(--ink-3); flex-basis: 100%; }
+@media (max-width: 640px) {
+  .action-bar {
+    position: sticky; bottom: 0; z-index: 6;
+    background: var(--surface); border-top: 1px solid var(--line); box-shadow: var(--shadow-2);
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+  }
+  .action-bar .btn.primary { flex: 1; }
+}
+/* A short help text that opens on click under a one-line summary. */
+.help-more > summary { cursor: pointer; color: var(--accent); min-height: 24px; }
+.help-more > p { margin-top: var(--space-2); }

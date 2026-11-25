@@ -1,17 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { postForm, type FieldErrors } from "@/lib/client-api";
 import { nairobiDate, validateEvidence, type FieldDefinition } from "@/lib/evidence/fields";
 import { budgetProblem, photoShare, photoTooBigMessage } from "@/lib/evidence/photo-limits";
 import { shrinkPhoto } from "@/lib/evidence/photo-resize";
+import { StickyActionBar } from "@/components/StickyActionBar";
 import { EvidenceFieldInputs } from "./EvidenceFieldInputs";
 
 type Region = { code: string; name: string };
 type JobArea = { title: string; areaName: string; areaLat: number; areaLon: number; areaRadiusM: number };
 type Fix = { lat: number; lon: number; accuracy: number | null };
-type Photo = { file: File; capturedAt: string; fix: Fix | null };
+/** `url` is an object URL for the thumbnail, revoked when the photo is removed or the form goes. */
+type Photo = { file: File; capturedAt: string; fix: Fix | null; url: string };
 
 type Props = {
   assignmentId: string;
@@ -119,6 +121,11 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
     locate(applyFix, () => setMessage("Your location is not available. Enter it by hand below."));
   }, []);
 
+  // The thumbnails' object URLs are released when the form goes.
+  const photosRef = useRef(photos);
+  photosRef.current = photos;
+  useEffect(() => () => Object.values(photosRef.current).flat().forEach((photo) => URL.revokeObjectURL(photo.url)), []);
+
   /**
    * A photo is stamped with its own file time and the device's location at the
    * moment it is added, taken from the original file. It is then shrunk in the
@@ -134,11 +141,17 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
     setPreparing((n) => n - 1);
     const refused = prepared.find((p) => !p.shrunk.fits);
     if (refused) setMessage(photoTooBigMessage(refused.item.file.name));
-    const added = prepared.filter((p) => p.shrunk.fits).map((p) => ({ file: p.shrunk.file, capturedAt: p.item.capturedAt, fix: p.item.fix }));
-    setPhotos((current) => ({ ...current, [key]: [...(current[key] ?? []), ...added].slice(0, max) }));
+    const added = prepared.filter((p) => p.shrunk.fits).map((p) => ({ file: p.shrunk.file, capturedAt: p.item.capturedAt, fix: p.item.fix, url: URL.createObjectURL(p.shrunk.file) }));
+    setPhotos((current) => {
+      const all = [...(current[key] ?? []), ...added];
+      all.slice(max).forEach((photo) => URL.revokeObjectURL(photo.url));
+      return { ...current, [key]: all.slice(0, max) };
+    });
   }
 
   function removePhoto(key: string, index: number) {
+    const gone = photos[key]?.[index];
+    if (gone) URL.revokeObjectURL(gone.url);
     setPhotos((current) => ({ ...current, [key]: (current[key] ?? []).filter((_, i) => i !== index) }));
   }
 
@@ -178,7 +191,7 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   }
 
   const fieldErrors = byFieldKey(errors);
-  const attached = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.map((p) => ({ name: p.file.name, located: p.fix !== null, sizeBytes: p.file.size }))]));
+  const attached = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.map((p) => ({ name: p.file.name, located: p.fix !== null, sizeBytes: p.file.size, previewUrl: p.url }))]));
 
   return (
     <form className="stack-lg" onSubmit={submit} noValidate>
@@ -187,17 +200,17 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
       {message && <div className="alert error" role="alert">{message}</div>}
 
       <fieldset className="stack">
-        <legend>Every activation</legend>
+        <legend>This activation</legend>
         <EvidenceFieldInputs fields={platformFields} errors={fieldErrors} photos={attached} onAddPhotos={addPhotos} onRemovePhoto={removePhoto} locationKnown={fix !== null} today={today} />
       </fieldset>
 
-      <fieldset className="stack">
-        <legend>Evidence for this job</legend>
-        <p className="hint">Set by the client for this job (version {configVersion} of its evidence fields).</p>
-        {jobFields.length === 0
-          ? <p className="small muted">This job asks for nothing beyond the fields above.</p>
-          : <EvidenceFieldInputs fields={jobFields} errors={fieldErrors} photos={attached} onAddPhotos={addPhotos} onRemovePhoto={removePhoto} locationKnown={fix !== null} today={today} />}
-      </fieldset>
+      {jobFields.length > 0 && (
+        <fieldset className="stack">
+          <legend>What this job needs</legend>
+          <p className="hint">Set by the client for this job (version {configVersion} of its evidence fields).</p>
+          <EvidenceFieldInputs fields={jobFields} errors={fieldErrors} photos={attached} onAddPhotos={addPhotos} onRemovePhoto={removePhoto} locationKnown={fix !== null} today={today} />
+        </fieldset>
+      )}
 
       <fieldset className="stack">
         <legend>Captured by your device</legend>
@@ -238,7 +251,9 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
         </div>
       </details>
 
-      <button type="submit" className="btn primary" disabled={busy || preparing > 0}>{busy ? "Submitting and checking" : preparing > 0 ? "Getting photos ready" : "Submit activation"}</button>
+      <StickyActionBar note={preparing > 0 ? "Getting your photos ready to send." : undefined}>
+        <button type="submit" className="btn primary" disabled={busy || preparing > 0}>{busy ? "Submitting and checking" : preparing > 0 ? "Getting photos ready" : "Submit activation"}</button>
+      </StickyActionBar>
     </form>
   );
 }
