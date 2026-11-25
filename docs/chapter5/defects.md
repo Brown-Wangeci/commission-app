@@ -621,7 +621,7 @@ look at activations.
 
 ## 20. An activation with no location fix was stored at 0, 0 and scored, 25 November 2026
 
-**Status: fixed.**
+**Status: fixed in PR #107 (`4df4630`, tag v1.2.3; production deploy READY 25 November 2026, 19:40:49 UTC, 22:40:49 EAT).**
 
 **What happened.** Found while fixing defect 19: parsing a submission with blank
 `gpsLat` and `gpsLon` returned 0, 0. No hosted record was affected: a read-only
@@ -658,7 +658,7 @@ does not say whether a location came from the device or the demo button (FR-10).
 
 ## 21. The job-area map pin was drawn far from its point, 25 November 2026
 
-**Status: fixed.** Present from PR #102 (tags v1.2.1 and v1.2.2).
+**Status: fixed in PR #107 (tag v1.2.3).** Present from PR #102 (tags v1.2.1 and v1.2.2).
 
 **What happened.** Found in this task's retest of typed coordinates. On the
 hosted app at v1.2.2, after "Use my location", the pin's box was 24 px right of
@@ -677,7 +677,7 @@ of stored values) never looked at a placed pin.
 
 ## 22. The map was drawn over the sticky bars on a phone, 25 November 2026
 
-**Status: fixed.** Present from PR #102 (tags v1.2.1 and v1.2.2).
+**Status: fixed in PR #107 (tag v1.2.3).** Present from PR #102 (tags v1.2.1 and v1.2.2).
 
 **What happened.** The audit's new state (coordinates typed, page scrolled)
 reported a target-size failure on the client's "Post a job" navigation link at
