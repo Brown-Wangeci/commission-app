@@ -24,6 +24,7 @@ import path from "node:path";
 import { chromium, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { APP, call, DAY, DEMO_EVIDENCE_FIELDS, nairobiDate, PASSWORD, signIn } from "./demo-client";
 import { loadEnv } from "./load-env";
+import { MAP_HOSTS } from "../src/lib/map/config";
 
 loadEnv();
 
@@ -35,9 +36,22 @@ const SIGNUP_PASSWORD = "Fake-Value-123";
 const skipped: string[] = [];
 let captured = 0;
 
+/**
+ * Every browser context this script opens. OpenStreetMap's tile and search
+ * policies forbid automated clients, so no capture loads a tile or runs a
+ * search: a map shows its pin, circle and attribution on a plain background.
+ * The map figures are captured by hand in an ordinary browser instead (see
+ * docs/chapter5/evidence/screenshots/captions.md).
+ */
+async function newContext(browser: Browser, options: Parameters<Browser["newContext"]>[0]): Promise<BrowserContext> {
+  const context = await browser.newContext(options);
+  await context.route((url) => MAP_HOSTS.includes(url.hostname), (route) => route.abort());
+  return context;
+}
+
 async function contextFor(browser: Browser, email: string): Promise<BrowserContext> {
   const session = await signIn(email);
-  const context = await browser.newContext({ viewport: VIEWPORT });
+  const context = await newContext(browser, { viewport: VIEWPORT });
   const url = new URL(APP);
   const eq = session.cookie.indexOf("=");
   const name = session.cookie.slice(0, eq);
@@ -95,7 +109,7 @@ async function unacceptedAssignment(): Promise<string> {
 /** Figures 15 and 16: sign in and accept through the UI, then the form at desktop and phone width. */
 async function submissionForm(browser: Browser, outDir: string): Promise<void> {
   const assignmentId = await unacceptedAssignment();
-  const context = await browser.newContext({ viewport: VIEWPORT });
+  const context = await newContext(browser, { viewport: VIEWPORT });
   const page = await context.newPage();
   try {
     await page.goto(`${APP}/login`, { waitUntil: "networkidle" });
@@ -138,7 +152,7 @@ async function usabilityViews(browser: Browser, outDir: string, reviewId: string
     await admin.waitForTimeout(400);
     await save(admin, dir, "usability-03-review-sections-open", `/admin/review/${reviewId} with every section opened`);
   }
-  const signup = await browser.newContext({ viewport: VIEWPORT });
+  const signup = await newContext(browser, { viewport: VIEWPORT });
   const anon = await signup.newPage();
   await anon.goto(`${APP}/signup`, { waitUntil: "networkidle" });
   await anon.getByLabel("Password", { exact: true }).fill("abc123");
@@ -208,7 +222,7 @@ async function main(): Promise<void> {
       skipped.push("figure-5-10: no disputed activation in seed data");
     }
 
-    const anonContext = await browser.newContext({ viewport: VIEWPORT });
+    const anonContext = await newContext(browser, { viewport: VIEWPORT });
     const anon = await anonContext.newPage();
     await anon.goto(`${APP}/signup`, { waitUntil: "networkidle" });
     await anon.getByLabel("A client business").check();
