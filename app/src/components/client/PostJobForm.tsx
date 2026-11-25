@@ -6,7 +6,8 @@ import { postJson, type FieldErrors } from "@/lib/client-api";
 import { differenceCents, formatCents, MoneyError, parseKshToCents, parsePercentToBps } from "@/lib/money/cents";
 import { commissionDerivation, computeCommission, liabilityDerivation, maxLiability } from "@/lib/money/commission";
 import { REVIEW_SETTING_EFFECT } from "@/lib/review/effect";
-import { JOB_LOCATION_REQUIRED, locationMissing } from "@/lib/location";
+import { JOB_LOCATION_REQUIRED, locationProblem } from "@/lib/location";
+import { RADIUS_PROBLEM, validRadius } from "@/lib/map/radius";
 import { groupKsh } from "@/lib/ui/format";
 import { ChoiceGroup } from "@/components/ChoiceGroup";
 import { EvidenceFieldsEditor, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
@@ -97,15 +98,18 @@ export function Preview({ terms, availableCents }: { terms: Terms; availableCent
 }
 
 /**
- * What stops the form being sent from the browser: terms that do not parse, or
- * no job area chosen (defect 19). The server checks both again.
+ * What stops the form being sent from the browser: terms that do not parse, no
+ * job area chosen (defect 19), coordinates off the globe or a radius the server
+ * would refuse. The server checks them all again.
  */
-export function formProblems(terms: Terms, area: { lat: unknown; lon: unknown }): { parsed: Parsed | null; errors: FieldErrors; message: string | null } {
+export function formProblems(terms: Terms, area: { lat: unknown; lon: unknown; radius?: unknown }): { parsed: Parsed | null; errors: FieldErrors; message: string | null } {
   const { parsed, errors } = parseTerms(terms);
-  const unplaced = locationMissing(area.lat, area.lon);
-  if (unplaced) errors.areaLat = JOB_LOCATION_REQUIRED;
+  const location = locationProblem(area.lat, area.lon, JOB_LOCATION_REQUIRED);
+  const radius = area.radius !== undefined && validRadius(area.radius) === null ? RADIUS_PROBLEM : null;
+  if (location) errors.areaLat = location;
+  if (radius) errors.areaRadiusM = radius;
   if (!parsed) return { parsed: null, errors, message: "Some fields are missing or invalid." };
-  return unplaced ? { parsed: null, errors, message: JOB_LOCATION_REQUIRED } : { parsed, errors, message: null };
+  return location || radius ? { parsed: null, errors, message: location ?? radius } : { parsed, errors, message: null };
 }
 
 /** The summary in one line, for the bar a phone shows instead of the full panel. `short` when escrow does not cover it. */
@@ -177,7 +181,7 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = Object.fromEntries(new FormData(event.currentTarget));
-    const { parsed, errors: problems, message: problem } = formProblems(terms, { lat: form.areaLat, lon: form.areaLon });
+    const { parsed, errors: problems, message: problem } = formProblems(terms, { lat: form.areaLat, lon: form.areaLon, radius: form.areaRadiusM });
     if (!parsed) {
       setErrors(problems);
       setMessage(problem);

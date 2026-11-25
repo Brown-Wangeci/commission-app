@@ -73,6 +73,15 @@ async function chooseStandInPlace(page: Page): Promise<void> {
   await page.evaluate('document.querySelectorAll("details").forEach((d) => { d.open = true; })');
 }
 
+/** Advanced opened, "Enter coordinates yourself" ticked, and a point outside Kenya typed, so the warning shows. */
+async function typeOutsideKenya(page: Page, fields: [string, string]): Promise<void> {
+  await page.evaluate('document.querySelectorAll("details").forEach((d) => { d.open = true; })');
+  await page.getByLabel("Enter coordinates yourself").check();
+  await page.fill(fields[0], "51.5");
+  await page.fill(fields[1], "-0.12");
+  await page.getByText("This point is outside Kenya").waitFor();
+}
+
 async function openEverything(page: Page): Promise<void> {
   await page.evaluate('document.querySelectorAll("details").forEach((d) => { d.open = true; })');
   const openers = page.getByRole("button", { name: OPENERS });
@@ -171,6 +180,7 @@ async function discover(browser: Browser, blocked: string[]): Promise<Screen[]> 
   const signupStates = [
     { name: "agent form, as loaded", step: async () => {} },
     { name: "place searched, chosen, advanced open", step: chooseStandInPlace },
+    { name: "coordinates typed, outside Kenya", step: async (page: Page) => typeOutsideKenya(page, ["#homeLat", "#homeLon"]) },
     { name: "client form", step: async (page: Page) => page.getByLabel("A client business").check() },
     { name: "errors shown", step: async (page: Page) => page.getByRole("button", { name: "Create account" }).click() },
   ];
@@ -181,13 +191,18 @@ async function discover(browser: Browser, blocked: string[]): Promise<Screen[]> 
     screen("Sign in", "anonymous", "/login", { states: [LOADED] }),
     screen("Sign up", "anonymous", "/signup", { states: signupStates }),
     screen("Agent job list", "agent", "/agent"),
-    screen("Activation form", "agent", submit?.route ?? null, { email: submit?.email }),
+    screen("Activation form", "agent", submit?.route ?? null, {
+      email: submit?.email,
+      // The audit browser has no location, so pressing Submit shows the "turn on location" message; nothing can be sent.
+      states: [LOADED, OPENED, { name: "submit pressed with no location", step: async (page) => page.getByRole("button", { name: "Submit activation" }).click() }],
+    }),
     screen("Client dashboard", "client", "/client", { states: [LOADED] }),
     screen("Post a job", "client", "/client/jobs/new", {
       states: [
         LOADED,
         { name: "an evidence field added", step: async (page) => page.getByRole("button", { name: "+ Choice from a list" }).click() },
         { name: "publish pressed with nothing entered", step: async (page) => page.getByRole("button", { name: "Publish the job" }).click() },
+        { name: "coordinates typed, outside Kenya", step: async (page) => typeOutsideKenya(page, ["#areaLat", "#areaLon"]) },
       ],
     }),
     screen("Escrow", "client", "/client", { states: [{ name: "funding section open", step: openEscrow }, OPENED] }),

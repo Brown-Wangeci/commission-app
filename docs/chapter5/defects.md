@@ -610,7 +610,7 @@ Post a job sent no request and created nothing; with "Use my location", the
 account was stored with exactly the values shown (-1.25, 36.88). No request was
 made against the hosted app to retest it.
 
-**Open, not fixed: activation GPS.** The activation schema
+**Activation GPS (open when this was written; fixed as defect 20).** The activation schema
 (`app/src/lib/activations/submission-form.ts`) uses the same coercing
 coordinate rule, and parsing a submission with blank `gpsLat` and `gpsLon`
 returns 0, 0 (checked 25 November 2026). If the device gives no location and the
@@ -618,3 +618,81 @@ agent submits, the activation is stored at 0, 0 and scored from there. It was
 outside this task's scope; whether to refuse such a submission or record it as
 having no location needs the owner's decision. The hosted count above did not
 look at activations.
+
+## 20. An activation with no location fix was stored at 0, 0 and scored, 25 November 2026
+
+**Status: fixed.**
+
+**What happened.** Found while fixing defect 19: parsing a submission with blank
+`gpsLat` and `gpsLon` returned 0, 0. No hosted record was affected: a read-only
+count at 19:30 UTC (22:30 EAT) found 0 of 68 activations and 0 of 295 located
+evidence items at 0, 0, and none with either value 0
+(`evidence/hosted/defect-20/`). Nothing was changed.
+
+**Cause.** The submission schema used the same `z.coerce.number()` rule as
+defect 19, which reads a blank as 0; the form posted blank fields when the
+device gave no location, and nothing stopped it. Photo details also accepted
+exactly 0, 0.
+
+**Effect.** The activation would be stored in the Gulf of Guinea and scored from
+there (distance from the agent's base and from the job area, network region
+mismatch). The collapsed "Demo controls" also let anyone type a location,
+against FR-10.
+
+**Fix.**
+
+- Server (`submission-form.ts`): a blank, missing, non-numeric, off-globe or
+  exactly 0, 0 location is refused with a field error on `gpsLat`/`gpsLon`; a
+  photo claiming 0, 0 is refused, naming the photo (a photo with no location is
+  still allowed). The coercing latitude and longitude schemas are removed.
+- Form: nothing is sent without a location; "Turn on location and try again"
+  with Try again beside Submit and in the status line; a device reading of 0, 0
+  counts as none. The Demo controls' coordinates and accuracy are read-only
+  (owner's decision); "Use the job area centre" still works.
+
+**Retest.** `app/tests/activation-location.test.tsx` (TC-184 to TC-187) and the
+browser retest in `evidence/defect-20/`.
+
+**Still true.** A direct API call can send any other coordinates, and the record
+does not say whether a location came from the device or the demo button (FR-10).
+
+## 21. The job-area map pin was drawn far from its point, 25 November 2026
+
+**Status: fixed.** Present from PR #102 (tags v1.2.1 and v1.2.2).
+
+**What happened.** Found in this task's retest of typed coordinates. On the
+hosted app at v1.2.2, after "Use my location", the pin's box was 24 px right of
+and 301 px above the circle's centre, outside the 656 x 340 px map. The circle
+and the stored values were correct.
+
+**Cause.** The pin's shape was made with CSS `rotate` on the element Leaflet
+positions with a transform; the rotation turned the position as well. The
+earlier checks (unit tests, screenshots of an empty map, the hosted comparison
+of stored values) never looked at a placed pin.
+
+**Fix.** The shape is drawn and rotated on a pseudo-element (`globals.css`).
+
+**Retest.** TC-191; measured after the fix: tip on the circle's centre
+(`evidence/defect-20/map-checks.json`).
+
+## 22. The map was drawn over the sticky bars on a phone, 25 November 2026
+
+**Status: fixed.** Present from PR #102 (tags v1.2.1 and v1.2.2).
+
+**What happened.** The audit's new state (coordinates typed, page scrolled)
+reported a target-size failure on the client's "Post a job" navigation link at
+360 px: 23 px high with another control too close. Measuring the same screen
+showed the map's controls and layers drawn over the sticky top bar and the
+"Publish the job" bar, on the hosted app too.
+
+**Cause.** Leaflet stacks its layers and controls at z-index 200 to 1000, above
+the bars (10 and 5). Separately, the phone navigation links were 23 px high,
+which passes the 24 px rule only while nothing sits close to them. Earlier
+audits never scrolled content under the bar.
+
+**Fix.** `isolation: isolate` on the map's frame; a 24 px minimum height for the
+navigation links at 640 px and below (agent links stay 48 px).
+
+**Retest.** TC-192; no sample point over either bar shows the map afterwards,
+and the audit reports no failure
+(`evidence/accessibility/defect-20-local.json`).

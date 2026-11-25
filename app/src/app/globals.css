@@ -222,6 +222,8 @@ p { margin: 0; }
   .mark, .navuser { min-height: 52px; }
   .navuser { margin-left: auto; }
   .navlinks { order: 3; flex-basis: 100%; height: auto; border-top: 1px solid var(--line); }
+  /* The links were 23 px high, under the 24 px target size once a control scrolls just beneath the bar (IR-10). */
+  .navlink { min-height: 24px; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: minmax(0, 1fr); }
   .navuser .navuser-name { display: none; }
   h1 { font-size: 28px; line-height: 32px; }
@@ -702,7 +704,9 @@ legend { padding: 0 var(--space-2); }
    so every override here is scoped under .map-frame to outrank it. Its
    colours are replaced with tokens: the attribution and its link stay at
    text contrast on a solid surface whatever the tiles show. */
-.map-frame { border: 1px solid var(--line-control); border-radius: var(--radius); overflow: hidden; background: var(--bg); }
+/* Leaflet stacks its layers and controls at z-index 200 to 1000. "isolation" keeps those inside the
+   frame, so the map scrolls under the sticky top bar and the Publish bar instead of over them (defect 22). */
+.map-frame { isolation: isolate; border: 1px solid var(--line-control); border-radius: var(--radius); overflow: hidden; background: var(--bg); }
 .map-canvas { height: 340px; width: 100%; }
 @media (max-width: 640px) { .map-canvas { height: 280px; } }
 .map-frame .leaflet-container { font-family: var(--sans); background: var(--bg); }
@@ -712,8 +716,11 @@ legend { padding: 0 var(--space-2); }
 .map-frame .leaflet-bar a { width: 44px; height: 44px; line-height: 44px; font-size: 20px; color: var(--ink); background: var(--surface); }
 .map-frame .leaflet-bar a:hover { background: var(--bg); color: var(--ink); }
 .map-frame .leaflet-container:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-/* The pin: a drop shape in the role colour with a white ring, drawn by CSS (no image to load). */
-.map-frame .map-pin { background: var(--accent); border: 3px solid var(--surface); border-radius: 50% 50% 50% 0; transform-origin: center; rotate: -45deg; box-shadow: var(--shadow-2); }
+/* The pin: a drop shape in the role colour with a white ring, drawn by CSS (no image to load).
+   The shape is turned on a pseudo-element: Leaflet positions .map-pin itself with a transform, and a
+   rotation on that element turns the position too, which drew the pin far from its point (defect 21). */
+.map-frame .map-pin { background: none; border: 0; }
+.map-frame .map-pin::before { content: ""; position: absolute; inset: 0; box-sizing: border-box; background: var(--accent); border: 3px solid var(--surface); border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: var(--shadow-2); }
 .map-frame .map-circle { stroke: var(--accent); stroke-width: 2px; fill: var(--accent); fill-opacity: 0.12; }
 .map-search { display: flex; gap: var(--space-2); }
 .map-search .input { flex: 1; min-width: 0; }
@@ -794,3 +801,10 @@ legend { padding: 0 var(--space-2); }
   }
   main:has(.payout-panel .decide-buttons) { padding-bottom: 140px; }
 }
+
+/* The secondary "Enter coordinates yourself" option under Advanced: the whole row is the target. */
+.manual-entry { margin-top: var(--space-2); }
+.manual-toggle { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; font-size: 14px; color: var(--ink); cursor: pointer; }
+.manual-toggle input { width: 24px; height: 24px; margin: 0; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
+/* Beside the activation's Submit button when there is no location: the reason and Try again. */
+.location-needed { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }

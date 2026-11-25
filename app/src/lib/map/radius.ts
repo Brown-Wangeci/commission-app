@@ -19,6 +19,32 @@ export function radiusStepIndex(radiusM: number): number {
   return best;
 }
 
+export const RADIUS_PROBLEM = "Use a radius from 50 m to 50 km, in whole metres.";
+
+/** A typed radius the server would accept (whole metres within the slider's range), or null. */
+export function validRadius(value: unknown): number | null {
+  if (typeof value !== "number" && (typeof value !== "string" || value.trim() === "")) return null;
+  const metres = Number(value);
+  return Number.isInteger(metres) && metres >= RADIUS_STEPS_M[0] && metres <= RADIUS_STEPS_M[RADIUS_STEPS_M.length - 1] ? metres : null;
+}
+
+/** The radius as the slider shows it; a typed value between the steps is shown exactly, in metres. */
+export function exactRadiusLabel(radiusM: number): string {
+  return RADIUS_STEPS_M.includes(radiusM) ? radiusLabel(radiusM) : `${radiusM} m`;
+}
+
+const METRES_PER_DEGREE = 111_320;
+/** The narrowest view a typed point is shown in, so a 50 m circle does not zoom the map to a single building. */
+const MIN_VIEW_RADIUS_M = 300;
+
+/** A box (south, north, west, east) around the job area, for showing a typed point on the map. */
+export function circleBounds({ lat, lon }: { lat: number; lon: number }, radiusM: number): [number, number, number, number] {
+  const metres = Math.max(radiusM, MIN_VIEW_RADIUS_M);
+  const dLat = metres / METRES_PER_DEGREE;
+  const dLon = metres / (METRES_PER_DEGREE * Math.max(Math.cos((lat * Math.PI) / 180), 0.01));
+  return [Math.max(lat - dLat, -90), Math.min(lat + dLat, 90), lon - dLon, lon + dLon];
+}
+
 /** "700 m", "1.5 km", "20 km". */
 export function radiusLabel(radiusM: number): string {
   if (radiusM < 1000) return `${radiusM} m`;

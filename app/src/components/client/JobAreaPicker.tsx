@@ -2,11 +2,12 @@
 
 import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { FieldErrors } from "@/lib/client-api";
-import { JOB_LOCATION_REQUIRED, coordinate, locationMissing } from "@/lib/location";
+import { JOB_LOCATION_REQUIRED, OUT_OF_RANGE, coordinate, typedLocationProblem, validPoint, wrapLongitude } from "@/lib/location";
 import { GEOCODER_URL, PLACE_ZOOM } from "@/lib/map/config";
 import { createGeocoder, type Place } from "@/lib/map/geocode";
-import { RADIUS_STEPS_M, radiusLabel, radiusStepIndex } from "@/lib/map/radius";
+import { RADIUS_PROBLEM, RADIUS_STEPS_M, circleBounds, exactRadiusLabel, radiusLabel, radiusStepIndex, validRadius } from "@/lib/map/radius";
 import { LeafletMap, type MapApi, type Move, type Point, type View } from "@/components/map/LeafletMap";
+import { ManualToggle, TypedNotes } from "@/components/ManualCoordinates";
 
 export { coordinate };
 
@@ -21,12 +22,17 @@ type Props = { errors: FieldErrors; defaultRadiusM: number };
  * place search, the device's location, a click on the map or dragging the
  * pin, and the radius by a slider with the circle drawn live. Whatever moved
  * them, the same three form fields are filled (areaLat, areaLon,
- * areaRadiusM, shown read-only under Advanced), so the form sends exactly
- * what it sent when they were typed by hand.
+ * areaRadiusM, shown under Advanced), so the form sends exactly what it sent
+ * when they were typed by hand. They are read-only there unless the client
+ * chooses to enter coordinates themselves, a secondary option for rare cases;
+ * the pin and circle are drawn from the same values, so they stay in step.
  */
 export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
-  const [pin, setPin] = useState<Point | null>(null);
-  const [step, setStep] = useState(radiusStepIndex(defaultRadiusM));
+  // The three form fields are the one source; the pin, the circle and the slider are read from them.
+  const [text, setText] = useState({ lat: "", lon: "" });
+  const [radiusText, setRadiusText] = useState(String(defaultRadiusM));
+  const [typed, setTyped] = useState(false);
+  const [manual, setManual] = useState(false);
   const [areaName, setAreaName] = useState("");
   const [autoName, setAutoName] = useState<string | null>(null);
   const [view, setView] = useState<View | null>(null);
@@ -36,10 +42,40 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
   const [note, setNote] = useState<string | null>(null);
   const api = useRef<MapApi | null>(null);
   const search = useMemo(() => (GEOCODER_URL ? createGeocoder(GEOCODER_URL) : null), []);
-  const radiusM = RADIUS_STEPS_M[step];
+  const pin = validPoint(text.lat, text.lon);
+  const radius = validRadius(radiusText);
+  const step = radiusStepIndex(radius ?? defaultRadiusM);
+  const radiusShown = radius === null ? "not set" : exactRadiusLabel(radius);
 
   const moves = useRef(0);
   const moveTo = (next: Move) => setView({ ...next, key: (moves.current += 1) });
+
+  /** A point from the map, a search or the device. */
+  function place(point: Point) {
+    setText({ lat: coordinate(point.lat), lon: coordinate(wrapLongitude(point.lon)) });
+    setTyped(false);
+  }
+
+  function typeCoordinate(patch: Partial<typeof text>) {
+    setText((current) => ({ ...current, ...patch }));
+    setTyped(true);
+  }
+
+  /** Once a typed value is left, the map moves to show the typed circle. */
+  function showTyped() {
+    if (manual && pin && radius !== null) moveTo({ bounds: circleBounds(pin, radius) });
+  }
+
+  /** Switching typing off keeps usable values and drops unusable ones, so a read-only field never holds a bad value. */
+  function toggleManual(on: boolean) {
+    setManual(on);
+    if (on) return;
+    if (!pin) {
+      setText({ lat: "", lon: "" });
+      setTyped(false);
+    }
+    if (radius === null) setRadiusText(String(RADIUS_STEPS_M[step]));
+  }
 
   async function runSearch() {
     if (!search || query.trim() === "") return;
@@ -63,10 +99,10 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
     void runSearch();
   }
 
-  function choose(place: Place) {
-    setPin({ lat: place.lat, lon: place.lon });
-    moveTo(place.bounds ? { bounds: place.bounds } : { lat: place.lat, lon: place.lon, zoom: PLACE_ZOOM });
-    const short = place.name.split(",")[0].trim();
+  function choose(found: Place) {
+    place(found);
+    moveTo(found.bounds ? { bounds: found.bounds } : { lat: found.lat, lon: found.lon, zoom: PLACE_ZOOM });
+    const short = found.name.split(",")[0].trim();
     if (areaName.trim() === "" || areaName === autoName) {
       setAreaName(short);
       setAutoName(short);
@@ -79,7 +115,7 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const here = { lat: position.coords.latitude, lon: position.coords.longitude };
-        setPin(here);
+        place(here);
         moveTo({ ...here, zoom: PLACE_ZOOM });
         setNote(null);
       },
@@ -89,12 +125,16 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
 
   function pinAtCentre() {
     const centre = api.current?.centre();
-    if (centre) setPin(centre);
+    if (centre) place(centre);
   }
 
-  // The "choose a place" message goes once a place is chosen; any other message stays.
+  // A message about the area goes once the values are usable; while typing, the note about the typed values stands in for it.
   const reported = errors.areaLat || errors.areaLon;
-  const locationError = reported === JOB_LOCATION_REQUIRED && !locationMissing(pin?.lat, pin?.lon) ? undefined : reported;
+  const answered = (reported === JOB_LOCATION_REQUIRED || reported === OUT_OF_RANGE) && pin !== null;
+  const typedProblem = typed && typedLocationProblem(text.lat, text.lon) !== null;
+  const locationError = answered || typedProblem ? undefined : reported;
+  const radiusProblem = manual && radius === null;
+  const radiusError = radiusProblem || (errors.areaRadiusM === RADIUS_PROBLEM && radius !== null) ? undefined : errors.areaRadiusM;
   return (
     <div className="stack">
       <div className="field">
@@ -123,7 +163,7 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
       {note && <p className="small muted" role="status">{note}</p>}
 
       <div className="map-frame">
-        <LeafletMap pin={pin} radiusM={radiusM} onPick={setPin} view={view} apiRef={api} label="Map of the job area. Click to place the centre, or drag the pin." />
+        <LeafletMap pin={pin} radiusM={radius ?? 0} onPick={place} view={view} apiRef={api} label="Map of the job area. Click to place the centre, or drag the pin." />
       </div>
       <div className="row wrap">
         <button type="button" className="btn small" onClick={useMyLocation}>Use my location</button>
@@ -133,9 +173,10 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
         {pin ? "Drag the pin or click the map to move the centre." : "Search for the place, use your location, or click the map to place the pin."} Photos taken outside the circle are flagged to the reviewer.
       </p>
       {locationError && <span className="field-error" role="alert">{locationError}</span>}
+      {typed && <TypedNotes lat={text.lat} lon={text.lon} />}
 
       <div className="field">
-        <label htmlFor="areaRadiusRange">Radius: <span className="strong num">{radiusLabel(radiusM)}</span></label>
+        <label htmlFor="areaRadiusRange">Radius: <span className="strong num">{radiusShown}</span></label>
         <input
           id="areaRadiusRange"
           type="range"
@@ -144,19 +185,21 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
           max={RADIUS_STEPS_M.length - 1}
           step={1}
           value={step}
-          aria-valuetext={radiusLabel(radiusM)}
-          onChange={(e) => setStep(Number(e.target.value))}
+          aria-valuetext={radiusShown}
+          onChange={(e) => setRadiusText(String(RADIUS_STEPS_M[Number(e.target.value)]))}
         />
         <span className="hint">From {radiusLabel(RADIUS_STEPS_M[0])} to {radiusLabel(RADIUS_STEPS_M[RADIUS_STEPS_M.length - 1])}.</span>
-        <FieldError errors={errors} name="areaRadiusM" />
+        {radiusProblem && <span className="field-error" role="status">{RADIUS_PROBLEM}</span>}
+        {radiusError && <span className="field-error">{radiusError}</span>}
       </div>
 
       <details className="help-more">
         <summary className="small">Advanced: the values sent</summary>
+        <ManualToggle checked={manual} onChange={toggleManual} without="search, your location and the map" />
         <div className="grid-3" style={{ marginTop: 8 }}>
-          <div className="field"><label htmlFor="areaLat">Centre latitude</label><input id="areaLat" name="areaLat" className="input" readOnly value={pin ? coordinate(pin.lat) : ""} /></div>
-          <div className="field"><label htmlFor="areaLon">Centre longitude</label><input id="areaLon" name="areaLon" className="input" readOnly value={pin ? coordinate(pin.lon) : ""} /></div>
-          <div className="field"><label htmlFor="areaRadiusM">Radius (metres)</label><input id="areaRadiusM" name="areaRadiusM" className="input" readOnly value={String(radiusM)} /></div>
+          <div className="field"><label htmlFor="areaLat">Centre latitude</label><input id="areaLat" name="areaLat" className="input" readOnly={!manual} value={text.lat} onChange={(e) => typeCoordinate({ lat: e.target.value })} onBlur={showTyped} /></div>
+          <div className="field"><label htmlFor="areaLon">Centre longitude</label><input id="areaLon" name="areaLon" className="input" readOnly={!manual} value={text.lon} onChange={(e) => typeCoordinate({ lon: e.target.value })} onBlur={showTyped} /></div>
+          <div className="field"><label htmlFor="areaRadiusM">Radius (metres)</label><input id="areaRadiusM" name="areaRadiusM" className="input" readOnly={!manual} value={radiusText} onChange={(e) => setRadiusText(e.target.value)} onBlur={showTyped} /></div>
         </div>
       </details>
     </div>

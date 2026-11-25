@@ -1,0 +1,4333 @@
+{
+ "requirement": "IR-10: WCAG 2.1 level AA for contrast ratio and target size",
+ "label": "local-defect-20",
+ "screensAudited": [
+  "Sign up",
+  "Post a job",
+  "Activation form"
+ ],
+ "app": "http://localhost:3000",
+ "startedAt": "2026-11-25T19:29:27.963Z",
+ "finishedAt": "2026-11-25T19:30:21.939Z",
+ "browser": "chromium 156.0.8078.4",
+ "axeCore": "4.14.1",
+ "axeRules": [
+  "color-contrast",
+  "target-size"
+ ],
+ "widths": [
+  {
+   "name": "360",
+   "width": 360,
+   "height": 800
+  },
+  {
+   "name": "desktop",
+   "width": 1366,
+   "height": 900
+  }
+ ],
+ "blockedRequests": [],
+ "totals": {
+  "requestedScreens": {
+   "statesAudited": 24,
+   "statesNotAudited": 0,
+   "textContrast": 0,
+   "textContrastFoundBySelfCheck": 0,
+   "textContrastStillUndetermined": 0,
+   "placeholderContrast": 0,
+   "controlBoundaryContrast": 0,
+   "targetSize24": 0,
+   "textContrastNotJudgedByAxe": 75,
+   "targetSizeIncomplete": 0,
+   "controlsMeasured": 592,
+   "controlsUnder44ForInformation": 432
+  },
+  "allScreens": {
+   "statesAudited": 24,
+   "statesNotAudited": 0,
+   "textContrast": 0,
+   "textContrastFoundBySelfCheck": 0,
+   "textContrastStillUndetermined": 0,
+   "placeholderContrast": 0,
+   "controlBoundaryContrast": 0,
+   "targetSize24": 0,
+   "textContrastNotJudgedByAxe": 75,
+   "targetSizeIncomplete": 0,
+   "controlsMeasured": 592,
+   "controlsUnder44ForInformation": 432
+  }
+ },
+ "entries": [
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "360",
+   "state": "agent form, as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 16,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 146,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 145,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 171.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(5) > summary.small:nth-child(1)",
+     "width": 260,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 294,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "360",
+   "state": "place searched, chosen, advanced open",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 19,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 146,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 145,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 171.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(5) > summary.small:nth-child(1)",
+     "width": 260,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(5) > div.manual-entry:nth-child(2) > label.manual-toggle:nth-child(1) > input:nth-child(1)",
+     "width": 24,
+     "height": 24
+    },
+    {
+     "target": "#homeLat",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "#homeLon",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 294,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "360",
+   "state": "coordinates typed, outside Kenya",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 19,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 146,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 145,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 171.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(6) > summary.small:nth-child(1)",
+     "width": 260,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(6) > div.manual-entry:nth-child(2) > label.manual-toggle:nth-child(1) > input:nth-child(1)",
+     "width": 24,
+     "height": 24
+    },
+    {
+     "target": "#homeLat",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "#homeLon",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 294,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "360",
+   "state": "client form",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 11,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 146,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 145,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#businessName",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 294,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "360",
+   "state": "errors shown",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 16,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(2) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 146,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(2) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 145,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 222,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(6) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 171.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(7) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(7) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(7) > div.stack:nth-child(3) > details.help-more:nth-child(6) > summary.small:nth-child(1)",
+     "width": 260,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(8)",
+     "width": 294,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(9) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "desktop",
+   "state": "agent form, as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 16,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 234,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 233,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 347.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(5) > summary.small:nth-child(1)",
+     "width": 436,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 470,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "desktop",
+   "state": "place searched, chosen, advanced open",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 19,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 234,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 233,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 347.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(5) > summary.small:nth-child(1)",
+     "width": 436,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(5) > div.manual-entry:nth-child(2) > label.manual-toggle:nth-child(1) > input:nth-child(1)",
+     "width": 24,
+     "height": 24
+    },
+    {
+     "target": "#homeLat",
+     "width": 210,
+     "height": 39
+    },
+    {
+     "target": "#homeLon",
+     "width": 210,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 470,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "desktop",
+   "state": "coordinates typed, outside Kenya",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 19,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 234,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 233,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 347.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(6) > summary.small:nth-child(1)",
+     "width": 436,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(6) > div.stack:nth-child(3) > details.help-more:nth-child(6) > div.manual-entry:nth-child(2) > label.manual-toggle:nth-child(1) > input:nth-child(1)",
+     "width": 24,
+     "height": 24
+    },
+    {
+     "target": "#homeLat",
+     "width": 210,
+     "height": 39
+    },
+    {
+     "target": "#homeLon",
+     "width": 210,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 470,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "desktop",
+   "state": "client form",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 11,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 234,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(1) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 233,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(4) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#businessName",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(7)",
+     "width": 470,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(8) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Sign up",
+   "requested": true,
+   "role": "anonymous",
+   "path": "/signup",
+   "width": "desktop",
+   "state": "errors shown",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 16,
+   "under44": [
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(2) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 234,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(2) > div.choice-group.segmented:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 233,
+     "height": 36
+    },
+    {
+     "target": "#name",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#email",
+     "width": 470,
+     "height": 39
+    },
+    {
+     "target": "#password",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(5) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#confirmPassword",
+     "width": 398,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > div.field:nth-child(6) > div.password-field:nth-child(2) > button.btn.small.password-toggle:nth-child(2)",
+     "width": 64,
+     "height": 39
+    },
+    {
+     "target": "#payoutMsisdn",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "#homeSearch",
+     "width": 347.8,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(7) > div.stack:nth-child(3) > div.field:nth-child(1) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(7) > div.stack:nth-child(3) > button.btn.small:nth-child(2)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "#homeAreaName",
+     "width": 436,
+     "height": 39
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > fieldset.stack:nth-child(7) > div.stack:nth-child(3) > details.help-more:nth-child(6) > summary.small:nth-child(1)",
+     "width": 436,
+     "height": 24
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > button.btn.primary.block:nth-child(8)",
+     "width": 470,
+     "height": 36
+    },
+    {
+     "target": "main.auth-wrap > div.auth-card:nth-child(1) > div.card.card-pad.stack:nth-child(2) > form.stack:nth-child(3) > p.small.muted:nth-child(9) > a:nth-child(1)",
+     "width": 44,
+     "height": 18
+    }
+   ]
+  },
+  {
+   "screen": "Activation form",
+   "requested": true,
+   "role": "agent",
+   "path": "/agent/submit/cmwwia1ql000co83ktleks31g",
+   "width": "360",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "div[data-field-key=\"customerMsisdn\"] > .hint",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#f-simRegisteredAt-label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "div[data-field-key=\"customerMsisdn\"] > .hint",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "#f-simRegisteredAt-label",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 19,
+   "under44": []
+  },
+  {
+   "screen": "Activation form",
+   "requested": true,
+   "role": "agent",
+   "path": "/agent/submit/cmwwia1ql000co83ktleks31g",
+   "width": "360",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "div[data-field-key=\"customerMsisdn\"] > .hint",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#f-simRegisteredAt-label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "div[data-field-key=\"customerMsisdn\"] > .hint",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "#f-simRegisteredAt-label",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 25,
+   "under44": []
+  },
+  {
+   "screen": "Activation form",
+   "requested": true,
+   "role": "agent",
+   "path": "/agent/submit/cmwwia1ql000co83ktleks31g",
+   "width": "360",
+   "state": "submit pressed with no location",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "form > .alert.error[role=\"alert\"]",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(5) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#f-customerMsisdn-label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".location-needed > .grow",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it partially overlaps other elements",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscuring",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "form > .alert.error[role=\"alert\"]",
+     "verdict": "pass",
+     "ratio": 5.44,
+     "required": 4.5,
+     "color": "rgb(168, 50, 50)"
+    },
+    {
+     "target": "fieldset:nth-child(5) > legend",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "#f-customerMsisdn-label",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".location-needed > .grow",
+     "verdict": "pass",
+     "ratio": 5.44,
+     "required": 4.5,
+     "color": "rgb(168, 50, 50)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 20,
+   "under44": []
+  },
+  {
+   "screen": "Activation form",
+   "requested": true,
+   "role": "agent",
+   "path": "/agent/submit/cmwwia1ql000co83ktleks31g",
+   "width": "desktop",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 19,
+   "under44": []
+  },
+  {
+   "screen": "Activation form",
+   "requested": true,
+   "role": "agent",
+   "path": "/agent/submit/cmwwia1ql000co83ktleks31g",
+   "width": "desktop",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [],
+   "resolved": [],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 25,
+   "under44": []
+  },
+  {
+   "screen": "Activation form",
+   "requested": true,
+   "role": "agent",
+   "path": "/agent/submit/cmwwia1ql000co83ktleks31g",
+   "width": "desktop",
+   "state": "submit pressed with no location",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "#f-agentNote-label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#f-agentNote-label > .muted",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "#f-agentNote-label",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "#f-agentNote-label > .muted",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 20,
+   "under44": []
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "360",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(1) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#reviewChoice-label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".choice:nth-child(1) > span",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".choice:nth-child(2) > span",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".post-summary-line",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it partially overlaps other elements",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.8pt (13px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscuring",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(1) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "#reviewChoice-label",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": ".choice:nth-child(1) > span",
+     "verdict": "pass",
+     "ratio": 15.18,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".choice:nth-child(2) > span",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".post-summary-line",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 35,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink:nth-child(1)",
+     "width": 56.4,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink.active:nth-child(2)",
+     "width": 88.9,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 294,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 205.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(7) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > div.post-summary-head:nth-child(1) > button.btn.small.quiet.post-summary-toggle:nth-child(3)",
+     "width": 68.6,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 294,
+     "height": 36
+    }
+   ]
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "360",
+   "state": "an evidence field added",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(1) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".choice:nth-child(3) > span",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".field:nth-child(5) > .hint",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".field-row-body > .field:nth-child(4) > label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".field:nth-child(4) > .input[value=\"\"]",
+       "checks": [
+        {
+         "message": "Element has no value; test color contrast with a value entered",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "emptyValue",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".field-row-body > .hint",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".post-summary-line",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it partially overlaps other elements",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.8pt (13px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscuring",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(1) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".choice:nth-child(3) > span",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".field:nth-child(5) > .hint",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".field-row-body > .field:nth-child(4) > label",
+     "verdict": "pass",
+     "ratio": 6.6,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": ".field:nth-child(4) > .input[value=\"\"]",
+     "verdict": "no text"
+    },
+    {
+     "target": ".field-row-body > .hint",
+     "verdict": "pass",
+     "ratio": 6.6,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".post-summary-line",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 44,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink:nth-child(1)",
+     "width": 56.4,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink.active:nth-child(2)",
+     "width": 88.9,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 294,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.row-between.wrap:nth-child(1) > div.row:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 42.9,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.row-between.wrap:nth-child(1) > div.row:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 60.7,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.row-between.wrap:nth-child(1) > div.row:nth-child(2) > button.btn.small.danger:nth-child(3)",
+     "width": 75.1,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.grid-3:nth-child(2) > div.field:nth-child(1) > input.input:nth-child(2)",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.grid-3:nth-child(2) > div.field:nth-child(2) > select.select:nth-child(2)",
+     "width": 260,
+     "height": 38
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.grid-3:nth-child(2) > label.row.small:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.field:nth-child(4) > input.input:nth-child(2)",
+     "width": 260,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 205.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(7) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > div.post-summary-head:nth-child(1) > button.btn.small.quiet.post-summary-toggle:nth-child(3)",
+     "width": 68.6,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 294,
+     "height": 36
+    }
+   ]
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "360",
+   "state": "publish pressed with nothing entered",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(2) > .field:nth-child(4) > .hint",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#reviewChoice-label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(5) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(2) > .field:nth-child(4) > .hint",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "#reviewChoice-label",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(5) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 35,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink:nth-child(1)",
+     "width": 56.4,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink.active:nth-child(2)",
+     "width": 88.9,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 294,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 205.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > details.help-more:nth-child(8) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > div.post-summary-head:nth-child(1) > button.btn.small.quiet.post-summary-toggle:nth-child(3)",
+     "width": 68.6,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 294,
+     "height": 36
+    }
+   ]
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "360",
+   "state": "coordinates typed, outside Kenya",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(1) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-attribution",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "a[href$=\"leafletjs.com\"]",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "a:nth-child(3)",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#areaLon",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "label[for=\"areaRadiusM\"]",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#areaRadiusM",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".post-summary-line",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it partially overlaps other elements",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.8pt (13px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscuring",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(1) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-attribution",
+     "verdict": "pass",
+     "ratio": 13.69,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "a[href$=\"leafletjs.com\"]",
+     "verdict": "pass",
+     "ratio": 7.49,
+     "required": 4.5,
+     "color": "rgb(30, 94, 74)"
+    },
+    {
+     "target": "a:nth-child(3)",
+     "verdict": "pass",
+     "ratio": 7.49,
+     "required": 4.5,
+     "color": "rgb(30, 94, 74)"
+    },
+    {
+     "target": "#areaLon",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "label[for=\"areaRadiusM\"]",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "#areaRadiusM",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".post-summary-line",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 39,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink:nth-child(1)",
+     "width": 56.4,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > nav.navlinks:nth-child(2) > a.navlink.active:nth-child(2)",
+     "width": 88.9,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 294,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 205.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(8) > summary.small:nth-child(1)",
+     "width": 294,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(8) > div.manual-entry:nth-child(2) > label.manual-toggle:nth-child(1) > input:nth-child(1)",
+     "width": 24,
+     "height": 24
+    },
+    {
+     "target": "#areaLat",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#areaLon",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#areaRadiusM",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 294,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > div.post-summary-head:nth-child(1) > button.btn.small.quiet.post-summary-toggle:nth-child(3)",
+     "width": 68.6,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 294,
+     "height": 36
+    }
+   ]
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "desktop",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(1) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(1) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 34,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > a.mark:nth-child(1)",
+     "width": 112.1,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 658,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 569.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(7) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 290,
+     "height": 36
+    }
+   ]
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "desktop",
+   "state": "an evidence field added",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(1) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(1) > .field:nth-child(4) > .hint",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#reviewChoice-label",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(1) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(1) > .field:nth-child(4) > .hint",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "#reviewChoice-label",
+     "verdict": "pass",
+     "ratio": 7.2,
+     "required": 4.5,
+     "color": "rgb(90, 87, 80)"
+    },
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 43,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > a.mark:nth-child(1)",
+     "width": 112.1,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 658,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.row-between.wrap:nth-child(1) > div.row:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 42.9,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.row-between.wrap:nth-child(1) > div.row:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 60.7,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.row-between.wrap:nth-child(1) > div.row:nth-child(2) > button.btn.small.danger:nth-child(3)",
+     "width": 75.1,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.grid-3:nth-child(2) > div.field:nth-child(1) > input.input:nth-child(2)",
+     "width": 197.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.grid-3:nth-child(2) > div.field:nth-child(2) > select.select:nth-child(2)",
+     "width": 197.3,
+     "height": 38
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.grid-3:nth-child(2) > label.row.small:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > details.field-row:nth-child(1) > div.field-row-body.stack-sm:nth-child(2) > div.field:nth-child(4) > input.input:nth-child(2)",
+     "width": 624,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 569.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(7) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 290,
+     "height": 36
+    }
+   ]
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "desktop",
+   "state": "publish pressed with nothing entered",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(5) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(5) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 34,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > a.mark:nth-child(1)",
+     "width": 112.1,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 658,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 569.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(4) > div.stack:nth-child(2) > details.help-more:nth-child(8) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 290,
+     "height": 36
+    }
+   ]
+  },
+  {
+   "screen": "Post a job",
+   "requested": true,
+   "role": "client",
+   "path": "/client/jobs/new",
+   "width": "desktop",
+   "state": "coordinates typed, outside Kenya",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "fieldset:nth-child(1) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(2) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(3) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "#placeSearch",
+       "checks": [
+        {
+         "message": "Element has no value; test color contrast with a value entered",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "emptyValue",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+       "checks": [
+        {
+         "message": "Element content contains only non-text characters",
+         "data": {
+          "messageKey": "nonBmp"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".leaflet-control-attribution",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because element contains an image node",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "imgNode",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "a[href$=\"leafletjs.com\"]",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because element contains an image node",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "imgNode",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "a:nth-child(3)",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because element contains an image node",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "imgNode",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "fieldset:nth-child(4) > legend",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "12.0pt (16px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "fieldset:nth-child(1) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(2) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "fieldset:nth-child(3) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "#placeSearch",
+     "verdict": "no text"
+    },
+    {
+     "target": ".leaflet-control-zoom-out > span[aria-hidden=\"true\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 3,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".leaflet-control-attribution",
+     "verdict": "pass",
+     "ratio": 13.69,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "a[href$=\"leafletjs.com\"]",
+     "verdict": "pass",
+     "ratio": 7.49,
+     "required": 4.5,
+     "color": "rgb(30, 94, 74)"
+    },
+    {
+     "target": "a:nth-child(3)",
+     "verdict": "pass",
+     "ratio": 7.49,
+     "required": 4.5,
+     "color": "rgb(30, 94, 74)"
+    },
+    {
+     "target": "fieldset:nth-child(4) > legend",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 38,
+   "under44": [
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > a.mark:nth-child(1)",
+     "width": 112.1,
+     "height": 24
+    },
+    {
+     "target": "header.topnav > div.topnav-inner:nth-child(1) > div.navuser:nth-child(3) > button.linkbutton:nth-child(3)",
+     "width": 53.4,
+     "height": 21
+    },
+    {
+     "target": "main.page.page-form > div.breadcrumb:nth-child(1) > a:nth-child(1)",
+     "width": 49.8,
+     "height": 21
+    },
+    {
+     "target": "#title",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#deadline",
+     "width": 658,
+     "height": 41
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(1) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(2) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(1) > div.field:nth-child(5) > div.choice-group.cards:nth-child(2) > label.choice:nth-child(3) > input:nth-child(1)",
+     "width": 13,
+     "height": 13
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > details.help-more:nth-child(3) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(1)",
+     "width": 62.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(2)",
+     "width": 85.2,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(3)",
+     "width": 65,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(4)",
+     "width": 142.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(5)",
+     "width": 124.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(2) > div.stack:nth-child(4) > div.row.wrap:nth-child(2) > button.btn.small:nth-child(6)",
+     "width": 72.3,
+     "height": 30
+    },
+    {
+     "target": "#areaName",
+     "width": 658,
+     "height": 39
+    },
+    {
+     "target": "#placeSearch",
+     "width": 569.8,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.field:nth-child(2) > div.map-search:nth-child(2) > button.btn:nth-child(2)",
+     "width": 80.3,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-in:nth-child(1)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-top.leaflet-left:nth-child(1) > div.leaflet-control-zoom.leaflet-bar.leaflet-control:nth-child(1) > a.leaflet-control-zoom-out:nth-child(2)",
+     "width": 30,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(1)",
+     "width": 53.4,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.map-frame:nth-child(3) > div.map-canvas.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom:nth-child(1) > div.leaflet-control-container:nth-child(2) > div.leaflet-bottom.leaflet-right:nth-child(4) > div.leaflet-control-attribution.leaflet-control:nth-child(1) > a:nth-child(3)",
+     "width": 87.3,
+     "height": 16
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(1)",
+     "width": 122.5,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > div.row.wrap:nth-child(4) > button.btn.small:nth-child(2)",
+     "width": 202.8,
+     "height": 30
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(8) > summary.small:nth-child(1)",
+     "width": 658,
+     "height": 24
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > div.stack-lg:nth-child(1) > fieldset.form-group.stack:nth-child(3) > div.stack:nth-child(2) > details.help-more:nth-child(8) > div.manual-entry:nth-child(2) > label.manual-toggle:nth-child(1) > input:nth-child(1)",
+     "width": 24,
+     "height": 24
+    },
+    {
+     "target": "#areaLat",
+     "width": 208.7,
+     "height": 39
+    },
+    {
+     "target": "#areaLon",
+     "width": 208.7,
+     "height": 39
+    },
+    {
+     "target": "#areaRadiusM",
+     "width": 208.7,
+     "height": 39
+    },
+    {
+     "target": "#submissionValueKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#commissionRatePercent",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#flatCommissionKsh",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "#slots",
+     "width": 321,
+     "height": 39
+    },
+    {
+     "target": "main.page.page-form > form.post-layout:nth-child(3) > aside.post-summary.card.card-pad.stack:nth-child(2) > button.btn.primary.block:nth-child(3)",
+     "width": 290,
+     "height": 36
+    }
+   ]
+  }
+ ]
+}

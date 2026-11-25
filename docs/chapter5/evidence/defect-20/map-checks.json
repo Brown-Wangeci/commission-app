@@ -1,0 +1,37 @@
+{
+  "pin": {
+    "measure": "centre of the pin's box minus centre of the circle, CSS px (x, y); the tip is on the point when about (0, -20)",
+    "before_hosted_v1.2.2": {
+      "offset_px": [
+        24,
+        -301
+      ],
+      "inside_map": false
+    },
+    "before_local_branch": {
+      "offset_px": [
+        24,
+        -301
+      ],
+      "inside_map": false
+    },
+    "after_local_branch": {
+      "offset_px": [
+        -1,
+        -19
+      ],
+      "inside_map": true
+    }
+  },
+  "sticky_bars_360px": {
+    "measure": "sample points in the overlap of the map and a sticky bar where the map is drawn on top",
+    "before_hosted_v1.2.2": {
+      "top_bar": "6 of 84",
+      "publish_bar": "2 of 192"
+    },
+    "after_local_branch": {
+      "top_bar": "0 of 84",
+      "publish_bar": "0 of 192"
+    }
+  }
+}

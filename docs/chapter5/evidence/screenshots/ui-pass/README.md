@@ -29,6 +29,15 @@ under the password rules now has the place search, "Use my location", the
 chosen-location line, the area name and "Advanced" in place of the typed
 latitude and longitude. The other captures are still the ones from `8d87718`.
 
+## Recaptured after defect 20
+
+Figures 5.15 and 5.16 were captured again on 25 November 2026 from a local
+production build of branch `fix/defect-20-activation-location`, fresh seed, map
+services blocked. What changed: the location line now ends "Turn on location and
+try again." (Demo controls is closed in both, so its read-only boxes do not
+show). `usability/usability-04-signup-password-rules.png`, recaptured in the same
+run, is pixel for pixel the same and was not replaced.
+
 ## Old figure -> new file
 
 | Report figure | Old file (`../`) | New file (this folder) | What the pass changed in it |
@@ -61,6 +70,9 @@ because the headless browser has no location; on a phone it reads "Inside the
 job area" or "N m outside the job area".
 
 ## Map figures to capture by hand
+
+**Take any capture that shows a placed pin (5.17) on v1.2.3 or later:** earlier
+builds draw the pin away from its point (defect 21).
 
 Two existing figures show the job-area map: **5.12** and **usability-05**. A
 third is offered for the report, since the map picker is the pass's main new

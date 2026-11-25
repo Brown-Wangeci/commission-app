@@ -1,0 +1,20 @@
+{
+  "checked_at": "2026-11-25T19:30:46.506Z",
+  "transaction_read_only": "on",
+  "activations": {
+    "total": 68,
+    "with_location": 68,
+    "at_zero_zero": 0,
+    "with_either_zero": 0
+  },
+  "evidence_items": {
+    "total": 350,
+    "with_location": 295,
+    "at_zero_zero": 0,
+    "with_either_zero": 0
+  },
+  "live_database_check": {
+    "activation_reference": "LF-000068",
+    "found": true
+  }
+}

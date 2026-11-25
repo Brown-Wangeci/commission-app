@@ -1,5 +1,6 @@
 import { formatDistance } from "@/lib/format";
 import { kmOutsideArea, type JobArea } from "@/lib/geo";
+import { ACTIVATION_LOCATION_REQUIRED, locationMissing } from "@/lib/location";
 
 export type Fix = { lat: number; lon: number; accuracy: number | null };
 
@@ -31,11 +32,30 @@ export function AreaStatus({ area, fix, locating, onRetry }: Props) {
     <section className={`area-status ${status.kind}`} aria-labelledby="area-status-text">
       <div className="grow">
         <p id="area-status-text" className="area-status-text" role="status">{status.text}</p>
-        <p className="hint">Job area: {area.areaName}, within {formatDistance(area.areaRadiusM / 1000)}.{status.kind === "outside" ? " You can still submit; the reviewer sees the distance." : ""}</p>
+        <p className="hint">Job area: {area.areaName}, within {formatDistance(area.areaRadiusM / 1000)}.{status.kind === "outside" ? " You can still submit; the reviewer sees the distance." : ""}{status.kind === "unknown" ? " Turn on location and try again." : ""}</p>
       </div>
       {status.kind !== "locating" && (
         <button type="button" className="btn small" onClick={onRetry}>{status.kind === "unknown" ? "Try again" : "Update my location"}</button>
       )}
     </section>
+  );
+}
+
+/**
+ * Why the form cannot be sent for want of a location, or null when it can: the
+ * coordinates are blank, not numbers or exactly 0, 0 (defect 20).
+ */
+export function locationBlock(lat: string, lon: string, locating: boolean): string | null {
+  if (!locationMissing(lat, lon)) return null;
+  return locating ? "Still finding your location. Wait a moment, then submit again." : ACTIVATION_LOCATION_REQUIRED;
+}
+
+/** Shown beside the Submit button when it was pressed without a location: what to do, and Try again. */
+export function LocationNeeded({ message, locating, onRetry }: { message: string; locating: boolean; onRetry: () => void }) {
+  return (
+    <div className="alert error location-needed" role="alert">
+      <span className="grow">{message}</span>
+      <button type="button" className="btn small" onClick={onRetry} disabled={locating}>Try again</button>
+    </div>
   );
 }
