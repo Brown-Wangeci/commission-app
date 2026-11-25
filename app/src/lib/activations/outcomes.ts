@@ -4,6 +4,7 @@ import { formatProbability } from "@/lib/format";
 import { openDispute } from "@/lib/disputes/disputes";
 import { authorisePayout } from "@/lib/payouts/authorise";
 import { openReviewItem } from "@/lib/review/items";
+import { activationNeedsReviewer } from "@/lib/review/requirement";
 import type { DecisionWithReasons } from "@/lib/scoring/decisions";
 import { enqueueScoring } from "@/lib/scoring/jobs";
 import { transitionActivation } from "./transition";
@@ -52,9 +53,21 @@ export async function applyT0Decision(
   await enqueueScoring(tx, { activationId, mode: "t7", dueAt: holdClosesAt, trigger: "hold_close" });
 }
 
+async function reviewAfterHold(
+  tx: Prisma.TransactionClient,
+  activationId: string,
+  reason: "band_review" | "client_requires_review",
+  note: string,
+  now: Date,
+): Promise<void> {
+  await transitionActivation(tx, { activationId, from: "scored_t7", to: "in_review", note, at: now });
+  await openReviewItem(tx, activationId, reason, now);
+}
+
 /**
  * Hold-close decision. This is the only automatic decision that moves
- * money: auto_release approves, review goes to a person, reject refuses.
+ * money: auto_release approves (unless the client requires a reviewer),
+ * review goes to a person, reject refuses.
  */
 export async function applyT7Decision(
   tx: Prisma.TransactionClient,
@@ -64,6 +77,11 @@ export async function applyT7Decision(
 ): Promise<void> {
   await transitionActivation(tx, { activationId, from: "held", to: "scored_t7", note: scoreNote(decision), at: now });
   if (decision.band === "auto_release") {
+    if (await activationNeedsReviewer(tx, activationId)) {
+      const note = "At or below the hold-close release cut-off, but the client requires a reviewer: not released automatically.";
+      await reviewAfterHold(tx, activationId, "client_requires_review", note, now);
+      return;
+    }
     await transitionActivation(tx, {
       activationId,
       from: "scored_t7",
@@ -75,14 +93,7 @@ export async function applyT7Decision(
     return;
   }
   if (decision.band === "review") {
-    await transitionActivation(tx, {
-      activationId,
-      from: "scored_t7",
-      to: "in_review",
-      note: "Between the hold-close cut-offs: sent to a reviewer.",
-      at: now,
-    });
-    await openReviewItem(tx, activationId, "band_review", now);
+    await reviewAfterHold(tx, activationId, "band_review", "Between the hold-close cut-offs: sent to a reviewer.", now);
     return;
   }
   const reason =

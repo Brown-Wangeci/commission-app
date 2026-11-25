@@ -67,6 +67,9 @@ export function whyHere(
   if (openReason === "t0_reject_escalation" && latest.mode === "t0") {
     return `${bandSentence(latest)} A submission-time score never refuses on its own, so it was sent to a person before the hold window closed.`;
   }
+  if (openReason === "client_requires_review") {
+    return `The client requires a reviewer before any payment on this job, so it was not released automatically. ${bandSentence(latest)}`;
+  }
   if (openReason === "dispute") return `The agent contested a refusal, so it is back with a person. ${bandSentence(latest)}`;
   if (openReason === "evidence_returned") return `The agent sent the evidence that was asked for. ${bandSentence(latest)}`;
   return bandSentence(latest);
@@ -78,6 +81,7 @@ const OPEN_REASON_LABELS: Record<ReviewOpenReason, string> = {
   could_not_be_scored: "Could not be scored",
   evidence_returned: "Evidence returned",
   dispute: "Refusal contested",
+  client_requires_review: "Client requires review",
 };
 
 export function openReasonLabel(reason: ReviewOpenReason | null): string {

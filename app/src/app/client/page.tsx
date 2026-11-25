@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { Money, MoneyStat } from "@/components/Money";
 import { FundForm } from "@/components/client/FundForm";
 import { FundingList } from "@/components/client/FundingList";
+import { ReviewSettingToggle } from "@/components/client/ReviewSettingToggle";
 
 type Jobs = Awaited<ReturnType<typeof clientJobs>>["jobs"];
 type Row = Jobs[number];
@@ -62,7 +63,7 @@ function nextStep(input: { availableCents: number; jobCount: number; waitingForA
   return null;
 }
 
-/** The client's jobs first, then the escrow behind them and the way to add to it. */
+/** The client's jobs first, then the escrow behind them and the way to add to it, then the review setting. */
 export default async function ClientHomePage() {
   const user = await requirePageRole("client");
   const client = await clientFor(user);
@@ -122,6 +123,13 @@ export default async function ClientHomePage() {
             <FundingList rows={fundingAttempts} />
           </div>
         </Disclosure>
+      </section>
+      <section className="card card-pad stack-sm" aria-labelledby="review-heading" style={{ marginTop: 16 }}>
+        <h2 id="review-heading">Review of your submissions</h2>
+        <ReviewSettingToggle enabled={client.reviewAllSubmissions} />
+        {escrow.jobs.some((row) => row.job.reviewAllSubmissions !== null) && (
+          <p className="tiny muted">Jobs posted with their own choice keep it; each job&rsquo;s page shows what applies to it.</p>
+        )}
       </section>
     </main>
   );

@@ -45,6 +45,8 @@ export const jobInputSchema = z
     deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Give the deadline as a date, YYYY-MM-DD."),
     /** The evidence the agent must submit, in order (FR-05); version 1 of the job's configuration. */
     evidenceFields: evidenceConfigInputSchema.default([]),
+    /** This job's own review setting; null or absent follows the client's account setting. */
+    reviewAllSubmissions: z.boolean().nullable().optional(),
   })
   .superRefine((job, ctx) => {
     try {
@@ -115,6 +117,7 @@ export async function createJob(input: { clientId: string; actorId: string; job:
         slots: job.slots,
         escrowLockedCents: terms.liability.amountCents,
         deadlineAt,
+        reviewAllSubmissions: job.reviewAllSubmissions ?? null,
         createdAt: input.at,
       },
     });
@@ -125,11 +128,17 @@ export async function createJob(input: { clientId: string; actorId: string; job:
       detail:
         `Job "${created.title}" published: ${formatCents(terms.commission.amountCents)} per approved submission ` +
         `(${terms.commission.derivation}); ${formatCents(terms.liability.amountCents)} locked from the client's escrow (${terms.liability.derivation}); ` +
-        `deadline ${job.deadline}; ${config.fields.length} evidence field(s), configuration version 1.`,
+        `deadline ${job.deadline}; ${config.fields.length} evidence field(s), configuration version 1.${jobReviewNote(created.reviewAllSubmissions)}`,
       at: input.at,
     });
     return created;
   });
+}
+
+/** What the publication record says about a job's own review setting; nothing when it follows the account. */
+function jobReviewNote(override: boolean | null): string {
+  if (override === null) return "";
+  return ` Reviewer required before any payment: ${override ? "on" : "off"} for this job.`;
 }
 
 /** The end of the deadline day in Kenya. It must fall on or after the publication date, within two years. */

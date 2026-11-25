@@ -10,6 +10,7 @@ import { ApiError } from "@/lib/http/errors";
 import { isFinal } from "@/lib/activations/states";
 import { formatDateTime } from "@/lib/format";
 import { formatCents, sumCents } from "@/lib/money/cents";
+import { reviewRequired } from "@/lib/review/requirement";
 import { MoneyStat } from "@/components/Money";
 import { StateChip } from "@/components/review/StateChip";
 import { EmptyState } from "@/components/EmptyState";
@@ -38,6 +39,10 @@ export default async function ClientJobPage({ params, searchParams }: { params: 
             {job.areaName}, within {job.areaRadiusM} m of {job.areaLat.toFixed(4)}, {job.areaLon.toFixed(4)} &middot; {job.slots} activations wanted
             {job.deadlineAt ? ` · deadline ${formatDateTime(job.deadlineAt)}` : ""}
             {job.closedAt ? ` · closed ${formatDateTime(job.closedAt)}` : ""}
+          </p>
+          <p className="muted small">
+            Reviewer required before any payment: <strong>{reviewRequired({ reviewAllSubmissions: job.reviewAllSubmissions, client }) ? "on" : "off"}</strong>
+            {job.reviewAllSubmissions === null ? " (your account setting)" : " (set for this job)"}.
           </p>
         </div>
       </div>

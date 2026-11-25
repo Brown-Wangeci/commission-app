@@ -74,8 +74,8 @@ export async function publishFundedJob(
 }
 
 /** A funded job, assigned to an agent who has accepted it. */
-export async function readyAssignment(options: { agentId?: string; assignedAt?: Date } = {}): Promise<Assignment> {
-  const { job } = await publishFundedJob({ slots: 20 });
+export async function readyAssignment(options: { agentId?: string; assignedAt?: Date; job?: JobOverrides } = {}): Promise<Assignment> {
+  const { job } = await publishFundedJob({ slots: 20, ...options.job });
   const admin = await createUser("admin");
   const agentId = options.agentId ?? (await createAgent()).id;
   const assignedAt = options.assignedAt ?? new Date(Date.now() - 3 * 60 * 60 * 1000);

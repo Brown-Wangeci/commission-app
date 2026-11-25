@@ -219,3 +219,23 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   NFR-08's F1 evidence were all corrected this pass** -- see the inline
   "Correction" notes above and in `docs/chapter5/results_tables.md` /
   `docs/results_index.md` for what changed and why.
+
+## Client review setting (2026-11-25)
+
+- **It does not send literally every submission to a reviewer.** A hold-close
+  reject is still refused automatically (the agent may contest it), and
+  submissions that could not be scored follow their earlier path.
+- **The setting is read when the decision is made.** Turning it off releases
+  activations still on hold that score `auto_release`; there is no snapshot of
+  the setting at submission.
+- **The rules are enforced by the application, not the database.** Nothing in
+  the schema stops a payout authorisation with no reviewer, or a change to a
+  job's own choice. The app offers no way to change that choice after
+  publication.
+- **The agent is not told.** The held-activation text still says the submission
+  is checked again and then paid, sent to a reviewer, or refused, and nothing on
+  the agent's screens mentions the setting.
+- **Clicking the toggle has no automated test.** The suite has no DOM
+  environment; it was clicked in a local browser by a script run by hand on
+  2026-11-25 (stored value and audit events checked), not by CI.
+- **Hosted check not yet run** when this section was written.

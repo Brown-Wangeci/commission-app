@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import { postJson, type FieldErrors } from "@/lib/client-api";
 import { differenceCents, formatCents, MoneyError, parseKshToCents, parsePercentToBps } from "@/lib/money/cents";
 import { commissionDerivation, computeCommission, liabilityDerivation, maxLiability } from "@/lib/money/commission";
+import { REVIEW_SETTING_EFFECT } from "@/lib/review/effect";
 import { EvidenceFieldsEditor, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
 
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
@@ -101,8 +102,25 @@ export const DEFAULT_SLOTS = "10";
 export const DEFAULT_RATE_PERCENT = "10";
 export const DEFAULT_RADIUS_M = "700";
 
+/** The form's choices for one job, and what each sends: "" follows the account setting. */
+export const REVIEW_CHOICES: Record<string, boolean | null> = { "": null, on: true, off: false };
+
+export function ReviewChoice({ accountSetting }: { accountSetting: boolean }) {
+  return (
+    <div className="field">
+      <label htmlFor="reviewChoice">Require a reviewer before any payment on this job</label>
+      <select id="reviewChoice" name="reviewChoice" className="select" defaultValue="">
+        <option value="">Use my account setting (currently {accountSetting ? "on" : "off"})</option>
+        <option value="on">On for this job</option>
+        <option value="off">Off for this job</option>
+      </select>
+      <span className="hint">{REVIEW_SETTING_EFFECT} This job&rsquo;s choice cannot be changed once published.</span>
+    </div>
+  );
+}
+
 /** Post a job, in four groups: the job, the evidence, the area and the commission. A summary of the money stays in view. */
-export function PostJobForm({ availableCents, defaultDeadline }: { availableCents: number; defaultDeadline: string }) {
+export function PostJobForm({ availableCents, defaultDeadline, accountReviewSetting }: { availableCents: number; defaultDeadline: string; accountReviewSetting: boolean }) {
   const router = useRouter();
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
@@ -136,6 +154,7 @@ export function PostJobForm({ availableCents, defaultDeadline }: { availableCent
       areaRadiusM: form.areaRadiusM,
       deadline: form.deadline,
       evidenceFields: fields.map(toFieldInput),
+      reviewAllSubmissions: REVIEW_CHOICES[String(form.reviewChoice)],
       ...parsed,
     };
     setBusy(true);
@@ -173,6 +192,7 @@ export function PostJobForm({ availableCents, defaultDeadline }: { availableCent
             <FieldError errors={errors} name="description" />
           </div>
           <Field name="deadline" label="Deadline" type="date" defaultValue={defaultDeadline} errors={errors} hint="The last day work is accepted, 30 days from today unless you change it. After it, no new assignments or submissions; it cannot be changed once published." />
+          <ReviewChoice accountSetting={accountReviewSetting} />
         </fieldset>
         <fieldset className="form-group stack">
           <legend>2. Evidence the agent must submit</legend>
