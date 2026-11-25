@@ -9,7 +9,7 @@
  * two small jobs, an administrator assigns both): one is left waiting to be
  * accepted, the other is accepted, so the list carries an "Accept job"
  * button and a "Submit activation" link. The submission form is the accepted
- * one's, with the "Simulated device details" section opened so the controls
+ * one's, with its "Demo controls" section (the simulated device details) opened so the controls
  * inside it are measured too.
  *
  * The activation detail page shows different controls in different states,
@@ -145,7 +145,7 @@ async function main(): Promise<void> {
     await page.waitForSelector("form");
     await page.locator("details > summary").first().click();
     await page.waitForTimeout(200);
-    const form = summarise("Agent submission form (device details opened)", `/agent/submit/${accepted}`, await measure(page));
+    const form = summarise("Agent submission form (Demo controls opened)", `/agent/submit/${accepted}`, await measure(page));
 
     await page.goto(`${APP}/agent/activations`, { waitUntil: "networkidle" });
     const rows = await listRows(page);
