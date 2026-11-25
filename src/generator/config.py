@@ -13,6 +13,10 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[2]
 GENERATOR_CONFIG = REPO_ROOT / "config" / "generator.yaml"
 MODEL_CONFIG = REPO_ROOT / "config" / "model.yaml"
+# Read only by src/train/retrain.py. Kept apart from model.yaml so that adding
+# a retraining parameter cannot break the config hash the committed Phase 5/6
+# results record; config/retraining.yaml says why at length.
+RETRAINING_CONFIG = REPO_ROOT / "config" / "retraining.yaml"
 
 
 def load_config(path: Path) -> Dict[str, Any]:

@@ -287,3 +287,35 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
 - **The clock is `Activation.updatedAt`**, the last time the submission's own
   row changed. For a settled submission that is when it settled, but it is a
   proxy, not a column that records the settlement date.
+
+## Retraining on reviewer decisions (2026-11-25)
+
+- **There is one label.** The seeded database holds a single reviewed
+  submission that ends in a reviewer's approve or refuse; almost everything
+  else is released automatically at hold-close and never reaches a person.
+  The retraining comparison was run on it in full (4 seeds, 5 folds, both
+  arms) and **shows nothing**: +0.0003 PR-AUC against a seed-level spread of
+  0.0305. No improvement is claimed and no model was promoted.
+- **Review labels are selection-biased by construction.** Only the review and
+  escalated bands reach a reviewer, so a labelled set describes the doubtful
+  middle of the score range and never the auto-released bottom. More labels
+  would not remove this; it is a property of where the labels come from.
+- **A reviewer is not ground truth.** The label records what a person
+  concluded from the evidence, which is the best signal available and is not
+  the same as whether the activation was fraudulent.
+- **`review_mean_score` moved and means nothing.** It rose from 0.309 to 0.492
+  because the candidate trained on the row it is scored on. It is in sample
+  for the candidate and is flagged as such in the report.
+- **No T0 labels exist**, so the T0 model was not compared at all.
+- **Local only.** The export and the comparison were run against a seeded
+  local database, not the hosted one, which holds a similar handful of
+  decisions.
+- **Promotion is manual and untested end to end.** `docs/RETRAINING.md`
+  section 4 writes out the procedure that published the current artifacts, but
+  no model has been promoted through it from a retraining run.
+- **A third config file.** Retraining parameters live in
+  `config/retraining.yaml` rather than `config/model.yaml`, because adding a
+  section to `model.yaml` would break the config hash the committed Phase 5/6
+  results record without changing any of those results. CLAUDE.md says
+  modelling parameters live in `model.yaml`; this is a named exception, beside
+  `serving.yaml` and `costs.yaml`.
