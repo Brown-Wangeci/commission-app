@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { coordinateValue } from "@/lib/location";
 import { MAX_PASSWORD_LENGTH, passwordProblems } from "@/lib/auth/password-rules";
 import { MAX_ROW_CENTS } from "@/lib/money/cents";
 import { BPS_PER_WHOLE } from "@/lib/money/commission";
@@ -62,6 +63,15 @@ export function normaliseMsisdn(value: string): string {
 
 export const latitudeSchema = z.coerce.number().min(-90).max(90);
 export const longitudeSchema = z.coerce.number().min(-180).max(180);
+
+/**
+ * A coordinate of a place someone chose (an agent's base, a job's centre).
+ * Unlike latitudeSchema, a blank, missing or non-numeric value is refused with
+ * the given message instead of being read as 0 (defect 19).
+ */
+export function chosenCoordinateSchema(limit: 90 | 180, required: string) {
+  return z.preprocess(coordinateValue, z.number({ required_error: required, invalid_type_error: required }).min(-limit).max(limit));
+}
 
 export const reasonTextSchema = z
   .string()

@@ -5,11 +5,11 @@ import { conflict } from "@/lib/http/errors";
 import {
   emailSchema,
   kenyanMsisdnSchema,
-  latitudeSchema,
-  longitudeSchema,
+  chosenCoordinateSchema,
   nameSchema,
   passwordSchema,
 } from "@/lib/validation";
+import { HOME_LOCATION_REQUIRED, locationMissing } from "@/lib/location";
 import { hashPassword } from "./password";
 
 const common = {
@@ -23,14 +23,14 @@ const common = {
  * created by the seed script or by an existing administrator's database
  * tooling, never through a public form.
  */
-export const signupSchema = z.discriminatedUnion("role", [
+const accountSchema = z.discriminatedUnion("role", [
   z.object({
     ...common,
     role: z.literal("agent"),
     payoutMsisdn: kenyanMsisdnSchema,
     homeAreaName: nameSchema,
-    homeLat: latitudeSchema,
-    homeLon: longitudeSchema,
+    homeLat: chosenCoordinateSchema(90, HOME_LOCATION_REQUIRED),
+    homeLon: chosenCoordinateSchema(180, HOME_LOCATION_REQUIRED),
   }),
   z.object({
     ...common,
@@ -38,6 +38,12 @@ export const signupSchema = z.discriminatedUnion("role", [
     businessName: nameSchema,
   }),
 ]);
+
+/** An agent's base at exactly 0, 0 is no place at all, so it is refused as a missing one is (defect 19). */
+export const signupSchema = accountSchema.superRefine((input, ctx) => {
+  if (input.role !== "agent" || !locationMissing(input.homeLat, input.homeLon)) return;
+  for (const field of ["homeLat", "homeLon"]) ctx.addIssue({ code: "custom", path: [field], message: HOME_LOCATION_REQUIRED });
+});
 
 export type SignupInput = z.infer<typeof signupSchema>;
 

@@ -17,7 +17,8 @@ import {
   type CommissionView,
   type Liability,
 } from "@/lib/money/commission";
-import { centsSchema, latitudeSchema, longitudeSchema, nameSchema, rateBpsSchema } from "@/lib/validation";
+import { centsSchema, chosenCoordinateSchema, nameSchema, rateBpsSchema } from "@/lib/validation";
+import { JOB_LOCATION_REQUIRED, locationMissing } from "@/lib/location";
 
 /**
  * Jobs posted by client businesses (FR-04, FR-07, FR-18, FR-20). The client
@@ -34,8 +35,8 @@ export const jobInputSchema = z
     title: nameSchema,
     description: z.string().trim().min(10, "Describe the job in at least 10 characters.").max(2000),
     areaName: nameSchema,
-    areaLat: latitudeSchema,
-    areaLon: longitudeSchema,
+    areaLat: chosenCoordinateSchema(90, JOB_LOCATION_REQUIRED),
+    areaLon: chosenCoordinateSchema(180, JOB_LOCATION_REQUIRED),
     areaRadiusM: z.coerce.number().int().min(50, "Use a radius of at least 50 m.").max(50_000, "Use a radius of at most 50 km."),
     submissionValueCents: centsSchema("The submission value", 1),
     commissionRateBps: rateBpsSchema,
@@ -49,6 +50,10 @@ export const jobInputSchema = z
     reviewAllSubmissions: z.boolean().nullable().optional(),
   })
   .superRefine((job, ctx) => {
+    // A job centred on exactly 0, 0 was never placed (defect 19).
+    if (locationMissing(job.areaLat, job.areaLon)) {
+      for (const field of ["areaLat", "areaLon"]) ctx.addIssue({ code: "custom", path: [field], message: JOB_LOCATION_REQUIRED });
+    }
     try {
       if (computeCommission(job).payableCents === 0) {
         ctx.addIssue({

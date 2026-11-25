@@ -17,6 +17,18 @@ The seed is the same script as on 16 November; references, dates and balances
 come from this run's seed and differ slightly from the earlier captures. That
 is not caused by the pass.
 
+## Recaptured after the sign-up location change (defect 19)
+
+`figure-5-11-validation-signup-duplicate-email.png` and
+`usability/usability-04-signup-password-rules.png` were captured again on 25
+November 2026 from a local production build of branch
+`ui/signup-home-location`, fresh seed (`ledgerfield_signup`), map services
+blocked. Figure 5.11 is pixel for pixel the same: it signs up a client
+business, whose form has no location. Usability-04 changed: the agent form
+under the password rules now has the place search, "Use my location", the
+chosen-location line, the area name and "Advanced" in place of the typed
+latitude and longitude. The other captures are still the ones from `8d87718`.
+
 ## Old figure -> new file
 
 | Report figure | Old file (`../`) | New file (this folder) | What the pass changed in it |
@@ -40,7 +52,7 @@ is not caused by the pass.
 | (usability) | `usability/usability-01-admin-dashboard.png` | `usability/usability-01-admin-dashboard.png` | No header "Open the review queue" button; a repeat of the same link in the attention list is a text link. |
 | (usability) | `usability/usability-02-admin-jobs.png` | `usability/usability-02-admin-jobs.png` | Nothing. |
 | (usability) | `usability/usability-03-review-sections-open.png` | `usability/usability-03-review-sections-open.png` | Nothing at 1360 px. |
-| (usability) | `usability/usability-04-signup-password-rules.png` | `usability/usability-04-signup-password-rules.png` | Segmented role choice, as 5.11. |
+| (usability) | `usability/usability-04-signup-password-rules.png` | `usability/usability-04-signup-password-rules.png` | Segmented role choice, as 5.11; the base location is a place search and "Use my location" (recaptured, see above). |
 | (usability) | `usability/usability-05-post-job-form.png` | `usability/usability-05-post-job-form.png` | **Map figure (see below).** The post-a-job form as loaded, with the map picker. |
 | (usability) | `usability/usability-06-agent-home-360.png` | `usability/usability-06-agent-home-360.png` | No "My activations" button (it is the second tab); the job leads with "Pays KSh 10.00"; notifications follow the jobs. |
 
@@ -59,7 +71,7 @@ size screenshot").
 
 | File to send | Screen | URL | Viewport | State |
 |---|---|---|---|---|
-| `figure-5-12-validation-empty-job-form.png` | Post a job, empty form submitted | `/client/jobs/new`, signed in as `client2@ledgerfield.test` | 1360 x 900, full page | Leave every field as loaded (deadline and defaults as given), place no pin, press **Publish the job** once. The red "Some fields are missing or invalid." banner and the field errors show. Do not scroll the map. |
+| `figure-5-12-validation-empty-job-form.png` | Post a job, empty form submitted | `/client/jobs/new`, signed in as `client2@ledgerfield.test` | 1360 x 900, full page | Leave every field as loaded (deadline and defaults as given), place no pin, press **Publish the job** once. The red "Some fields are missing or invalid." banner and the field errors show, including "Choose the centre of the job area..." under the map (added by the defect 19 fix: take this on a build that has it; the scripted capture here predates it). Do not scroll the map. |
 | `usability-05-post-job-form.png` | Post a job, as loaded | `/client/jobs/new`, signed in as `client2@ledgerfield.test` | 1360 x 900, full page | Nothing entered; map at its opening view (Nairobi). |
 | `figure-5-17-job-area-map-picker.png` (new, optional) | Post a job, "3. Job area" group with a pin | `/client/jobs/new`, signed in as `client2@ledgerfield.test` | 1360 x 900; capture the "3. Job area" group only | Type `Kibuye Market, Kisumu` in "Find the place on the map", press Enter once, choose the first result, set the radius slider to **1 km**, open "Advanced: the values sent". Shows the pin, the circle, the attribution, and the three values the form sends. |
 

@@ -6,6 +6,7 @@ import { postJson, type FieldErrors } from "@/lib/client-api";
 import { differenceCents, formatCents, MoneyError, parseKshToCents, parsePercentToBps } from "@/lib/money/cents";
 import { commissionDerivation, computeCommission, liabilityDerivation, maxLiability } from "@/lib/money/commission";
 import { REVIEW_SETTING_EFFECT } from "@/lib/review/effect";
+import { JOB_LOCATION_REQUIRED, locationMissing } from "@/lib/location";
 import { groupKsh } from "@/lib/ui/format";
 import { ChoiceGroup } from "@/components/ChoiceGroup";
 import { EvidenceFieldsEditor, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
@@ -95,6 +96,18 @@ export function Preview({ terms, availableCents }: { terms: Terms; availableCent
   }
 }
 
+/**
+ * What stops the form being sent from the browser: terms that do not parse, or
+ * no job area chosen (defect 19). The server checks both again.
+ */
+export function formProblems(terms: Terms, area: { lat: unknown; lon: unknown }): { parsed: Parsed | null; errors: FieldErrors; message: string | null } {
+  const { parsed, errors } = parseTerms(terms);
+  const unplaced = locationMissing(area.lat, area.lon);
+  if (unplaced) errors.areaLat = JOB_LOCATION_REQUIRED;
+  if (!parsed) return { parsed: null, errors, message: "Some fields are missing or invalid." };
+  return unplaced ? { parsed: null, errors, message: JOB_LOCATION_REQUIRED } : { parsed, errors, message: null };
+}
+
 /** The summary in one line, for the bar a phone shows instead of the full panel. `short` when escrow does not cover it. */
 export function summaryLine(terms: Terms, availableCents: number): { text: string; short: boolean } {
   const { parsed } = parseTerms(terms);
@@ -164,10 +177,10 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = Object.fromEntries(new FormData(event.currentTarget));
-    const { parsed, errors: termErrors } = parseTerms(terms);
+    const { parsed, errors: problems, message: problem } = formProblems(terms, { lat: form.areaLat, lon: form.areaLon });
     if (!parsed) {
-      setErrors(termErrors);
-      setMessage("Some fields are missing or invalid.");
+      setErrors(problems);
+      setMessage(problem);
       return;
     }
     const body = {

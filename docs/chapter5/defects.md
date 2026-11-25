@@ -560,3 +560,60 @@ decision.
 
 **Proposed fix (not applied).** Read the clock when each event is written;
 compute the retry from that time.
+
+## 19. A location nobody chose was stored as latitude 0, longitude 0, 25 November 2026
+
+**Status: fixed for agent sign-up and job posting. The same coercion on
+activation GPS is open (below).**
+
+**What happened.** The sign-up and job schemas accepted blank coordinates and
+read them as latitude 0, longitude 0, a point in the Gulf of Guinea. Found on
+25 November 2026, while planning the sign-up location picker, by parsing a
+blank location with both schemas: each returned success with `[0, 0]`. No
+hosted record was affected: a read-only count at 18:03 UTC (21:03 EAT) found
+0 of 7 agents and 0 of 10 jobs at 0, 0, and none with either value 0
+(`evidence/hosted/defect-19/`). Nothing was changed.
+
+**Cause.** Both schemas used `z.coerce.number()` for coordinates
+(`app/src/lib/validation.ts`), and JavaScript reads `Number("")` and
+`Number(null)` as 0. A missing key was refused, but as "Expected number,
+received nan". Neither browser form checked that a place had been chosen.
+
+**Effect.** An agent could be saved with a base at 0, 0, which feeds the fraud
+model's distance from the agent's base, and a job with its area at 0, 0, which
+the review screen measures photos against. The typed latitude and longitude
+boxes allowed this. The UI pass (PR #102, released in v1.2.1) made it easier to
+miss on Post a job: the fields became read-only under "Advanced", and the
+picker's message for a location error never appeared for a blank one, because
+the server accepted it.
+
+**Fix.**
+
+- `app/src/lib/location.ts`: one rule for "no place chosen" (blank, null,
+  missing, not a number, or both values exactly 0), shared by server and
+  browser.
+- The sign-up and job schemas (`signup.ts`, `jobs.ts`) refuse it with a field
+  error naming `homeLat`/`homeLon` or `areaLat`/`areaLon`, so a direct API call
+  cannot store it. One zero alone is accepted: the equator crosses Kenya.
+- Both forms stop before sending and show the message beside the location
+  search or map.
+
+No migration: the database has no constraint on these columns, and the hosted
+count found no stored row to correct.
+
+**Retest.** `app/tests/home-location.test.tsx` (TC-178 to TC-183): each blank
+form of a coordinate against both schemas; both API routes answering 422 and
+writing nothing; both forms' checks. In a browser on a local build with a fresh
+seed (`evidence/defect-19/browser-retest.json`): with no location, sign-up and
+Post a job sent no request and created nothing; with "Use my location", the
+account was stored with exactly the values shown (-1.25, 36.88). No request was
+made against the hosted app to retest it.
+
+**Open, not fixed: activation GPS.** The activation schema
+(`app/src/lib/activations/submission-form.ts`) uses the same coercing
+coordinate rule, and parsing a submission with blank `gpsLat` and `gpsLon`
+returns 0, 0 (checked 25 November 2026). If the device gives no location and the
+agent submits, the activation is stored at 0, 0 and scored from there. It was
+outside this task's scope; whether to refuse such a submission or record it as
+having no location needs the owner's decision. The hosted count above did not
+look at activations.

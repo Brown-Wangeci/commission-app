@@ -1,0 +1,56 @@
+{
+  "ranAt": "2026-11-25T18:01:17.991Z",
+  "app": "http://localhost:3000",
+  "signupNoLocation": {
+    "postsSent": [],
+    "messages": [
+      "Choose where you are based: search for the place or use your location.",
+      "Choose where you are based: search for the place or use your location."
+    ],
+    "accounts": 0
+  },
+  "signupDevice": {
+    "shown": {
+      "homeLat": "-1.250000",
+      "homeLon": "36.880000"
+    },
+    "sentFields": [
+      "email",
+      "homeAreaName",
+      "homeLat",
+      "homeLon",
+      "name",
+      "password",
+      "payoutMsisdn",
+      "role"
+    ],
+    "sentLocation": {
+      "homeAreaName": "Kariobangi North",
+      "homeLat": "-1.250000",
+      "homeLon": "36.880000"
+    },
+    "stored": {
+      "homeAreaName": "Kariobangi North",
+      "homeLat": -1.25,
+      "homeLon": 36.88
+    }
+  },
+  "signupSearch": {
+    "searchesWhileTyping": 0,
+    "searchesAfterEnter": 1,
+    "accountPostedByEnter": false,
+    "chosen": "Chosen: Stand-in Estate, Nairobi, Kenya",
+    "areaName": "Stand-in Estate",
+    "homeLat": "-1.260000",
+    "homeLon": "36.870000"
+  },
+  "jobNoPin": {
+    "postsSent": [],
+    "messages": [
+      "Choose the centre of the job area: search for the place, use your location or click the map.",
+      "Choose the centre of the job area: search for the place, use your location or click the map."
+    ],
+    "jobsAdded": 0,
+    "messagesAfterPin": []
+  }
+}

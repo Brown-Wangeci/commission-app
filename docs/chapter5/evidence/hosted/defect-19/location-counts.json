@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-11-25T18:03:16.619Z",
+  "transaction_read_only": "on",
+  "agents": {
+    "total": 7,
+    "at_zero_zero": 0,
+    "with_either_zero": 0
+  },
+  "jobs": {
+    "total": 10,
+    "at_zero_zero": 0,
+    "with_either_zero": 0
+  },
+  "live_database_check": {
+    "job_id": "cmwwawkem0001kw08ig0ngp1t",
+    "found": true
+  }
+}

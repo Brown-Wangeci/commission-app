@@ -17,6 +17,10 @@
  * form it opens cannot be sent.
  *
  * Usage: APP_URL=<origin> npx tsx scripts/audit-accessibility.ts <out.json> [label]
+ * AUDIT_ONLY="Sign up,Post a job" audits only the screens named.
+ *
+ * The sign-up state with a place chosen answers the place search itself, with
+ * a stand-in result served by the browser: nothing is sent to OpenStreetMap.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -51,6 +55,23 @@ type Screen = {
   email?: string;
   states: Array<{ name: string; step: Step }>;
 };
+
+/**
+ * Sign-up with a place chosen: the search is answered here with a made-up
+ * result (a page route outranks the context route that blocks the host), the
+ * result is chosen, and the values under Advanced are shown.
+ */
+async function chooseStandInPlace(page: Page): Promise<void> {
+  const answer = [{ lat: "-1.25", lon: "36.88", display_name: "Stand-in place for the audit, Nairobi, Kenya" }];
+  await page.route(
+    (url) => MAP_HOSTS.includes(url.hostname),
+    (route) => route.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(answer) }),
+  );
+  await page.fill("#homeSearch", "stand-in");
+  await page.press("#homeSearch", "Enter");
+  await page.locator(".map-result").first().click();
+  await page.evaluate('document.querySelectorAll("details").forEach((d) => { d.open = true; })');
+}
 
 async function openEverything(page: Page): Promise<void> {
   await page.evaluate('document.querySelectorAll("details").forEach((d) => { d.open = true; })');
@@ -149,6 +170,7 @@ async function discover(browser: Browser, blocked: string[]): Promise<Screen[]> 
 
   const signupStates = [
     { name: "agent form, as loaded", step: async () => {} },
+    { name: "place searched, chosen, advanced open", step: chooseStandInPlace },
     { name: "client form", step: async (page: Page) => page.getByLabel("A client business").check() },
     { name: "errors shown", step: async (page: Page) => page.getByRole("button", { name: "Create account" }).click() },
   ];
@@ -162,7 +184,11 @@ async function discover(browser: Browser, blocked: string[]): Promise<Screen[]> 
     screen("Activation form", "agent", submit?.route ?? null, { email: submit?.email }),
     screen("Client dashboard", "client", "/client", { states: [LOADED] }),
     screen("Post a job", "client", "/client/jobs/new", {
-      states: [LOADED, { name: "an evidence field added", step: async (page) => page.getByRole("button", { name: "+ Choice from a list" }).click() }],
+      states: [
+        LOADED,
+        { name: "an evidence field added", step: async (page) => page.getByRole("button", { name: "+ Choice from a list" }).click() },
+        { name: "publish pressed with nothing entered", step: async (page) => page.getByRole("button", { name: "Publish the job" }).click() },
+      ],
     }),
     screen("Escrow", "client", "/client", { states: [{ name: "funding section open", step: openEscrow }, OPENED] }),
     screen("Admin dashboard", "admin", "/admin"),
@@ -340,7 +366,10 @@ async function main(): Promise<void> {
   const blocked: string[] = [];
   const entries: Entry[] = [];
   try {
-    for (const target of await discover(browser, blocked)) {
+    const only = process.env.AUDIT_ONLY?.split(",").map((name) => name.trim());
+    const targets = (await discover(browser, blocked)).filter((target) => !only || only.includes(target.name));
+    if (only && targets.length !== only.length) throw new Error(`AUDIT_ONLY names a screen that does not exist: ${process.env.AUDIT_ONLY}`);
+    for (const target of targets) {
       const found = await auditScreen(browser, target, blocked);
       entries.push(...found);
       const t = totalsOf(found);
@@ -349,6 +378,7 @@ async function main(): Promise<void> {
     const report = {
       requirement: "IR-10: WCAG 2.1 level AA for contrast ratio and target size",
       label,
+      screensAudited: only ?? "all",
       app: APP,
       startedAt,
       finishedAt: new Date().toISOString(),
