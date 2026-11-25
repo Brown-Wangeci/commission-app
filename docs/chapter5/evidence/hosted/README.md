@@ -25,6 +25,7 @@ the local setup (`scripts/demo-start`) remains the fallback.
 | `performance/` | NFR-01 on the hosted app (99.35% within 2 s, 100 users) and NFR-02 on the hosted scoring service. See its README for what is and is not comparable with the local figures | NFR-02 at the dataset's history size over the internet |
 | `step18/` | One hosted STK Push credited and one hosted B2C payout paid, each by a real callback with ResultCode 0 and no status query, 23 November, from the hosted database (read only). Timeline, verdict, masking | Failure, retry and reconciliation paths (only the success path ran); which origin received the callbacks (not stored, request log not collected) |
 | `client-review/` | The client review setting, 25 November: the migration applied, and one activation that scored `auto_release` at hold-close going to review as `client_requires_review` with no payout authorised | The setting off, a per-job override, or a reviewer's decision on the hosted app |
+| `../accessibility/` | The IR-10 contrast and target-size audit of the hosted app, 25 November, before and after the token fix (read only apart from one approved test assignment) | Other browsers, assistive technology, error pages |
 
 ## M-Pesa: what was and was not shown
 
