@@ -21,6 +21,13 @@
         -19
       ],
       "inside_map": true
+    },
+    "after_hosted_v1.2.3": {
+      "offset_px": [
+        -1,
+        -19
+      ],
+      "inside_map": true
     }
   },
   "sticky_bars_360px": {
@@ -30,6 +37,10 @@
       "publish_bar": "2 of 192"
     },
     "after_local_branch": {
+      "top_bar": "0 of 84",
+      "publish_bar": "0 of 192"
+    },
+    "after_hosted_v1.2.3": {
       "top_bar": "0 of 84",
       "publish_bar": "0 of 192"
     }

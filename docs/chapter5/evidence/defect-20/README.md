@@ -22,3 +22,9 @@ height and were checked separately (`map-checks.json`, the audit):
 over the sticky bars (defect 22, `overlap-*.png`), before on the hosted app at
 v1.2.2 (read only: no request that writes was allowed) and after on the local
 build.
+
+**On the hosted app after deployment** (v1.2.3, 19:4x UTC, 22:4x EAT): the same
+two map checks were run read only. The pin's tip is on the circle's centre
+(`pin-after-v1.2.3-hosted.png`) and no sample point over either sticky bar shows
+the map (`overlap-after-v1.2.3-hosted-publishbar.png`). Defect 20's refusal was
+not retried on the hosted app: that would mean sending a submission.

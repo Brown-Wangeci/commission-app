@@ -206,3 +206,10 @@ target-size failure on the Post a job screen with the page scrolled (defect 22),
 fixed before this run. NFR-12 was measured again on a local build of the branch
 (`../nfr12-touch-targets-defect-20.json`): every control on every agent page at
 least 48 x 48 px, no sideways scroll.
+
+**Hosted run after deployment:** `defect-20.json`, the same three screens on
+production `4df4630` (PR #107, tag v1.2.3; READY 19:40:49 UTC, 22:40:49 EAT),
+from 19:41:24 UTC (22:41:24 EAT) to 19:43:18 UTC (22:43:18 EAT), chromium
+156.0.8078.4, axe-core 4.14.1. 24 screen states, 592 controls measured: **0
+contrast and 0 target-size failures**, nothing undetermined, every state
+audited. No browser request other than GET, HEAD and OPTIONS was made.
