@@ -51,7 +51,7 @@ describe("the agent's screens put what to do first", () => {
 
   it("tells the activation's story in plain words, oldest first, from the audit events", () => {
     const event = (id: string, kind: string, toState: string | null): AuditRecordEvent => ({
-      eventId: id, sequence: id, kind, at: "2026-11-25T14:52:20.000Z", fromState: null, toState, actorId: null, detail: null, hash: null, previousHash: null, anchor: { state: "waiting" } as AuditRecordEvent["anchor"],
+      eventId: id, sequence: id, kind, at: "2026-11-25T14:52:20.000Z", fromState: null, toState, actorId: null, detail: null, hash: null, previousHash: null, anchor: { state: "awaiting_batch" },
     });
     const html = renderToStaticMarkup(<WhatHappened events={[event("1", "transition", "submitted"), event("2", "activation_submitted", null), event("3", "transition", "held")]} />);
     expect(html).toContain("What happened");
