@@ -6,6 +6,7 @@ import { postForm } from "@/lib/client-api";
 import { MAX_JOB_PHOTOS } from "@/lib/evidence/fields";
 import { budgetProblem, photoShare, photoTooBigMessage } from "@/lib/evidence/photo-limits";
 import { shrinkPhoto } from "@/lib/evidence/photo-resize";
+import { AUDIT_TEXT_NOTICE } from "@/lib/retention/notice";
 
 type Fix = { lat: number; lon: number; accuracy: number };
 
@@ -72,6 +73,7 @@ export function EvidenceResponseForm({ activationId }: { activationId: string })
       <div className="field">
         <label htmlFor="note">Your reply</label>
         <textarea id="note" name="note" className="textarea" maxLength={2000} />
+        <span className="hint">{AUDIT_TEXT_NOTICE}</span>
       </div>
       <div className="field">
         <label htmlFor="responsePhotos">Photos ({files.length})</label>

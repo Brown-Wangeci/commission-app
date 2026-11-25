@@ -45,6 +45,14 @@ const schema = z.object({
   STATUS_RETRY_AFTER_MAX_SECONDS: z.coerce.number().int().positive().default(900),
   RECONCILE_INTERVAL_SECONDS: z.coerce.number().int().positive().default(3600),
   RECONCILE_PERIOD_SECONDS: z.coerce.number().int().positive().default(172_800),
+  /**
+   * DR-11. How long a settled submission keeps its personal data, counted
+   * from the day it was settled. The default is an assumption, not a figure
+   * from law or the industry partner: see docs/RETENTION.md.
+   */
+  RETENTION_DAYS: z.coerce.number().int().min(1).default(1095),
+  /** The most submissions one retention run anonymises. An assumption. */
+  RETENTION_MAX_PER_RUN: z.coerce.number().int().min(1).max(10_000).default(200),
   ANCHOR_INTERVAL_SECONDS: z.coerce.number().int().positive().default(3600),
   ANCHOR_MAX_LEAVES: z.coerce.number().int().min(1).max(100_000).default(5000),
   ANCHOR_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(50).default(6),
