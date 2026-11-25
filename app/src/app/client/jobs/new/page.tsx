@@ -21,7 +21,7 @@ export default async function NewJobPage() {
           </p>
         </div>
       </div>
-      <PostJobForm availableCents={escrow.availableCents} defaultDeadline={defaultDeadline()} />
+      <PostJobForm availableCents={escrow.availableCents} defaultDeadline={defaultDeadline()} accountReviewSetting={client.reviewAllSubmissions} />
     </main>
   );
 }

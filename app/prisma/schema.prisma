@@ -99,6 +99,7 @@ enum ReviewOpenReason {
   could_not_be_scored
   evidence_returned
   dispute
+  client_requires_review
 }
 
 enum ReviewAction {
@@ -195,14 +196,17 @@ model Notification {
 }
 
 model ClientBusiness {
-  id              String           @id @default(cuid())
-  userId          String           @unique
-  user            User             @relation(fields: [userId], references: [id], onDelete: Restrict)
-  name            String
-  createdAt       DateTime         @default(now())
-  jobs            Job[]
-  deposits        EscrowDeposit[]
-  fundingAttempts FundingAttempt[]
+  id                   String           @id @default(cuid())
+  userId               String           @unique
+  user                 User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  name                 String
+  createdAt            DateTime         @default(now())
+  /// When on, nothing the hold-close check would release is paid without a
+  /// reviewer. A job may override it (Job.reviewAllSubmissions).
+  reviewAllSubmissions Boolean          @default(false)
+  jobs                 Job[]
+  deposits             EscrowDeposit[]
+  fundingAttempts      FundingAttempt[]
 }
 
 model Agent {
@@ -248,6 +252,9 @@ model Job {
   /// After this the job takes no new assignments, acceptances or submissions (FR-04, issue #51).
   /// Null only on jobs published before deadlines existed.
   deadlineAt           DateTime?
+  /// This job's own review setting, chosen at publication; null follows the
+  /// client's (ClientBusiness.reviewAllSubmissions).
+  reviewAllSubmissions Boolean?
   assignments          Assignment[]
   activations          Activation[]
   commissions          Commission[]

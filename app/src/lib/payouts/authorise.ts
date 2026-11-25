@@ -2,6 +2,7 @@ import type { PayoutAuthorisation, Prisma } from "@prisma/client";
 import { recordAuditEvent } from "@/lib/activations/transition";
 import { formatCents } from "@/lib/money/cents";
 import { maskPhone } from "@/lib/payments/redact";
+import { reviewRequired } from "@/lib/review/requirement";
 import { payoutAuthoriser, usePayoutAuthoriser } from "./boundary";
 import { recordCommission, storedCommissionView } from "./commissions";
 import { DarajaPayoutAuthoriser } from "./daraja";
@@ -12,6 +13,7 @@ import { DarajaPayoutAuthoriser } from "./daraja";
  * escrow hold covers exactly that amount, and hands the commission's amount
  * and the agent's number to whichever `PayoutAuthoriser` is registered.
  * Daraja is the default; there is deliberately no setting that turns payment off.
+ * Where the client requires a reviewer, an authorisation without one is refused.
  */
 function ensureRegistered(): void {
   try {
@@ -28,8 +30,11 @@ export async function authorisePayout(
   ensureRegistered();
   const activation = await tx.activation.findUniqueOrThrow({
     where: { id: input.activationId },
-    include: { assignment: { include: { hold: true } }, agent: true },
+    include: { assignment: { include: { hold: true } }, agent: true, job: { include: { client: true } } },
   });
+  if (input.authorisedById === null && reviewRequired(activation.job)) {
+    throw new Error(`Activation ${activation.reference} needs a reviewer: its client allows no automatic payout.`);
+  }
   const hold = activation.assignment.hold;
   if (!hold) throw new Error(`Activation ${activation.reference} has no escrow hold to pay from.`);
   const commission = await recordCommission(tx, { activationId: activation.id, approvedById: input.authorisedById, at: input.at });

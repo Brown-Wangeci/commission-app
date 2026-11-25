@@ -10,10 +10,18 @@
  *           bytes uploaded. Writes everything to <out.json>.
  *   photos  fetches the photos named in an earlier <out.json> again (after a
  *           redeploy) and compares them with the same hashes.
+ *   review-on   turns "reviewer required before any payment" on as client2@,
+ *           posts a one-slot job that follows the account setting, submits one
+ *           activation as mercy@, reports an engaged first week, waits for the
+ *           scoring cron job's T7 decision and writes where it landed. Leaves
+ *           the setting on.
+ *   review-off  turns the setting off again as client2@.
  *
  * Usage, from app/:
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts run <out.json>
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts photos <out.json> <out2.json>
+ *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts review-on <out.json>
+ *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts review-off <out.json>
  *
  * The customer number it submits is generated, not a real person's.
  */
@@ -22,8 +30,13 @@ import fs from "node:fs";
 import { acceptAndSubmit, APP, call, DAY, DEMO_EVIDENCE_FIELDS, nairobiDate, signIn, week, type Session } from "./demo-client";
 import { placeholderPng } from "../prisma/seed-support/placeholder-png";
 
-type Decision = { mode: string; band: string; probability: number; releaseThreshold: number; rejectThreshold: number; trigger?: string; scoredAt?: string };
+type Decision = { mode: string; band: string; probability: number; releaseThreshold: number; rejectThreshold: number; trigger?: string; scoredAt?: string; reasons?: unknown[] };
 type Detail = { id: string; reference: string; state: string; submittedAt: string; holdClosesAt: string | null; decisions: Decision[]; photos: Array<{ id: string; url: string; sequence: number }> };
+type ReviewDetail = Detail & {
+  reviewHistory: Array<{ openReason: string; openedAt: string; closedAt: string | null }>;
+  payout: { authorisation: unknown };
+  audit: Array<Record<string, unknown>>;
+};
 
 const ROLES = { admin: "reviewer@ledgerfield.test", client: "client2@ledgerfield.test", agent: "mercy@ledgerfield.test" } as const;
 const AREAS = ["/admin", "/client", "/agent"] as const;
@@ -45,9 +58,9 @@ async function roleChecks(sessions: Record<keyof typeof ROLES, Session>) {
   return checks;
 }
 
-async function postJob(client: Session): Promise<string> {
+async function postJob(client: Session, title = "Hosted verification: wallet activations, Kibuye Market", description = "Hosted verification run (step 16)."): Promise<string> {
   const { jobId } = await call<{ jobId: string }>(client, "POST", "/api/client/jobs", {
-    title: "Hosted verification: wallet activations, Kibuye Market", description: "Hosted verification run (step 16).",
+    title, description,
     areaName: "Kibuye Market, Kisumu", areaLat: -0.0995, areaLon: 34.768, areaRadiusM: 800,
     submissionValueCents: 250_000, commissionRateBps: 1200, flatCommissionCents: 5_000, slots: 1,
     deadline: nairobiDate(new Date(Date.now() + 30 * DAY)), evidenceFields: DEMO_EVIDENCE_FIELDS,
@@ -124,11 +137,60 @@ async function photos(previous: string, out: string): Promise<void> {
   log(`${earlier.activation.reference}: ${checks.filter((p) => p.matches).length} of ${checks.length} photos match the uploaded bytes; written ${out}`);
 }
 
+function setReviewSetting(client: Session, reviewAllSubmissions: boolean): Promise<{ reviewAllSubmissions: boolean; changed: boolean }> {
+  return call(client, "POST", "/api/client/review-setting", { reviewAllSubmissions });
+}
+
+/** What the check requires of the activation after the cron job's T7 decision, each item true or false. */
+function reviewOutcome(detail: ReviewDetail) {
+  const t7 = detail.decisions.find((d) => d.mode === "t7") ?? null;
+  const open = detail.reviewHistory.filter((item) => item.closedAt === null);
+  return {
+    t7BandIsAutoRelease: t7?.band === "auto_release",
+    inReview: detail.state === "in_review",
+    openReason: open.at(-1)?.openReason ?? null,
+    scoreAndReasonsStored: detail.decisions.length === 2 && detail.decisions.every((d) => (d.reasons?.length ?? 0) > 0),
+    noPayoutAuthorisation: detail.payout.authorisation === null,
+  };
+}
+
+async function reviewOn(out: string): Promise<void> {
+  log(`app ${APP}`);
+  const sessions = { admin: await signIn(ROLES.admin), client: await signIn(ROLES.client), agent: await signIn(ROLES.agent) };
+  const startedAt = new Date().toISOString();
+  const setting = await setReviewSetting(sessions.client, true);
+  const jobId = await postJob(sessions.client, "Hosted check: reviewer required, Kibuye Market", "Hosted check of the client review setting.");
+  const assignmentId = await assignMercy(sessions.admin, jobId);
+  const submitted = await acceptAndSubmit(sessions.agent, assignmentId, "dev-mercy-6120");
+  const atT0 = await call<ReviewDetail>(sessions.admin, "GET", `/api/admin/review/${submitted.activationId}`);
+  await call(sessions.client, "POST", `/api/client/activations/${submitted.activationId}/activity`, { days: week("engaged") });
+  log(`${submitted.reference}: state ${atT0.state} after T0; engaged first week reported; hold closes ${atT0.holdClosesAt}`);
+  const { detail, waitedMs } = await waitForCronT7(sessions.admin, submitted.activationId, 10 * 60_000);
+  const after = detail as ReviewDetail;
+  const outcome = reviewOutcome(after);
+  const activation = { id: submitted.activationId, reference: submitted.reference, submittedAt: atT0.submittedAt, holdClosesAt: atT0.holdClosesAt, stateAfterSubmit: atT0.state };
+  const result = {
+    app: APP, started_at: startedAt, finished_at: new Date().toISOString(), setting, jobId, assignmentId, activation,
+    waitedForT7Ms: waitedMs, stateAfterT7: after.state, outcome, decisions: after.decisions, reviewHistory: after.reviewHistory, audit: after.audit,
+  };
+  fs.writeFileSync(out, `${JSON.stringify(result, null, 2)}\n`);
+  log(`${submitted.reference}: ${JSON.stringify(outcome)}; written ${out}`);
+}
+
+async function reviewOff(out: string): Promise<void> {
+  const client = await signIn(ROLES.client);
+  const setting = await setReviewSetting(client, false);
+  fs.writeFileSync(out, `${JSON.stringify({ app: APP, at: new Date().toISOString(), setting }, null, 2)}\n`);
+  log(`review setting off (changed: ${setting.changed}); written ${out}`);
+}
+
 async function main(): Promise<void> {
   const [command, a, b] = process.argv.slice(2);
   if (command === "run" && a) return run(a);
   if (command === "photos" && a && b) return photos(a, b);
-  throw new Error("Usage: hosted-verify.ts run <out.json> | photos <earlier.json> <out.json>");
+  if (command === "review-on" && a) return reviewOn(a);
+  if (command === "review-off" && a) return reviewOff(a);
+  throw new Error("Usage: hosted-verify.ts run <out.json> | photos <earlier.json> <out.json> | review-on <out.json> | review-off <out.json>");
 }
 
 main().catch((error) => {
