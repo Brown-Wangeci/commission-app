@@ -8,12 +8,19 @@ import { postJson, type FieldErrors } from "@/lib/client-api";
 import { confirmationProblem, passwordProblems } from "@/lib/auth/password-rules";
 import { PasswordInput } from "@/components/PasswordInput";
 import { PasswordRules } from "@/components/PasswordRules";
+import { ChoiceGroup } from "@/components/ChoiceGroup";
+import { PhoneInput } from "@/components/PhoneInput";
 
 type Role = "agent" | "client";
 
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
   return errors[name] ? <span className="field-error">{errors[name]}</span> : null;
 }
+
+const ROLE_CHOICES = [
+  { value: "agent", label: "An agent" },
+  { value: "client", label: "A client business" },
+];
 
 function bodyFrom(form: FormData, role: Role): Record<string, unknown> {
   const common = {
@@ -86,11 +93,8 @@ export function SignupForm() {
     <form className="stack" onSubmit={submit} noValidate>
       {message && <div className="alert error" role="alert">{message}</div>}
       <div className="field">
-        <span className="label">I am</span>
-        <div className="row">
-          <label className="row small"><input type="radio" name="role" checked={role === "agent"} onChange={() => setRole("agent")} /> An agent</label>
-          <label className="row small"><input type="radio" name="role" checked={role === "client"} onChange={() => setRole("client")} /> A client business</label>
-        </div>
+        <span className="label" id="role-label">I am</span>
+        <ChoiceGroup name="role" options={ROLE_CHOICES} labelledBy="role-label" value={role} onChange={(value) => setRole(value as Role)} />
       </div>
       <div className="field">
         <label htmlFor="name">Your full name</label>
@@ -125,7 +129,7 @@ export function SignupForm() {
           <legend>Payout and base location</legend>
           <div className="field">
             <label htmlFor="payoutMsisdn">M-Pesa payout number</label>
-            <input id="payoutMsisdn" name="payoutMsisdn" className="input" placeholder="0712 345 678" inputMode="tel" />
+            <PhoneInput id="payoutMsisdn" name="payoutMsisdn" invalid={Boolean(errors.payoutMsisdn)} />
             <FieldError errors={errors} name="payoutMsisdn" />
           </div>
           <div className="field">

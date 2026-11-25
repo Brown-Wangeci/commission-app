@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson } from "@/lib/client-api";
 import { centsToKshText, parseKshToCents } from "@/lib/money/cents";
+import { StickyActionBar } from "@/components/StickyActionBar";
 
 export type ActivityRow = {
   day: number;
@@ -91,7 +92,9 @@ export function ActivityForm({ activationId, existing, backHref }: { activationI
         </table>
       </div>
       {error && <div className="alert error" role="alert">{error}</div>}
-      <button type="submit" className="btn primary" disabled={busy} style={{ alignSelf: "flex-start" }}>{busy ? "Saving" : "Save first-week activity"}</button>
+      <StickyActionBar>
+        <button type="submit" className="btn primary" disabled={busy}>{busy ? "Saving" : "Save first-week activity"}</button>
+      </StickyActionBar>
     </form>
   );
 }

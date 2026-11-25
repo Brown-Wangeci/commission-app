@@ -1,7 +1,10 @@
 import type { ChangeEvent } from "react";
+import { ChoiceGroup } from "@/components/ChoiceGroup";
+import { PhoneInput } from "@/components/PhoneInput";
 import { describeFormat, type FieldDefinition } from "@/lib/evidence/fields";
 
-export type AttachedPhoto = { name: string; located: boolean; sizeBytes?: number };
+/** `previewUrl` is an object URL for the thumbnail, made by the form that holds the file. */
+export type AttachedPhoto = { name: string; located: boolean; sizeBytes?: number; previewUrl?: string };
 
 type Props = {
   fields: FieldDefinition[];
@@ -31,17 +34,10 @@ function inputFor(field: FieldDefinition, today: string) {
     case "date":
       return <input id={id} name={name} type="date" className="input" max={field.format.allowFuture ? undefined : today} />;
     case "phone":
-      return <input id={id} name={name} className="input" inputMode="tel" placeholder="0712 345 678" />;
+      // Someone else's number (a customer's), so the browser must not offer the agent's own.
+      return <PhoneInput id={id} name={name} autoComplete="off" />;
     case "single_select":
-      if (field.format.options.length <= 4) {
-        return (
-          <span className="stack-sm" role="radiogroup" aria-labelledby={`${id}-label`}>
-            {field.format.options.map((option) => (
-              <label key={option.value} className="row small"><input type="radio" name={name} value={option.value} /> {option.label}</label>
-            ))}
-          </span>
-        );
-      }
+      if (field.format.options.length <= 4) return <ChoiceGroup name={name} options={field.format.options} labelledBy={`${id}-label`} />;
       return (
         <select id={id} name={name} className="select" defaultValue="">
           <option value="">Choose one</option>
@@ -53,6 +49,26 @@ function inputFor(field: FieldDefinition, today: string) {
   }
 }
 
+function PhotoTile({ photo, index, onRemove }: { photo: AttachedPhoto; index: number; onRemove?: () => void }) {
+  return (
+    <div className="photo-tile">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {photo.previewUrl ? <img src={photo.previewUrl} alt={`Photo ${index + 1}`} /> : <span className="photo-tile-name">{photo.name}</span>}
+      <span className="tile-n">{index + 1}</span>
+      {!photo.located && <span className="photo-tile-flag">No location</span>}
+      <button type="button" className="photo-remove" onClick={onRemove} aria-label={`Remove photo ${index + 1}`}>
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  );
+}
+
+/**
+ * Photos as tiles: each added photo shows its thumbnail and a remove button,
+ * and the last tile takes a new one (the camera on a phone). The file input
+ * covers the whole add tile, so the tile is the target; it stays in the page,
+ * disabled and hidden, once the field is full.
+ */
 function PhotoField({ field, attached, onAdd, onRemove, locationKnown }: {
   field: Extract<FieldDefinition, { type: "photo" }>;
   attached: AttachedPhoto[];
@@ -67,23 +83,27 @@ function PhotoField({ field, attached, onAdd, onRemove, locationKnown }: {
   };
   return (
     <>
-      <input id={`f-${field.key}`} type="file" accept={PHOTO_TYPES} capture="environment" multiple={field.format.maxCount > 1} onChange={add} disabled={full} />
-      <span className="hint">
-        {attached.length} of {field.format.maxCount} attached. Each photo is stamped with its own time and your location when you add it
-        {locationKnown ? "" : " (location unavailable, so it will have none)"}.
+      <div className="photo-tiles">
+        {attached.map((photo, index) => <PhotoTile key={index} photo={photo} index={index} onRemove={() => onRemove?.(index)} />)}
+        <div className={`photo-add${full ? " visually-hidden" : ""}`}>
+          <input id={`f-${field.key}`} type="file" accept={PHOTO_TYPES} capture="environment" multiple={field.format.maxCount > 1} onChange={add} disabled={full} />
+          <span aria-hidden="true" className="photo-add-plus">+</span>
+          <span aria-hidden="true">{attached.length === 0 ? "Take photo" : "Add another"}</span>
+        </div>
+      </div>
+      <span className="hint" role="status">
+        <strong>{attached.length} of {field.format.maxCount} attached.</strong> Each photo records the time and your location when you add it
+        {locationKnown ? "" : " (your location is not available, so it will have none)"}.
       </span>
-      {attached.length > 0 && (
-        <ul className="small" style={{ margin: 0, paddingLeft: 18 }}>
-          {attached.map((photo, index) => (
-            <li key={index}>
-              {photo.name}{photo.sizeBytes === undefined ? "" : ` (${(photo.sizeBytes / 1_000_000).toFixed(1)} MB)`} {photo.located ? "" : "(no location)"}{" "}
-              <button type="button" className="linkbutton" onClick={() => onRemove?.(index)}>remove</button>
-            </li>
-          ))}
-        </ul>
-      )}
     </>
   );
+}
+
+/** The format line under a field, left out where the control already shows it. */
+function formatHint(field: FieldDefinition): string {
+  if (field.type === "single_select") return "";
+  if (field.type === "date") return field.format.allowFuture ? "" : "Not in the future";
+  return describeFormat(field);
 }
 
 /**
@@ -112,7 +132,7 @@ export function EvidenceFieldInputs({ fields, errors, photos, onAddPhotos, onRem
           ) : (
             inputFor(field, today)
           )}
-          <span className="hint">{describeFormat(field)}{field.help ? `. ${field.help}` : ""}</span>
+          {(formatHint(field) || field.help) && <span className="hint">{[formatHint(field), field.help].filter(Boolean).join(". ")}</span>}
           {errors[field.key] && <span className="field-error">{errors[field.key]}</span>}
         </div>
       ))}

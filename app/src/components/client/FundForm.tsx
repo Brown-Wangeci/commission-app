@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson } from "@/lib/client-api";
+import { groupKsh } from "@/lib/ui/format";
+import { PhoneInput } from "@/components/PhoneInput";
 import { formatCents, parseKshToCents } from "@/lib/money/cents";
 
 type Started = { status: string; amountCents: number; failureReason: string | null };
@@ -44,11 +46,14 @@ export function FundForm() {
       <div className="row" style={{ alignItems: "flex-end", flexWrap: "wrap" }}>
         <div className="stack-sm">
           <label htmlFor="amountKsh" className="label">Amount (KSh)</label>
-          <input id="amountKsh" name="amountKsh" className="input" inputMode="numeric" placeholder="5,000" style={{ maxWidth: 180 }} />
+          <div className="affix prefix" style={{ maxWidth: 180 }}>
+            <span className="affix-text" aria-hidden="true">KSh</span>
+            <input id="amountKsh" name="amountKsh" className="input" inputMode="decimal" placeholder="5,000" onBlur={(e) => { e.target.value = groupKsh(e.target.value); }} />
+          </div>
         </div>
         <div className="stack-sm">
           <label htmlFor="payerMsisdn" className="label">M-Pesa number to pay from</label>
-          <input id="payerMsisdn" name="payerMsisdn" className="input" inputMode="tel" autoComplete="tel" placeholder="0712 345 678" style={{ maxWidth: 200 }} />
+          <PhoneInput id="payerMsisdn" name="payerMsisdn" style={{ maxWidth: 200 }} />
         </div>
         <button type="submit" className="btn" disabled={busy}>{busy ? "Sending prompt" : "Pay with M-Pesa"}</button>
       </div>
