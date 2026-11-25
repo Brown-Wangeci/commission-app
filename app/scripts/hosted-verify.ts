@@ -16,12 +16,16 @@
  *           scoring cron job's T7 decision and writes where it landed. Leaves
  *           the setting on.
  *   review-off  turns the setting off again as client2@.
+ *   open-assignment  posts a one-slot KSh 10.00 job as client2@, assigns it
+ *           to mercy@ as reviewer@ and accepts it, leaving it unsubmitted, so
+ *           the activation form can be audited (scripts/audit-accessibility.ts).
  *
  * Usage, from app/:
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts run <out.json>
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts photos <out.json> <out2.json>
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts review-on <out.json>
  *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts review-off <out.json>
+ *   APP_URL=https://<host> npx tsx scripts/hosted-verify.ts open-assignment <out.json>
  *
  * The customer number it submits is generated, not a real person's.
  */
@@ -184,13 +188,31 @@ async function reviewOff(out: string): Promise<void> {
   log(`review setting off (changed: ${setting.changed}); written ${out}`);
 }
 
+/** An accepted assignment with nothing submitted, locking KSh 10.00 of client2's escrow. */
+async function openAssignment(out: string): Promise<void> {
+  log(`app ${APP}`);
+  const sessions = { admin: await signIn(ROLES.admin), client: await signIn(ROLES.client), agent: await signIn(ROLES.agent) };
+  const { jobId } = await call<{ jobId: string }>(sessions.client, "POST", "/api/client/jobs", {
+    title: "Accessibility audit: wallet activations, Kibuye Market", description: "Left unsubmitted so the activation form can be audited.",
+    areaName: "Kibuye Market, Kisumu", areaLat: -0.0995, areaLon: 34.768, areaRadiusM: 800,
+    submissionValueCents: 10_000, commissionRateBps: 1000, flatCommissionCents: 0, slots: 1,
+    deadline: nairobiDate(new Date(Date.now() + 30 * DAY)), evidenceFields: DEMO_EVIDENCE_FIELDS,
+  });
+  const assignmentId = await assignMercy(sessions.admin, jobId);
+  await call(sessions.agent, "POST", `/api/agent/assignments/${assignmentId}/accept`);
+  fs.writeFileSync(out, `${JSON.stringify({ app: APP, at: new Date().toISOString(), jobId, assignmentId, lockedCents: 1_000 }, null, 2)}
+`);
+  log(`assignment accepted, not submitted; written ${out}`);
+}
+
 async function main(): Promise<void> {
   const [command, a, b] = process.argv.slice(2);
   if (command === "run" && a) return run(a);
   if (command === "photos" && a && b) return photos(a, b);
   if (command === "review-on" && a) return reviewOn(a);
   if (command === "review-off" && a) return reviewOff(a);
-  throw new Error("Usage: hosted-verify.ts run <out.json> | photos <earlier.json> <out.json> | review-on <out.json> | review-off <out.json>");
+  if (command === "open-assignment" && a) return openAssignment(a);
+  throw new Error("Usage: hosted-verify.ts run <out.json> | photos <earlier.json> <out.json> | review-on|review-off|open-assignment <out.json>");
 }
 
 main().catch((error) => {
