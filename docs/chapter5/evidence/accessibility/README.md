@@ -135,3 +135,42 @@ was left unsubmitted. A first before run, made without it, was replaced.
 
 From `app/`:
 `APP_URL=<origin> npx tsx scripts/audit-accessibility.ts <out.json> <label>`
+
+## Re-run after the UI pass (PRs #100 to #103)
+
+`ui-pass.json`: the same script on the hosted app at production `8d87718`
+(Vercel production deploy READY 15:41:40 UTC, 18:41:40 EAT), from 15:42:21 UTC
+(18:42:21 EAT) to 15:50:42 UTC (18:50:42 EAT). chromium 156.0.8078.4, axe-core
+4.14.1, 360 px (touch) and 1366 px. No browser request other than GET, HEAD
+and OPTIONS was made. The OpenStreetMap tile and search hosts were blocked
+(their usage policies forbid automated clients), so the job-area map was
+audited without tiles; its attribution sits on a solid surface in a checked
+text token, so its contrast does not depend on the tiles.
+
+| | Requested screens | All screens |
+|---|---|---|
+| Screen states audited | 42 | 102 |
+| Screens not audited | 0 | 0 |
+| Text contrast failures found by axe | 0 | 0 |
+| Text contrast failures found where axe could not judge | 0 | 0 |
+| Still undetermined | 0 | 0 |
+| Placeholder text under 4.5:1 | 0 | 0 |
+| Field boundaries under 3:1 | 0 | 0 |
+| Targets failing the 24 px rule | 0 | 0 |
+| Target checks axe could not judge | 0 | 0 |
+| Controls measured | 1078 | 2490 |
+| Controls under 44 x 44 px (information only) | 756 | 1808 |
+
+**Still met:** 0 contrast and 0 target-size violations on every audited
+screen state. A run on a local copy of PR #103 before it was merged found the
+new radius slider with no field boundary (four findings, the post-a-job page
+at both widths, as loaded and with an evidence field added); the slider was
+given the field boundary token (commit `292a8be`, test TC-177) and a second
+local run found nothing. The activation form was audited through the same
+open assignment as before; nothing was written for this re-run.
+
+The agent screens' 48 px targets (NFR-12) were measured again with
+`app/scripts/measure-touch-targets.ts` on a local copy of `8d87718` started
+from a fresh seed: every control on every agent page is at least 48 x 48 px and
+no page scrolls sideways at 360 px
+(`../nfr12-touch-targets-ui-pass.json`).
