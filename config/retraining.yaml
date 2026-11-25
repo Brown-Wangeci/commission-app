@@ -1,0 +1,29 @@
+# Retraining with the labelled records administrator reviews leave behind
+# (DR-10). app/scripts/export-labels.ts writes the labels; src/train/retrain.py
+# compares a candidate trained on the synthetic data plus those labels against
+# the committed procedure trained on the synthetic data alone, on the same
+# agent-grouped, time-ordered folds. It promotes nothing: publishing an
+# artifact is a manual step (docs/RETRAINING.md).
+#
+# WHY THIS IS A SEPARATE FILE, not a section of config/model.yaml. The Phase
+# 5/6 results committed in outputs/ record the hash of config/model.yaml they
+# were produced from, and tests/test_config.py fails if that hash no longer
+# matches the file on disk. Adding a section to model.yaml would break that
+# link for every committed number without a single one of them changing, and
+# the only honest way to restore it would be to rerun the whole multi-seed
+# evaluation. Nothing here feeds that evaluation: these parameters are read
+# only by src/train/retrain.py, in the same way config/serving.yaml and
+# config/costs.yaml hold parameters of their own concern. The trade-off is
+# that "modelling parameters live in config/model.yaml" (CLAUDE.md) now has a
+# third exception, named here so it is visible rather than silent.
+#
+# Source tags follow the same convention as generator.yaml and model.yaml:
+# spec (explicitly stated by the supervisor), literature, industry partner,
+# assumption. Nothing here is tuned toward a target metric.
+
+retraining:
+  export_dir: "data/review-labels"  # controls: where src.train.retrain looks for the export folders the application writes. source: assumption
+  model: "t7_none"  # controls: which entry of model.yaml multi_seed.models is retrained and compared. The chosen model; a label can only train the model whose feature set it was scored with. source: assumption
+  review_label_weight: 1.0  # controls: the weight one review row carries in the candidate's training split, against 1.0 for a synthetic row. Equal weight deliberately: review labels exist only for the bands that reach a person, so upweighting them would amplify that selection bias rather than correct it. source: assumption
+  seeds: [7, 42, 101, 2024]  # controls: the seeds the comparison averages over, matching model.yaml multi_seed.seeds, so every reported number is a mean across seeds with the seed-level spread. source: spec (Phase 4 supervisor review set these seeds)
+  min_labels_for_promotion: 500  # controls: the number of usable labels below which the report refuses to call the comparison informative. Not a statistical test: a floor that stops a handful of labels being read as evidence. source: assumption

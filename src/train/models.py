@@ -114,6 +114,7 @@ def fit_xgboost(
     model_cfg: Dict[str, Any],
     seed: int,
     ratio: float | None = None,
+    sample_weight: np.ndarray | None = None,
 ) -> XGBClassifier:
     """Fit on one training split, handling imbalance by oversampling or by weighting.
 
@@ -122,9 +123,16 @@ def fit_xgboost(
     generating rows, scale_pos_weight by weighting the rows that exist. Left
     as None, each method keeps its Phase 3 default (oversample to the configured
     ratio; weight to full balance).
+
+    `sample_weight` gives one weight per training row, used by the retraining
+    pipeline (DR-10) to weight exported review labels against synthetic rows.
+    Left as None the fit is exactly as before. An oversampler invents rows that
+    have no weight of their own, so the two cannot be combined.
     """
     if method not in IMBALANCE_METHODS:
         raise ValueError(f"unknown imbalance method {method}")
+    if sample_weight is not None and method in OVERSAMPLERS:
+        raise ValueError(f"sample_weight cannot be combined with {method}: resampling invents unweighted rows")
     xgb_cfg = model_cfg["xgboost"]
     scale_pos_weight = 1.0
     if method in OVERSAMPLERS:
@@ -141,5 +149,5 @@ def fit_xgboost(
         n_jobs=int(xgb_cfg["n_jobs"]),
         random_state=seed,
     )
-    model.fit(features, labels)
+    model.fit(features, labels, sample_weight=sample_weight)
     return model
