@@ -1,0 +1,164 @@
+{
+  "app": "https://commission-app-ten-pied.vercel.app",
+  "started_at": "2026-11-25T08:14:18.937Z",
+  "finished_at": "2026-11-25T08:20:18.114Z",
+  "setting": {
+    "reviewAllSubmissions": true,
+    "changed": true
+  },
+  "jobId": "cmwvukwjf0001l207wz1hbn37",
+  "assignmentId": "cmwvukxav0005l207d8vs30ey",
+  "activation": {
+    "id": "f2e27609-0ed5-42b0-a589-b01c470d382b",
+    "reference": "LF-000067",
+    "submittedAt": "2026-11-25T08:14:23.145Z",
+    "holdClosesAt": "2026-11-25T08:19:23.145Z",
+    "stateAfterSubmit": "held"
+  },
+  "waitedForT7Ms": 349870,
+  "stateAfterT7": "in_review",
+  "outcome": {
+    "t7BandIsAutoRelease": true,
+    "inReview": true,
+    "openReason": "client_requires_review",
+    "scoreAndReasonsStored": true,
+    "noPayoutAuthorisation": true
+  },
+  "decisions": [
+    {
+      "id": "cmwvul0ej0008jp0746mhh1co",
+      "mode": "t0",
+      "modelVersion": "t0_none-isotonic-v1",
+      "probability": 0.1053837388753891,
+      "band": "auto_release",
+      "releaseThreshold": 0.301471,
+      "rejectThreshold": 0.729167,
+      "scoredAt": "2026-11-25T08:14:25.069Z",
+      "trigger": "submission",
+      "reasons": [
+        {
+          "rank": 1,
+          "feature": "ip_location_mismatch_flag",
+          "description": "the network location disagreed with the device's GPS location",
+          "contribution": 1.183453917503357,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 2,
+          "feature": "proof_of_activation_missing_flag",
+          "description": "no proof of activation was attached",
+          "contribution": 1.02506411075592,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 3,
+          "feature": "acceptance_to_submission_seconds",
+          "description": "the agent took 0.0 hours between accepting the job and submitting it",
+          "contribution": 0.874294102191925,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        }
+      ]
+    },
+    {
+      "id": "cmwvus9i0000hjp076vhqo0oo",
+      "mode": "t7",
+      "modelVersion": "t7_none-isotonic-v1",
+      "probability": 0.001490312977693975,
+      "band": "auto_release",
+      "releaseThreshold": 0.266667,
+      "rejectThreshold": 0.666667,
+      "scoredAt": "2026-11-25T08:20:03.440Z",
+      "trigger": "hold_close",
+      "reasons": [
+        {
+          "rank": 1,
+          "feature": "customer_active_days_7d",
+          "description": "the customer used the service on 8 of the first 8 days",
+          "contribution": -1.521867513656616,
+          "raisesRisk": false,
+          "isAgentLevel": false
+        },
+        {
+          "rank": 2,
+          "feature": "device_activations_7d",
+          "description": "this device was used for 1 activations in the last 7 days",
+          "contribution": -1.052312731742859,
+          "raisesRisk": false,
+          "isAgentLevel": true
+        },
+        {
+          "rank": 3,
+          "feature": "ip_location_mismatch_flag",
+          "description": "the network location disagreed with the device's GPS location",
+          "contribution": 0.8457237482070923,
+          "raisesRisk": true,
+          "isAgentLevel": false
+        }
+      ]
+    }
+  ],
+  "reviewHistory": [
+    {
+      "id": "cmwvus9jq000mjp07y7k1i301",
+      "openedAt": "2026-11-25T08:20:02.982Z",
+      "openReason": "client_requires_review",
+      "closedAt": null,
+      "action": null,
+      "reviewerName": null,
+      "reason": null
+    }
+  ],
+  "audit": [
+    {
+      "at": "2026-11-25T08:14:23.145Z",
+      "kind": "transition",
+      "fromState": null,
+      "toState": "submitted",
+      "actorName": "Mercy Achieng",
+      "detail": "Submitted with 3 photo(s) against evidence configuration version 1."
+    },
+    {
+      "at": "2026-11-25T08:14:23.145Z",
+      "kind": "transition",
+      "fromState": "submitted",
+      "toState": "scored_t0",
+      "actorName": null,
+      "detail": "T0 t0_none-isotonic-v1: 10.5%, band auto_release"
+    },
+    {
+      "at": "2026-11-25T08:14:23.145Z",
+      "kind": "transition",
+      "fromState": "scored_t0",
+      "toState": "held",
+      "actorName": null,
+      "detail": "Held for the hold window; scored again by the hold-close model when it closes."
+    },
+    {
+      "at": "2026-11-25T08:14:27.172Z",
+      "kind": "activity_reported",
+      "fromState": null,
+      "toState": null,
+      "actorName": "Peter Ochieng",
+      "detail": "First-week activity reported for 8 day(s)."
+    },
+    {
+      "at": "2026-11-25T08:20:02.982Z",
+      "kind": "transition",
+      "fromState": "held",
+      "toState": "scored_t7",
+      "actorName": null,
+      "detail": "T7 t7_none-isotonic-v1: 0.1%, band auto_release"
+    },
+    {
+      "at": "2026-11-25T08:20:02.982Z",
+      "kind": "transition",
+      "fromState": "scored_t7",
+      "toState": "in_review",
+      "actorName": null,
+      "detail": "At or below the hold-close release cut-off, but the client requires a reviewer: not released automatically."
+    }
+  ]
+}
