@@ -174,3 +174,14 @@ The agent screens' 48 px targets (NFR-12) were measured again with
 from a fresh seed: every control on every agent page is at least 48 x 48 px and
 no page scrolls sideways at 360 px
 (`../nfr12-touch-targets-ui-pass.json`).
+
+## Sign-up and Post a job after the sign-up location change (defect 19)
+
+`signup-local.json`: the same script limited to the two screens the change
+touches (`AUDIT_ONLY="Sign up,Post a job"`), on a local production build of the
+branch, before merge. 14 screen states at 360 px and 1366 px, including sign-up
+with a place chosen and "Advanced" open, and Post a job after "Publish the job"
+with nothing entered: no text, placeholder, field-boundary or target-size
+failure, nothing undetermined. The place search in the chosen-place state was
+answered by a stand-in result in the browser; nothing was sent to
+OpenStreetMap.

@@ -5,7 +5,9 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson, type FieldErrors } from "@/lib/client-api";
-import { confirmationProblem, passwordProblems } from "@/lib/auth/password-rules";
+import { confirmationProblem } from "@/lib/auth/password-rules";
+import { browserSignupProblems } from "@/lib/auth/signup-checks";
+import { HomeBasePicker } from "@/components/HomeBasePicker";
 import { PasswordInput } from "@/components/PasswordInput";
 import { PasswordRules } from "@/components/PasswordRules";
 import { ChoiceGroup } from "@/components/ChoiceGroup";
@@ -45,7 +47,6 @@ export function SignupForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [coords, setCoords] = useState({ lat: "", lon: "" });
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const mismatch = confirmationProblem(password, confirmation);
@@ -55,24 +56,13 @@ export function SignupForm() {
     setErrors(({ [name]: _removed, ...rest }) => rest);
   }
 
-  function useMyLocation() {
-    navigator.geolocation?.getCurrentPosition(
-      (position) =>
-        setCoords({ lat: position.coords.latitude.toFixed(5), lon: position.coords.longitude.toFixed(5) }),
-      () => setMessage("Location is not available in this browser. Enter the coordinates by hand."),
-    );
-  }
-
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const local: FieldErrors = {};
-    const problems = passwordProblems(password);
-    if (problems.length > 0) local.password = problems.join(" ");
-    if (confirmation === "") local.confirmPassword = "Type the password again to confirm it.";
-    if (Object.keys(local).length > 0 || mismatch) {
-      setErrors(local);
-      setMessage("Check the password fields below.");
+    const blocked = browserSignupProblems({ role, password, confirmation, homeLat: form.get("homeLat"), homeLon: form.get("homeLon") });
+    if (blocked) {
+      setErrors(blocked.errors);
+      setMessage(blocked.message);
       return;
     }
     setBusy(true);
@@ -132,24 +122,7 @@ export function SignupForm() {
             <PhoneInput id="payoutMsisdn" name="payoutMsisdn" invalid={Boolean(errors.payoutMsisdn)} />
             <FieldError errors={errors} name="payoutMsisdn" />
           </div>
-          <div className="field">
-            <label htmlFor="homeAreaName">Where you are based</label>
-            <input id="homeAreaName" name="homeAreaName" className="input" placeholder="e.g. Kariobangi North" />
-            <FieldError errors={errors} name="homeAreaName" />
-          </div>
-          <div className="grid-2">
-            <div className="field">
-              <label htmlFor="homeLat">Latitude</label>
-              <input id="homeLat" name="homeLat" className="input" value={coords.lat} onChange={(e) => setCoords({ ...coords, lat: e.target.value })} />
-              <FieldError errors={errors} name="homeLat" />
-            </div>
-            <div className="field">
-              <label htmlFor="homeLon">Longitude</label>
-              <input id="homeLon" name="homeLon" className="input" value={coords.lon} onChange={(e) => setCoords({ ...coords, lon: e.target.value })} />
-              <FieldError errors={errors} name="homeLon" />
-            </div>
-          </div>
-          <button type="button" className="btn small" onClick={useMyLocation}>Use my current location</button>
+          <HomeBasePicker errors={errors} />
         </fieldset>
       )}
       <button type="submit" className="btn primary block" disabled={busy}>

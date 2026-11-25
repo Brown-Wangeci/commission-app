@@ -2,15 +2,13 @@
 
 import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { FieldErrors } from "@/lib/client-api";
+import { JOB_LOCATION_REQUIRED, coordinate, locationMissing } from "@/lib/location";
 import { GEOCODER_URL, PLACE_ZOOM } from "@/lib/map/config";
 import { createGeocoder, type Place } from "@/lib/map/geocode";
 import { RADIUS_STEPS_M, radiusLabel, radiusStepIndex } from "@/lib/map/radius";
 import { LeafletMap, type MapApi, type Move, type Point, type View } from "@/components/map/LeafletMap";
 
-/** Coordinates as the form sends them: six decimals is about 0.1 m, finer than any phone's fix. */
-export function coordinate(value: number): string {
-  return value.toFixed(6);
-}
+export { coordinate };
 
 function FieldError({ errors, name }: { errors: FieldErrors; name: string }) {
   return errors[name] ? <span className="field-error">{errors[name]}</span> : null;
@@ -94,7 +92,9 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
     if (centre) setPin(centre);
   }
 
-  const locationError = errors.areaLat || errors.areaLon;
+  // The "choose a place" message goes once a place is chosen; any other message stays.
+  const reported = errors.areaLat || errors.areaLon;
+  const locationError = reported === JOB_LOCATION_REQUIRED && !locationMissing(pin?.lat, pin?.lon) ? undefined : reported;
   return (
     <div className="stack">
       <div className="field">
@@ -132,7 +132,7 @@ export function JobAreaPicker({ errors, defaultRadiusM }: Props) {
       <p className="hint">
         {pin ? "Drag the pin or click the map to move the centre." : "Search for the place, use your location, or click the map to place the pin."} Photos taken outside the circle are flagged to the reviewer.
       </p>
-      {locationError && <span className="field-error">Place the pin on the map: {locationError}</span>}
+      {locationError && <span className="field-error" role="alert">{locationError}</span>}
 
       <div className="field">
         <label htmlFor="areaRadiusRange">Radius: <span className="strong num">{radiusLabel(radiusM)}</span></label>
