@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { postJson } from "@/lib/client-api";
+import { AUDIT_TEXT_NOTICE } from "@/lib/retention/notice";
 
 type Props = {
   url: string;
@@ -45,6 +46,7 @@ export function ReasonAction({ url, field, buttonLabel, prompt, submitLabel, hin
         <label htmlFor={`text-${field}`}>{prompt}</label>
         <textarea id={`text-${field}`} name="text" className="textarea" required minLength={5} maxLength={2000} autoFocus />
         {hint && <span className="hint">{hint}</span>}
+        <span className="hint">{AUDIT_TEXT_NOTICE}</span>
       </div>
       {error && <div className="alert error" role="alert">{error}</div>}
       <div className="row">

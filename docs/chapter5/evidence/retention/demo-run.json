@@ -1,0 +1,229 @@
+{
+  "requirement": "DR-11: retention limit, then anonymisation keeping the aggregates retraining needs",
+  "ranAt": "2026-11-25T10:06:50.789Z",
+  "app": "http://localhost:3100",
+  "database": "local, seeded; the seed's people, numbers and photos are fictional",
+  "settings": {
+    "RETENTION_DAYS": 1,
+    "cutoff": "2026-11-24T10:06:50.789Z",
+    "settledAtForThisDemo": "2026-11-15T10:06:50.099Z"
+  },
+  "cronRoute": {
+    "withoutSecret": 401,
+    "withSecret": 200
+  },
+  "summary": {
+    "retentionDays": 1,
+    "cutoff": "2026-11-24T10:06:50.671Z",
+    "eligible": 1,
+    "anonymised": 1,
+    "evidenceFilesDeleted": 4,
+    "deferred": 0,
+    "failed": 0
+  },
+  "activation": {
+    "reference": "LF-000048",
+    "before": {
+      "state": "refused",
+      "anonymisedAt": null,
+      "customerMsisdnMasked": "07** *** 950",
+      "customerMsisdnHashPrefix": "3eb54525...",
+      "deviceIdPrefix": "dev-samu...",
+      "gpsLat": -1.201724067637806,
+      "gpsLon": 36.91298979739217,
+      "gpsAccuracyM": 8,
+      "agentNote": null,
+      "evidencePayload": {
+        "field_1": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "field_2": "Kenya Mpya"
+      },
+      "evidence": [
+        {
+          "sequence": 1,
+          "fileName": "evidence-242.png",
+          "gpsLat": -1.201560157385904,
+          "gpsLon": 36.91256174822111,
+          "locationSource": "device",
+          "sha256Prefix": "a5b52cf1..."
+        },
+        {
+          "sequence": 2,
+          "fileName": "evidence-243.png",
+          "gpsLat": -1.201648530257223,
+          "gpsLon": 36.9125432237814,
+          "locationSource": "device",
+          "sha256Prefix": "2f393783..."
+        },
+        {
+          "sequence": 3,
+          "fileName": "evidence-244.png",
+          "gpsLat": -1.201056260866478,
+          "gpsLon": 36.91235522301866,
+          "locationSource": "device",
+          "sha256Prefix": "709cc409..."
+        },
+        {
+          "sequence": 4,
+          "fileName": "evidence-245.png",
+          "gpsLat": -1.202203700721586,
+          "gpsLon": 36.91262725597137,
+          "locationSource": "device",
+          "sha256Prefix": "7a551684..."
+        }
+      ],
+      "reviewItemReasons": [],
+      "evidenceRequests": [],
+      "dispute": {
+        "refusalReason": "Refused automatically at hold-close: the t7_none-isotonic-v1 probability 75.7% is above the reject cut-off 66.7%.",
+        "contestNote": null
+      },
+      "payoutMsisdnMaskedForThisReport": null,
+      "payoutMsisdnIsFullNumber": null,
+      "disbursement": null,
+      "kept": {
+        "reference": "LF-000048",
+        "submittedAt": "2026-10-23T14:40:00.000Z",
+        "decisions": [
+          {
+            "mode": "t0",
+            "band": "review",
+            "probability": 0.3984375,
+            "reasons": 3,
+            "featureVectorFields": 18
+          },
+          {
+            "mode": "t7",
+            "band": "reject",
+            "probability": 0.7572815418243408,
+            "reasons": 3,
+            "featureVectorFields": 27
+          }
+        ],
+        "commissionCents": null,
+        "activityDays": 8
+      }
+    },
+    "after": {
+      "state": "refused",
+      "anonymisedAt": "2026-11-25T10:06:50.671Z",
+      "customerMsisdnMasked": "anonymised",
+      "customerMsisdnHashPrefix": "anonymis...",
+      "deviceIdPrefix": "anonymis...",
+      "gpsLat": -1.2,
+      "gpsLon": 36.91,
+      "gpsAccuracyM": null,
+      "agentNote": null,
+      "evidencePayload": {
+        "field_1": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "field_2": null
+      },
+      "evidence": [
+        {
+          "sequence": 1,
+          "fileName": "anonymised",
+          "gpsLat": null,
+          "gpsLon": null,
+          "locationSource": "none",
+          "sha256Prefix": "a5b52cf1..."
+        },
+        {
+          "sequence": 2,
+          "fileName": "anonymised",
+          "gpsLat": null,
+          "gpsLon": null,
+          "locationSource": "none",
+          "sha256Prefix": "2f393783..."
+        },
+        {
+          "sequence": 3,
+          "fileName": "anonymised",
+          "gpsLat": null,
+          "gpsLon": null,
+          "locationSource": "none",
+          "sha256Prefix": "709cc409..."
+        },
+        {
+          "sequence": 4,
+          "fileName": "anonymised",
+          "gpsLat": null,
+          "gpsLon": null,
+          "locationSource": "none",
+          "sha256Prefix": "7a551684..."
+        }
+      ],
+      "reviewItemReasons": [],
+      "evidenceRequests": [],
+      "dispute": {
+        "refusalReason": "anonymised",
+        "contestNote": null
+      },
+      "payoutMsisdnMaskedForThisReport": null,
+      "payoutMsisdnIsFullNumber": null,
+      "disbursement": null,
+      "kept": {
+        "reference": "LF-000048",
+        "submittedAt": "2026-10-23T14:40:00.000Z",
+        "decisions": [
+          {
+            "mode": "t0",
+            "band": "review",
+            "probability": 0.3984375,
+            "reasons": 3,
+            "featureVectorFields": 18
+          },
+          {
+            "mode": "t7",
+            "band": "reject",
+            "probability": 0.7572815418243408,
+            "reasons": 3,
+            "featureVectorFields": 27
+          }
+        ],
+        "commissionCents": null,
+        "activityDays": 8
+      }
+    }
+  },
+  "evidenceFile": {
+    "id": "cmwvyavja01i0o8xkffbtwvpm",
+    "statusBefore": 200,
+    "statusAfter": 404,
+    "readAs": "reviewer@ledgerfield.test",
+    "note": "200 means an administrator could fetch the photo; 404 means the stored bytes are gone."
+  },
+  "auditChain": {
+    "untouched": true,
+    "eventsBefore": 9,
+    "eventsAfter": 9,
+    "verificationBefore": {
+      "status": "partly_verified",
+      "summary": "Every hash recomputes and links. 9 of 9 event(s) could not be checked on chain yet."
+    },
+    "verificationAfter": {
+      "status": "partly_verified",
+      "summary": "Every hash recomputes and links. 9 of 9 event(s) could not be checked on chain yet."
+    },
+    "detailsStillInChain": [
+      "transition: Submitted with 4 photo(s) against evidence configuration version 1.",
+      "activation_submitted: LF-000048 submitted for job \"Wallet activations, Githurai 45 stage\" with 4 photo(s), against evidence configuration version 1.",
+      "transition: T0 t0_none-isotonic-v1: 39.8%, band review",
+      "transition: Held for the hold window; scored again by the hold-close model when it closes.",
+      "scoring_decision: T0 scored (primary): band review, probability 0.398, thresholds 0.301 / 0.729.",
+      "transition: T7 t7_none-isotonic-v1: 75.7%, band reject",
+      "transition: Refused automatically at hold-close: the t7_none-isotonic-v1 probability 75.7% is above the reject cut-off 66.7%.",
+      "dispute_opened: Refusal recorded for audit and contest: Refused automatically at hold-close: the t7_none-isotonic-v1 probability 75.7% is above the reject cut-off 66.7%.",
+      "scoring_decision: T7 scored (primary): band reject, probability 0.757, thresholds 0.267 / 0.667."
+    ],
+    "note": "Every detail the chain still holds for this submission, after its record was anonymised. The chain is append-only and anchored, so nothing here is changed or removed; the text people typed is the DR-11 gap."
+  }
+}

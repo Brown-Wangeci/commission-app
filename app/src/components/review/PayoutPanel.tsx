@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { postJson } from "@/lib/client-api";
 import { formatCents } from "@/lib/money/cents";
 import type { PayoutAmountView } from "@/lib/payouts/amount";
+import { AUDIT_TEXT_NOTICE } from "@/lib/retention/notice";
 
 type Action = "approve" | "request-evidence" | "refuse";
 
@@ -108,6 +109,7 @@ export function PayoutPanel(props: Props) {
             <label htmlFor="reason">{FORM_TEXT[open].label}</label>
             <textarea id="reason" name="reason" className="textarea" required minLength={5} maxLength={2000} autoFocus />
             <span className="hint">{FORM_TEXT[open].hint}</span>
+            <span className="hint">{AUDIT_TEXT_NOTICE}</span>
           </div>
           {error && <div className="alert error" role="alert">{error}</div>}
           <div className="row">

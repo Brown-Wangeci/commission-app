@@ -428,6 +428,9 @@ model Activation {
   /// Values for the job's own fields, by field key; photo fields hold evidence sequence numbers.
   /// Never sent to the scoring service (issue #49). Fixed once written, like evidenceConfigId.
   evidencePayload      Json
+  /// When the personal data on this submission was removed (DR-11); null
+  /// until then. Set by the retention job, which never touches the audit log.
+  anonymisedAt         DateTime?
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   evidence             EvidenceItem[]
@@ -447,6 +450,7 @@ model Activation {
   @@index([deviceId, submittedAt])
   @@index([customerMsisdnHash, submittedAt])
   @@index([state])
+  @@index([anonymisedAt, state])
 }
 
 model EvidenceItem {

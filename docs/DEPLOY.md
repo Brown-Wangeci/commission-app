@@ -62,6 +62,7 @@ matter on Vercel:
 | `ANCHOR_INTERVAL_SECONDS` | 3600 | How often a new anchoring batch is cut. |
 | `FUNDING_GIVE_UP_AFTER_SECONDS`, `PAYMENT_ESCALATE_AFTER_SECONDS` | 1500, 7200 | How long an unanswered STK funding attempt waits before it is marked failed, and how long an unconfirmed payout waits before it is raised. A status check Daraja does not answer (HTTP 429, a timeout) does not use up a check. Replaces `FUNDING_MAX_STATUS_QUERIES`. |
 | `STATUS_NO_ANSWER_RETRY_SECONDS`, `STATUS_RETRY_AFTER_MAX_SECONDS` | 60, 900 | Wait after an unanswered check (doubling), and the most of a `Retry-After` the app will honour. |
+| `RETENTION_DAYS`, `RETENTION_MAX_PER_RUN` | 1095, 200 | How long a settled submission keeps its personal data, and the most anonymised in one run. The default period is an assumption to confirm: see [RETENTION.md](RETENTION.md). |
 | `RECONCILE_INTERVAL_SECONDS`, `RECONCILE_PERIOD_SECONDS` | 3600, 172800 | After giving up, Daraja is still asked this often, for this long. Rows created before this feature have no deadline and are not reconciled. |
 
 ### Set but not read by the deployed app
@@ -152,6 +153,7 @@ successful run answers 200 with a JSON `summary`.
 | Scoring | `POST <origin>/api/cron/scoring` | every minute | T7 at hold-close, and retries after scoring failures. |
 | Payments | `POST <origin>/api/cron/payments` | every minute | B2C sends, retries, status checks, and funding checks. |
 | Anchoring | `POST <origin>/api/cron/anchoring` | every 5 minutes | Cuts a batch when `ANCHOR_INTERVAL_SECONDS` has passed, and confirms receipts. |
+| Retention | `POST <origin>/api/cron/retention` | daily | Anonymises settled submissions past `RETENTION_DAYS` (DR-11). **Not scheduled for this deployment**, by decision: see [RETENTION.md](RETENTION.md). |
 | Keep-warm | `GET https://ledgerfield-scoring.onrender.com/health` | every 10 minutes | Keeps the free scoring instance from spinning down. |
 
 `<origin>` is the production URL. With `HOLD_WINDOW_SECONDS=300`, a T7

@@ -63,7 +63,8 @@ describe("Prisma uses the unpooled URL for migrations", () => {
 });
 
 describe("queued work inside a request fits the function limit", () => {
-  const CRON_ROUTES = ["scoring", "payments", "anchoring"].map((name) => `src/app/api/cron/${name}/route.ts`);
+  // Read from the directory, so a cron route added later is held to the same contract without being listed here.
+  const CRON_ROUTES = fs.readdirSync(path.join(appDir, "src/app/api/cron")).map((name) => `src/app/api/cron/${name}/route.ts`);
   const ALL = [...CRON_ROUTES, "src/app/api/admin/scoring/run-due/route.ts"];
 
   it.each(ALL)("%s declares maxDuration within Vercel Hobby's 300 s and runs to a deadline", (file) => {
