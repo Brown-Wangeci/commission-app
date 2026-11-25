@@ -1,0 +1,88 @@
+{
+  "app": "https://commission-app-ten-pied.vercel.app",
+  "started_at": "2026-11-25T15:51:15.790Z",
+  "finished_at": "2026-11-25T15:51:30.876Z",
+  "mapServicesBlocked": [
+    "tile.openstreetmap.org",
+    "nominatim.openstreetmap.org"
+  ],
+  "picker": {
+    "afterClick": {
+      "areaLat": "-1.268817",
+      "areaLon": "36.866684",
+      "areaRadiusM": "700"
+    },
+    "sent": {
+      "areaLat": "-0.099500",
+      "areaLon": "34.768000",
+      "areaRadiusM": "1000"
+    },
+    "valueAfterLeaving": "1,000",
+    "jobId": "cmwwawkem0001kw08ig0ngp1t"
+  },
+  "stored": {
+    "areaLat": -0.0995,
+    "areaLon": 34.768,
+    "areaRadiusM": 1000
+  },
+  "matches": {
+    "areaLat": true,
+    "areaLon": true,
+    "areaRadiusM": true,
+    "sameCentreAsApiSteps": true
+  },
+  "assignmentId": "cmwwawmof0007kw08r2anlkpc",
+  "activation": {
+    "id": "563d033e-3745-40d7-ba14-5de69265ef26",
+    "reference": "LF-000068",
+    "state": "held",
+    "submissionKmOutsideArea": 0,
+    "photosKmOutsideArea": [
+      0,
+      0,
+      0
+    ]
+  },
+  "t0": {
+    "id": "cmwwawqkl0008lk08upr9a3ez",
+    "mode": "t0",
+    "modelVersion": "t0_none-isotonic-v1",
+    "probability": 0.1339285671710968,
+    "band": "auto_release",
+    "releaseThreshold": 0.301471,
+    "rejectThreshold": 0.729167,
+    "scoredAt": "2026-11-25T15:51:25.978Z",
+    "trigger": "submission",
+    "reasons": [
+      {
+        "rank": 1,
+        "feature": "ip_location_mismatch_flag",
+        "description": "the network location disagreed with the device's GPS location",
+        "contribution": 1.186675667762756,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      },
+      {
+        "rank": 2,
+        "feature": "proof_of_activation_missing_flag",
+        "description": "no proof of activation was attached",
+        "contribution": 1.020918488502502,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      },
+      {
+        "rank": 3,
+        "feature": "acceptance_to_submission_seconds",
+        "description": "the agent took 0.0 hours between accepting the job and submitting it",
+        "contribution": 0.8511097431182861,
+        "raisesRisk": true,
+        "isAgentLevel": false
+      }
+    ]
+  },
+  "reviewScreen": {
+    "status": 200,
+    "showsWhereItHappened": true,
+    "decided": false
+  }
+}

@@ -1,0 +1,29 @@
+app/scripts/capture-screenshots.ts docs/chapter5/evidence/screenshots/ui-pass
+App: production build of main at 8d87718, started locally (npm start) against
+the freshly seeded scratch database ledgerfield_shots, 2026-11-25.
+OpenStreetMap tile and search hosts blocked for every browser context.
+
+  ok    figure-5-01-agent-status-list  <-  /agent/activations
+  ok    figure-5-02-admin-review-queue  <-  /admin/review
+  ok    figure-5-03-admin-review-mockup-case  <-  /admin/review/88deeead-649f-4262-85b9-52aef5571d39
+  ok    figure-5-04-awaiting-evidence  <-  /admin/review/36c9c291-c63c-474a-ae07-7f127f9d58b9
+  ok    figure-5-05-could-not-be-scored  <-  /admin/review/3362f13f-48b1-4218-964a-1bf7803826bc
+  ok    figure-5-06-client-escrow-and-jobs  <-  /client
+  ok    figure-5-07-client-job-detail  <-  /client/jobs/cmwwape38001bo844a892kod5
+  ok    figure-5-08-payouts-with-failure  <-  /admin/payouts
+  ok    figure-5-09-audit-log-with-anchoring  <-  /admin/audit
+  ok    figure-5-10-dispute-verification-result  <-  /admin/review/1255e7de-d348-40fb-ac6d-ce5eddbce17a (after Verify)
+  ok    figure-5-11-validation-signup-duplicate-email  <-  /signup (submitted with an email already registered)
+  ok    figure-5-12-validation-empty-job-form  <-  /client/jobs/new (submitted empty)
+  ok    figure-5-13-validation-not-found  <-  a non-existent activation id
+  ok    figure-5-14-validation-forbidden-role  <-  client session; /api/admin/review returned HTTP 403
+  ok    figure-5-15-agent-submission-form  <-  /agent/submit/cmwwav5yx0007o8l4pszqtqys (accepted in the UI)
+  ok    figure-5-16-agent-submission-form-mobile  <-  same form at 360 px wide
+  ok    usability-01-admin-dashboard  <-  /admin
+  ok    usability-02-admin-jobs  <-  /admin/jobs
+  ok    usability-03-review-sections-open  <-  /admin/review/88deeead-649f-4262-85b9-52aef5571d39 with every section opened
+  ok    usability-04-signup-password-rules  <-  /signup with a password that is too short, a mismatch, and the first field shown
+  ok    usability-05-post-job-form  <-  /client/jobs/new
+  ok    usability-06-agent-home-360  <-  /agent
+
+22 captured, 0 skipped.
