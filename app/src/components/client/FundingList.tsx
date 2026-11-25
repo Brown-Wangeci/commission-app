@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { formatDateTime } from "@/lib/format";
 import { formatCents } from "@/lib/money/cents";
 import { EmptyState } from "@/components/EmptyState";
@@ -16,6 +16,8 @@ export type FundingRow = {
 };
 
 const POLL_MS = 5000;
+/** Attempts shown before "Show all"; one still waiting for M-Pesa is always shown. */
+export const RECENT_FUNDING = 3;
 
 const DISPLAY: Record<FundingRow["status"], { label: string; chip: string; detail: string }> = {
   queued: { label: "Pending", chip: "review", detail: "Waiting to reach M-Pesa. It will be tried again automatically." },
@@ -33,6 +35,8 @@ function isOpen(row: FundingRow): boolean {
 export function FundingList({ rows }: { rows: FundingRow[] }) {
   const router = useRouter();
   const waiting = rows.some(isOpen);
+  const [all, setAll] = useState(false);
+  const shown = all ? rows : rows.filter((row, index) => index < RECENT_FUNDING || isOpen(row));
 
   useEffect(() => {
     if (!waiting) return;
@@ -52,7 +56,7 @@ export function FundingList({ rows }: { rows: FundingRow[] }) {
       <table className="table">
         <thead><tr><th>Requested</th><th className="right">Amount</th><th>Status</th><th>Detail</th></tr></thead>
         <tbody>
-          {rows.map((row) => (
+          {shown.map((row) => (
             <tr key={row.id}>
               <td className="small num">{formatDateTime(row.createdAt)}</td>
               <td className="right small num">{formatCents(row.amountCents)}</td>
@@ -65,6 +69,11 @@ export function FundingList({ rows }: { rows: FundingRow[] }) {
           ))}
         </tbody>
       </table>
+      {rows.length > shown.length || all ? (
+        <button type="button" className="btn small" aria-expanded={all} onClick={() => setAll(!all)} style={{ marginTop: 8 }}>
+          {all ? "Show the latest only" : `Show all ${rows.length} funding attempts`}
+        </button>
+      ) : null}
     </div>
   );
 }

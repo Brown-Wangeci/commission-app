@@ -159,7 +159,14 @@ export function EvidenceFieldsEditor({ rows, onChange, errors }: Props) {
       {errors.evidenceFields && <span className="field-error">{errors.evidenceFields}</span>}
       {rows.length === 0 && <p className="small muted">No job-specific fields yet. Every activation still records the customer&rsquo;s number, SIM date, capture method and optional proof.</p>}
       {rows.map((row, index) => (
-        <div key={index} className="card card-pad stack-sm" style={{ background: "var(--surface-muted)" }}>
+        // A saved field opens on click; a new one, or one with a problem, is open from the start.
+        <details key={index} className="field-row" open={!row.key || rowErrors(index).length > 0}>
+          <summary>
+            <span className="strong small">{index + 1}. {row.label.trim() || "Untitled field"}</span>
+            <span className="small muted">{FIELD_TYPE_LABELS[row.type]} &middot; {row.mandatory ? "mandatory" : "optional"}</span>
+            {rowErrors(index).length > 0 && <span className="field-error">Needs attention</span>}
+          </summary>
+          <div className="field-row-body stack-sm">
           <div className="row-between wrap" style={{ gap: 8 }}>
             <strong className="small">Field {index + 1}{row.key ? <span className="muted mono"> {row.key}</span> : null}</strong>
             <div className="row" style={{ gap: 6 }}>
@@ -184,7 +191,8 @@ export function EvidenceFieldsEditor({ rows, onChange, errors }: Props) {
           <div className="field"><label>Help for the agent (optional)</label><input className="input" value={row.help} onChange={(e) => update(index, { help: e.target.value })} /></div>
           {preview(row) && <span className="hint">Expected: {preview(row)}</span>}
           {rowErrors(index).map((message, i) => <span key={i} className="field-error">{message}</span>)}
-        </div>
+          </div>
+        </details>
       ))}
       <div className="row wrap" style={{ gap: 6 }}>
         {FIELD_TYPES.map((type) => (

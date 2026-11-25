@@ -95,6 +95,23 @@ export function Preview({ terms, availableCents }: { terms: Terms; availableCent
   }
 }
 
+/** The summary in one line, for the bar a phone shows instead of the full panel. `short` when escrow does not cover it. */
+export function summaryLine(terms: Terms, availableCents: number): { text: string; short: boolean } {
+  const { parsed } = parseTerms(terms);
+  if (!parsed) return { text: "Enter the value, rate and activations to see the commission.", short: false };
+  try {
+    const commission = computeCommission(parsed);
+    const liability = maxLiability(parsed, parsed.slots);
+    if (liability.amountCents > availableCents) {
+      return { text: `Locks ${formatCents(liability.amountCents)}: fund ${formatCents(differenceCents(liability.amountCents, availableCents))} more first.`, short: true };
+    }
+    return { text: `${formatCents(commission.amountCents)} per sign-up · locks ${formatCents(liability.amountCents)}`, short: false };
+  } catch (error) {
+    if (error instanceof MoneyError) return { text: error.message, short: true };
+    throw error;
+  }
+}
+
 /**
  * Defaults, so a first-time client has fewer fields to fill. Assumptions, not
  * measured figures: ten activations, a 10% rate, a 700 m radius, and a 30-day
@@ -141,6 +158,8 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
   const [busy, setBusy] = useState(false);
   const [terms, setTerms] = useState<Terms>({ value: "", rate: DEFAULT_RATE_PERCENT, flat: "", slots: DEFAULT_SLOTS });
   const [fields, setFields] = useState<EditorRow[]>([]);
+  const [showDetails, setShowDetails] = useState(false);
+  const line = summaryLine(terms, availableCents);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -242,11 +261,17 @@ export function PostJobForm({ availableCents, defaultDeadline, accountReviewSett
           </div>
         </fieldset>
       </div>
-      <aside className="post-summary card card-pad stack" aria-labelledby="summary-heading">
-        <h2 id="summary-heading">Commission summary</h2>
-        <Preview terms={terms} availableCents={availableCents} />
+      <aside className="post-summary card card-pad stack" aria-labelledby="summary-heading" data-expanded={showDetails}>
+        <div className="post-summary-head">
+          <h2 id="summary-heading">Commission summary</h2>
+          <p className={`post-summary-line${line.short ? " short" : ""}`}>{line.text}</p>
+          <button type="button" className="btn small quiet post-summary-toggle" aria-expanded={showDetails} aria-controls="summary-detail" onClick={() => setShowDetails(!showDetails)}>
+            {showDetails ? "Hide details" : "Details"}
+          </button>
+        </div>
+        <div id="summary-detail" className="post-summary-detail"><Preview terms={terms} availableCents={availableCents} /></div>
         <button type="submit" className="btn primary block" disabled={busy}>{busy ? "Publishing" : "Publish the job"}</button>
-        <p className="tiny muted">Agents are assigned by a reviewer after you publish.</p>
+        <p className="tiny muted post-summary-note">Agents are assigned by a reviewer after you publish.</p>
       </aside>
     </form>
   );

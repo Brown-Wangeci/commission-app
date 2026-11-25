@@ -17,10 +17,8 @@ function JobLine({ assignment }: { assignment: Assignment }) {
   return (
     <div>
       <div className="strong">{job.title}</div>
-      <div className="small muted">
-        {job.client.name} &middot; {job.areaName} (within {job.areaRadiusM} m) &middot; pays {amount ? formatCents(amount.amountCents) : "amount unavailable"} once approved
-      </div>
-      {amount && <span className="derivation">{amount.commission.derivation}</span>}
+      <div className="small">Pays <span className="strong num">{amount ? formatCents(amount.amountCents) : "amount unavailable"}</span> once approved</div>
+      <div className="small muted">{job.client.name} &middot; {job.areaName} (within {job.areaRadiusM} m)</div>
       <div className="tiny muted">Assigned {formatDateTime(assignment.assignedAt)}</div>
     </div>
   );
@@ -29,8 +27,9 @@ function JobLine({ assignment }: { assignment: Assignment }) {
 /**
  * The agent's home. What needs the agent now comes first: a job to accept,
  * then a job to submit. A list with nothing in it is not drawn as a card, and
- * if both are empty one message says what will appear and who acts next. The
- * steps of a job are one line below, not a section.
+ * if both are empty one message says what will appear and who acts next.
+ * Notifications follow the jobs, and the steps of a job are one line below.
+ * My activations is the second tab, so no button repeats it here.
  */
 export default async function AgentHomePage() {
   const user = await requirePageRole("agent");
@@ -50,9 +49,7 @@ export default async function AgentHomePage() {
                 : `${toSubmit.length} ${toSubmit.length === 1 ? "job is" : "jobs are"} ready for an activation.`}
           </p>
         </div>
-        <Link href="/agent/activations" className="btn">My activations</Link>
       </div>
-      <NotificationsPanel userId={user.id} linkBase="/agent/activations" />
       {nothingNow && (
         <section className="card" style={{ marginBottom: 20 }}>
           <EmptyState title="No jobs for you right now" next="A reviewer assigns jobs to agents. You will see one here, with an Accept button, as soon as it is assigned.">
@@ -86,6 +83,7 @@ export default async function AgentHomePage() {
           </ul>
         </section>
       )}
+      <NotificationsPanel userId={user.id} linkBase="/agent/activations" />
       <details className="disclosure">
         <summary><h2>How a job works</h2></summary>
         <div className="disclosure-body">

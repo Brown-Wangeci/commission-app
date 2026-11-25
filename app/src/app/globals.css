@@ -731,3 +731,53 @@ legend { padding: 0 var(--space-2); }
 .area-status.outside { border-left-color: var(--warn); background: var(--warn-soft); }
 .area-status.outside .area-status-text { color: var(--warn); }
 .demo-controls { border-top: 1px dashed var(--line-2); padding-top: var(--space-2); }
+
+/* ---------- UI pass 4: tidy-ups ---------- */
+/* A rare, final action at the foot of a page, set apart by a rule rather than a card. */
+.withdraw { border-top: 1px dashed var(--line-2); padding-top: var(--space-4); }
+/* Four amounts as a 2 x 2 grid on a phone instead of four stacked tiles. */
+@media (max-width: 640px) {
+  .grid-4.stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
+  .stat-grid .stat { padding: var(--space-3); }
+  /* "KSh" may drop to its own line; the figure itself never breaks. */
+  .stat-grid .stat-value { font-size: 18px; line-height: 24px; white-space: normal; }
+}
+/* The client's escrow as one card: Available large, its parts small beside it. */
+.escrow-card { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-4); }
+.escrow-parts { display: flex; gap: var(--space-6); margin: 0; }
+.escrow-parts dd { margin: var(--space-1) 0 0; font-size: 16px; font-weight: 500; color: var(--ink); white-space: nowrap; }
+/* Post a job: below 1000 px the sticky summary is one line and the Publish
+   button, with the working behind "Details", so it no longer covers half the
+   form. Above it the full summary stays in the right-hand column. */
+.post-summary-line, .post-summary-toggle { display: none; }
+@media (max-width: 1000px) {
+  .post-summary.card-pad { padding: var(--space-3) var(--space-4); }
+  .post-summary-head { display: flex; align-items: center; gap: var(--space-2); }
+  .post-summary-head h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .post-summary-line { display: block; flex: 1; margin: 0; font-family: var(--mono); font-size: 13px; line-height: 18px; color: var(--ink); }
+  .post-summary-line.short { color: var(--warn); }
+  .post-summary-toggle { display: inline-flex; flex-shrink: 0; }
+  .post-summary[data-expanded="false"] .post-summary-detail { display: none; }
+  .post-summary-note { display: none; }
+  .post-summary > * + * { margin-top: var(--space-2); }
+}
+/* An evidence field in the editor: one summary line that opens to its settings. */
+.field-row { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.field-row > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); min-height: 44px; padding: var(--space-3) var(--space-4); cursor: pointer; list-style: none; }
+.field-row > summary::-webkit-details-marker { display: none; }
+.field-row > summary::before { content: "\25B8" / ""; color: var(--ink-3); font-size: 12px; }
+.field-row[open] > summary::before { content: "\25BE" / ""; }
+.field-row-body { padding: var(--space-3) var(--space-4) var(--space-4); border-top: 1px solid var(--line); background: var(--bg); }
+/* Review screen on a phone: the decision buttons are about 1,500 px down,
+   after the evidence. At 640 px and below the same buttons are held at the
+   bottom of the screen (CSS only; the panel is unchanged). Opening a
+   decision's reason form replaces them, and its autofocus brings the form
+   into view. The page gains room at its foot so nothing hides behind them. */
+@media (max-width: 640px) {
+  .payout-panel .decide-buttons {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; margin: 0;
+    background: var(--surface); border-top: 1px solid var(--line); box-shadow: var(--shadow-2);
+    padding: var(--space-2) var(--space-4) calc(var(--space-2) + env(safe-area-inset-bottom));
+  }
+  main:has(.payout-panel .decide-buttons) { padding-bottom: 140px; }
+}
