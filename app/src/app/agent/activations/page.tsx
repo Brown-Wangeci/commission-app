@@ -27,21 +27,21 @@ export default async function AgentActivationsPage() {
           </EmptyState>
         ) : (
           <div className="table-wrap">
-            <table className="table">
+            <table className="table table-cards">
               <thead><tr><th>Reference</th><th>Job</th><th>Submitted</th><th>Status</th><th>Why</th><th className="right">Payout</th></tr></thead>
               <tbody>
                 {rows.map(({ activation, explanation }) => {
                   const amount = payoutAmountView({ job: activation.job, hold: activation.assignment.hold, commission: activation.commission });
                   return (
                   <tr key={activation.id}>
-                    <td><Link href={`/agent/activations/${activation.id}`} className="mono">{activation.reference}</Link></td>
-                    <td className="small">{activation.job.title}<div className="tiny muted">{activation.job.client.name}</div></td>
-                    <td className="small num">{formatDateTime(activation.submittedAt)}</td>
-                    <td><StateChip state={activation.state} /></td>
-                    <td className="small" style={{ maxWidth: 420 }}>
+                    <td data-label="Reference"><Link href={`/agent/activations/${activation.id}`} className="mono">{activation.reference}</Link></td>
+                    <td data-label="Job" className="small">{activation.job.title}<div className="tiny muted">{activation.job.client.name}</div></td>
+                    <td data-label="Submitted" className="small num">{formatDateTime(activation.submittedAt)}</td>
+                    <td data-label="Status"><StateChip state={activation.state} /></td>
+                    <td data-label="Why" className="small col-why">
                       <strong>{explanation.headline}.</strong> {explanation.detail}
                     </td>
-                    <td className="right small">{amount ? <Money cents={amount.amountCents} derivation={amount.commission.derivation} /> : "Unavailable"}</td>
+                    <td data-label="Payout" className="right small">{amount ? <Money cents={amount.amountCents} derivation={amount.commission.derivation} /> : "Unavailable"}</td>
                   </tr>
                   );
                 })}

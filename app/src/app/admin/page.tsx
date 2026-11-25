@@ -6,6 +6,7 @@ import { stateLabel } from "@/lib/activations/states";
 import { formatDateTime, formatProbability } from "@/lib/format";
 import { attention, groupCounts, type Attention } from "@/lib/review/dashboard";
 import { modelName } from "@/lib/review/copy";
+import { actionStyles, type ActionStyle } from "@/lib/ui/attention-actions";
 import { EmptyState } from "@/components/EmptyState";
 import { HoldWindowPanel } from "@/components/HoldWindowPanel";
 import { NotificationsPanel } from "@/components/NotificationsPanel";
@@ -13,10 +14,11 @@ import { StateChip } from "@/components/review/StateChip";
 
 type View = "scores" | "decisions" | "hold";
 
-const VIEWS: ReadonlyArray<{ id: View; label: string }> = [
-  { id: "scores", label: "Recent model scores" },
-  { id: "decisions", label: "Recent reviewer decisions" },
-  { id: "hold", label: "Hold window" },
+/** `short` is the label on a phone, where the full ones wrap to three lines. */
+const VIEWS: ReadonlyArray<{ id: View; label: string; short: string }> = [
+  { id: "scores", label: "Recent model scores", short: "Scores" },
+  { id: "decisions", label: "Recent reviewer decisions", short: "Decisions" },
+  { id: "hold", label: "Hold window", short: "Hold" },
 ];
 
 function viewFrom(raw: string | undefined): View {
@@ -26,6 +28,11 @@ function viewFrom(raw: string | undefined): View {
 async function counts(): Promise<Map<ActivationState, number>> {
   const groups = await prisma.activation.groupBy({ by: ["state"], _count: { _all: true } });
   return new Map(groups.map((g) => [g.state, g._count._all]));
+}
+
+function AttentionAction({ href, label, style }: { href: string; label: string; style: ActionStyle }) {
+  if (style === "link") return <Link href={href} className="small">{label}</Link>;
+  return <Link href={href} className={`btn small${style === "primary" ? " primary" : ""}`}>{label}</Link>;
 }
 
 /** What needs a person right now, most pressing first. When nothing does, it says so. */
@@ -38,18 +45,19 @@ function NeedsAttention({ data }: { data: Attention }) {
       </section>
     );
   }
+  const styles = actionStyles(data.items);
   return (
     <section className="card" aria-labelledby="attention-heading" style={{ marginBottom: 16 }}>
       <div className="card-pad"><h2 id="attention-heading">Needs your attention</h2></div>
       <ul className="attention-list">
-        {data.items.map((item) => (
+        {data.items.map((item, index) => (
           <li key={item.id} className={`attention-item${item.count > 0 ? " live" : ""}`}>
             <span className="attention-count">{item.count}</span>
             <div className="grow">
               <div className="strong">{item.label}</div>
               {item.count > 0 && <div className="small muted">{item.detail}</div>}
             </div>
-            {item.count > 0 && <Link href={item.href} className={`btn small${item === data.items[0] ? " primary" : ""}`}>{item.action}</Link>}
+            {item.count > 0 && <AttentionAction href={item.href} label={item.action} style={styles[index]} />}
           </li>
         ))}
       </ul>
@@ -146,7 +154,6 @@ export default async function AdminDashboardPage({ searchParams }: { searchParam
           <h1>Dashboard</h1>
           <p className="muted small">What needs a person, then where every submission stands.</p>
         </div>
-        <Link href="/admin/review" className="btn">Open the review queue</Link>
       </div>
       <NeedsAttention data={needs} />
       <NotificationsPanel userId={user.id} linkBase="/admin/review" />
@@ -154,7 +161,7 @@ export default async function AdminDashboardPage({ searchParams }: { searchParam
       <nav className="tabs" aria-label="Activity">
         {VIEWS.map((tab) => (
           <Link key={tab.id} href={tab.id === "scores" ? "/admin" : `/admin?view=${tab.id}`} className={`tab${view === tab.id ? " active" : ""}`}>
-            {tab.label}{tab.id === "hold" ? ` (${byState.get("held") ?? 0})` : ""}
+            <span className="tab-full">{tab.label}</span><span className="tab-short">{tab.short}</span>{tab.id === "hold" ? ` (${byState.get("held") ?? 0})` : ""}
           </Link>
         ))}
       </nav>

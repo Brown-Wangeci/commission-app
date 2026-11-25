@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { EmptyState } from "@/components/EmptyState";
+import { ShowAllRows } from "@/components/ShowAllRows";
 import { jobEscrow, unspentDerivation } from "@/lib/escrow/holds";
 import { jobTerms } from "@/lib/jobs/jobs";
 import { currentEvidenceConfig } from "@/lib/evidence/config";
@@ -77,6 +78,7 @@ export default async function AdminJobPage({ params }: { params: Promise<{ id: s
             Each agent assigned appears here with their escrow hold and their activation.
           </EmptyState>
         ) : (
+          <ShowAllRows total={job.assignments.length} noun="assignments">
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>Agent</th><th>Assigned</th><th>Accepted</th><th>Escrow hold</th><th>Activation</th></tr></thead>
@@ -93,6 +95,7 @@ export default async function AdminJobPage({ params }: { params: Promise<{ id: s
               </tbody>
             </table>
           </div>
+          </ShowAllRows>
         )}
       </section>
     </main>

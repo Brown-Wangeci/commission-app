@@ -614,3 +614,28 @@ legend { padding: 0 var(--space-2); }
 @media (max-width: 640px) { .form-group { padding: var(--space-4); } }
 
 .steps { margin: var(--space-3) 0 0; padding-left: var(--space-6); display: grid; gap: var(--space-2); }
+
+/* ---------- UI pass 1: agent tables on a phone, long lists ---------- */
+.col-why { max-width: 420px; }
+/* On an agent's phone a table's rows become labelled cards: each cell names
+   its column (data-label), so no column is cut off at 360 px. Admin and
+   client tables keep their table layout. */
+@media (max-width: 640px) {
+  .agent-app .table-cards thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .agent-app .table-cards, .agent-app .table-cards tbody, .agent-app .table-cards tr, .agent-app .table-cards td { display: block; width: 100%; }
+  .agent-app .table-cards tr { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line); }
+  .agent-app .table-cards tr:last-child { border-bottom: 0; }
+  .agent-app .table-cards td { border-bottom: 0; padding: var(--space-1) 0; text-align: left; max-width: none; }
+  .agent-app .table-cards td[data-label]::before {
+    content: attr(data-label); display: block;
+    font-family: var(--mono); font-size: 11px; line-height: 16px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3);
+  }
+}
+/* A long list shows its first 25 rows until "Show all" is pressed. The 25
+   matches SHOW_ALL_INITIAL in src/lib/ui/show-all.ts. */
+.rows-capped tbody tr:nth-child(n + 26) { display: none; }
+.rows-more { padding: var(--space-3) var(--space-6); border-top: 1px solid var(--line); }
+@media (max-width: 640px) { .rows-more { padding: var(--space-3) var(--space-4); } }
+/* A tab's short label shows on a phone only, its full label everywhere else. */
+.tab-short { display: none; }
+@media (max-width: 640px) { .tab-full { display: none; } .tab-short { display: inline; } }
