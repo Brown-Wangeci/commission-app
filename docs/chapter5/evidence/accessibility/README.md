@@ -185,3 +185,12 @@ with nothing entered: no text, placeholder, field-boundary or target-size
 failure, nothing undetermined. The place search in the chosen-place state was
 answered by a stand-in result in the browser; nothing was sent to
 OpenStreetMap.
+
+**Hosted run after deployment:** `signup.json`, the same two screens on
+production `c231be8` (PR #105, tag v1.2.2; Vercel production deploy READY
+18:14:17 UTC, 21:14:17 EAT), from 18:14:55 UTC (21:14:55 EAT) to 18:16:23 UTC
+(21:16:23 EAT), chromium 156.0.8078.4, axe-core 4.14.1. 14 screen states, 347
+controls measured: **0 contrast and 0 target-size failures**, nothing
+undetermined and no screen state unaudited. No browser request other than GET,
+HEAD and OPTIONS was made. The other screens were not re-audited; their record
+is `ui-pass.json` above.
