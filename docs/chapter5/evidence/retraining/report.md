@@ -1,6 +1,6 @@
 # Retraining comparison: t7_none
 
-Run 2026-11-25T11:04:47+00:00 by `python -m src.train.retrain`.
+Run 2026-11-25T11:12:01+00:00 by `python -m src.train.retrain`.
 
 ## Verdict
 
@@ -49,5 +49,6 @@ Taken straight from the stored decisions, so no model was refitted here.
 
 - generator config hash `e42117cd43ebb0ba7562cf1d7dcdea780fa144b7d8dcb5bcb767a59c160cb251`
 - model config hash `7251a370d6d4ad667a8868667184f61d0686f30f3739b802004a5251e0887ae2`
+- retraining config hash `03fab3aadad0963d8d10ec144d57b9b67108eaf5345c42fcad8b4b6a3394b69e`
 - labels sha256 `58b0c3d0c875bebdec0519cf84c903904a245f00c0f8c6f4fc35d04a1d99f901`
 - cv seed 7, seeds [7, 42, 101, 2024], folds per seed all

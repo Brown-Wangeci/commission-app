@@ -70,6 +70,13 @@ per-fold numbers in `retraining_fold_comparison.csv`.
 Per-seed PR-AUC, baseline then candidate: seed 7 0.6941 / 0.6960, seed 42
 0.7518 / 0.7521, seed 101 0.6841 / 0.6847, seed 2024 0.6973 / 0.6956.
 
+The comparison was run twice over, by two separate processes a few minutes
+apart, and the two runs produced byte-identical `retraining_fold_comparison.csv`
+and `retraining_summary.csv`. That was an accident of how this evidence was
+collected rather than a designed check, but it is the determinism the pipeline
+claims, measured on the full run rather than on the reduced one in the test
+suite.
+
 Every difference is far inside the seed-level spread, which is the headline
 uncertainty. Fold-to-fold variation (mean fold sd 0.0498 for PR-AUC)
 understates it, because `StratifiedGroupKFold` orders groups by size, so fold
