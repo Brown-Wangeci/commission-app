@@ -111,16 +111,16 @@ export function AuditTrailPanel({ apiBase, disputed, collapsible = false }: Prop
       )}
       {events && events.length > 0 && (
         <div className="table-wrap">
-          <table className="table">
+          <table className="table table-cards">
             <thead><tr><th>#</th><th>When</th><th>Event</th><th>Hash</th><th>On chain</th></tr></thead>
             <tbody>
               {events.map((event) => (
                 <tr key={event.eventId}>
-                  <td className="mono small">{event.sequence ?? "-"}</td>
-                  <td className="small num">{new Date(event.at).toLocaleString("en-KE", { timeZone: "Africa/Nairobi" })}</td>
-                  <td className="small">{eventLabel(event)}{event.detail && <div className="tiny muted">{event.detail}</div>}</td>
-                  <td className="mono tiny" title={event.hash ?? undefined}>{short(event.hash)}</td>
-                  <td className="small"><AnchorCell anchor={event.anchor} /></td>
+                  <td data-label="#" className="mono small">{event.sequence ?? "-"}</td>
+                  <td data-label="When" className="small num">{new Date(event.at).toLocaleString("en-KE", { timeZone: "Africa/Nairobi" })}</td>
+                  <td data-label="Event" className="small">{eventLabel(event)}{event.detail && <div className="tiny muted">{event.detail}</div>}</td>
+                  <td data-label="Hash" className="mono tiny" title={event.hash ?? undefined}>{short(event.hash)}</td>
+                  <td data-label="On chain" className="small"><AnchorCell anchor={event.anchor} /></td>
                 </tr>
               ))}
             </tbody>

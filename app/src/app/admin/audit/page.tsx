@@ -92,11 +92,11 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
       </div>
       <ChainCard status={status} />
       <div className="card">
-        {events.length === 0 && (
+        {events.length === 0 ? (
           <EmptyState title="No events recorded yet" next="Nobody needs to act. The system records an event each time a submission changes or a payment moves.">
             Every recorded event appears here with its place in the hash chain.
           </EmptyState>
-        )}
+        ) : (
         <div className="table-wrap">
           <table className="table">
             <thead><tr><th>#</th><th>When</th><th>Event</th><th>Activation</th><th>Who</th><th>Detail</th><th>Hash</th></tr></thead>
@@ -119,6 +119,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
             </tbody>
           </table>
         </div>
+        )}
       </div>
     </main>
   );

@@ -2,6 +2,8 @@ import type { Disbursement } from "@prisma/client";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { EmptyState } from "@/components/EmptyState";
+import { ShowAllRows } from "@/components/ShowAllRows";
+import { SHOW_ALL_INITIAL } from "@/lib/ui/show-all";
 import { formatDateTime } from "@/lib/format";
 import { formatCents, sumCents } from "@/lib/money/cents";
 import { DISBURSEMENT_DISPLAY, paymentAttention, type PaymentAttention } from "@/lib/payments/admin";
@@ -65,6 +67,7 @@ export default async function PayoutsPage() {
   const stuck = payouts.filter((payout) => payout.disbursement && needsPerson(payout.disbursement));
   const paid = payouts.filter((payout) => payout.disbursement?.status === "paid");
   const total = sumCents(paid.map((payout) => payout.amountCents));
+  // Stuck payouts come first; if they alone pass the "Show all" cap, every row stays in view so none needing a retry is hidden.
   const ordered = [...stuck, ...payouts.filter((payout) => !stuck.includes(payout))];
   const deciders = new Map(
     (await prisma.user.findMany({ where: { id: { in: payouts.flatMap((p) => (p.authorisedById ? [p.authorisedById] : [])) } } })).map((u) => [u.id, u.name]),
@@ -91,6 +94,7 @@ export default async function PayoutsPage() {
             Each payout shows its M-Pesa state and, if it did not complete, the reason and a Retry button.
           </EmptyState>
         ) : (
+          <ShowAllRows total={ordered.length} noun="payouts" uncapped={stuck.length >= SHOW_ALL_INITIAL}>
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>Activation</th><th>Agent</th><th>Pays to</th><th className="right">Commission</th><th>Authorised</th><th>By</th><th>M-Pesa</th></tr></thead>
@@ -109,6 +113,7 @@ export default async function PayoutsPage() {
               </tbody>
             </table>
           </div>
+          </ShowAllRows>
         )}
       </div>
     </main>
