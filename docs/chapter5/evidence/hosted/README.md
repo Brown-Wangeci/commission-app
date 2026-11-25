@@ -1,6 +1,6 @@
 # Hosted deployment evidence
 
-Evidence from running Ledgerfield as a hosted system on 15, 16 and 23 November
+Evidence from running Ledgerfield as a hosted system on 15, 16, 23 and 25 November
 2026, and what each file shows. The hosted app is
 `https://commission-app-ten-pied.vercel.app`; the services are listed in
 `../../environment.md`, "Hosted deployment". All timestamps are UTC, in `step18/` too, where EAT is given beside them (its JSON gives both). Every file
@@ -24,6 +24,7 @@ the local setup (`scripts/demo-start`) remains the fallback.
 | `mpesa/` | The callback origin the app builds, and that forged or unsigned callbacks get 401. `callback-delivery-experiment.md`: Daraja delivered callbacks to a tunnel and to the hosted origin within about 10 s, and Vercel blocked nothing | **Why the 15 November STK and B2C callbacks never arrived (unexplained, see below)** |
 | `performance/` | NFR-01 on the hosted app (99.35% within 2 s, 100 users) and NFR-02 on the hosted scoring service. See its README for what is and is not comparable with the local figures | NFR-02 at the dataset's history size over the internet |
 | `step18/` | One hosted STK Push credited and one hosted B2C payout paid, each by a real callback with ResultCode 0 and no status query, 23 November, from the hosted database (read only). Timeline, verdict, masking | Failure, retry and reconciliation paths (only the success path ran); which origin received the callbacks (not stored, request log not collected) |
+| `client-review/` | The client review setting, 25 November: the migration applied, and one activation that scored `auto_release` at hold-close going to review as `client_requires_review` with no payout authorised | The setting off, a per-job override, or a reviewer's decision on the hosted app |
 
 ## M-Pesa: what was and was not shown
 

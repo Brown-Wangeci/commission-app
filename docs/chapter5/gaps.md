@@ -238,4 +238,8 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
 - **Clicking the toggle has no automated test.** The suite has no DOM
   environment; it was clicked in a local browser by a script run by hand on
   2026-11-25 (stored value and audit events checked), not by CI.
-- **Hosted check not yet run** when this section was written.
+- **The hosted check covers one path.** On 2026-11-25 a hold-close
+  `auto_release` with the account setting on went to review with no payout
+  authorised (`evidence/hosted/client-review/`). The setting off, a per-job
+  override, a reviewer's decision and the two form controls were not exercised
+  on the hosted app.
