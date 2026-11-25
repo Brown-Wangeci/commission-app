@@ -53,14 +53,19 @@ function Actions({ detail }: { detail: Detail }) {
           <ReasonAction url={`/api/agent/activations/${id}/contest`} field="note" buttonLabel="Contest the refusal" prompt="Why should the refusal be reconsidered?" submitLabel="Send my contest" />
         </section>
       )}
-      {detail.canWithdraw && (
-        <section className="card card-pad stack">
-          <h2>Withdraw</h2>
-          <p className="small muted">Withdraw this activation if it should not be paid. This cannot be undone.</p>
-          <ReasonAction url={`/api/agent/activations/${id}/withdraw`} field="reason" buttonLabel="Withdraw activation" prompt="Why are you withdrawing it?" submitLabel="Withdraw" danger />
-        </section>
-      )}
     </>
+  );
+}
+
+/** Withdrawing is rare and cannot be undone, so it sits at the end of the page, not among what needs doing. */
+function Withdraw({ detail }: { detail: Detail }) {
+  if (!detail.canWithdraw) return null;
+  return (
+    <section className="stack-sm withdraw" aria-labelledby="withdraw-heading">
+      <h2 id="withdraw-heading">Withdraw</h2>
+      <p className="small muted">Withdraw this activation if it should not be paid. This cannot be undone.</p>
+      <ReasonAction url={`/api/agent/activations/${detail.activation.id}/withdraw`} field="reason" buttonLabel="Withdraw activation" prompt="Why are you withdrawing it?" submitLabel="Withdraw" danger />
+    </section>
   );
 }
 
@@ -74,6 +79,7 @@ export default async function AgentActivationPage({ params }: { params: Promise<
   const { activation } = detail;
   const photos = activation.evidence;
   const amount = payoutAmountView({ job: activation.job, hold: activation.assignment.hold, commission: activation.commission });
+  const contested = activation.state === "disputed" || activation.state === "refused";
   return (
     <main className="page page-narrow">
       <div className="breadcrumb"><Link href="/agent/activations">&larr; My activations</Link></div>
@@ -89,7 +95,8 @@ export default async function AgentActivationPage({ params }: { params: Promise<
       <div className="stack-lg">
         <Status detail={detail} />
         <Actions detail={detail} />
-        <AuditTrailPanel apiBase={`/api/agent/activations/${activation.id}/audit`} disputed={activation.state === "disputed" || activation.state === "refused"} />
+        {/* The hash-by-hash record opens on click, except in a refusal or dispute, where it matters most. */}
+        <AuditTrailPanel apiBase={`/api/agent/activations/${activation.id}/audit`} disputed={contested} collapsible={!contested} plainSummary />
         {detail.fields.some((field) => field.type !== "photo") && (
           <section className="card card-pad">
             <h2 style={{ marginBottom: 8 }}>What you submitted for this job</h2>
@@ -121,6 +128,7 @@ export default async function AgentActivationPage({ params }: { params: Promise<
             </div>
           )}
         </section>
+        <Withdraw detail={detail} />
       </div>
     </main>
   );

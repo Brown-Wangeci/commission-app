@@ -6,7 +6,8 @@ import { clientJobs } from "@/lib/jobs/jobs";
 import { listFundingAttempts } from "@/lib/payments/funding";
 import { Disclosure } from "@/components/Disclosure";
 import { EmptyState } from "@/components/EmptyState";
-import { Money, MoneyStat } from "@/components/Money";
+import { Money } from "@/components/Money";
+import { formatCents } from "@/lib/money/cents";
 import { FundForm } from "@/components/client/FundForm";
 import { FundingList } from "@/components/client/FundingList";
 import { ReviewSettingToggle } from "@/components/client/ReviewSettingToggle";
@@ -112,10 +113,17 @@ export default async function ClientHomePage() {
       )}
       <section aria-labelledby="escrow-heading" id="fund" className="stack">
         <h2 id="escrow-heading">Your escrow</h2>
-        <div className="grid-3">
-          <MoneyStat label="Deposited" cents={escrow.depositedCents} />
-          <MoneyStat label="Committed to jobs" cents={escrow.committedCents} />
-          <MoneyStat label="Available" cents={escrow.availableCents} derivation={escrow.availableDerivation} />
+        {/* One card: what can be spent, large, with what it is made of beside it. */}
+        <div className="card stat escrow-card">
+          <div>
+            <div className="stat-label">Available</div>
+            <div className="stat-value">{formatCents(escrow.availableCents)}</div>
+            <span className="derivation">{escrow.availableDerivation}</span>
+          </div>
+          <dl className="escrow-parts">
+            <div><dt className="stat-label">Deposited</dt><dd className="num">{formatCents(escrow.depositedCents)}</dd></div>
+            <div><dt className="stat-label">Committed to jobs</dt><dd className="num">{formatCents(escrow.committedCents)}</dd></div>
+          </dl>
         </div>
         <Disclosure id="fund-escrow" title="Fund your escrow" hint="Pay by M-Pesa; see every funding attempt" defaultOpen={escrow.availableCents === 0 || fundingOpen}>
           <div className="stack">

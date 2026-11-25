@@ -19,7 +19,7 @@
  *   open-assignment  posts a one-slot KSh 10.00 job as client2@, assigns it
  *           to mercy@ as reviewer@ and accepts it, leaving it unsubmitted, so
  *           the activation form can be audited (scripts/audit-accessibility.ts).
- *   map-job posts a one-slot job as client2@ through the post-a-job page in
+ *   map-job posts a one-slot KSh 10.00 job as client2@ through the post-a-job page in
  *           a browser, placing the job area with the map picker: a click on
  *           the map, then "Use my location" with the browser's location set
  *           to the point the other steps use, then the radius slider. It
@@ -257,9 +257,10 @@ async function postWithPicker(page: Page) {
   await page.fill("#areaRadiusRange", String(RADIUS_STEPS_M.indexOf(MAP_JOB_RADIUS_M)));
   const sent = await formArea(page);
   log(`"Use my location" and the slider: ${sent.areaLat}, ${sent.areaLon}, ${sent.areaRadiusM} m`);
-  await page.fill("#submissionValueKsh", "2500");
-  await page.fill("#commissionRatePercent", "12");
-  await page.fill("#flatCommissionKsh", "50");
+  // KSh 1,000 at 1%: a KSh 10.00 commission, so the job locks only KSh 10.00 of client2's escrow (as open-assignment does).
+  await page.fill("#submissionValueKsh", "1000");
+  await page.fill("#commissionRatePercent", "1");
+  await page.fill("#flatCommissionKsh", "");
   await page.fill("#slots", "1");
   await page.locator("#title").click();
   const valueAfterLeaving = await page.inputValue("#submissionValueKsh");

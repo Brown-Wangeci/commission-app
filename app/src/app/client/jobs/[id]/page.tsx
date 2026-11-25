@@ -56,7 +56,7 @@ export default async function ClientJobPage({ params, searchParams }: { params: 
           <p className="small">No agent has been assigned yet. A reviewer assigns agents to open jobs; nothing is needed from you.</p>
         </div>
       )}
-      <div className="grid-4" style={{ marginBottom: 16 }}>
+      <div className="grid-4 stat-grid" style={{ marginBottom: 16 }}>
         <MoneyStat label="Commission per approved submission" cents={terms.commission.amountCents} derivation={terms.commission.derivation} />
         <MoneyStat
           label="Locked at publication"
@@ -89,7 +89,7 @@ export default async function ClientJobPage({ params, searchParams }: { params: 
       <section className="card card-pad" style={{ marginBottom: 16 }}>
         <div className="row-between wrap" style={{ marginBottom: 8 }}>
           <h2>Evidence fields <span className="muted small">(version {evidence.version})</span></h2>
-          {job.status === "open" && <Link href={`/client/jobs/${job.id}/evidence`} className="btn small">Edit evidence fields</Link>}
+          {job.status === "open" && <Link href={`/client/jobs/${job.id}/evidence`} className="btn small quiet">Edit evidence fields</Link>}
         </div>
         {evidence.fields.length === 0 ? (
           <p className="small muted">No job-specific fields: agents submit only the platform&rsquo;s own (customer number, SIM date, capture method, optional proof).</p>

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { postJson, type FieldErrors } from "@/lib/client-api";
 import type { FieldDefinition } from "@/lib/evidence/fields";
+import { StickyActionBar } from "@/components/StickyActionBar";
 import { EvidenceFieldsEditor, rowsFromDefinitions, toFieldInput, type EditorRow } from "./EvidenceFieldsEditor";
 
 /** Edits a published job's evidence fields; saving adds the next configuration version. */
@@ -32,9 +33,9 @@ export function EditEvidenceFields({ jobId, fields, version }: { jobId: string; 
     <div className="stack-lg">
       {message && <div className="alert error" role="alert">{message}</div>}
       <EvidenceFieldsEditor rows={rows} onChange={setRows} errors={errors} />
-      <div className="row">
+      <StickyActionBar>
         <button type="button" className="btn primary" onClick={save} disabled={busy}>{busy ? "Saving" : `Save as version ${version + 1}`}</button>
-      </div>
+      </StickyActionBar>
     </div>
   );
 }

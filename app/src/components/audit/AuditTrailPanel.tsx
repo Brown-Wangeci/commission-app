@@ -6,9 +6,13 @@ import type { AuditVerification, EventCheck } from "@/lib/audit/verify";
 import { postJson } from "@/lib/client-api";
 import { Disclosure } from "@/components/Disclosure";
 import { EmptyState } from "@/components/EmptyState";
+import { stateLabel } from "@/lib/activations/states";
 
-/** `collapsible` puts the record in a section that opens on click, for screens where it is not the main thing. */
-type Props = { apiBase: string; disputed: boolean; collapsible?: boolean };
+/**
+ * `collapsible` puts the record in a section that opens on click, for screens where it is not the main thing.
+ * `plainSummary` adds a "What happened" card above it: each change of state in plain words, from the same events.
+ */
+type Props = { apiBase: string; disputed: boolean; collapsible?: boolean; plainSummary?: boolean };
 
 const STATUS_TEXT: Record<AuditVerification["status"], { chip: string; label: string; tone: string }> = {
   verified: { chip: "approved", label: "Verified on chain", tone: "ok" },
@@ -59,11 +63,34 @@ function CheckLine({ check }: { check: EventCheck }) {
   );
 }
 
+function when(at: string): string {
+  return new Date(at).toLocaleString("en-KE", { timeZone: "Africa/Nairobi" });
+}
+
+/** The changes of state, oldest first, in the words the rest of the app uses for each state. */
+export function WhatHappened({ events }: { events: AuditRecordEvent[] }) {
+  const changes = events.filter((event) => event.kind === "transition" && event.toState);
+  if (changes.length === 0) return null;
+  return (
+    <section className="card card-pad" aria-labelledby="what-happened-heading">
+      <h2 id="what-happened-heading">What happened</h2>
+      <ol className="timeline">
+        {changes.map((event) => (
+          <li key={event.eventId}>
+            <div className="when">{when(event.at)}</div>
+            <div>{stateLabel(event.toState as Parameters<typeof stateLabel>[0])}</div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 /**
  * A submission's audit record and its independent verification (FR-22),
  * shown on the dispute flow, where it matters most.
  */
-export function AuditTrailPanel({ apiBase, disputed, collapsible = false }: Props) {
+export function AuditTrailPanel({ apiBase, disputed, collapsible = false, plainSummary = false }: Props) {
   const [events, setEvents] = useState<AuditRecordEvent[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AuditVerification | null>(null);
@@ -117,7 +144,7 @@ export function AuditTrailPanel({ apiBase, disputed, collapsible = false }: Prop
               {events.map((event) => (
                 <tr key={event.eventId}>
                   <td data-label="#" className="mono small">{event.sequence ?? "-"}</td>
-                  <td data-label="When" className="small num">{new Date(event.at).toLocaleString("en-KE", { timeZone: "Africa/Nairobi" })}</td>
+                  <td data-label="When" className="small num">{when(event.at)}</td>
                   <td data-label="Event" className="small">{eventLabel(event)}{event.detail && <div className="tiny muted">{event.detail}</div>}</td>
                   <td data-label="Hash" className="mono tiny" title={event.hash ?? undefined}>{short(event.hash)}</td>
                   <td data-label="On chain" className="small"><AnchorCell anchor={event.anchor} /></td>
@@ -129,17 +156,23 @@ export function AuditTrailPanel({ apiBase, disputed, collapsible = false }: Prop
       )}
     </>
   );
+  const summary = plainSummary && events ? <WhatHappened events={events} /> : null;
   if (collapsible) {
     return (
-      <Disclosure id="audit" title="Audit record" hint="Every change, hashed and checked against the blockchain">
-        <div className="stack">
-          <div>{verifyButton}</div>
-          {body}
-        </div>
-      </Disclosure>
+      <>
+        {summary}
+        <Disclosure id="audit" title="Audit record" hint="Every change, hashed and checked against the blockchain">
+          <div className="stack">
+            <div>{verifyButton}</div>
+            {body}
+          </div>
+        </Disclosure>
+      </>
     );
   }
   return (
+    <>
+    {summary}
     <section className="card card-pad stack" aria-labelledby="audit-heading" id="audit">
       <div className="row wrap" style={{ justifyContent: "space-between" }}>
         <h2 id="audit-heading">Audit record</h2>
@@ -147,5 +180,6 @@ export function AuditTrailPanel({ apiBase, disputed, collapsible = false }: Prop
       </div>
       {body}
     </section>
+    </>
   );
 }
