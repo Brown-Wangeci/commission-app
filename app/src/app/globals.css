@@ -6,7 +6,12 @@
    for disputes and refusals. A clean screen should look almost colourless.
 
    Every colour, size and radius a component uses is a token in this block.
-   Components consume the tokens; none hard-codes a value of its own. */
+   Components consume the tokens; none hard-codes a value of its own.
+
+   Contrast (IR-10, WCAG 2.1 AA): every token used for text is at least 4.5:1
+   on each background it appears on, and field boundaries and focus rings at
+   least 3:1. tests/design-tokens.test.ts holds the pairs. Where Accrue's own
+   value fell short it is darkened here, and the comment gives the old one. */
 
 :root {
   /* --- Accrue brand: Ledger Green (role colour) --- */
@@ -19,7 +24,7 @@
   --ink: #1a1916;
   --ink-2: #2e2c28;
   --ink-3: #5a5750;
-  --ink-4: #8c887f;
+  --ink-4: #6b6860;  /* Accrue #8c887f was 3.5:1 on white */
   --ink-5: #bab6ad;
 
   /* --- Accrue surfaces --- */
@@ -27,10 +32,13 @@
   --surface: #ffffff;
   --line: #e6e3dc;
   --line-2: #d6d2c9;
+  /* The boundary of a field, which is how a field is found (SC 1.4.11). Not in
+     Accrue; its --line-2 was 1.5:1. Dividers, chips and buttons keep --line-2. */
+  --line-control: #86827a;
 
   /* --- Accrue status hues, exceptions only --- */
   --status-accrued: #5a5750;
-  --status-pending: #a15c07;
+  --status-pending: #965506;  /* Accrue #a15c07 was 4.4:1 on its soft tint */
   --status-disputed: #a83232;
   --status-clawback: #5e4fc9;
   --status-paid: #1e5e4a;
@@ -285,11 +293,11 @@ p { margin: 0; }
 .btn + .hint { margin-left: var(--space-3); }
 .input, .select, .textarea {
   font: inherit; font-size: 14px; color: var(--ink);
-  background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--radius-btn);
+  background: var(--surface); border: 1px solid var(--line-control); border-radius: var(--radius-btn);
   min-height: var(--control-h); padding: var(--space-2) var(--space-3); width: 100%;
 }
 .input::placeholder, .textarea::placeholder { color: var(--ink-4); }
-.input:hover, .select:hover, .textarea:hover { border-color: var(--ink-5); }
+.input:hover, .select:hover, .textarea:hover { border-color: var(--ink-3); }
 .textarea { min-height: 84px; resize: vertical; }
 .input:focus, .select:focus, .textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
 .field-error { font-size: 12px; line-height: 17px; color: var(--danger); }
