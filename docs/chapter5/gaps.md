@@ -243,3 +243,18 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   authorised (`evidence/hosted/client-review/`). The setting off, a per-job
   override, a reviewer's decision and the two form controls were not exercised
   on the hosted app.
+
+## Accessibility audit (2026-11-25)
+
+- **The target-size criterion is not from WCAG 2.1.** IR-10 names WCAG 2.1 AA,
+  which has no target-size criterion; the 24 px rule of WCAG 2.2 was applied.
+  The 44 px level AAA size is not met by many controls.
+- **Automated, plus judgements by reading the code.** No person used the screens
+  and no assistive technology was tried. The risk scale is judged to pass
+  because its values are also written as text.
+- **Coverage.** Chromium at 360 px and 1366 px. The agent's evidence-response,
+  contest and withdraw forms were audited locally only; hover, focus and error
+  colours are covered by the token test, not rendered; error pages were not
+  audited (`evidence/accessibility/README.md`).
+- **The audit is not run by CI.** CI holds the token colours; a new screen that
+  breaks contrast in some other way is found only by running the script.

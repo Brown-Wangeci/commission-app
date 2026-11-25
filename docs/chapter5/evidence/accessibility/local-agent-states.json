@@ -1,0 +1,3096 @@
+{
+ "requirement": "IR-10: WCAG 2.1 level AA for contrast ratio and target size",
+ "label": "local-after-agent-states",
+ "app": "http://localhost:3100",
+ "startedAt": "2026-11-25T09:16:23.289Z",
+ "finishedAt": "2026-11-25T09:16:56.334Z",
+ "browser": "chromium 156.0.8078.4",
+ "axeCore": "4.14.1",
+ "axeRules": [
+  "color-contrast",
+  "target-size"
+ ],
+ "widths": [
+  {
+   "name": "360",
+   "width": 360,
+   "height": 800
+  },
+  {
+   "name": "desktop",
+   "width": 1366,
+   "height": 900
+  }
+ ],
+ "blockedRequests": [],
+ "totals": {
+  "requestedScreens": {
+   "statesAudited": 0,
+   "statesNotAudited": 0,
+   "textContrast": 0,
+   "textContrastFoundBySelfCheck": 0,
+   "textContrastStillUndetermined": 0,
+   "placeholderContrast": 0,
+   "controlBoundaryContrast": 0,
+   "targetSize24": 0,
+   "textContrastNotJudgedByAxe": 0,
+   "targetSizeIncomplete": 0,
+   "controlsMeasured": 0,
+   "controlsUnder44ForInformation": 0
+  },
+  "allScreens": {
+   "statesAudited": 12,
+   "statesNotAudited": 0,
+   "textContrast": 0,
+   "textContrastFoundBySelfCheck": 0,
+   "textContrastStillUndetermined": 0,
+   "placeholderContrast": 0,
+   "controlBoundaryContrast": 0,
+   "targetSize24": 0,
+   "textContrastNotJudgedByAxe": 125,
+   "targetSizeIncomplete": 0,
+   "controlsMeasured": 164,
+   "controlsUnder44ForInformation": 0
+  }
+ },
+ "entries": [
+  {
+   "screen": "Agent activation detail, awaiting evidence",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/3fcaa7f9-c318-4c0d-8b62-379224f5611c",
+   "width": "360",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "tr:nth-child(1) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(2) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(3) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(4) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(5) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(6) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(7) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(8) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(9) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(10) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "tr:nth-child(1) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(2) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(3) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(4) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(5) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(6) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(7) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(8) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(9) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(10) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 16,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, awaiting evidence",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/3fcaa7f9-c318-4c0d-8b62-379224f5611c",
+   "width": "360",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "label[for=\"responsePhotos\"]",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(1) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(2) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(3) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(4) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(5) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(6) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(7) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(8) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(9) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(10) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "label[for=\"responsePhotos\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": "tr:nth-child(1) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(2) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(3) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(4) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(5) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(6) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(7) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(8) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(9) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(10) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 18,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, awaiting evidence",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/3fcaa7f9-c318-4c0d-8b62-379224f5611c",
+   "width": "desktop",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 16,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, awaiting evidence",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/3fcaa7f9-c318-4c0d-8b62-379224f5611c",
+   "width": "desktop",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "label[for=\"note\"]",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "label[for=\"note\"]",
+     "verdict": "pass",
+     "ratio": 17.57,
+     "required": 4.5,
+     "color": "rgb(26, 25, 22)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 18,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, refused",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/0eb1c130-e326-42e8-b8e7-730e8f8f5079",
+   "width": "360",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "tr:nth-child(1) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(2) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(3) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(4) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(5) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(6) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(7) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(8) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(9) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "tr:nth-child(1) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(2) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(3) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(4) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(5) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(6) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(7) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(8) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(9) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 11,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, refused",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/0eb1c130-e326-42e8-b8e7-730e8f8f5079",
+   "width": "360",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": ".stack:nth-child(1) > p",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it is overlapped by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "10.5pt (14px)",
+          "fontWeight": "normal",
+          "messageKey": "bgOverlap",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(1) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(2) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(3) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(4) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(5) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(6) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(7) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(8) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(9) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": ".stack:nth-child(1) > p",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(1) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(2) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(3) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(4) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(5) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(6) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(7) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(8) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(9) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 13,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, refused",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/0eb1c130-e326-42e8-b8e7-730e8f8f5079",
+   "width": "desktop",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 11,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, refused",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/0eb1c130-e326-42e8-b8e7-730e8f8f5079",
+   "width": "desktop",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 13,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, approved",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/b4e079cf-cca8-49bb-ad48-bf2dab192e94",
+   "width": "360",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "tr:nth-child(1) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(2) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(3) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(4) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(5) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(6) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(7) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(8) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(9) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(10) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "tr:nth-child(1) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(2) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(3) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(4) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(5) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(6) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(7) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(8) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(9) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(10) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 12,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, approved",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/b4e079cf-cca8-49bb-ad48-bf2dab192e94",
+   "width": "360",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": "tr:nth-child(1) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(2) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(3) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(4) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(5) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(6) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(7) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(8) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(9) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": "tr:nth-child(10) > .tiny.mono",
+       "checks": [
+        {
+         "message": "Element's background color could not be determined because it's partially obscured by another element",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "9.0pt (12px)",
+          "fontWeight": "normal",
+          "messageKey": "elmPartiallyObscured",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": "tr:nth-child(1) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(2) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(3) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(4) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(5) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(6) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(7) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(8) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(9) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": "tr:nth-child(10) > .tiny.mono",
+     "verdict": "pass",
+     "ratio": 13.93,
+     "required": 4.5,
+     "color": "rgb(46, 44, 40)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 12,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, approved",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/b4e079cf-cca8-49bb-ad48-bf2dab192e94",
+   "width": "desktop",
+   "state": "as loaded",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 12,
+   "under44": []
+  },
+  {
+   "screen": "Agent activation detail, approved",
+   "requested": false,
+   "role": "agent",
+   "path": "/agent/activations/b4e079cf-cca8-49bb-ad48-bf2dab192e94",
+   "width": "desktop",
+   "state": "sections and forms opened",
+   "axeVersion": "4.14.1",
+   "violations": [],
+   "incomplete": [
+    {
+     "rule": "color-contrast",
+     "impact": "serious",
+     "nodes": [
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      },
+      {
+       "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+       "checks": [
+        {
+         "message": "Element content is too short to determine if it is actual text content",
+         "data": {
+          "contrastRatio": 0,
+          "fontSize": "8.3pt (11px)",
+          "fontWeight": "normal",
+          "messageKey": "shortTextContent",
+          "expectedContrastRatio": "4.5:1"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "resolved": [
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(1) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(2) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(3) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(4) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(5) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    },
+    {
+     "target": ".thumb[target=\"_blank\"][rel=\"noreferrer\"]:nth-child(6) > .n",
+     "verdict": "pass",
+     "ratio": 8.64,
+     "required": 4.5,
+     "color": "rgb(255, 255, 255)"
+    }
+   ],
+   "placeholder": [],
+   "boundary": [],
+   "controls": 12,
+   "under44": []
+  }
+ ]
+}
