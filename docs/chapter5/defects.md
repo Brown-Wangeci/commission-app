@@ -563,8 +563,9 @@ compute the retry from that time.
 
 ## 19. A location nobody chose was stored as latitude 0, longitude 0, 25 November 2026
 
-**Status: fixed for agent sign-up and job posting. The same coercion on
-activation GPS is open (below).**
+**Status: fixed for agent sign-up and job posting in PR #105 (`c231be8`, tag
+v1.2.2; production deploy READY 25 November 2026, 18:14:17 UTC, 21:14:17 EAT).
+The same coercion on activation GPS is open (below).**
 
 **What happened.** The sign-up and job schemas accepted blank coordinates and
 read them as latitude 0, longitude 0, a point in the Gulf of Guinea. Found on
