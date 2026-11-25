@@ -110,3 +110,11 @@ describe("the reviewer can decide without scrolling to the end on a phone", () =
     expect(css).toContain("main:has(.payout-panel .decide-buttons) { padding-bottom: 140px; }");
   });
 });
+
+describe("the radius slider has a visible boundary", () => {
+  it("draws the slider as a field, with the field boundary, and its track and thumb in checked tokens", () => {
+    expect(css).toMatch(/\.range \{[^}]*border: 1px solid var\(--line-control\);/);
+    expect(css).toContain(".range::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--line-control); }");
+    expect(css).toMatch(/\.range::-webkit-slider-thumb \{[^}]*background: var\(--accent\);/);
+  });
+});

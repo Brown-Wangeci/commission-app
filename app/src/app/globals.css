@@ -721,7 +721,20 @@ legend { padding: 0 var(--space-2); }
 .map-results li + li { border-top: 1px solid var(--line); }
 .map-result { display: block; width: 100%; min-height: 44px; padding: var(--space-2) var(--space-3); text-align: left; background: none; border: 0; font: inherit; font-size: 14px; color: var(--ink); cursor: pointer; }
 .map-result:hover { background: var(--accent-soft); }
-.range { width: 100%; min-height: 44px; accent-color: var(--accent); }
+/* The radius slider looks like the other fields: a box with the field
+   boundary (3:1), and inside it a track and thumb drawn in tokens rather than
+   the browser's light grey, so both stay at 3:1 too (SC 1.4.11). */
+.range {
+  -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 44px; margin: 0; padding: 0 var(--space-3);
+  background: var(--surface); border: 1px solid var(--line-control); border-radius: var(--radius-btn); cursor: pointer;
+}
+.range:hover { border-color: var(--ink-3); }
+.range:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+.range::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--line-control); }
+.range::-moz-range-track { height: 4px; border-radius: 2px; background: var(--line-control); }
+.range::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--accent); }
+.range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; margin-top: -10px; border-radius: 50%; background: var(--accent); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--accent); }
+.range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--accent); }
 .input[readonly] { background: var(--bg); color: var(--ink-2); }
 /* The agent's location against the job area, in words, at the top of the activation form. */
 .area-status { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; padding: var(--space-3) var(--space-4); border: 1px solid var(--line); border-left: 3px solid var(--ink-4); border-radius: var(--radius); background: var(--surface); }
