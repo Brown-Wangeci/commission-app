@@ -258,3 +258,32 @@ fill a gap; each item states plainly what exists, what doesn't, and why.
   audited (`evidence/accessibility/README.md`).
 - **The audit is not run by CI.** CI holds the token colours; a new screen that
   breaks contrast in some other way is found only by running the script.
+
+## Retention and anonymisation (2026-11-25)
+
+- **The retention period is an assumption.** `RETENTION_DAYS` defaults to 1095
+  (three years). It is not taken from Kenyan law, a regulator or the industry
+  partner, and it is stated as an assumption in `app/.env.example`,
+  `docs/RETENTION.md` and here. Nothing depends on the number.
+- **The audit chain keeps personal data for ever.** Reviewer and agent free
+  text, a masked payout number, the M-Pesa receipt and each actor's user id
+  stay in `AuditEvent.detail`, `actorId` and `activationId` after the rest of
+  the record is anonymised. The chain is append-only and anchored, so removing
+  them would break NFR-11, FR-22 and IR-04. DR-11 is therefore partially met,
+  not met. The proposed design (a salted commitment in the chain, text and
+  salt off-chain and erasable) is written up in `docs/RETENTION.md` and is not
+  built.
+- **The notice is the only forward-looking control.** Nothing stops a reviewer
+  typing a customer's name; automatic redaction was deliberately not added.
+  Whether the notice changes what people type is not measured.
+- **The job has not run against the hosted database**, by decision, so it is
+  demonstrated only on a local seeded copy
+  (`evidence/retention/`), with `RETENTION_DAYS=1`.
+- **There is no erasure on request** for one person, no administrator screen
+  for retention, and user and agent accounts are out of scope.
+- **DR-07 and DR-11 pull against each other.** DR-07 requires the device
+  location to be retained; after anonymisation it is kept only to about a
+  kilometre. That reading is deliberate and is recorded in `docs/RETENTION.md`.
+- **The clock is `Activation.updatedAt`**, the last time the submission's own
+  row changed. For a settled submission that is when it settled, but it is a
+  proxy, not a column that records the settlement date.
