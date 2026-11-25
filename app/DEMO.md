@@ -137,18 +137,19 @@ This creates a new activation whose band changes between T0 and T7.
    KSh 350.00 is reserved from the job's lock in an escrow hold.
 3. **Agent accepts and submits.** Sign in as **mercy@**. On **My jobs**,
    **Accept job**, then **Submit activation**. The form is built from the
-   job's fields: "Every activation" holds the platform's own fields, and
-   "Evidence for this job" holds the three the client just defined, in that
+   job's fields: "This activation" holds the platform's own fields, and
+   "What this job needs" holds the three the client just defined, in that
    order. Try **Submit activation** empty first: it names every missing
-   mandatory field. Then:
+   mandatory field (and, if the browser gave no location, asks for location
+   to be turned on; the demo button below supplies one). Then:
    - customer phone: any new number, e.g. `0711 234 567`;
    - SIM registration date: yesterday; choose "Scanned the code";
    - ID document seen: National ID; market stall number: `B-14`;
    - photo of the stall: two or three of any images (placeholders are fine);
    - leave proof of activation empty;
-   - open **Simulated device details (demonstration only)**: set the region
-     reported by the network to **Mombasa (region_c)**, then **Use the job
-     area centre as my location (demo)**;
+   - open **Demo controls**: set the region reported by the network to
+     **Mombasa (region_c)**, then **Use the job area centre as my location
+     (demo)**;
    - **Submit activation**.
 
    The page shows the status. It is usually **Checked and on hold**

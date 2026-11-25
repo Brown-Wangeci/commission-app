@@ -1,8 +1,9 @@
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { ApiError, badRequest } from "@/lib/http/errors";
 import { MAX_JOB_PHOTOS } from "@/lib/evidence/fields";
 import { REQUEST_BODY_LIMIT_BYTES, TOO_LARGE_MESSAGE } from "@/lib/evidence/photo-limits";
-import { idSchema, latitudeSchema, longitudeSchema } from "@/lib/validation";
+import { chosenCoordinateSchema, idSchema } from "@/lib/validation";
+import { ACTIVATION_LOCATION_REQUIRED, PHOTO_LOCATION_INVALID, locationMissing } from "@/lib/location";
 import type { PhotoInput, SubmissionInput } from "./submit";
 
 /**
@@ -21,17 +22,23 @@ const optionalNumber = z
   .union([z.literal(""), z.null(), z.undefined(), z.coerce.number()])
   .transform((value) => (typeof value === "number" && Number.isFinite(value) ? value : null));
 
-const contextSchema = z.object({
+const contextFields = z.object({
   assignmentId: idSchema,
   evidenceConfigId: idSchema,
-  gpsLat: latitudeSchema,
-  gpsLon: longitudeSchema,
+  gpsLat: chosenCoordinateSchema(90, ACTIVATION_LOCATION_REQUIRED),
+  gpsLon: chosenCoordinateSchema(180, ACTIVATION_LOCATION_REQUIRED),
   gpsAccuracyM: optionalNumber.refine((v) => v === null || v >= 0, "Accuracy cannot be negative."),
   deviceId: z.string().trim().min(4).max(200),
   deviceOs: z.string().trim().min(1).max(40),
   appVersion: z.string().trim().min(1).max(40),
   networkType: z.enum(["cellular", "wifi"]),
   ipRegion: z.string().trim().max(40).optional().transform((v) => (v ? v : null)),
+});
+
+/** An activation at exactly 0, 0 has no location fix, so it is refused as a missing one is (defect 20). */
+const contextSchema = contextFields.superRefine((context, ctx) => {
+  if (!locationMissing(context.gpsLat, context.gpsLon)) return;
+  for (const field of ["gpsLat", "gpsLon"]) ctx.addIssue({ code: "custom", path: [field], message: ACTIVATION_LOCATION_REQUIRED });
 });
 
 const photoMetaSchema = z.array(
@@ -53,6 +60,14 @@ function files(form: FormData, name: string): File[] {
   return form.getAll(name).filter((value): value is File => value instanceof File && value.size > 0);
 }
 
+/** A photo may carry no location; one at exactly 0, 0 is refused, naming the photo (defect 20). */
+function refuseZeroZero(metaName: string, meta: z.infer<typeof photoMetaSchema>): void {
+  const issues = meta.flatMap((photo, index) =>
+    photo.gpsLat === 0 && photo.gpsLon === 0 ? [{ code: "custom" as const, path: [metaName, index, "gpsLat"], message: PHOTO_LOCATION_INVALID }] : [],
+  );
+  if (issues.length > 0) throw new ZodError(issues);
+}
+
 /** Photos with their own capture time and place, as the device stamped each one. */
 function photosNamed(form: FormData, filesName: string, metaName: string): PhotoInput[] {
   const photos = files(form, filesName);
@@ -65,6 +80,7 @@ function photosNamed(form: FormData, filesName: string, metaName: string): Photo
   }
   const meta = photoMetaSchema.parse(json);
   if (meta.length !== photos.length) throw badRequest(`${metaName} must have one entry per photo.`);
+  refuseZeroZero(metaName, meta);
   return photos.map((file, index) => {
     const m = meta[index];
     const hasGps = m.gpsLat != null && m.gpsLon != null;
@@ -104,7 +120,7 @@ export function photoInputs(form: FormData): PhotoInput[] {
 
 /** Turns the submission form into input for submitActivation. Throws 400/422 on a malformed form. */
 export function parseSubmissionForm(form: FormData, agentId: string): SubmissionInput {
-  const context = contextSchema.parse(Object.fromEntries(Object.keys(contextSchema.shape).map((key) => [key, text(form, key)])));
+  const context = contextSchema.parse(Object.fromEntries(Object.keys(contextFields.shape).map((key) => [key, text(form, key)])));
   const values: Record<string, string> = {};
   const photos: Record<string, PhotoInput[]> = {};
   const keys = new Set<string>();

@@ -194,3 +194,15 @@ controls measured: **0 contrast and 0 target-size failures**, nothing
 undetermined and no screen state unaudited. No browser request other than GET,
 HEAD and OPTIONS was made. The other screens were not re-audited; their record
 is `ui-pass.json` above.
+
+## Sign-up, Post a job and the activation form after defects 20 to 22
+
+`defect-20-local.json`: `AUDIT_ONLY="Sign up,Post a job,Activation form"` on a
+local production build of the branch, before merge. 24 screen states at 360 px
+and 1366 px, including typed coordinates outside Kenya on both forms and Submit
+pressed with no location: no text, placeholder, field-boundary or target-size
+failure, nothing undetermined. Earlier runs of this branch found one
+target-size failure on the Post a job screen with the page scrolled (defect 22),
+fixed before this run. NFR-12 was measured again on a local build of the branch
+(`../nfr12-touch-targets-defect-20.json`): every control on every agent page at
+least 48 x 48 px, no sideways scroll.

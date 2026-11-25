@@ -5,9 +5,10 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { postForm, type FieldErrors } from "@/lib/client-api";
 import { nairobiDate, validateEvidence, type FieldDefinition } from "@/lib/evidence/fields";
 import { budgetProblem, photoShare, photoTooBigMessage } from "@/lib/evidence/photo-limits";
+import { locationMissing } from "@/lib/location";
 import { shrinkPhoto } from "@/lib/evidence/photo-resize";
 import { StickyActionBar } from "@/components/StickyActionBar";
-import { AreaStatus } from "./AreaStatus";
+import { AreaStatus, LocationNeeded, locationBlock } from "./AreaStatus";
 import { EvidenceFieldInputs } from "./EvidenceFieldInputs";
 
 type Region = { code: string; name: string };
@@ -107,6 +108,7 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   const [busy, setBusy] = useState(false);
   const [preparing, setPreparing] = useState(0);
   const [locating, setLocating] = useState(true);
+  const [triedWithoutLocation, setTriedWithoutLocation] = useState(false);
   const today = nairobiDate(new Date());
   const allFields = [...platformFields, ...jobFields];
   // Each photo may take an equal share of the upload budget for the most photos this form allows.
@@ -114,6 +116,8 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   const ceiling = photoShare(maxPhotos);
 
   const applyFix = (next: Fix) => {
+    // A device that reports exactly 0, 0 has no fix: neither the activation nor a photo is stamped with it.
+    if (locationMissing(next.lat, next.lon)) return setLocating(false);
     setFix(next);
     setCoords({ lat: next.lat.toFixed(6), lon: next.lon.toFixed(6), accuracy: next.accuracy === null ? "" : String(Math.round(next.accuracy)) });
     setLocating(false);
@@ -180,7 +184,10 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
     setMessage(null);
     const local = checkHere(event.currentTarget);
     setErrors(local ?? {});
-    if (local) return;
+    // Nothing is sent without a location fix; the message beside the button says what to do.
+    const noLocation = locationBlock(coords.lat, coords.lon, locating) !== null;
+    setTriedWithoutLocation(noLocation);
+    if (local || noLocation) return;
     const total = Object.values(photos).flat().reduce((sum, photo) => sum + photo.file.size, 0);
     const tooBig = budgetProblem(total);
     if (tooBig) {
@@ -192,7 +199,9 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
     setBusy(false);
     if (!result.ok) {
       setErrors(byFieldKey(result.fieldErrors));
-      setMessage(result.message);
+      // A location the server refused is said in its own words, not as a general failure.
+      const located = Object.entries(result.fieldErrors).find(([path]) => path === "gpsLat" || path === "gpsLon" || path.startsWith("photoMeta"));
+      setMessage(located ? located[1] : result.message);
       return;
     }
     router.push(`/agent/activations/${result.data.activationId}`);
@@ -200,10 +209,11 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
   }
 
   const fieldErrors = byFieldKey(errors);
-  // The status line reads the coordinates the form will send, including any changed under Demo controls.
-  const sent = coords.lat.trim() !== "" && coords.lon.trim() !== "" && Number.isFinite(Number(coords.lat)) && Number.isFinite(Number(coords.lon))
-    ? { lat: Number(coords.lat), lon: Number(coords.lon), accuracy: coords.accuracy.trim() === "" ? null : Number(coords.accuracy) }
-    : null;
+  // The status line reads the coordinates the form will send: the device's fix, or the demo button's.
+  const sent = locationMissing(coords.lat, coords.lon)
+    ? null
+    : { lat: Number(coords.lat), lon: Number(coords.lon), accuracy: coords.accuracy.trim() === "" ? null : Number(coords.accuracy) };
+  const blocked = triedWithoutLocation ? locationBlock(coords.lat, coords.lon, locating) : null;
   const attached = Object.fromEntries(Object.entries(photos).map(([key, list]) => [key, list.map((p) => ({ name: p.file.name, located: p.fix !== null, sizeBytes: p.file.size, previewUrl: p.url }))]));
 
   return (
@@ -229,12 +239,12 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
         <summary className="small">Demo controls</summary>
         <div className="stack" style={{ marginTop: 12 }}>
           <p className="hint">
-            A field app would report these from the phone and the network. In this web version the browser fills them in, and they can be changed to demonstrate how the model reacts.
+            A field app would report these from the phone and the network. In this web version the browser fills them in. The location cannot be typed: it is the device&rsquo;s, or the job area centre set by the button below. The network details can be changed to demonstrate how the model reacts.
           </p>
           <div className="grid-3">
-            <div className="field"><label htmlFor="gpsLat">Latitude</label><input id="gpsLat" name="gpsLat" className="input" value={coords.lat} onChange={(e) => setCoords({ ...coords, lat: e.target.value })} /><FieldError errors={errors} name="gpsLat" /></div>
-            <div className="field"><label htmlFor="gpsLon">Longitude</label><input id="gpsLon" name="gpsLon" className="input" value={coords.lon} onChange={(e) => setCoords({ ...coords, lon: e.target.value })} /><FieldError errors={errors} name="gpsLon" /></div>
-            <div className="field"><label htmlFor="gpsAccuracyM">Accuracy (m)</label><input id="gpsAccuracyM" name="gpsAccuracyM" className="input" value={coords.accuracy} onChange={(e) => setCoords({ ...coords, accuracy: e.target.value })} /></div>
+            <div className="field"><label htmlFor="gpsLat">Latitude</label><input id="gpsLat" name="gpsLat" className="input" readOnly value={coords.lat} /><FieldError errors={errors} name="gpsLat" /></div>
+            <div className="field"><label htmlFor="gpsLon">Longitude</label><input id="gpsLon" name="gpsLon" className="input" readOnly value={coords.lon} /><FieldError errors={errors} name="gpsLon" /></div>
+            <div className="field"><label htmlFor="gpsAccuracyM">Accuracy (m)</label><input id="gpsAccuracyM" name="gpsAccuracyM" className="input" readOnly value={coords.accuracy} /></div>
           </div>
           <p className="hint">Job area centre: {job.areaLat.toFixed(4)}, {job.areaLon.toFixed(4)}, radius {job.areaRadiusM} m.</p>
           <button type="button" className="btn small" onClick={() => applyFix({ lat: job.areaLat, lon: job.areaLon, accuracy: 10 })}>
@@ -258,7 +268,7 @@ export function SubmitActivationForm({ assignmentId, job, regions, platformField
         </div>
       </details>
 
-      <StickyActionBar note={preparing > 0 ? "Getting your photos ready to send." : undefined}>
+      <StickyActionBar note={blocked ? <LocationNeeded message={blocked} locating={locating} onRetry={relocate} /> : preparing > 0 ? "Getting your photos ready to send." : undefined}>
         <button type="submit" className="btn primary" disabled={busy || preparing > 0}>{busy ? "Submitting and checking" : preparing > 0 ? "Getting photos ready" : "Submit activation"}</button>
       </StickyActionBar>
     </form>

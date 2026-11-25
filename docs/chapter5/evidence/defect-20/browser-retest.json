@@ -1,0 +1,148 @@
+{
+  "ranAt": "2026-11-25T19:09:47.872Z",
+  "app": "http://localhost:3000",
+  "activationNoLocation": {
+    "postsSent": [],
+    "message": "Your location is needed to submit. Turn on location and try again. Try again",
+    "tryAgainButtonPx": [
+      98,
+      48
+    ],
+    "activationStored": false
+  },
+  "demoJobCentre": {
+    "demoBoxesReadOnly": [
+      true,
+      true,
+      true
+    ],
+    "shown": {
+      "lat": "-0.099500",
+      "lon": "34.768000"
+    },
+    "messageGone": true,
+    "stored": {
+      "gpsLat": -0.0995,
+      "gpsLon": 34.768,
+      "state": "held"
+    },
+    "jobCentre": {
+      "areaLat": -0.0995,
+      "areaLon": 34.768
+    }
+  },
+  "deviceZeroThenFix": {
+    "postsSent": [],
+    "boxes": [
+      "",
+      ""
+    ],
+    "storedAfterFix": {
+      "gpsLat": -0.0993,
+      "gpsLon": 34.7682
+    },
+    "photoLocations": [
+      [
+        null,
+        null,
+        "none"
+      ]
+    ]
+  },
+  "directApi": {
+    "answers": [
+      {
+        "sent": [
+          "",
+          ""
+        ],
+        "status": 422,
+        "details": [
+          {
+            "path": "gpsLat",
+            "message": "Your location is needed to submit. Turn on location and try again."
+          },
+          {
+            "path": "gpsLon",
+            "message": "Your location is needed to submit. Turn on location and try again."
+          }
+        ]
+      },
+      {
+        "sent": [
+          "0",
+          "0"
+        ],
+        "status": 422,
+        "details": [
+          {
+            "path": "gpsLat",
+            "message": "Your location is needed to submit. Turn on location and try again."
+          },
+          {
+            "path": "gpsLon",
+            "message": "Your location is needed to submit. Turn on location and try again."
+          }
+        ]
+      }
+    ],
+    "activationsAdded": 0
+  },
+  "signupManual": {
+    "readOnlyAndUncheckedFirst": [
+      true,
+      false
+    ],
+    "invalidMessage": [
+      "Enter numbers only, with a dot for decimals, for example -1.2921 and 36.8219."
+    ],
+    "clearedWhenUnticked": true,
+    "warning": "This point is outside Kenya. Check the latitude and longitude; you can still continue.",
+    "stored": {
+      "homeLat": 51.5,
+      "homeLon": -0.12
+    }
+  },
+  "jobManual": {
+    "beforeTyping": {
+      "pin": 0,
+      "circle": 0
+    },
+    "typed": {
+      "pin": 1,
+      "circle": 1,
+      "circleCentreFromMapCentrePx": [
+        0,
+        0
+      ],
+      "pinBoxCentreFromCircleCentrePx": [
+        0,
+        -20
+      ],
+      "circleWidthPx": 212,
+      "slider": "1 km"
+    },
+    "circleWidthAt500m": 106,
+    "badRadius": [
+      "Use a radius from 50 m to 50 km, in whole metres."
+    ],
+    "invalidLatitude": {
+      "pin": 0,
+      "circle": 0,
+      "messages": [
+        "Enter numbers only, with a dot for decimals, for example -1.2921 and 36.8219."
+      ]
+    },
+    "warning": "This point is outside Kenya. Check the latitude and longitude; you can still continue.",
+    "warningGoneInKenya": true,
+    "mapClickWroteFields": {
+      "lat": "-0.093641",
+      "lon": "34.779282"
+    },
+    "stored": {
+      "areaLat": -0.101234,
+      "areaLon": 34.761234,
+      "areaRadiusM": 850
+    }
+  }
+}

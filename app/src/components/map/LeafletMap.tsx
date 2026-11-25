@@ -93,7 +93,7 @@ export function LeafletMap({ pin, radiusM, onPick, view, apiRef, label }: Props)
   // A larger radius than the map shows: zoom out to the whole circle.
   useEffect(() => {
     const m = map.current;
-    if (!ready || !m || !circle.current) return;
+    if (!ready || !m || !circle.current || radiusM <= 0) return;
     const bounds = circle.current.getBounds();
     if (!m.getBounds().contains(bounds)) m.fitBounds(bounds, { padding: [16, 16] });
   }, [ready, radiusM]);
